@@ -34,22 +34,29 @@ import com.theokanning.openai.service.OpenAiService;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DictateInputMethodService extends InputMethodService {
 
-    private final Handler deleteHandler = new Handler();
-    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private Handler mainHandler;
+    private Handler deleteHandler;
+    private Handler recordTimeHandler;
     private Runnable deleteRunnable;
+    private Runnable recordTimeRunnable;
+
+    private long startTime;
     private boolean isDeleting = false;
-    private MediaRecorder recorder;
-    private ExecutorService thread;
-    private File audioFile;
-    Vibrator vibrator;
-    SharedPreferences sp;
+    private boolean isRecording = false;
     private boolean vibrationEnabled = true;
+
+    private MediaRecorder recorder;
+    private ExecutorService apiThread;
+    private File audioFile;
+    private Vibrator vibrator;
+    private SharedPreferences sp;
 
     private ConstraintLayout dictateKeyboardView;
     private MaterialButton settingsButton;
@@ -68,6 +75,11 @@ public class DictateInputMethodService extends InputMethodService {
     @Override
     public View onCreateInputView() {
         Context context = new ContextThemeWrapper(this, R.style.Theme_Dictate);
+
+        mainHandler = new Handler(Looper.getMainLooper());
+        deleteHandler = new Handler();
+        recordTimeHandler = new Handler(Looper.getMainLooper());
+
         audioFile = new File(getFilesDir(), "audio.mp3");
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         sp = getSharedPreferences("net.devemperor.dictate", MODE_PRIVATE);
@@ -98,9 +110,9 @@ public class DictateInputMethodService extends InputMethodService {
             infoCl.setVisibility(View.GONE);
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                 openSettingsActivity();
-            } else if (recordButton.getText().equals(getString(R.string.dictate_record))) {
+            } else if (!isRecording) {
                 startRecording();
-            } else if (recordButton.getText().equals(getString(R.string.dictate_send))) {
+            } else {
                 stopRecording();
             }
         });
@@ -185,6 +197,19 @@ public class DictateInputMethodService extends InputMethodService {
 
         recordButton.setText(R.string.dictate_send);
         recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_send_24));
+        isRecording = true;
+
+        startTime = System.currentTimeMillis();
+        recordTimeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                recordButton.setText(getString(R.string.dictate_send,
+                        String.format(Locale.getDefault(), "%02d:%02d", (int) (elapsedTime / 60000), (int) (elapsedTime / 1000) % 60)));
+                recordTimeHandler.postDelayed(this, 1000);
+            }
+        };
+        recordTimeHandler.post(recordTimeRunnable);
     }
 
     private void stopRecording() {
@@ -193,13 +218,19 @@ public class DictateInputMethodService extends InputMethodService {
             recorder.release();
             recorder = null;
 
+            if (recordTimeRunnable != null) {
+                recordTimeHandler.removeCallbacks(recordTimeRunnable);
+                recordTimeRunnable = null;
+            }
+
             recordButton.setText(R.string.dictate_sending);
             recordButton.setEnabled(false);
+            isRecording = false;
 
             OpenAiService service = new OpenAiService(sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY"));
 
-            thread = Executors.newSingleThreadExecutor();
-            thread.execute(() -> {
+            apiThread = Executors.newSingleThreadExecutor();
+            apiThread.execute(() -> {
                 try {
                     String resultText;
                     double duration;

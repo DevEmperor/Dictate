@@ -4,7 +4,7 @@
     <string name="dictate_microphone_permission_granted">Microphone permission granted ✅</string>
     <string name="dictate_microphone_permission_denied">Microphone permission denied ❌</string>
     <string name="dictate_record">Record</string>
-    <string name="dictate_send">Send</string>
+    <string name="dictate_send">Send (%1$s)</string>
     <string name="dictate_sending">Sending …</string>
     <string name="dictate_timeout_msg">Timeout exceeded. Maybe Whisper is overloaded or the audio was too long. ❌</string>
     <string name="dictate_invalid_api_key_msg">Invalid API key. Open settings to correct it?</string>
