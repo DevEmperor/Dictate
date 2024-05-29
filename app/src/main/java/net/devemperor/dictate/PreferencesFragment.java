@@ -9,6 +9,8 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 public class PreferencesFragment extends PreferenceFragmentCompat {
 
     SharedPreferences sp;
@@ -31,6 +33,24 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             apiKeyPreference.setOnBindEditTextListener(editText -> {
                 editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 editText.setSingleLine(true);
+            });
+        }
+
+        Preference usage = findPreference("net.devemperor.dictate.usage");
+        if (usage != null) {
+            float duration = sp.getFloat("net.devemperor.dictate.total_duration", 0f);
+            usage.setTitle(getString(R.string.dictate_settings_usage, (int) (duration / 60), (int) (duration % 60), duration * 0.0001f));
+            usage.setOnPreferenceClickListener(preference -> {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.dictate_settings_reset_usage_title)
+                        .setMessage(R.string.dictate_settings_reset_usage_message)
+                        .setPositiveButton(R.string.dictate_yes, (dialog, which) -> {
+                            sp.edit().putFloat("net.devemperor.dictate.total_duration", 0f).apply();
+                            usage.setTitle(getString(R.string.dictate_settings_usage, 0, 0, 0f));
+                        })
+                        .setNegativeButton(R.string.dictate_no, null)
+                        .show();
+                return true;
             });
         }
     }

@@ -39,6 +39,12 @@
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.Preference
+            android:key="net.devemperor.dictate.usage"
+            android:title="@string/dictate_settings_usage"
+            android:summary="@string/dictate_settings_tap_to_reset_usage"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.Preference
             android:enabled="false" />
 
         <androidx.preference.Preference

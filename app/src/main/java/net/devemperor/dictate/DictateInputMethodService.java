@@ -202,15 +202,19 @@ public class DictateInputMethodService extends InputMethodService {
             thread.execute(() -> {
                 try {
                     String resultText;
+                    double duration;
                     if (sp.getBoolean("net.devemperor.dictate.translate", false)) {
-                        CreateTranslationRequest request = CreateTranslationRequest.builder().model("whisper-1").build();
+                        CreateTranslationRequest request = CreateTranslationRequest.builder().model("whisper-1").responseFormat("verbose_json").build();
                         TranslationResult result = service.createTranslation(request, audioFile);
                         resultText = result.getText();
+                        duration = result.getDuration();
                     } else {
-                        CreateTranscriptionRequest request = CreateTranscriptionRequest.builder().model("whisper-1").build();
+                        CreateTranscriptionRequest request = CreateTranscriptionRequest.builder().model("whisper-1").responseFormat("verbose_json").build();
                         TranscriptionResult result = service.createTranscription(request, audioFile);
                         resultText = result.getText();
+                        duration = result.getDuration();
                     }
+                    sp.edit().putFloat("net.devemperor.dictate.total_duration", sp.getFloat("net.devemperor.dictate.total_duration", 0) + (float) duration).apply();
 
                     InputConnection inputConnection = getCurrentInputConnection();
                     if (inputConnection != null) {
