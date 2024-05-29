@@ -3,11 +3,11 @@
     <style name="Theme.Dictate" parent="Theme.Material3.Dark">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/dictate_blue</item>
-        <item name="colorPrimaryVariant">@color/dictate_blue_dark</item>
+        <item name="colorPrimaryVariant">@color/dictate_blue</item>
         <item name="colorOnPrimary">@color/dictate_black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/dictate_blue</item>
-        <item name="colorSecondaryVariant">@color/dictate_blue_dark</item>
+        <item name="colorSecondaryVariant">@color/dictate_blue</item>
         <item name="colorOnSecondary">@color/dictate_black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
