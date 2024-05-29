@@ -20,11 +20,12 @@
     <string name="dictate_settings_translate_title">Translate results</string>
     <string name="dictate_settings_translate_summary">Results will be translated to English</string>
     <string name="dictate_settings_vibration_summary">Vibrate on button presses and errors</string>
-    <string name="dictate_about">Dictate v1.0 by DevEmperor</string>
+    <string name="dictate_about">Dictate v1.0\nMade with ❤️ by DevEmperor</string>
     <string name="dictate_settings_tap_to_reset_usage">Tap to reset usage</string>
     <string name="dictate_settings_usage">Total audio time: %1$d min, %2$d s.\nEstimated cost: %3$.2f $</string>
     <string name="dictate_yes">Yes</string>
     <string name="dictate_no">No</string>
     <string name="dictate_settings_reset_usage_title">Reset usage?</string>
     <string name="dictate_settings_reset_usage_message">Are you sure to reset Dictate usage?</string>
+    <string name="dictate_settings_feedback">Give feedback 💌</string>
 </resources>

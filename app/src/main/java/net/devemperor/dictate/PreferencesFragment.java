@@ -1,6 +1,8 @@
 package net.devemperor.dictate;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -50,6 +52,18 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         })
                         .setNegativeButton(R.string.dictate_no, null)
                         .show();
+                return true;
+            });
+        }
+
+        Preference feedback = findPreference("net.devemperor.dictate.feedback");
+        if (feedback != null) {
+            feedback.setOnPreferenceClickListener(preference -> {
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                emailIntent.setData(Uri.parse("mailto:contact@devemperor.net"));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Dictate Feedback");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Write your feedback here");
+                startActivity(Intent.createChooser(emailIntent, "Choose an email client:"));
                 return true;
             });
         }

@@ -48,6 +48,11 @@
             android:enabled="false" />
 
         <androidx.preference.Preference
+            android:key="net.devemperor.dictate.feedback"
+            android:title="@string/dictate_settings_feedback"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.Preference
             android:title="@string/dictate_about"
             android:enabled="false"
             app:iconSpaceReserved="false" />
