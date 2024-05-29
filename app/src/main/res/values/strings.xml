@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Dictate</string>
+    <string name="dictate_settings_title">Dictate Settings</string>
+    <string name="dictate_microphone_permission_granted">Microphone permission granted ✅</string>
+    <string name="dictate_microphone_permission_denied">Microphone permission denied ❌</string>
+    <string name="dictate_record">Record</string>
+    <string name="dictate_send">Send</string>
+    <string name="dictate_sending">Sending …</string>
+    <string name="dictate_timeout_msg">Timeout exceeded. Maybe Whisper is overloaded or the audio was too long. ❌</string>
+    <string name="dictate_invalid_api_key_msg">Invalid API key. Open settings to correct it?</string>
+    <string name="dictate_quota_exceeded_msg">Your quota exceeded. Open OpenAI account to buy new credits?</string>
+    <string name="dictate_internet_error_msg">Couldn\'t send audio to Whisper. Please check your internet connection.</string>
+    <string name="dictate_okay">Okay</string>
+    <string name="dictate_cancel">Cancel</string>
+    <string name="dictate_no_api_key">No API key set</string>
+    <string name="dictate_settings_api_key_title">Set / Change OpenAI API key</string>
+    <string name="dictate_settings_vibration_title">Haptic feedback</string>
+    <string name="dictate_settings_instant_output_title">Instant output</string>
+    <string name="dictate_settings_instant_output_summary">Disable typing animation when the result is ready</string>
+    <string name="dictate_settings_translate_title">Translate results</string>
+    <string name="dictate_settings_translate_summary">Results will be translated to English</string>
+    <string name="dictate_settings_vibration_summary">Vibrate on button presses and errors</string>
+    <string name="dictate_about">Dictate v1.0 by DevEmperor</string>
+</resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Dictate" parent="Theme.Material3.Light">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/dictate_blue</item>
+        <item name="colorPrimaryVariant">@color/dictate_blue</item>
+        <item name="colorOnPrimary">@color/dictate_black</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/dictate_blue</item>
+        <item name="colorSecondaryVariant">@color/dictate_blue</item>
+        <item name="colorOnSecondary">@color/dictate_black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
+
+        <!-- Customize your theme here. -->
+
+    </style>
+</resources>
