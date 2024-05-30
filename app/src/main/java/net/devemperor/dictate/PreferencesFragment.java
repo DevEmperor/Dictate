@@ -70,9 +70,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             feedback.setOnPreferenceClickListener(preference -> {
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                 emailIntent.setData(Uri.parse("mailto:contact@devemperor.net"));
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Dictate Feedback");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Write your feedback here");
-                startActivity(Intent.createChooser(emailIntent, "Choose an email client:"));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.dictate_feedback_subject));
+                emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.dictate_feedback_body));
+                startActivity(Intent.createChooser(emailIntent, getString(R.string.dictate_feedback_title)));
                 return true;
             });
         }

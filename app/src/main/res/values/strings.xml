@@ -29,4 +29,7 @@
     <string name="dictate_settings_reset_usage_message">Are you sure to reset Dictate usage?</string>
     <string name="dictate_settings_feedback">Give feedback 💌</string>
     <string name="dictate_settings_buy_credits_title">Buy new credits at openai.com</string>
+    <string name="dictate_feedback_subject">Dictate Feedback</string>
+    <string name="dictate_feedback_body">Write your feedback here</string>
+    <string name="dictate_feedback_title">Choose an email client</string>
 </resources>
