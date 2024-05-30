@@ -45,6 +45,11 @@
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.Preference
+            android:key="net.devemperor.dictate.buy_credits"
+            android:title="@string/dictate_settings_buy_credits_title"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.Preference
             android:enabled="false" />
 
         <androidx.preference.Preference

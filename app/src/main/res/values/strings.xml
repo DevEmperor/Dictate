@@ -28,4 +28,5 @@
     <string name="dictate_settings_reset_usage_title">Reset usage?</string>
     <string name="dictate_settings_reset_usage_message">Are you sure to reset Dictate usage?</string>
     <string name="dictate_settings_feedback">Give feedback 💌</string>
+    <string name="dictate_settings_buy_credits_title">Buy new credits at openai.com</string>
 </resources>

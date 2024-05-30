@@ -56,6 +56,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
+        Preference buyCredits = findPreference("net.devemperor.dictate.buy_credits");
+        if (buyCredits != null) {
+            buyCredits.setOnPreferenceClickListener(preference -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://platform.openai.com/settings/organization/billing/overview"));
+                startActivity(browserIntent);
+                return true;
+            });
+        }
+
         Preference feedback = findPreference("net.devemperor.dictate.feedback");
         if (feedback != null) {
             feedback.setOnPreferenceClickListener(preference -> {
