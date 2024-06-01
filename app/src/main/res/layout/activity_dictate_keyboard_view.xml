@@ -107,7 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:foreground="@drawable/baseline_check_circle_outline_24"
+            android:foreground="@drawable/ic_baseline_check_circle_outline_24"
             android:foregroundGravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/info_no_btn"
