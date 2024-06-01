@@ -15,4 +15,9 @@
         <!-- Customize your theme here. -->
 
     </style>
+
+    <style name="roundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">18dp</item>
+    </style>
 </resources>

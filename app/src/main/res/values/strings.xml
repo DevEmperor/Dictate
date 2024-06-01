@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Dictate</string>
     <string name="dictate_settings_title">Dictate Settings</string>
-    <string name="dictate_microphone_permission_granted">Microphone permission granted ✅</string>
-    <string name="dictate_microphone_permission_denied">Microphone permission denied ❌</string>
+    <string name="dictate_microphone_permission_granted">Microphone permission granted ✅.</string>
+    <string name="dictate_microphone_permission_denied">Microphone permission denied ❌.</string>
     <string name="dictate_record">Record</string>
     <string name="dictate_send">Send (%1$s)</string>
     <string name="dictate_sending">Sending …</string>
@@ -32,4 +32,15 @@
     <string name="dictate_feedback_subject">Dictate Feedback</string>
     <string name="dictate_feedback_body">Write your feedback here</string>
     <string name="dictate_feedback_title">Choose an email client</string>
+    <string name="dictate_onboarding_welcome">Welcome to\nDictate\n→</string>
+    <string name="dictate_onboarding_permissions_microphone_request">Dictate needs your permission to use the microphone. Click the button below to grant this permission.</string>
+    <string name="dictate_onboarding_permissions_microphone_button">Grant microphone permission</string>
+    <string name="dictate_onboarding_permissions_keyboard_request">Dictate must be activated as a keyboard in the settings. Click on the button below to enable this.</string>
+    <string name="dictate_onboarding_permissions_keyboard_button">Enable Dictate keyboard</string>
+    <string name="dictate_keyboard_disabled">Dictate keyboard disabled ❌.</string>
+    <string name="dictate_keyboard_enabled">Dictate keyboard enabled ✅.</string>
+    <string name="dictate_api_key_hint">sk-mV3Aj …</string>
+    <string name="dictate_onboarding_api_key_finish">Set API key and finish setup</string>
+    <string name="dictate_onboarding_complete_dialog_title">How to switch to Dictate keyboard</string>
+    <string name="dictate_onboarding_complete_dialog_message">You can switch between your normal keyboard and Dictate at any time. Simply click on the keyboard status icon below your standard keyboard and select Dictate. Have fun with it. 💪</string>
 </resources>

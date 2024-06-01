@@ -1,5 +1,6 @@
 package net.devemperor.dictate;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -19,6 +20,11 @@ public class DictateSettingsActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.dictate_settings, new PreferencesFragment())
                 .commit();
+
+        if (!getSharedPreferences("net.devemperor.dictate", MODE_PRIVATE).getBoolean("net.devemperor.dictate.onboarding_complete", false)) {
+            startActivity(new Intent(this, OnboardingActivity.class));
+            finish();
+        }
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{ android.Manifest.permission.RECORD_AUDIO }, 1337);

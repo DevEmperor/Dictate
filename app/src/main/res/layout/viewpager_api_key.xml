@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="48dp">
+
+        <EditText
+            android:id="@+id/onboarding_api_key_et"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:hint="@string/dictate_api_key_hint"
+            android:inputType="text|textVisiblePassword|textNoSuggestions"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:textSize="20sp"
+            android:importantForAutofill="no"
+            app:layout_constraintBottom_toTopOf="@+id/onboarding_api_key_finish_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/onboarding_api_key_request_tv" />
+
+        <TextView
+            android:id="@+id/onboarding_api_key_request_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:text="@string/dictate_settings_api_key_title"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/onboarding_api_key_et"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/onboarding_api_key_finish_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:enabled="false"
+            android:text="@string/dictate_onboarding_api_key_finish"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/onboarding_api_key_et" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

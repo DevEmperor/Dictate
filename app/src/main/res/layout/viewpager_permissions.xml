@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="48dp">
+
+    <TextView
+        android:id="@+id/onboarding_permissions_microphone_request_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="@string/dictate_onboarding_permissions_microphone_request"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/onboarding_permissions_microphone_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/onboarding_permissions_microphone_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dictate_onboarding_permissions_microphone_button"
+        app:layout_constraintBottom_toTopOf="@+id/onboarding_permissions_microphone_status_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/onboarding_permissions_microphone_request_tv" />
+
+    <TextView
+        android:id="@+id/onboarding_permissions_microphone_status_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dictate_microphone_permission_denied"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/onboarding_permissions_microphone_btn" />
+
+    <TextView
+        android:id="@+id/onboarding_permissions_keyboard_request_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dictate_onboarding_permissions_keyboard_request"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/onboarding_permissions_keyboard_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <Button
+        android:id="@+id/onboarding_permissions_keyboard_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dictate_onboarding_permissions_keyboard_button"
+        app:layout_constraintBottom_toTopOf="@+id/onboarding_permissions_keyboard_status_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/onboarding_permissions_keyboard_request_tv" />
+
+    <TextView
+        android:id="@+id/onboarding_permissions_keyboard_status_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        android:text="@string/dictate_keyboard_disabled"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/onboarding_permissions_keyboard_btn" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="313dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/onboarding_permissions_keyboard_request_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/onboarding_permissions_microphone_status_tv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
