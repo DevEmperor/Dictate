@@ -13,11 +13,11 @@
     <string name="dictate_okay">Okay</string>
     <string name="dictate_cancel">Cancel</string>
     <string name="dictate_no_api_key">No API key set</string>
-    <string name="dictate_settings_api_key_title">Set / Change OpenAI API key</string>
-    <string name="dictate_settings_vibration_title">Haptic feedback</string>
-    <string name="dictate_settings_instant_output_title">Instant output</string>
+    <string name="dictate_settings_api_key_title">Set / Change OpenAI API key 🔑</string>
+    <string name="dictate_settings_vibration_title">Haptic feedback 📳</string>
+    <string name="dictate_settings_instant_output_title">Instant output ⏱️</string>
     <string name="dictate_settings_instant_output_summary">Disable typing animation when the result is ready</string>
-    <string name="dictate_settings_translate_title">Translate results</string>
+    <string name="dictate_settings_translate_title">Translate results 🌎</string>
     <string name="dictate_settings_translate_summary">Results will be translated to English</string>
     <string name="dictate_settings_vibration_summary">Vibrate on button presses and errors</string>
     <string name="dictate_about">Dictate v1.0\nMade with ❤️ by DevEmperor</string>
@@ -28,7 +28,7 @@
     <string name="dictate_settings_reset_usage_title">Reset usage?</string>
     <string name="dictate_settings_reset_usage_message">Are you sure to reset Dictate usage?</string>
     <string name="dictate_settings_feedback">Give feedback 💌</string>
-    <string name="dictate_settings_buy_credits_title">Buy new credits at openai.com</string>
+    <string name="dictate_settings_buy_credits_title">Buy new credits at openai.com 💰</string>
     <string name="dictate_feedback_subject">Dictate Feedback</string>
     <string name="dictate_feedback_body">Write your feedback here</string>
     <string name="dictate_feedback_title">Choose an email client</string>
