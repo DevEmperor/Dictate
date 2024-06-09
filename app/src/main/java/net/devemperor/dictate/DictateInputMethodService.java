@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.inputmethodservice.InputMethodService;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.VibrationEffect;
@@ -99,13 +100,15 @@ public class DictateInputMethodService extends InputMethodService {
         infoYesButton = dictateKeyboardView.findViewById(R.id.info_yes_btn);
         infoNoButton = dictateKeyboardView.findViewById(R.id.info_no_btn);
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) switchButton.setEnabled(false);
+
         settingsButton.setOnClickListener(v -> {
             infoCl.setVisibility(View.GONE);
             openSettingsActivity();
         });
 
         recordButton.setOnClickListener(v -> {
-            if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK));
+            vibrate();
 
             infoCl.setVisibility(View.GONE);
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -118,8 +121,7 @@ public class DictateInputMethodService extends InputMethodService {
         });
 
         backspaceButton.setOnClickListener(v -> {
-            if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK));
-
+            vibrate();
             deleteOneCharacter();
         });
 
@@ -147,13 +149,15 @@ public class DictateInputMethodService extends InputMethodService {
         });
 
         switchButton.setOnClickListener(v -> {
-            if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK));
+            vibrate();
 
-            switchToPreviousInputMethod();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                switchToPreviousInputMethod();
+            }
         });
 
         spaceButton.setOnClickListener(v -> {
-            if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK));
+            vibrate();
 
             InputConnection inputConnection = getCurrentInputConnection();
             if (inputConnection != null) {
@@ -162,7 +166,7 @@ public class DictateInputMethodService extends InputMethodService {
         });
 
         enterButton.setOnClickListener(v -> {
-            if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK));
+            vibrate();
 
             InputConnection inputConnection = getCurrentInputConnection();
             if (inputConnection != null) {
@@ -171,6 +175,14 @@ public class DictateInputMethodService extends InputMethodService {
         });
 
         return dictateKeyboardView;
+    }
+
+    private void vibrate() {
+        if (vibrationEnabled) if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK));
+        } else {
+            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+        }
     }
 
     private void openSettingsActivity() {
