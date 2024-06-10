@@ -31,10 +31,15 @@ import com.theokanning.openai.audio.CreateTranscriptionRequest;
 import com.theokanning.openai.audio.CreateTranslationRequest;
 import com.theokanning.openai.audio.TranscriptionResult;
 import com.theokanning.openai.audio.TranslationResult;
+import com.theokanning.openai.completion.chat.ChatCompletionRequest;
+import com.theokanning.openai.completion.chat.ChatCompletionResult;
+import com.theokanning.openai.completion.chat.ChatMessage;
+import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -258,6 +263,21 @@ public class DictateInputMethodService extends InputMethodService {
                         duration = result.getDuration();
                     }
                     sp.edit().putFloat("net.devemperor.dictate.total_duration", sp.getFloat("net.devemperor.dictate.total_duration", 0) + (float) duration).apply();
+
+                    if (sp.getBoolean("net.devemperor.dictate.translate", false)) {
+                        mainHandler.post(() -> recordButton.setText(R.string.dictate_translating));
+                        ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(), String.format("I want you to act as a %1$s translator. " +
+                                "I will speak to you in any language and you will detect the language, translate it and answer in the %1$s version of my text. " +
+                                "I want you to only reply the correction, the improvements and nothing else, do not write explanations. " +
+                                "My first sentence is \"%2$s\"", sp.getString("net.devemperor.dictate.translation_language", "English"), resultText));
+                        ChatCompletionRequest translationRequest = ChatCompletionRequest.builder().model("gpt-4o").messages(Collections.singletonList(message)).build();
+                        ChatCompletionResult translationResult = service.createChatCompletion(translationRequest);
+                        resultText = translationResult.getChoices().get(0).getMessage().getContent();
+                        sp.edit().putLong("net.devemperor.dictate.translation_input_tokens",
+                                sp.getLong("net.devemperor.dictate.translation_input_tokens", 0) + translationResult.getUsage().getPromptTokens()).apply();
+                        sp.edit().putLong("net.devemperor.dictate.translation_output_tokens",
+                                sp.getLong("net.devemperor.dictate.translation_output_tokens", 0) + translationResult.getUsage().getCompletionTokens()).apply();
+                    }
 
                     InputConnection inputConnection = getCurrentInputConnection();
                     if (inputConnection != null) {

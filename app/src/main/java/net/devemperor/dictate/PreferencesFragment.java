@@ -8,6 +8,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 
 import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -22,6 +23,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         getPreferenceManager().setSharedPreferencesName("net.devemperor.dictate");
         setPreferencesFromResource(R.xml.fragment_preferences, null);
         sp = getPreferenceManager().getSharedPreferences();
+
+        ListPreference translationLanguagePreference = findPreference("net.devemperor.dictate.translation_language");
+        if (translationLanguagePreference != null) {
+            translationLanguagePreference.setSummaryProvider((Preference.SummaryProvider<ListPreference>) ListPreference::getValue);
+        }
 
         EditTextPreference apiKeyPreference = findPreference("net.devemperor.dictate.api_key");
         if (apiKeyPreference != null) {
@@ -41,14 +47,19 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Preference usage = findPreference("net.devemperor.dictate.usage");
         if (usage != null) {
             float duration = sp.getFloat("net.devemperor.dictate.total_duration", 0f);
-            usage.setTitle(getString(R.string.dictate_settings_usage, (int) (duration / 60), (int) (duration % 60), duration * 0.0001f));
+            long translationInputTokens = sp.getLong("net.devemperor.dictate.translation_input_tokens", 0);
+            long translationOutputTokens = sp.getLong("net.devemperor.dictate.translation_output_tokens", 0);
+            usage.setTitle(getString(R.string.dictate_settings_usage, (int) (duration / 60), (int) (duration % 60),
+                    translationInputTokens + translationOutputTokens, duration * 0.0001f + translationInputTokens * 0.000005f + translationOutputTokens * 0.000015f));
             usage.setOnPreferenceClickListener(preference -> {
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle(R.string.dictate_settings_reset_usage_title)
                         .setMessage(R.string.dictate_settings_reset_usage_message)
                         .setPositiveButton(R.string.dictate_yes, (dialog, which) -> {
                             sp.edit().putFloat("net.devemperor.dictate.total_duration", 0f).apply();
-                            usage.setTitle(getString(R.string.dictate_settings_usage, 0, 0, 0f));
+                            sp.edit().putLong("net.devemperor.dictate.translation_input_tokens", 0).apply();
+                            sp.edit().putLong("net.devemperor.dictate.translation_output_tokens", 0).apply();
+                            usage.setTitle(getString(R.string.dictate_settings_usage, 0, 0, 0, 0f));
                         })
                         .setNegativeButton(R.string.dictate_no, null)
                         .show();

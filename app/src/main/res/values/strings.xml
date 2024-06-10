@@ -18,11 +18,10 @@
     <string name="dictate_settings_instant_output_title">Instant output ⏱️</string>
     <string name="dictate_settings_instant_output_summary">Disable typing animation when the result is ready</string>
     <string name="dictate_settings_translate_title">Translate results 🌎</string>
-    <string name="dictate_settings_translate_summary">Results will be translated to English</string>
     <string name="dictate_settings_vibration_summary">Vibrate on button presses and errors</string>
     <string name="dictate_about">Dictate v1.0\nMade with ❤️ by DevEmperor</string>
     <string name="dictate_settings_tap_to_reset_usage">Tap to reset usage</string>
-    <string name="dictate_settings_usage">Total audio time: %1$d min, %2$d s.\nEstimated cost: %3$.2f $</string>
+    <string name="dictate_settings_usage">Total audio time: %1$d min, %2$d s.\nTotal translation tokens: %3$d.\nEstimated cost: %4$.2f $</string>
     <string name="dictate_yes">Yes</string>
     <string name="dictate_no">No</string>
     <string name="dictate_settings_reset_usage_title">Reset usage?</string>
@@ -43,4 +42,6 @@
     <string name="dictate_onboarding_api_key_finish">Set API key and finish setup</string>
     <string name="dictate_onboarding_complete_dialog_title">How to switch to Dictate keyboard</string>
     <string name="dictate_onboarding_complete_dialog_message">You can switch between your normal keyboard and Dictate at any time. Simply click on the keyboard status icon below your standard keyboard and select Dictate. Have fun with it. 💪</string>
+    <string name="dictate_settings_translate_language_title">Target translation language</string>
+    <string name="dictate_translating">Translating …</string>
 </resources>
