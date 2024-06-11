@@ -87,5 +87,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 return true;
             });
         }
+
+        Preference about = findPreference("net.devemperor.dictate.about");
+        if (about != null) {
+            about.setTitle(getString(R.string.dictate_about, BuildConfig.VERSION_NAME));
+        }
     }
 }
