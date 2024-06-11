@@ -5,7 +5,7 @@
     android:id="@+id/fragment_preferences">
 
     <androidx.preference.PreferenceCategory
-        android:title="Translation Settings"
+        android:title="@string/dictate_settings_translation_title"
         app:iconSpaceReserved="false">
 
         <androidx.preference.SwitchPreference

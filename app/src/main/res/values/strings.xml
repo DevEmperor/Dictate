@@ -44,4 +44,5 @@
     <string name="dictate_onboarding_complete_dialog_message">You can switch between your normal keyboard and Dictate at any time. Simply click on the keyboard status icon below your standard keyboard and select Dictate. Have fun with it. 💪</string>
     <string name="dictate_settings_translate_language_title">Target translation language</string>
     <string name="dictate_translating">Translating …</string>
+    <string name="dictate_settings_translation_title">Translation Settings</string>
 </resources>
