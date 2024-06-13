@@ -45,4 +45,6 @@
     <string name="dictate_settings_translate_language_title">Target translation language</string>
     <string name="dictate_translating">Translating …</string>
     <string name="dictate_settings_translation_title">Translation Settings</string>
+    <string name="dictate_settings_instant_recording_title">Instant recording 🎙️</string>
+    <string name="dictate_settings_instant_recording_summary">Start recording as soon as you switch to Dictate keyboard</string>
 </resources>

@@ -37,6 +37,13 @@
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.SwitchPreference
+            android:key="net.devemperor.dictate.instant_recording"
+            android:title="@string/dictate_settings_instant_recording_title"
+            android:summary="@string/dictate_settings_instant_recording_summary"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.SwitchPreference
             android:key="net.devemperor.dictate.vibration"
             android:title="@string/dictate_settings_vibration_title"
             android:summary="@string/dictate_settings_vibration_summary"

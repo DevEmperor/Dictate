@@ -179,6 +179,10 @@ public class DictateInputMethodService extends InputMethodService {
             }
         });
 
+        if (sp.getBoolean("net.devemperor.dictate.instant_recording", false)) {
+            recordButton.performClick();
+        }
+
         return dictateKeyboardView;
     }
 
