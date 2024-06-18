@@ -47,4 +47,12 @@
     <string name="dictate_settings_translation_title">Translation Settings</string>
     <string name="dictate_settings_instant_recording_title">Instant recording 🎙️</string>
     <string name="dictate_settings_instant_recording_summary">Start recording as soon as you switch to Dictate keyboard</string>
+    <string name="dictate_settings_api_title">API settings</string>
+    <string name="dictate_settings_about_title">About</string>
+    <string name="dictate_settings_custom_api_host_enabled_title">Use custom Whisper API server 🛠️</string>
+    <string name="dictate_settings_custom_api_host_title">Custom API server hostname</string>
+    <string name="dictate_custom_host_hint">https://api.example.com/</string>
+    <string name="dictate_invalid_custom_host_msg">Invalid custom API host. Open settings to correct it?</string>
+    <string name="dictate_custom_host_invalid_title">Invalid custom API address</string>
+    <string name="dictate_custom_host_invalid_message">Your custom API server has to start with \'http:\' or \'https:\'. Please check this again.</string>
 </resources>

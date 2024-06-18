@@ -14,6 +14,8 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import org.apache.commons.validator.routines.UrlValidator;
+
 public class PreferencesFragment extends PreferenceFragmentCompat {
 
     SharedPreferences sp;
@@ -27,21 +29,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         ListPreference translationLanguagePreference = findPreference("net.devemperor.dictate.translation_language");
         if (translationLanguagePreference != null) {
             translationLanguagePreference.setSummaryProvider((Preference.SummaryProvider<ListPreference>) ListPreference::getValue);
-        }
-
-        EditTextPreference apiKeyPreference = findPreference("net.devemperor.dictate.api_key");
-        if (apiKeyPreference != null) {
-            apiKeyPreference.setSummaryProvider((Preference.SummaryProvider<EditTextPreference>) preference -> {
-                String key = preference.getText();
-                if (TextUtils.isEmpty(key)) return getString(R.string.dictate_no_api_key);
-                if (key.length() <= 10) return key;
-                return key.substring(0, 8) + "..." + key.substring(key.length() - 8);
-            });
-
-            apiKeyPreference.setOnBindEditTextListener(editText -> {
-                editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                editText.setSingleLine(true);
-            });
         }
 
         Preference usage = findPreference("net.devemperor.dictate.usage");
@@ -73,6 +60,50 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://platform.openai.com/settings/organization/billing/overview"));
                 startActivity(browserIntent);
                 return true;
+            });
+        }
+
+        EditTextPreference apiKeyPreference = findPreference("net.devemperor.dictate.api_key");
+        if (apiKeyPreference != null) {
+            apiKeyPreference.setSummaryProvider((Preference.SummaryProvider<EditTextPreference>) preference -> {
+                String key = preference.getText();
+                if (TextUtils.isEmpty(key)) return getString(R.string.dictate_no_api_key);
+                if (key.length() <= 10) return key;
+                return key.substring(0, 8) + "..." + key.substring(key.length() - 8);
+            });
+
+            apiKeyPreference.setOnBindEditTextListener(editText -> {
+                editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                editText.setSingleLine(true);
+                editText.setHint(R.string.dictate_api_key_hint);
+            });
+        }
+
+        EditTextPreference customHostPreference = findPreference("net.devemperor.dictate.custom_api_host");
+        if (customHostPreference != null) {
+            customHostPreference.setSummaryProvider((Preference.SummaryProvider<EditTextPreference>) preference -> {
+                String host = preference.getText();
+                if (TextUtils.isEmpty(host)) return getString(R.string.dictate_custom_host_hint);
+                return host;
+            });
+
+            customHostPreference.setOnBindEditTextListener(editText -> {
+                editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_URI);
+                editText.setSingleLine(true);
+                editText.setHint(R.string.dictate_custom_host_hint);
+            });
+
+            customHostPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                String host = (String) newValue;
+                if (new UrlValidator().isValid(host)) return true;
+                else {
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.dictate_custom_host_invalid_title)
+                            .setMessage(R.string.dictate_custom_host_invalid_message)
+                            .setPositiveButton(R.string.dictate_okay, null)
+                            .show();
+                    return false;
+                }
             });
         }
 

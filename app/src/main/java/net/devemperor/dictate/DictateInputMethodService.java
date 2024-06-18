@@ -1,5 +1,8 @@
 package net.devemperor.dictate;
 
+import static com.theokanning.openai.service.OpenAiService.defaultClient;
+import static com.theokanning.openai.service.OpenAiService.defaultObjectMapper;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -31,6 +34,7 @@ import com.theokanning.openai.audio.CreateTranscriptionRequest;
 import com.theokanning.openai.audio.CreateTranslationRequest;
 import com.theokanning.openai.audio.TranscriptionResult;
 import com.theokanning.openai.audio.TranslationResult;
+import com.theokanning.openai.client.OpenAiApi;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;
@@ -39,11 +43,16 @@ import com.theokanning.openai.service.OpenAiService;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class DictateInputMethodService extends InputMethodService {
 
@@ -248,7 +257,15 @@ public class DictateInputMethodService extends InputMethodService {
             recordButton.setEnabled(false);
             isRecording = false;
 
-            OpenAiService service = new OpenAiService(sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY"));
+            String customApiHost = sp.getString("net.devemperor.dictate.custom_api_host", getString(R.string.dictate_custom_host_hint));
+            String apiKey = sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY");
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(sp.getBoolean("net.devemperor.dictate.custom_api_host_enabled", false) ? customApiHost : "https://api.openai.com/")
+                    .client(defaultClient(apiKey.replaceAll("[^ -~]", ""), Duration.ofSeconds(120)).newBuilder().build())
+                    .addConverterFactory(JacksonConverterFactory.create(defaultObjectMapper()))
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .build();
+            OpenAiService service = new OpenAiService(retrofit.create(OpenAiApi.class));
 
             apiThread = Executors.newSingleThreadExecutor();
             apiThread.execute(() -> {
@@ -305,6 +322,12 @@ public class DictateInputMethodService extends InputMethodService {
                             showInfo("invalid_api_key");
                         } else if (e.getMessage().contains("quota")) {
                             showInfo("quota_exceeded");
+                        } else if (sp.getBoolean("net.devemperor.dictate.custom_api_host_enabled", false)) {
+                            if (e.getMessage().contains("ConnectException")) {
+                                showInfo("internet_error");
+                            } else {
+                                showInfo("unknown_host");
+                            }
                         } else {
                             showInfo("internet_error");
                         }
@@ -345,6 +368,15 @@ public class DictateInputMethodService extends InputMethodService {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://platform.openai.com/settings/organization/billing/overview"));
                     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(browserIntent);
+                    infoCl.setVisibility(View.GONE);
+                });
+                infoNoButton.setOnClickListener(v -> infoCl.setVisibility(View.GONE));
+                break;
+            case "unknown_host":
+                infoTv.setText(R.string.dictate_invalid_custom_host_msg);
+                infoYesButton.setVisibility(View.VISIBLE);
+                infoYesButton.setOnClickListener(v -> {
+                    openSettingsActivity();
                     infoCl.setVisibility(View.GONE);
                 });
                 infoNoButton.setOnClickListener(v -> infoCl.setVisibility(View.GONE));

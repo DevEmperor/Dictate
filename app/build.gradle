@@ -44,4 +44,6 @@ dependencies {
     androidTestImplementation libs.espresso.core
 
     implementation libs.service
+    implementation libs.converter.jackson
+    implementation libs.commons.validator
 }
