@@ -31,9 +31,7 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.theokanning.openai.audio.CreateTranscriptionRequest;
-import com.theokanning.openai.audio.CreateTranslationRequest;
 import com.theokanning.openai.audio.TranscriptionResult;
-import com.theokanning.openai.audio.TranslationResult;
 import com.theokanning.openai.client.OpenAiApi;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatCompletionResult;
@@ -270,19 +268,10 @@ public class DictateInputMethodService extends InputMethodService {
             apiThread = Executors.newSingleThreadExecutor();
             apiThread.execute(() -> {
                 try {
-                    String resultText;
-                    double duration;
-                    if (sp.getBoolean("net.devemperor.dictate.translate", false)) {
-                        CreateTranslationRequest request = CreateTranslationRequest.builder().model("whisper-1").responseFormat("verbose_json").build();
-                        TranslationResult result = service.createTranslation(request, audioFile);
-                        resultText = result.getText();
-                        duration = result.getDuration();
-                    } else {
-                        CreateTranscriptionRequest request = CreateTranscriptionRequest.builder().model("whisper-1").responseFormat("verbose_json").build();
-                        TranscriptionResult result = service.createTranscription(request, audioFile);
-                        resultText = result.getText();
-                        duration = result.getDuration();
-                    }
+                    CreateTranscriptionRequest request = CreateTranscriptionRequest.builder().model("whisper-1").responseFormat("verbose_json").build();
+                    TranscriptionResult result = service.createTranscription(request, audioFile);
+                    String resultText = result.getText();
+                    double duration = result.getDuration();
                     sp.edit().putFloat("net.devemperor.dictate.total_duration", sp.getFloat("net.devemperor.dictate.total_duration", 0) + (float) duration).apply();
 
                     if (sp.getBoolean("net.devemperor.dictate.translate", false)) {
