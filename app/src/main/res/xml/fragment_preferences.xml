@@ -21,6 +21,7 @@
             app:entries="@array/dictate_translate_languages"
             app:entryValues="@array/dictate_translate_languages"
             app:defaultValue="English"
+            app:summary="%s"
             app:dependency="net.devemperor.dictate.translate"/>
 
     </androidx.preference.PreferenceCategory>
@@ -28,6 +29,15 @@
     <androidx.preference.PreferenceCategory
         android:title="@string/dictate_settings_title"
         app:iconSpaceReserved="false">
+
+        <androidx.preference.ListPreference
+            android:key="net.devemperor.dictate.input_language"
+            android:title="@string/dictate_settings_input_language_title"
+            app:iconSpaceReserved="false"
+            app:entries="@array/dictate_input_languages"
+            app:entryValues="@array/dictate_input_languages_values"
+            app:defaultValue="detect"
+            app:summary="%s"/>
 
         <androidx.preference.SwitchPreference
             android:key="net.devemperor.dictate.instant_output"

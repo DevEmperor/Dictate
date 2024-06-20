@@ -8,7 +8,6 @@ import android.text.InputType;
 import android.text.TextUtils;
 
 import androidx.preference.EditTextPreference;
-import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -25,11 +24,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         getPreferenceManager().setSharedPreferencesName("net.devemperor.dictate");
         setPreferencesFromResource(R.xml.fragment_preferences, null);
         sp = getPreferenceManager().getSharedPreferences();
-
-        ListPreference translationLanguagePreference = findPreference("net.devemperor.dictate.translation_language");
-        if (translationLanguagePreference != null) {
-            translationLanguagePreference.setSummaryProvider((Preference.SummaryProvider<ListPreference>) ListPreference::getValue);
-        }
 
         Preference usage = findPreference("net.devemperor.dictate.usage");
         if (usage != null) {

@@ -268,7 +268,13 @@ public class DictateInputMethodService extends InputMethodService {
             apiThread = Executors.newSingleThreadExecutor();
             apiThread.execute(() -> {
                 try {
-                    CreateTranscriptionRequest request = CreateTranscriptionRequest.builder().model("whisper-1").responseFormat("verbose_json").build();
+                    CreateTranscriptionRequest request;
+                    if (sp.getString("net.devemperor.dictate.input_language", "detect").equals("detect")) {
+                        request = CreateTranscriptionRequest.builder().model("whisper-1").responseFormat("verbose_json").build();
+                    } else {
+                        request = CreateTranscriptionRequest.builder().model("whisper-1").responseFormat("verbose_json")
+                                .language(sp.getString("net.devemperor.dictate.input_language", "en")).build();
+                    }
                     TranscriptionResult result = service.createTranscription(request, audioFile);
                     String resultText = result.getText();
                     double duration = result.getDuration();
