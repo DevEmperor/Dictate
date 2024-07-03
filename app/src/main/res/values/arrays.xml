@@ -58,7 +58,7 @@
     </string-array>
     
     <string-array name="dictate_input_languages">
-        <item>Detect automatically</item>
+        <item>@string/dictate_detect_automatically</item>
         <item>Afrikaans</item>
         <item>Arabic</item>
         <item>Armenian</item>
