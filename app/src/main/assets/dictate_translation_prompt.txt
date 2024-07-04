@@ -1,0 +1,1 @@
+I want you to act as a %1$s translator. I will speak to you in any language and you will detect the language, translate it and answer in the %1$s version of my text. I want you to only reply the correction, the improvements and nothing else, do not write explanations and don't write quotation marks at start and end. My first sentence is \"%2$s\"

@@ -39,8 +39,10 @@ import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Locale;
@@ -64,6 +66,7 @@ public class DictateInputMethodService extends InputMethodService {
     private boolean isDeleting = false;
     private boolean isRecording = false;
     private boolean vibrationEnabled = true;
+    private String translationPrompt = "";
 
     private MediaRecorder recorder;
     private ExecutorService apiThread;
@@ -111,6 +114,14 @@ public class DictateInputMethodService extends InputMethodService {
         infoTv = dictateKeyboardView.findViewById(R.id.info_tv);
         infoYesButton = dictateKeyboardView.findViewById(R.id.info_yes_btn);
         infoNoButton = dictateKeyboardView.findViewById(R.id.info_no_btn);
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("dictate_translation_prompt.txt")));
+            translationPrompt = reader.readLine();
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();  //TODO firebase crashlytics
+        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) switchButton.setEnabled(false);
 
@@ -300,10 +311,8 @@ public class DictateInputMethodService extends InputMethodService {
 
                     if (sp.getBoolean("net.devemperor.dictate.translate", false)) {
                         mainHandler.post(() -> recordButton.setText(R.string.dictate_translating));
-                        ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(), String.format("I want you to act as a %1$s translator. " +
-                                "I will speak to you in any language and you will detect the language, translate it and answer in the %1$s version of my text. " +
-                                "I want you to only reply the correction, the improvements and nothing else, do not write explanations. " +
-                                "My first sentence is \"%2$s\"", sp.getString("net.devemperor.dictate.translation_language", "English"), resultText));
+                        ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(),
+                                String.format(translationPrompt, sp.getString("net.devemperor.dictate.translation_language", "English"), resultText));
                         ChatCompletionRequest translationRequest = ChatCompletionRequest.builder().model("gpt-4o").messages(Collections.singletonList(message)).build();
                         ChatCompletionResult translationResult = service.createChatCompletion(translationRequest);
                         resultText = translationResult.getChoices().get(0).getMessage().getContent();
