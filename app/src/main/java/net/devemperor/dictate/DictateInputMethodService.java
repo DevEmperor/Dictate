@@ -193,6 +193,22 @@ public class DictateInputMethodService extends InputMethodService {
         return dictateKeyboardView;
     }
 
+    @Override
+    public void onUnbindInput() {
+        super.onUnbindInput();
+
+        if (recorder != null) {
+            recorder.stop();
+            recorder.release();
+            recorder = null;
+
+            if (recordTimeRunnable != null) {
+                recordTimeHandler.removeCallbacks(recordTimeRunnable);
+                recordTimeRunnable = null;
+            }
+        }
+    }
+
     private void vibrate() {
         if (vibrationEnabled) if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK));
@@ -225,6 +241,8 @@ public class DictateInputMethodService extends InputMethodService {
 
         recordButton.setText(R.string.dictate_send);
         recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_send_24));
+        settingsButton.setEnabled(false);
+        switchButton.setEnabled(false);
         isRecording = true;
 
         startTime = System.currentTimeMillis();
@@ -332,6 +350,8 @@ public class DictateInputMethodService extends InputMethodService {
                 mainHandler.post(() -> {
                     recordButton.setText(R.string.dictate_record);
                     recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_mic_24));
+                    settingsButton.setEnabled(true);
+                    switchButton.setEnabled(true);
                     recordButton.setEnabled(true);
                 });
             });
