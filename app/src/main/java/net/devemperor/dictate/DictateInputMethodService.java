@@ -62,9 +62,10 @@ public class DictateInputMethodService extends InputMethodService {
     private Runnable deleteRunnable;
     private Runnable recordTimeRunnable;
 
-    private long startTime;
+    private long elapsedTime;
     private boolean isDeleting = false;
     private boolean isRecording = false;
+    private boolean isPaused = false;
     private boolean vibrationEnabled = true;
     private String translationPrompt = "";
 
@@ -77,9 +78,11 @@ public class DictateInputMethodService extends InputMethodService {
     private ConstraintLayout dictateKeyboardView;
     private MaterialButton settingsButton;
     private MaterialButton recordButton;
+    private MaterialButton pauseButton;
     private MaterialButton backspaceButton;
     private MaterialButton switchButton;
     private MaterialButton spaceButton;
+    private MaterialButton stopButton;
     private MaterialButton enterButton;
 
     private ConstraintLayout infoCl;
@@ -105,9 +108,11 @@ public class DictateInputMethodService extends InputMethodService {
 
         settingsButton = dictateKeyboardView.findViewById(R.id.settings_btn);
         recordButton = dictateKeyboardView.findViewById(R.id.record_btn);
+        pauseButton = dictateKeyboardView.findViewById(R.id.pause_btn);
         backspaceButton = dictateKeyboardView.findViewById(R.id.backspace_btn);
         switchButton = dictateKeyboardView.findViewById(R.id.switch_btn);
         spaceButton = dictateKeyboardView.findViewById(R.id.space_btn);
+        stopButton = dictateKeyboardView.findViewById(R.id.stop_btn);
         enterButton = dictateKeyboardView.findViewById(R.id.enter_btn);
 
         infoCl = dictateKeyboardView.findViewById(R.id.info_cl);
@@ -122,6 +127,16 @@ public class DictateInputMethodService extends InputMethodService {
         } catch (IOException e) {
             e.printStackTrace();  //TODO firebase crashlytics
         }
+
+        recordTimeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                elapsedTime += 100;
+                recordButton.setText(getString(R.string.dictate_send,
+                        String.format(Locale.getDefault(), "%02d:%02d", (int) (elapsedTime / 60000), (int) (elapsedTime / 1000) % 60)));
+                recordTimeHandler.postDelayed(this, 100);
+            }
+        };
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) switchButton.setEnabled(false);
 
@@ -140,6 +155,23 @@ public class DictateInputMethodService extends InputMethodService {
                 startRecording();
             } else {
                 stopRecording();
+            }
+        });
+
+        pauseButton.setOnClickListener(v -> {
+            vibrate();
+            if (recorder != null) {
+                if (isPaused) {
+                    recorder.resume();
+                    recordTimeHandler.post(recordTimeRunnable);
+                    pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.baseline_pause_24));
+                    isPaused = false;
+                } else {
+                    recorder.pause();
+                    recordTimeHandler.removeCallbacks(recordTimeRunnable);
+                    pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_mic_24));
+                    isPaused = true;
+                }
             }
         });
 
@@ -188,6 +220,27 @@ public class DictateInputMethodService extends InputMethodService {
             }
         });
 
+        stopButton.setOnClickListener(v -> {
+            vibrate();
+            if (recorder != null) {
+                recorder.stop();
+                recorder.release();
+                recorder = null;
+
+                if (recordTimeRunnable != null) {
+                    recordTimeHandler.removeCallbacks(recordTimeRunnable);
+                }
+            }
+            isRecording = false;
+            recordButton.setText(R.string.dictate_record);
+            recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_mic_24));
+            settingsButton.setEnabled(true);
+            switchButton.setEnabled(true);
+            recordButton.setEnabled(true);
+            pauseButton.setVisibility(View.GONE);
+            stopButton.setVisibility(View.GONE);
+        });
+
         enterButton.setOnClickListener(v -> {
             vibrate();
 
@@ -215,7 +268,6 @@ public class DictateInputMethodService extends InputMethodService {
 
             if (recordTimeRunnable != null) {
                 recordTimeHandler.removeCallbacks(recordTimeRunnable);
-                recordTimeRunnable = null;
             }
         }
     }
@@ -254,18 +306,11 @@ public class DictateInputMethodService extends InputMethodService {
         recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_send_24));
         settingsButton.setEnabled(false);
         switchButton.setEnabled(false);
+        pauseButton.setVisibility(View.VISIBLE);
+        stopButton.setVisibility(View.VISIBLE);
         isRecording = true;
 
-        startTime = System.currentTimeMillis();
-        recordTimeRunnable = new Runnable() {
-            @Override
-            public void run() {
-                long elapsedTime = System.currentTimeMillis() - startTime;
-                recordButton.setText(getString(R.string.dictate_send,
-                        String.format(Locale.getDefault(), "%02d:%02d", (int) (elapsedTime / 60000), (int) (elapsedTime / 1000) % 60)));
-                recordTimeHandler.postDelayed(this, 1000);
-            }
-        };
+        elapsedTime = 0;
         recordTimeHandler.post(recordTimeRunnable);
     }
 
@@ -277,11 +322,12 @@ public class DictateInputMethodService extends InputMethodService {
 
             if (recordTimeRunnable != null) {
                 recordTimeHandler.removeCallbacks(recordTimeRunnable);
-                recordTimeRunnable = null;
             }
 
             recordButton.setText(R.string.dictate_sending);
             recordButton.setEnabled(false);
+            pauseButton.setVisibility(View.GONE);
+            stopButton.setVisibility(View.GONE);
             isRecording = false;
 
             String customApiHost = sp.getString("net.devemperor.dictate.custom_api_host", getString(R.string.dictate_custom_host_hint));

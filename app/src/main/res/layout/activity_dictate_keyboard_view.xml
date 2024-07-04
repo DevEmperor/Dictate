@@ -1,42 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dictate_keyboard_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/record_btn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_margin="16dp"
-        android:text="@string/dictate_record"
-        android:textSize="16sp"
-        app:icon="@drawable/ic_baseline_mic_24"
-        app:layout_constraintBottom_toTopOf="@+id/space_btn"
-        app:layout_constraintEnd_toStartOf="@+id/backspace_btn"
-        app:layout_constraintStart_toEndOf="@+id/switch_btn"
-        app:layout_constraintTop_toBottomOf="@+id/info_cl" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/settings_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
         android:foreground="@drawable/ic_baseline_settings_24"
         android:foregroundGravity="center"
+        android:minWidth="64dp"
         app:layout_constraintBottom_toTopOf="@+id/switch_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/info_cl" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/stop_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:foreground="@drawable/ic_baseline_stop_24"
+        android:foregroundGravity="center"
+        android:minWidth="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/switch_btn"
+        tools:visibility="visible" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/record_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/dictate_record"
+        android:textSize="16sp"
+        app:icon="@drawable/ic_baseline_mic_24"
+        app:layout_constraintBottom_toTopOf="@+id/space_btn"
+        app:layout_constraintEnd_toStartOf="@+id/backspace_btn"
+        app:layout_constraintStart_toEndOf="@+id/settings_btn"
+        app:layout_constraintTop_toBottomOf="@+id/info_cl" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/pause_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:foreground="@drawable/baseline_pause_24"
+        android:foregroundGravity="center"
+        android:minWidth="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/enter_btn"
+        tools:visibility="visible" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/backspace_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:layout_marginEnd="16dp"
         android:foreground="@drawable/ic_baseline_keyboard_backspace_24"
         android:foregroundGravity="center"
+        android:minWidth="64dp"
         app:layout_constraintBottom_toTopOf="@+id/enter_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/info_cl" />
@@ -49,19 +85,9 @@
         android:layout_marginBottom="16dp"
         android:foreground="@drawable/ic_baseline_keyboard_hide_24"
         android:foregroundGravity="center"
+        android:minWidth="64dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/enter_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:foreground="@drawable/ic_baseline_subdirectory_arrow_left_24"
-        android:foregroundGravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/space_btn"
@@ -71,29 +97,42 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/enter_btn"
-        app:layout_constraintStart_toEndOf="@+id/settings_btn" />
+        app:layout_constraintEnd_toStartOf="@+id/pause_btn"
+        app:layout_constraintStart_toEndOf="@+id/stop_btn" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/enter_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:foreground="@drawable/ic_baseline_subdirectory_arrow_left_24"
+        android:foregroundGravity="center"
+        android:minWidth="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/info_cl"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
 
         <TextView
             android:id="@+id/info_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:text="@string/dictate_internet_error_msg"
+            android:textColor="@color/dictate_red"
             android:textSize="16sp"
             android:textStyle="italic"
-            android:textColor="@color/dictate_red"
-            android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/info_yes_btn"
             app:layout_constraintHorizontal_bias="0.5"
@@ -103,31 +142,33 @@
         <Button
             android:id="@+id/info_yes_btn"
             style="@style/Widget.AppCompat.Button.Small"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:foreground="@drawable/ic_baseline_check_circle_outline_24"
             android:foregroundGravity="center"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/info_no_btn"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/info_tv"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <Button
             android:id="@+id/info_no_btn"
             style="@style/Widget.AppCompat.Button.Small"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:foreground="@drawable/ic_baseline_not_interested_24"
             android:foregroundGravity="center"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/info_yes_btn"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
