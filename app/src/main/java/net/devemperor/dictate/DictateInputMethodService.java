@@ -256,6 +256,10 @@ public class DictateInputMethodService extends InputMethodService {
             }
         });
 
+        if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
+            showInfo("update");
+        }
+
         if (sp.getBoolean("net.devemperor.dictate.instant_recording", false)) {
             recordButton.performClick();
         }
@@ -418,7 +422,21 @@ public class DictateInputMethodService extends InputMethodService {
     private void showInfo(String type) {
         infoCl.setVisibility(View.VISIBLE);
         infoNoButton.setVisibility(View.VISIBLE);
+        infoTv.setTextColor(getResources().getColor(R.color.dictate_red, getTheme()));
         switch (type) {
+            case "update":
+                infoTv.setTextColor(getResources().getColor(R.color.dictate_green, getTheme()));
+                infoTv.setText(R.string.dictate_update_installed_msg);
+                infoYesButton.setVisibility(View.VISIBLE);
+                infoYesButton.setOnClickListener(v -> {
+                    openSettingsActivity();
+                    infoCl.setVisibility(View.GONE);
+                });
+                infoNoButton.setOnClickListener(v -> {
+                    sp.edit().putInt("net.devemperor.dictate.last_version_code", BuildConfig.VERSION_CODE).apply();
+                    infoCl.setVisibility(View.GONE);
+                });
+                break;
             case "timeout":
                 infoTv.setText(R.string.dictate_timeout_msg);
                 infoYesButton.setVisibility(View.GONE);

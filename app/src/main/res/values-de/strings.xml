@@ -53,4 +53,7 @@
     <string name="dictate_settings_usage">Gesamte Aufnahme Zeit: %1$d min, %2$d s.\nGesamte Übersetzungs Tokens: %3$d.\nGeschätzter Verbrauch: %4$.2f $</string>
     <string name="dictate_onboarding_welcome">Willkommen bei\nDictate\n→</string>
     <string name="dictate_detect_automatically">Automatisch erkennen</string>
+    <string name="dictate_update_installed_msg">Dictate wurde aktualisiert. Änderungen ansehen?</string>
+    <string name="dictate_whats_new">Was ist neu?</string>
+    <string name="dictate_changelog_5">v1.4\n- Du kannst jetzt die Aufnahme deiner Stimme pausieren und fortsetzen. ⏯️\n- Ein langer Klick auf den Tastatur-Umschaltknopf öffnet die Eingabemethoden-Auswahl. ⌨️\n- Die Übersetzungsfunktion funktioniert jetzt zuverlässiger. 💪\n- Deutsche App-Übersetzung hinzugefügt 🇩🇪\n\n</string>
 </resources>

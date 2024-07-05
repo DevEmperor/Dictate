@@ -1,6 +1,7 @@
 package net.devemperor.dictate;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -8,6 +9,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class DictateSettingsActivity extends AppCompatActivity {
 
@@ -21,12 +24,21 @@ public class DictateSettingsActivity extends AppCompatActivity {
                 .replace(R.id.dictate_settings, new PreferencesFragment())
                 .commit();
 
-        if (!getSharedPreferences("net.devemperor.dictate", MODE_PRIVATE).getBoolean("net.devemperor.dictate.onboarding_complete", false)) {
+        SharedPreferences sp = getSharedPreferences("net.devemperor.dictate", MODE_PRIVATE);
+
+        if (!sp.getBoolean("net.devemperor.dictate.onboarding_complete", false)) {
             startActivity(new Intent(this, OnboardingActivity.class));
             finish();
-        }
-
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        } else if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
+            String whatsNewMessage = "";
+            int lastVersionCode = sp.getInt("net.devemperor.dictate.last_version_code", 0);
+            if (lastVersionCode < 5) whatsNewMessage += getString(R.string.dictate_changelog_5);
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.dictate_whats_new)
+                    .setMessage(whatsNewMessage)
+                    .setPositiveButton(R.string.dictate_okay, (di, i) -> sp.edit().putInt("net.devemperor.dictate.last_version_code", BuildConfig.VERSION_CODE).apply())
+                    .show();
+        } else if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{ android.Manifest.permission.RECORD_AUDIO }, 1337);
         }
     }
