@@ -141,6 +141,7 @@ public class DictateInputMethodService extends InputMethodService {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) switchButton.setEnabled(false);
 
         settingsButton.setOnClickListener(v -> {
+            if (isRecording) stopButton.performClick();
             infoCl.setVisibility(View.GONE);
             openSettingsActivity();
         });
@@ -234,8 +235,6 @@ public class DictateInputMethodService extends InputMethodService {
             isRecording = false;
             recordButton.setText(R.string.dictate_record);
             recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_mic_24));
-            settingsButton.setEnabled(true);
-            switchButton.setEnabled(true);
             recordButton.setEnabled(true);
             pauseButton.setVisibility(View.GONE);
             stopButton.setVisibility(View.GONE);
@@ -304,8 +303,6 @@ public class DictateInputMethodService extends InputMethodService {
 
         recordButton.setText(R.string.dictate_send);
         recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_send_24));
-        settingsButton.setEnabled(false);
-        switchButton.setEnabled(false);
         pauseButton.setVisibility(View.VISIBLE);
         stopButton.setVisibility(View.VISIBLE);
         isRecording = true;
@@ -405,8 +402,6 @@ public class DictateInputMethodService extends InputMethodService {
                 mainHandler.post(() -> {
                     recordButton.setText(R.string.dictate_record);
                     recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_mic_24));
-                    settingsButton.setEnabled(true);
-                    switchButton.setEnabled(true);
                     recordButton.setEnabled(true);
                 });
             });
