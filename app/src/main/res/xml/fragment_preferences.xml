@@ -20,7 +20,7 @@
             app:iconSpaceReserved="false"
             app:entries="@array/dictate_translate_languages"
             app:entryValues="@array/dictate_translate_languages"
-            app:defaultValue="English"
+            app:defaultValue="@string/dictate_lang_english"
             app:summary="%s"
             app:dependency="net.devemperor.dictate.translate"/>
 
@@ -36,7 +36,7 @@
             app:iconSpaceReserved="false"
             app:entries="@array/dictate_input_languages"
             app:entryValues="@array/dictate_input_languages_values"
-            app:defaultValue="detect"
+            app:defaultValue="@string/dictate_detect_automatically"
             app:summary="%s"/>
 
         <androidx.preference.SwitchPreference
