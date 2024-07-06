@@ -10,6 +10,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.inputmethodservice.InputMethodService;
+import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
@@ -75,6 +78,8 @@ public class DictateInputMethodService extends InputMethodService {
     private File audioFile;
     private Vibrator vibrator;
     private SharedPreferences sp;
+    private AudioManager am;
+    private AudioFocusRequest audioFocusRequest;
 
     private ConstraintLayout dictateKeyboardView;
     private MaterialButton settingsButton;
@@ -139,6 +144,20 @@ public class DictateInputMethodService extends InputMethodService {
             }
         };
 
+        am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+                .setAudioAttributes(new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                        .build())
+                .setAcceptsDelayedFocusGain(true)
+                .setOnAudioFocusChangeListener(focusChange -> {
+                    if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                        if (isRecording) pauseButton.performClick();
+                    }
+                })
+                .build();
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) switchButton.setEnabled(false);
 
         settingsButton.setOnClickListener(v -> {
@@ -164,11 +183,13 @@ public class DictateInputMethodService extends InputMethodService {
             vibrate();
             if (recorder != null) {
                 if (isPaused) {
+                    am.requestAudioFocus(audioFocusRequest);
                     recorder.resume();
                     recordTimeHandler.post(recordTimeRunnable);
                     pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.baseline_pause_24));
                     isPaused = false;
                 } else {
+                    am.abandonAudioFocusRequest(audioFocusRequest);
                     recorder.pause();
                     recordTimeHandler.removeCallbacks(recordTimeRunnable);
                     pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_mic_24));
@@ -239,6 +260,8 @@ public class DictateInputMethodService extends InputMethodService {
                     recordTimeHandler.removeCallbacks(recordTimeRunnable);
                 }
             }
+            am.abandonAudioFocusRequest(audioFocusRequest);
+
             isRecording = false;
             recordButton.setText(R.string.dictate_record);
             recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_mic_24));
@@ -305,6 +328,8 @@ public class DictateInputMethodService extends InputMethodService {
         recorder.setAudioSamplingRate(44100);
         recorder.setOutputFile(audioFile);
 
+        am.requestAudioFocus(audioFocusRequest);
+
         try {
             recorder.prepare();
             recorder.start();
@@ -337,6 +362,8 @@ public class DictateInputMethodService extends InputMethodService {
             pauseButton.setVisibility(View.GONE);
             stopButton.setVisibility(View.GONE);
             isRecording = false;
+
+            am.abandonAudioFocusRequest(audioFocusRequest);
 
             String customApiHost = sp.getString("net.devemperor.dictate.custom_api_host", getString(R.string.dictate_custom_host_hint));
             String apiKey = sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY");
