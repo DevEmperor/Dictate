@@ -186,7 +186,7 @@ public class DictateInputMethodService extends InputMethodService {
                     am.requestAudioFocus(audioFocusRequest);
                     recorder.resume();
                     recordTimeHandler.post(recordTimeRunnable);
-                    pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.baseline_pause_24));
+                    pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_pause_24));
                     isPaused = false;
                 } else {
                     am.abandonAudioFocusRequest(audioFocusRequest);
