@@ -114,6 +114,11 @@
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.Preference
+            android:key="net.devemperor.dictate.donate"
+            android:title="@string/dictate_settings_donate"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.Preference
             android:key="net.devemperor.dictate.about"
             android:title="@string/dictate_about"
             android:enabled="false"
