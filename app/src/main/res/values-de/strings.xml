@@ -71,7 +71,7 @@
     <string name="dictate_okay">Okay</string>
     <string name="dictate_cancel">Abbrechen</string>
     <string name="dictate_no_api_key">Kein API-Schlüssel festgelegt</string>
-    <string name="dictate_settings_api_key_title">OpenAI API-Schlüssel festlegen / ändern 🔑</string>
+    <string name="dictate_settings_api_key_title">OpenAI API-Schlüssel ändern 🔑</string>
     <string name="dictate_settings_vibration_title">Haptisches Feedback 📳</string>
     <string name="dictate_settings_instant_output_title">Sofortige Ausgabe ⏱️</string>
     <string name="dictate_settings_instant_output_summary">Tippanimation deaktivieren, wenn die Erkennung fertig ist</string>
@@ -115,4 +115,6 @@
     <string name="dictate_whats_new">Was ist neu?</string>
     <string name="dictate_changelog_5">v1.4\n- Du kannst jetzt die Aufnahme deiner Stimme pausieren und fortsetzen. ⏯️\n- Während der Aufnahme werden andere Medien nun pausiert und anschließend fortgesetzt. 💡\n- Ein langer Klick auf den Tastatur-Umschaltknopf öffnet die Eingabemethoden-Auswahl. ⌨️\n- Die Übersetzungsfunktion funktioniert jetzt zuverlässiger. 💪\n- Deutsche App-Übersetzung hinzugefügt 🇩🇪\n\n</string>
     <string name="dictate_settings_donate">Spenden 🤝</string>
+    <string name="dictate_no_prompt">Keine Anweisung festgelegt</string>
+    <string name="dictate_settings_prompt_title">Stil Anweisung ändern 💬</string>
 </resources>

@@ -73,6 +73,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
+        EditTextPreference promptPreference = findPreference("net.devemperor.dictate.prompt");
+        if (promptPreference != null) {
+            promptPreference.setSummaryProvider((Preference.SummaryProvider<EditTextPreference>) preference -> {
+                String text = preference.getText();
+                if (TextUtils.isEmpty(text)) return getString(R.string.dictate_no_prompt);
+                return text;
+            });
+        }
+
         EditTextPreference customHostPreference = findPreference("net.devemperor.dictate.custom_api_host");
         if (customHostPreference != null) {
             customHostPreference.setSummaryProvider((Preference.SummaryProvider<EditTextPreference>) preference -> {

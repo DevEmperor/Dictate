@@ -369,6 +369,8 @@ public class DictateInputMethodService extends InputMethodService {
 
             String customApiHost = sp.getString("net.devemperor.dictate.custom_api_host", getString(R.string.dictate_custom_host_hint));
             String apiKey = sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY");
+            String language = sp.getString("net.devemperor.dictate.input_language", "detect");
+            String prompt = sp.getString("net.devemperor.dictate.prompt", "NO_PROMPT");
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(sp.getBoolean("net.devemperor.dictate.custom_api_host_enabled", false) ? customApiHost : "https://api.openai.com/")
                     .client(defaultClient(apiKey.replaceAll("[^ -~]", ""), Duration.ofSeconds(120)).newBuilder().build())
@@ -380,13 +382,12 @@ public class DictateInputMethodService extends InputMethodService {
             apiThread = Executors.newSingleThreadExecutor();
             apiThread.execute(() -> {
                 try {
-                    CreateTranscriptionRequest request;
-                    if (sp.getString("net.devemperor.dictate.input_language", "detect").equals("detect")) {
-                        request = CreateTranscriptionRequest.builder().model("whisper-1").responseFormat("verbose_json").build();
-                    } else {
-                        request = CreateTranscriptionRequest.builder().model("whisper-1").responseFormat("verbose_json")
-                                .language(sp.getString("net.devemperor.dictate.input_language", "en")).build();
-                    }
+                    CreateTranscriptionRequest request = CreateTranscriptionRequest.builder()
+                            .model("whisper-1")
+                            .responseFormat("verbose_json")
+                            .language(!language.equals("detect") ? language : null)
+                            .prompt(!prompt.equals("NO_PROMPT") ? prompt : null)
+                            .build();
                     TranscriptionResult result = service.createTranscription(request, audioFile);
                     String resultText = result.getText();
                     double duration = result.getDuration();

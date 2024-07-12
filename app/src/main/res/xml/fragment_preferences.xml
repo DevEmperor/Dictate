@@ -86,6 +86,15 @@
             app:dialogTitle="@string/dictate_settings_api_key_title"
             app:iconSpaceReserved="false"/>
 
+        <androidx.preference.EditTextPreference
+            android:key="net.devemperor.dictate.prompt"
+            android:title="@string/dictate_settings_prompt_title"
+            android:summary="@string/dictate_no_prompt"
+            app:positiveButtonText="@string/dictate_okay"
+            app:negativeButtonText="@string/dictate_cancel"
+            app:dialogTitle="@string/dictate_settings_prompt_title"
+            app:iconSpaceReserved="false"/>
+
         <androidx.preference.SwitchPreference
             android:key="net.devemperor.dictate.custom_api_host_enabled"
             android:title="@string/dictate_settings_custom_api_host_enabled_title"
