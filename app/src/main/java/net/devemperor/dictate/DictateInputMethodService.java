@@ -88,7 +88,7 @@ public class DictateInputMethodService extends InputMethodService {
     private MaterialButton backspaceButton;
     private MaterialButton switchButton;
     private MaterialButton spaceButton;
-    private MaterialButton stopButton;
+    private MaterialButton trashButton;
     private MaterialButton enterButton;
 
     private ConstraintLayout infoCl;
@@ -118,7 +118,7 @@ public class DictateInputMethodService extends InputMethodService {
         backspaceButton = dictateKeyboardView.findViewById(R.id.backspace_btn);
         switchButton = dictateKeyboardView.findViewById(R.id.switch_btn);
         spaceButton = dictateKeyboardView.findViewById(R.id.space_btn);
-        stopButton = dictateKeyboardView.findViewById(R.id.stop_btn);
+        trashButton = dictateKeyboardView.findViewById(R.id.trash_btn);
         enterButton = dictateKeyboardView.findViewById(R.id.enter_btn);
 
         infoCl = dictateKeyboardView.findViewById(R.id.info_cl);
@@ -161,7 +161,7 @@ public class DictateInputMethodService extends InputMethodService {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) switchButton.setEnabled(false);
 
         settingsButton.setOnClickListener(v -> {
-            if (isRecording) stopButton.performClick();
+            if (isRecording) trashButton.performClick();
             infoCl.setVisibility(View.GONE);
             openSettingsActivity();
         });
@@ -249,7 +249,7 @@ public class DictateInputMethodService extends InputMethodService {
             }
         });
 
-        stopButton.setOnClickListener(v -> {
+        trashButton.setOnClickListener(v -> {
             vibrate();
             if (recorder != null) {
                 recorder.stop();
@@ -268,7 +268,7 @@ public class DictateInputMethodService extends InputMethodService {
             recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_mic_24));
             recordButton.setEnabled(true);
             pauseButton.setVisibility(View.GONE);
-            stopButton.setVisibility(View.GONE);
+            trashButton.setVisibility(View.GONE);
         });
 
         enterButton.setOnClickListener(v -> {
@@ -341,7 +341,7 @@ public class DictateInputMethodService extends InputMethodService {
         recordButton.setText(R.string.dictate_send);
         recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_send_24));
         pauseButton.setVisibility(View.VISIBLE);
-        stopButton.setVisibility(View.VISIBLE);
+        trashButton.setVisibility(View.VISIBLE);
         isRecording = true;
 
         elapsedTime = 0;
@@ -361,7 +361,7 @@ public class DictateInputMethodService extends InputMethodService {
             recordButton.setText(R.string.dictate_sending);
             recordButton.setEnabled(false);
             pauseButton.setVisibility(View.GONE);
-            stopButton.setVisibility(View.GONE);
+            trashButton.setVisibility(View.GONE);
             isRecording = false;
             isPaused = false;
 

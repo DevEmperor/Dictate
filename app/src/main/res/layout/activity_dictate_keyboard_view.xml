@@ -20,7 +20,7 @@
         app:layout_constraintTop_toBottomOf="@+id/info_cl" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/stop_btn"
+        android:id="@+id/trash_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
@@ -98,7 +98,7 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pause_btn"
-        app:layout_constraintStart_toEndOf="@+id/stop_btn" />
+        app:layout_constraintStart_toEndOf="@+id/trash_btn" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/enter_btn"
