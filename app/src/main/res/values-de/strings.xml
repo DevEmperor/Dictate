@@ -114,5 +114,5 @@
     <string name="dictate_update_installed_msg">Dictate wurde aktualisiert. Änderungen ansehen?</string>
     <string name="dictate_whats_new">Was ist neu?</string>
     <string name="dictate_changelog_5">v1.4\n- Du kannst jetzt die Aufnahme deiner Stimme pausieren und fortsetzen. ⏯️\n- Während der Aufnahme werden andere Medien nun pausiert und anschließend fortgesetzt. 💡\n- Ein langer Klick auf den Tastatur-Umschaltknopf öffnet die Eingabemethoden-Auswahl. ⌨️\n- Die Übersetzungsfunktion funktioniert jetzt zuverlässiger. 💪\n- Deutsche App-Übersetzung hinzugefügt 🇩🇪\n\n</string>
-    <string name="dictate_settings_donate">Spenden (mit PayPal) 🤝</string>
+    <string name="dictate_settings_donate">Spenden 🤝</string>
 </resources>

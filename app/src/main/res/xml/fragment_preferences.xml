@@ -111,11 +111,13 @@
         <androidx.preference.Preference
             android:key="net.devemperor.dictate.feedback"
             android:title="@string/dictate_settings_feedback"
+            android:summary="@string/dictate_settings_feedback_address"
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.Preference
             android:key="net.devemperor.dictate.donate"
             android:title="@string/dictate_settings_donate"
+            android:summary="@string/dictate_settings_donate_address"
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.Preference

@@ -119,5 +119,7 @@
     <string name="dictate_update_installed_msg">Dictate has been updated. View changes?</string>
     <string name="dictate_whats_new">What\'s new</string>
     <string name="dictate_changelog_5">v1.4\n- You can now pause and resume while recording your voice. ⏯️\n- During recording, other media are now paused and then continued. 💡\n- Long-click on the keyboard-switch-button opens input method picker ⌨️\n- The translation function works more reliable now. 💪\n- Added German app translation 🇩🇪\n\n</string>
-    <string name="dictate_settings_donate">Donate (via PayPal) 🤝</string>
+    <string name="dictate_settings_donate">Donate 🤝</string>
+    <string name="dictate_settings_feedback_address" translatable="false">contact@devemperor.net</string>
+    <string name="dictate_settings_donate_address" translatable="false">paypal.me/DevEmperor</string>
 </resources>
