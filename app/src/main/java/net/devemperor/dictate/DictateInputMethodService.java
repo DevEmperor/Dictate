@@ -263,6 +263,7 @@ public class DictateInputMethodService extends InputMethodService {
             am.abandonAudioFocusRequest(audioFocusRequest);
 
             isRecording = false;
+            isPaused = false;
             recordButton.setText(R.string.dictate_record);
             recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_mic_24));
             recordButton.setEnabled(true);
@@ -362,6 +363,7 @@ public class DictateInputMethodService extends InputMethodService {
             pauseButton.setVisibility(View.GONE);
             stopButton.setVisibility(View.GONE);
             isRecording = false;
+            isPaused = false;
 
             am.abandonAudioFocusRequest(audioFocusRequest);
 
