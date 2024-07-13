@@ -36,13 +36,14 @@
         android:id="@+id/resend_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:foreground="@drawable/ic_outline_change_circle_24"
         android:foregroundGravity="center"
         android:minWidth="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/space_btn"
         app:layout_constraintEnd_toStartOf="@+id/backspace_btn"
+        app:layout_constraintStart_toEndOf="@+id/record_btn"
         app:layout_constraintTop_toBottomOf="@+id/info_cl"
         tools:visibility="visible" />
 
@@ -50,12 +51,14 @@
         android:id="@+id/backspace_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         android:foreground="@drawable/ic_baseline_keyboard_backspace_24"
         android:foregroundGravity="center"
         android:minWidth="64dp"
         app:layout_constraintBottom_toTopOf="@+id/enter_btn"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/resend_btn"
         app:layout_constraintTop_toBottomOf="@+id/info_cl" />
 
     <com.google.android.material.button.MaterialButton
