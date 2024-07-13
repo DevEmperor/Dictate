@@ -72,6 +72,8 @@ public class DictateInputMethodService extends InputMethodService {
 
     private long elapsedTime;
     private boolean isDeleting = false;
+    private long startDeleteTime = 0;
+    private int currentDeleteDelay = 50;
     private boolean isRecording = false;
     private boolean isPaused = false;
     private boolean vibrationEnabled = true;
@@ -209,12 +211,25 @@ public class DictateInputMethodService extends InputMethodService {
 
         backspaceButton.setOnLongClickListener(v -> {
             isDeleting = true;
+            startDeleteTime = System.currentTimeMillis();
+            currentDeleteDelay = 50;
             deleteRunnable = new Runnable() {
                 @Override
                 public void run() {
                     if (isDeleting) {
                         deleteOneCharacter();
-                        deleteHandler.postDelayed(this, 50);
+                        long diff = System.currentTimeMillis() - startDeleteTime;
+                        if (diff > 2000 && currentDeleteDelay == 50) {
+                            vibrate();
+                            currentDeleteDelay = 25;
+                        } else if (diff > 4000 && currentDeleteDelay == 25) {
+                            vibrate();
+                            currentDeleteDelay = 10;
+                        } else if (diff > 6000 && currentDeleteDelay == 10) {
+                            vibrate();
+                            currentDeleteDelay = 5;
+                        }
+                        deleteHandler.postDelayed(this, currentDeleteDelay);
                     }
                 }
             };
