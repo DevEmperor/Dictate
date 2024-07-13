@@ -11,7 +11,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:layout_marginStart="16dp"
         android:foreground="@drawable/ic_baseline_settings_24"
         android:foregroundGravity="center"
         android:minWidth="64dp"
@@ -20,55 +19,37 @@
         app:layout_constraintTop_toBottomOf="@+id/info_cl" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/trash_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
-        android:foreground="@drawable/ic_baseline_delete_24"
-        android:foregroundGravity="center"
-        android:minWidth="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/switch_btn"
-        tools:visibility="visible" />
-
-    <com.google.android.material.button.MaterialButton
         android:id="@+id/record_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/dictate_record"
         android:textSize="16sp"
         app:icon="@drawable/ic_baseline_mic_24"
         app:layout_constraintBottom_toTopOf="@+id/space_btn"
-        app:layout_constraintEnd_toStartOf="@+id/backspace_btn"
+        app:layout_constraintEnd_toStartOf="@+id/resend_btn"
         app:layout_constraintStart_toEndOf="@+id/settings_btn"
         app:layout_constraintTop_toBottomOf="@+id/info_cl" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/pause_btn"
+        android:id="@+id/resend_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:foreground="@drawable/ic_baseline_pause_24"
+        android:foreground="@drawable/ic_outline_change_circle_24"
         android:foregroundGravity="center"
         android:minWidth="0dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/enter_btn"
+        app:layout_constraintBottom_toTopOf="@+id/space_btn"
+        app:layout_constraintEnd_toStartOf="@+id/backspace_btn"
+        app:layout_constraintTop_toBottomOf="@+id/info_cl"
         tools:visibility="visible" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/backspace_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:layout_marginEnd="16dp"
         android:foreground="@drawable/ic_baseline_keyboard_backspace_24"
         android:foregroundGravity="center"
@@ -90,6 +71,20 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/trash_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:foreground="@drawable/ic_baseline_delete_24"
+        android:foregroundGravity="center"
+        android:minWidth="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/switch_btn"
+        tools:visibility="visible" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/space_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -99,6 +94,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pause_btn"
         app:layout_constraintStart_toEndOf="@+id/trash_btn" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/pause_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:foreground="@drawable/ic_baseline_pause_24"
+        android:foregroundGravity="center"
+        android:minWidth="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/enter_btn"
+        tools:visibility="visible" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/enter_btn"
