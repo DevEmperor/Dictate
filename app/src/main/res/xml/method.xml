@@ -2,7 +2,7 @@
 <input-method
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:settingsActivity="net.devemperor.dictate.DictateSettingsActivity"
+    android:settingsActivity="net.devemperor.dictate.settings.DictateSettingsActivity"
     android:supportsSwitchingToNextInputMethod="true"
     tools:ignore="UnusedAttribute">
     <subtype
