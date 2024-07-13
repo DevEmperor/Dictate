@@ -113,8 +113,10 @@
     <string name="dictate_detect_automatically">Automatisch erkennen</string>
     <string name="dictate_update_installed_msg">Dictate wurde aktualisiert. Änderungen ansehen?</string>
     <string name="dictate_whats_new">Was ist neu?</string>
-    <string name="dictate_changelog_5">v1.4\n- Du kannst jetzt die Aufnahme deiner Stimme pausieren und fortsetzen. ⏯️\n- Während der Aufnahme werden andere Medien nun pausiert und anschließend fortgesetzt. 💡\n- Ein langer Klick auf den Tastatur-Umschaltknopf öffnet die Eingabemethoden-Auswahl. ⌨️\n- Die Übersetzungsfunktion funktioniert jetzt zuverlässiger. 💪\n- Deutsche App-Übersetzung hinzugefügt 🇩🇪\n\n</string>
+    <string name="dictate_changelog_5">v1.4\n\n- Du kannst jetzt die Aufnahme deiner Stimme pausieren und fortsetzen. ⏯️\n\n- Während der Aufnahme werden andere Medien nun pausiert und anschließend fortgesetzt. 💡\n\n- Ein langer Klick auf den Tastatur-Umschaltknopf öffnet die Eingabemethoden-Auswahl. ⌨️\n\n- Die Übersetzungsfunktion funktioniert jetzt zuverlässiger. 💪\n\n- Deutsche App-Übersetzung hinzugefügt 🇩🇪\n\n\n</string>
     <string name="dictate_settings_donate">Spenden 🤝</string>
     <string name="dictate_no_prompt">Keine Anweisung festgelegt</string>
     <string name="dictate_settings_prompt_title">Stil Anweisung ändern 💬</string>
+    <string name="dictate_changelog_donate">Wenn dir Dictate gefällt, würde ich mich sehr über eine kleine Spende zur Unterstützung dieses Projekts freuen. 🥰\n\n</string>
+    <string name="dictate_changelog_6">v1.5\n\n- In den Einstellungen kannst du jetzt eine System-Anweisung für Whisper hinterlegen, um die Spracherkennung in eine bestimmte Richtung zu lenken (bspw. spezielle Wörter vorab mit angeben oder die Punktierung und Füllwörter beeinflussen). ✏️\n\n- Nach einer fehlgeschlagenen Transkription kannst du nun die letzte Aufnahme erneut abschicken. 🔄\n\n- Längeres gedrückt halten auf dem Lösch-Button verschnellert jetzt das Löschen. 🚀\n\n- In den Einstellungen wurde ein Spenden-Button hinzugefügt. 🤝\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\n\n</string>
 </resources>

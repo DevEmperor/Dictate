@@ -34,8 +34,9 @@ public class DictateSettingsActivity extends AppCompatActivity {
             startActivity(new Intent(this, OnboardingActivity.class));
             finish();
         } else if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
-            String whatsNewMessage = "";
+            String whatsNewMessage = getString(R.string.dictate_changelog_donate);
             int lastVersionCode = sp.getInt("net.devemperor.dictate.last_version_code", 0);
+            if (lastVersionCode < 6) whatsNewMessage += getString(R.string.dictate_changelog_6);
             if (lastVersionCode < 5) whatsNewMessage += getString(R.string.dictate_changelog_5);
             new MaterialAlertDialogBuilder(this)
                     .setTitle(R.string.dictate_whats_new)

@@ -118,10 +118,12 @@
     <string name="dictate_detect_automatically">Detect automatically</string>
     <string name="dictate_update_installed_msg">Dictate has been updated. View changes?</string>
     <string name="dictate_whats_new">What\'s new</string>
-    <string name="dictate_changelog_5">v1.4\n- You can now pause and resume while recording your voice. ⏯️\n- During recording, other media are now paused and then continued. 💡\n- Long-click on the keyboard-switch-button opens input method picker ⌨️\n- The translation function works more reliable now. 💪\n- Added German app translation 🇩🇪\n\n</string>
+    <string name="dictate_changelog_5">v1.4\n\n- You can now pause and resume while recording your voice. ⏯️\n\n- During recording, other media are now paused and then continued. 💡\n\n- Long-click on the keyboard-switch-button opens input method picker ⌨️\n\n- The translation function works more reliable now. 💪\n\n- Added German app translation 🇩🇪\n\n\n</string>
     <string name="dictate_settings_donate">Donate 🤝</string>
     <string name="dictate_settings_feedback_address" translatable="false">contact@devemperor.net</string>
     <string name="dictate_settings_donate_address" translatable="false">paypal.me/DevEmperor</string>
     <string name="dictate_no_prompt">No prompt set</string>
     <string name="dictate_settings_prompt_title">Change style prompt 💬</string>
+    <string name="dictate_changelog_donate">If you like Dictate, I would be very happy about a small donation to support this project. 🥰\n\n</string>
+    <string name="dictate_changelog_6">v1.5\n\n- In the settings, you can now store a system prompt for Whisper to guide speech recognition in a certain direction (e.g. specify special words in advance or influence the punctuation and filler words). ✏️\n\n- After a failed transcription, you can now resend the last recording. 🔄\n\n- Holding down the delete button for longer now speeds up the deletion process. 🚀\n\n- A donate button has been added in the settings. 🤝\n\n- Some design changes and bug fixes have been made. ✨\n\n\n</string>
 </resources>
