@@ -1,4 +1,4 @@
-package net.devemperor.dictate;
+package net.devemperor.dictate.settings;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import net.devemperor.dictate.BuildConfig;
+import net.devemperor.dictate.onboarding.OnboardingActivity;
+import net.devemperor.dictate.R;
 
 public class DictateSettingsActivity extends AppCompatActivity {
 

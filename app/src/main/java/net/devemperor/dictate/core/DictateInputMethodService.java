@@ -1,4 +1,4 @@
-package net.devemperor.dictate;
+package net.devemperor.dictate.core;
 
 import static com.theokanning.openai.service.OpenAiService.defaultClient;
 import static com.theokanning.openai.service.OpenAiService.defaultObjectMapper;
@@ -42,6 +42,10 @@ import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
+
+import net.devemperor.dictate.BuildConfig;
+import net.devemperor.dictate.settings.DictateSettingsActivity;
+import net.devemperor.dictate.R;
 
 import java.io.BufferedReader;
 import java.io.File;

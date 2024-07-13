@@ -1,4 +1,4 @@
-package net.devemperor.dictate;
+package net.devemperor.dictate.settings;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +12,9 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import net.devemperor.dictate.BuildConfig;
+import net.devemperor.dictate.R;
 
 import org.apache.commons.validator.routines.UrlValidator;
 

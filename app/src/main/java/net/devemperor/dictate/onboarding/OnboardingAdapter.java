@@ -1,4 +1,4 @@
-package net.devemperor.dictate;
+package net.devemperor.dictate.onboarding;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,6 +21,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import net.devemperor.dictate.R;
+import net.devemperor.dictate.settings.DictateSettingsActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
