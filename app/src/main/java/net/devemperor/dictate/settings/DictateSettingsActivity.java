@@ -1,9 +1,12 @@
 package net.devemperor.dictate.settings;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.inputmethod.InputMethodInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,6 +18,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import net.devemperor.dictate.BuildConfig;
 import net.devemperor.dictate.onboarding.OnboardingActivity;
 import net.devemperor.dictate.R;
+
+import java.util.List;
 
 public class DictateSettingsActivity extends AppCompatActivity {
 
@@ -45,6 +50,23 @@ public class DictateSettingsActivity extends AppCompatActivity {
                     .show();
         } else if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{ android.Manifest.permission.RECORD_AUDIO }, 1337);
+        } else {
+            List<InputMethodInfo> inputMethodsList = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).getEnabledInputMethodList();
+            boolean keyboardEnabled = false;
+            for (InputMethodInfo inputMethod : inputMethodsList) {
+                if (inputMethod.getPackageName().equals(getPackageName())) {
+                    keyboardEnabled = true;
+                    break;
+                }
+            }
+            if (!keyboardEnabled) {
+                new MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.dictate_enable_keyboard_title)
+                        .setMessage(R.string.dictate_enable_keyboard_message)
+                        .setPositiveButton(R.string.dictate_yes, (dialog, which) -> startActivity(new Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS)))
+                        .setNegativeButton(R.string.dictate_no, null)
+                        .show();
+            }
         }
     }
 

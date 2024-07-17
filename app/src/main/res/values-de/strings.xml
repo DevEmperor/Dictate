@@ -134,4 +134,6 @@
     <string name="dictate_edit_prompt">Anweisung bearbeiten</string>
     <string name="dictate_prompts">Anweisungen</string>
     <string name="dictate_rate_app_msg">Gefällt dir Dictate? Ich freue mich über eine Bewertung im PlayStore. 😇</string>
+    <string name="dictate_enable_keyboard_title">Dictate Tastatur aktivieren?</string>
+    <string name="dictate_enable_keyboard_message">Die Dictate Tastatur ist in den Systemeinstellungen nicht mehr aktiviert. Möchtest du die Systemeinstellungen für die Tastatur öffnen, um dies zu korrigieren?</string>
 </resources>
