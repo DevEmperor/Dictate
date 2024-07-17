@@ -140,4 +140,5 @@
     <string name="dictate_edit_prompt_prompt_hint">Enter an instruction here as to what the GPT model should do with your text.\nIf you have selected \"requires text selection\", your spoken text will be sent automatically.</string>
     <string name="dictate_edit_prompt">Edit prompt</string>
     <string name="dictate_prompts">Prompts</string>
+    <string name="dictate_rate_app_msg">Do you like Dictate? I would be happy to receive a rating in the PlayStore. 😇</string>
 </resources>

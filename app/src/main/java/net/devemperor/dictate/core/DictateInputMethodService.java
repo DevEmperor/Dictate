@@ -308,6 +308,9 @@ public class DictateInputMethodService extends InputMethodService {
 
         if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
             showInfo("update");
+        } else if (sp.getFloat("net.devemperor.dictate.total_duration", 0.0f) > 180
+                && !sp.getBoolean("net.devemperor.dictate.has_rated_in_playstore", false)) {
+            showInfo("rate");
         }
 
         if (sp.getBoolean("net.devemperor.dictate.instant_recording", false)) {
@@ -498,6 +501,22 @@ public class DictateInputMethodService extends InputMethodService {
                 });
                 infoNoButton.setOnClickListener(v -> {
                     sp.edit().putInt("net.devemperor.dictate.last_version_code", BuildConfig.VERSION_CODE).apply();
+                    infoCl.setVisibility(View.GONE);
+                });
+                break;
+            case "rate":
+                infoTv.setTextColor(getResources().getColor(R.color.dictate_green, getTheme()));
+                infoTv.setText(R.string.dictate_rate_app_msg);
+                infoYesButton.setVisibility(View.VISIBLE);
+                infoYesButton.setOnClickListener(v -> {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=net.devemperor.dictate"));
+                    browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(browserIntent);
+                    sp.edit().putBoolean("net.devemperor.dictate.has_rated_in_playstore", true).apply();
+                    infoCl.setVisibility(View.GONE);
+                });
+                infoNoButton.setOnClickListener(v -> {
+                    sp.edit().putBoolean("net.devemperor.dictate.has_rated_in_playstore", true).apply();
                     infoCl.setVisibility(View.GONE);
                 });
                 break;

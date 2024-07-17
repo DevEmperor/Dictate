@@ -133,4 +133,5 @@
     <string name="dictate_edit_prompt_prompt_hint">Gib hier eine Anweisung ein, was das GPT-Modell mit deinem Text machen soll.\nWenn du \"Erfordert Textauswahl\" ausgewählt hast, wird dein eingesprochener Text automatisch mit gesendet.</string>
     <string name="dictate_edit_prompt">Anweisung bearbeiten</string>
     <string name="dictate_prompts">Anweisungen</string>
+    <string name="dictate_rate_app_msg">Gefällt dir Dictate? Ich freue mich über eine Bewertung im PlayStore. 😇</string>
 </resources>
