@@ -27,6 +27,25 @@
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
+        android:title="@string/dictate_settings_rewording_title"
+        app:iconSpaceReserved="false">
+
+        <androidx.preference.SwitchPreference
+            android:key="net.devemperor.dictate.rewording_enabled"
+            android:title="@string/dictate_settings_rewording_enabled_title"
+            android:summary="@string/dictate_settings_rewording_enabled_summary"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.Preference
+            android:key="net.devemperor.dictate.edit_custom_rewording_prompts"
+            android:title="@string/dictate_settings_edit_custom_rewording_prompts"
+            app:iconSpaceReserved="false"
+            app:dependency="net.devemperor.dictate.rewording_enabled"/>
+
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory
         android:title="@string/dictate_settings_title"
         app:iconSpaceReserved="false">
 

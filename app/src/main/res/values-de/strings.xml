@@ -119,4 +119,18 @@
     <string name="dictate_settings_prompt_title">Stil Anweisung ändern 💬</string>
     <string name="dictate_changelog_donate">Wenn dir Dictate gefällt, würde ich mich sehr über eine kleine Spende zur Unterstützung dieses Projekts freuen. 🥰\n\n</string>
     <string name="dictate_changelog_6">v1.5\n\n- In den Einstellungen kannst du jetzt eine System-Anweisung für Whisper hinterlegen, um die Spracherkennung in eine bestimmte Richtung zu lenken (bspw. spezielle Wörter vorab mit angeben oder die Punktierung und Füllwörter beeinflussen). ✏️\n\n- Nach einer fehlgeschlagenen Transkription kannst du nun die letzte Aufnahme erneut abschicken. 🔄\n\n- Längeres gedrückt halten auf dem Lösch-Button verschnellert jetzt das Löschen. 🚀\n\n- In den Einstellungen wurde ein Spenden-Button hinzugefügt. 🤝\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\n\n</string>
+    <string name="dictate_settings_rewording_title">Überarbeitungs-Einstellungen</string>
+    <string name="dictate_settings_rewording_enabled_title">Überarbeiten mit KI ✍️</string>
+    <string name="dictate_settings_rewording_enabled_summary">Aktiviere das Überarbeiten von erkanntem Text mit den GPT-Modellen von OpenAI</string>
+    <string name="dictate_settings_edit_custom_rewording_prompts">Benutzerdefinierte Überarbeitungsanweisungen bearbeiten</string>
+    <string name="dictate_prompts_overview_info">Hier kannst du deine Anweisungen für das Überarbeiten mit den GPT-Modellen von OpenAI erstellen und bearbeiten.</string>
+    <string name="dictate_prompts_overview_no_prompts">Du hast keine Anweisungen erstellt.\nKlicke auf die Schaltfläche unten, um eine hinzuzufügen.</string>
+    <string name="dictate_delete_prompt">Anweisung löschen?</string>
+    <string name="dictate_delete_prompt_message">Bist du sicher, dass du diese Anweisung löschen möchtest?</string>
+    <string name="dictate_requires_selection">Erfordert Textauswahl</string>
+    <string name="dictate_save">Speichern</string>
+    <string name="dictate_edit_prompt_name_hint">Gib einen Namen für diese Anweisung ein</string>
+    <string name="dictate_edit_prompt_prompt_hint">Gib hier eine Anweisung ein, was das GPT-Modell mit deinem Text machen soll.\nWenn du \"Erfordert Textauswahl\" ausgewählt hast, wird dein eingesprochener Text automatisch mit gesendet.</string>
+    <string name="dictate_edit_prompt">Anweisung bearbeiten</string>
+    <string name="dictate_prompts">Anweisungen</string>
 </resources>

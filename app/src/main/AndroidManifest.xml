@@ -43,6 +43,23 @@
         <activity
             android:name=".onboarding.OnboardingActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".rewording.PromptEditActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".rewording.PromptsOverviewActivity"/>
+        </activity>
+
+        <activity
+            android:name=".rewording.PromptsOverviewActivity"
+            android:exported="false" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".settings.DictateSettingsActivity"/>
+        </activity>
     </application>
 
 </manifest>

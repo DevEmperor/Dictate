@@ -15,6 +15,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import net.devemperor.dictate.BuildConfig;
 import net.devemperor.dictate.R;
+import net.devemperor.dictate.rewording.PromptsOverviewActivity;
 
 import org.apache.commons.validator.routines.UrlValidator;
 
@@ -27,6 +28,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         getPreferenceManager().setSharedPreferencesName("net.devemperor.dictate");
         setPreferencesFromResource(R.xml.fragment_preferences, null);
         sp = getPreferenceManager().getSharedPreferences();
+
+        Preference editPrompts = findPreference("net.devemperor.dictate.edit_custom_rewording_prompts");
+        if (editPrompts != null) {
+            editPrompts.setOnPreferenceClickListener(preference -> {
+                startActivity(new Intent(requireContext(), PromptsOverviewActivity.class));
+                return true;
+            });
+        }
 
         Preference usage = findPreference("net.devemperor.dictate.usage");
         if (usage != null) {

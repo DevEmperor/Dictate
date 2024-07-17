@@ -126,4 +126,18 @@
     <string name="dictate_settings_prompt_title">Change style prompt 💬</string>
     <string name="dictate_changelog_donate">If you like Dictate, I would be very happy about a small donation to support this project. 🥰\n\n</string>
     <string name="dictate_changelog_6">v1.5\n\n- In the settings, you can now store a system prompt for Whisper to guide speech recognition in a certain direction (e.g. specify special words in advance or influence the punctuation and filler words). ✏️\n\n- After a failed transcription, you can now resend the last recording. 🔄\n\n- Holding down the delete button for longer now speeds up the deletion process. 🚀\n\n- A donate button has been added in the settings. 🤝\n\n- Some design changes and bug fixes have been made. ✨\n\n\n</string>
+    <string name="dictate_settings_rewording_title">Rewording Settings</string>
+    <string name="dictate_settings_rewording_enabled_title">Rewording using AI ✍️</string>
+    <string name="dictate_settings_rewording_enabled_summary">Enable rewording of recognised text with OpenAI\'s GPT models</string>
+    <string name="dictate_settings_edit_custom_rewording_prompts">Edit custom rewording prompts</string>
+    <string name="dictate_prompts_overview_info">Below you can create and edit your prompts for rewording using OpenAI\'s GPT models.</string>
+    <string name="dictate_prompts_overview_no_prompts">You have no prompts created.\nClick the button below to add one.</string>
+    <string name="dictate_delete_prompt">Delete prompt?</string>
+    <string name="dictate_delete_prompt_message">Are you sure to delete this prompt?</string>
+    <string name="dictate_requires_selection">Requires text selection</string>
+    <string name="dictate_save">Save</string>
+    <string name="dictate_edit_prompt_name_hint">Enter a name for this prompt</string>
+    <string name="dictate_edit_prompt_prompt_hint">Enter an instruction here as to what the GPT model should do with your text.\nIf you have selected \"requires text selection\", your spoken text will be sent automatically.</string>
+    <string name="dictate_edit_prompt">Edit prompt</string>
+    <string name="dictate_prompts">Prompts</string>
 </resources>
