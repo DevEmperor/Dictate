@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<input-method
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<input-method xmlns:android="http://schemas.android.com/apk/res/android"
     android:settingsActivity="net.devemperor.dictate.settings.DictateSettingsActivity"
-    android:supportsSwitchingToNextInputMethod="true"
-    tools:ignore="UnusedAttribute">
+    android:supportsSwitchingToNextInputMethod="true">
     <subtype
         android:imeSubtypeMode="keyboard"/>
 </input-method>

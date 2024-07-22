@@ -65,10 +65,10 @@
     <string name="dictate_record">Record</string>
     <string name="dictate_send">Send (%1$s)</string>
     <string name="dictate_sending">Sending …</string>
-    <string name="dictate_timeout_msg">Timeout exceeded. Maybe Whisper is overloaded or the audio was too long. ❌</string>
+    <string name="dictate_timeout_msg">Timeout exceeded. Maybe OpenAI is overloaded or you have a poor internet connection. ❌</string>
     <string name="dictate_invalid_api_key_msg">Invalid API key. Open settings to correct it?</string>
     <string name="dictate_quota_exceeded_msg">Your quota exceeded. Open OpenAI account to buy new credits?</string>
-    <string name="dictate_internet_error_msg">Couldn\'t send audio to Whisper. Please check your internet connection.</string>
+    <string name="dictate_internet_error_msg">Couldn\'t connect to OpenAI. Please check your internet connection.</string>
     <string name="dictate_okay">Okay</string>
     <string name="dictate_cancel">Cancel</string>
     <string name="dictate_no_api_key">No API key set</string>
@@ -80,7 +80,7 @@
     <string name="dictate_settings_vibration_summary">Vibrate on button presses and errors</string>
     <string name="dictate_about" translatable="false">Dictate v%1$s\nMade with ❤️ by DevEmperor</string>
     <string name="dictate_settings_tap_to_reset_usage">Tap to reset usage</string>
-    <string name="dictate_settings_usage">Total audio time: %1$d min, %2$d s.\nTotal translation tokens: %3$d.\nEstimated cost: %4$.2f $</string>
+    <string name="dictate_settings_usage">Total audio time: %1$d min, %2$d s.\nTotal token usage: %3$d.\nEstimated cost: %4$.2f $</string>
     <string name="dictate_yes">Yes</string>
     <string name="dictate_no">No</string>
     <string name="dictate_settings_reset_usage_title">Reset usage?</string>
@@ -129,7 +129,7 @@
     <string name="dictate_settings_rewording_title">Rewording Settings</string>
     <string name="dictate_settings_rewording_enabled_title">Rewording using AI ✍️</string>
     <string name="dictate_settings_rewording_enabled_summary">Enable rewording of recognised text with OpenAI\'s GPT models</string>
-    <string name="dictate_settings_edit_custom_rewording_prompts">Edit custom rewording prompts</string>
+    <string name="dictate_settings_edit_custom_rewording_prompts">Edit rewording prompts</string>
     <string name="dictate_prompts_overview_info">Below you can create and edit your prompts for rewording using OpenAI\'s GPT models.</string>
     <string name="dictate_prompts_overview_no_prompts">You have no prompts created.\nClick the button below to add one.</string>
     <string name="dictate_delete_prompt">Delete prompt?</string>
@@ -143,4 +143,6 @@
     <string name="dictate_rate_app_msg">Do you like Dictate? I would be happy to receive a rating in the PlayStore. 😇</string>
     <string name="dictate_enable_keyboard_title">Enable Dictate keyboard?</string>
     <string name="dictate_enable_keyboard_message">The Dictate keyboard isn\'t enabled in the system settings anymore. Do you want to open the system keyboard settings to correct this?</string>
+    <string name="dictate_donate_msg">If you like Dictate, I would be very happy about a small. 🥰</string>
+    <string name="dictate_prompts_keyboard_no_prompts">You haven\'t created any prompts yet.\nClick here to add one.</string>
 </resources>

@@ -64,10 +64,10 @@
     <string name="dictate_record">Aufnehmen</string>
     <string name="dictate_send">Senden (%1$s)</string>
     <string name="dictate_sending">Sendet …</string>
-    <string name="dictate_timeout_msg">Timeout überschritten. Vielleicht ist Whisper überlastet oder die Aufnahme war zu lang. ❌</string>
+    <string name="dictate_timeout_msg">Timeout überschritten. Vielleicht ist OpenAI überlastet oder du hast eine langsame Internetverbindung. ❌</string>
     <string name="dictate_invalid_api_key_msg">Ungültiger API-Schlüssel. Einstellungen öffnen, um ihn zu korrigieren?</string>
     <string name="dictate_quota_exceeded_msg">Dein Budget ist überschritten. OpenAI-Account öffnen, um neue Credits zu kaufen?</string>
-    <string name="dictate_internet_error_msg">Audio konnte nicht an Whisper gesendet werden. Bitte prüfe deine Internetverbindung.</string>
+    <string name="dictate_internet_error_msg">Verbindung mit OpenAI fehlgeschlagen. Bitte prüfe deine Internetverbindung.</string>
     <string name="dictate_okay">Okay</string>
     <string name="dictate_cancel">Abbrechen</string>
     <string name="dictate_no_api_key">Kein API-Schlüssel festgelegt</string>
@@ -108,7 +108,7 @@
     <string name="dictate_custom_host_invalid_title">Ungültiger eigener API Server</string>
     <string name="dictate_custom_host_invalid_message">Dein benutzerdefinierter API-Server muss mit \'http:\' oder \'https:\' beginnen. Bitte überprüfe dies noch einmal.</string>
     <string name="dictate_settings_input_language_title">Aufnahme-Sprache</string>
-    <string name="dictate_settings_usage">Gesamte Aufnahme Zeit: %1$d min, %2$d s.\nGesamte Übersetzungs Tokens: %3$d.\nGeschätzter Verbrauch: %4$.2f $</string>
+    <string name="dictate_settings_usage">Gesamte Aufnahme Zeit: %1$d min, %2$d s.\nGesamter Token Verbrauch: %3$d.\nGeschätzte Kosten: %4$.2f $</string>
     <string name="dictate_onboarding_welcome">Willkommen bei\nDictate\n→</string>
     <string name="dictate_detect_automatically">Automatisch erkennen</string>
     <string name="dictate_update_installed_msg">Dictate wurde aktualisiert. Änderungen ansehen?</string>
@@ -122,7 +122,7 @@
     <string name="dictate_settings_rewording_title">Überarbeitungs-Einstellungen</string>
     <string name="dictate_settings_rewording_enabled_title">Überarbeiten mit KI ✍️</string>
     <string name="dictate_settings_rewording_enabled_summary">Aktiviere das Überarbeiten von erkanntem Text mit den GPT-Modellen von OpenAI</string>
-    <string name="dictate_settings_edit_custom_rewording_prompts">Benutzerdefinierte Überarbeitungsanweisungen bearbeiten</string>
+    <string name="dictate_settings_edit_custom_rewording_prompts">Überarbeitungsanweisungen bearbeiten</string>
     <string name="dictate_prompts_overview_info">Hier kannst du deine Anweisungen für das Überarbeiten mit den GPT-Modellen von OpenAI erstellen und bearbeiten.</string>
     <string name="dictate_prompts_overview_no_prompts">Du hast keine Anweisungen erstellt.\nKlicke auf die Schaltfläche unten, um eine hinzuzufügen.</string>
     <string name="dictate_delete_prompt">Anweisung löschen?</string>
@@ -136,4 +136,6 @@
     <string name="dictate_rate_app_msg">Gefällt dir Dictate? Ich freue mich über eine Bewertung im PlayStore. 😇</string>
     <string name="dictate_enable_keyboard_title">Dictate Tastatur aktivieren?</string>
     <string name="dictate_enable_keyboard_message">Die Dictate Tastatur ist in den Systemeinstellungen nicht mehr aktiviert. Möchtest du die Systemeinstellungen für die Tastatur öffnen, um dies zu korrigieren?</string>
+    <string name="dictate_donate_msg">Wenn dir Dictate gefällt, würde ich mich sehr über eine kleine Spende freuen. 🥰</string>
+    <string name="dictate_prompts_keyboard_no_prompts">Du hast noch keine Anweisungen erstellt.\nKlicke hier, um eine hinzuzufügen.</string>
 </resources>

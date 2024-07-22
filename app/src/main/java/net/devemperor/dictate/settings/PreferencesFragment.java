@@ -43,7 +43,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             long translationInputTokens = sp.getLong("net.devemperor.dictate.translation_input_tokens", 0);
             long translationOutputTokens = sp.getLong("net.devemperor.dictate.translation_output_tokens", 0);
             usage.setTitle(getString(R.string.dictate_settings_usage, (int) (duration / 60), (int) (duration % 60),
-                    translationInputTokens + translationOutputTokens, duration * 0.0001f + translationInputTokens * 0.000005f + translationOutputTokens * 0.000015f));
+                    translationInputTokens + translationOutputTokens, duration * 0.0001f + translationInputTokens * 0.00000015f + translationOutputTokens * 0.0000006f));
             usage.setOnPreferenceClickListener(preference -> {
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle(R.string.dictate_settings_reset_usage_title)

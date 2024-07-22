@@ -24,14 +24,20 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.ExtractedText;
+import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.theokanning.openai.audio.CreateTranscriptionRequest;
@@ -44,6 +50,10 @@ import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
 
 import net.devemperor.dictate.BuildConfig;
+import net.devemperor.dictate.rewording.PromptModel;
+import net.devemperor.dictate.rewording.PromptsDatabaseHelper;
+import net.devemperor.dictate.rewording.PromptsKeyboardAdapter;
+import net.devemperor.dictate.rewording.PromptsOverviewActivity;
 import net.devemperor.dictate.settings.DictateSettingsActivity;
 import net.devemperor.dictate.R;
 
@@ -53,6 +63,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -80,7 +91,8 @@ public class DictateInputMethodService extends InputMethodService {
     private String translationPrompt = "";
 
     private MediaRecorder recorder;
-    private ExecutorService apiThread;
+    private ExecutorService speechApiThread;
+    private ExecutorService rewordingApiThread;
     private File audioFile;
     private Vibrator vibrator;
     private SharedPreferences sp;
@@ -97,11 +109,17 @@ public class DictateInputMethodService extends InputMethodService {
     private MaterialButton spaceButton;
     private MaterialButton pauseButton;
     private MaterialButton enterButton;
-
     private ConstraintLayout infoCl;
     private TextView infoTv;
     private Button infoYesButton;
     private Button infoNoButton;
+    private LinearLayout promptsLl;
+    private RecyclerView promptsRv;
+    private MaterialButton selectAllButton;
+    private TextView noPromptsTv;
+
+    PromptsDatabaseHelper promptsDb;
+    PromptsKeyboardAdapter promptsAdapter;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -115,6 +133,7 @@ public class DictateInputMethodService extends InputMethodService {
         audioFile = new File(getFilesDir(), "audio.mp3");
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         sp = getSharedPreferences("net.devemperor.dictate", MODE_PRIVATE);
+        promptsDb = new PromptsDatabaseHelper(this);
         vibrationEnabled = sp.getBoolean("net.devemperor.dictate.vibration", true);
 
         dictateKeyboardView = (ConstraintLayout) LayoutInflater.from(context).inflate(R.layout.activity_dictate_keyboard_view, null);
@@ -133,6 +152,13 @@ public class DictateInputMethodService extends InputMethodService {
         infoTv = dictateKeyboardView.findViewById(R.id.info_tv);
         infoYesButton = dictateKeyboardView.findViewById(R.id.info_yes_btn);
         infoNoButton = dictateKeyboardView.findViewById(R.id.info_no_btn);
+
+        promptsLl = dictateKeyboardView.findViewById(R.id.prompts_keyboard_ll);
+        promptsRv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_rv);
+        selectAllButton = dictateKeyboardView.findViewById(R.id.select_all_btn);
+        noPromptsTv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_no_prompts_tv);
+
+        promptsRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("dictate_translation_prompt.txt")));
@@ -207,13 +233,13 @@ public class DictateInputMethodService extends InputMethodService {
                     if (isDeleting) {
                         deleteOneCharacter();
                         long diff = System.currentTimeMillis() - startDeleteTime;
-                        if (diff > 2000 && currentDeleteDelay == 50) {
+                        if (diff > 1500 && currentDeleteDelay == 50) {
                             vibrate();
                             currentDeleteDelay = 25;
-                        } else if (diff > 4000 && currentDeleteDelay == 25) {
+                        } else if (diff > 3000 && currentDeleteDelay == 25) {
                             vibrate();
                             currentDeleteDelay = 10;
-                        } else if (diff > 6000 && currentDeleteDelay == 10) {
+                        } else if (diff > 5000 && currentDeleteDelay == 10) {
                             vibrate();
                             currentDeleteDelay = 5;
                         }
@@ -266,6 +292,7 @@ public class DictateInputMethodService extends InputMethodService {
             recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_mic_24));
             recordButton.setEnabled(true);
             pauseButton.setVisibility(View.GONE);
+            pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_pause_24));
             trashButton.setVisibility(View.GONE);
         });
 
@@ -306,23 +333,41 @@ public class DictateInputMethodService extends InputMethodService {
             }
         });
 
-        if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
-            showInfo("update");
-        } else if (sp.getFloat("net.devemperor.dictate.total_duration", 0.0f) > 180
-                && !sp.getBoolean("net.devemperor.dictate.has_rated_in_playstore", false)) {
-            showInfo("rate");
-        }
+        selectAllButton.setOnClickListener(v -> {
+            vibrate();
 
-        if (sp.getBoolean("net.devemperor.dictate.instant_recording", false)) {
-            recordButton.performClick();
-        }
+            InputConnection inputConnection = getCurrentInputConnection();
+            if (inputConnection != null) {
+                ExtractedText extractedText = inputConnection.getExtractedText(new ExtractedTextRequest(), 0);
+
+                if (inputConnection.getSelectedText(0) == null && extractedText.text.length() > 0) {
+                    inputConnection.performContextMenuAction(android.R.id.selectAll);
+                    selectAllButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_deselect_24));
+                } else {
+                    inputConnection.clearMetaKeyStates(0);
+                    if (extractedText == null || extractedText.text == null) {
+                        inputConnection.setSelection(0, 0);
+                    } else {
+                        inputConnection.setSelection(extractedText.text.length(), extractedText.text.length());
+                    }
+                    selectAllButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_select_all_24));
+                }
+            }
+        });
+
+        noPromptsTv.setOnClickListener(v -> {
+            vibrate();
+            Intent intent = new Intent(this, PromptsOverviewActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        });
 
         return dictateKeyboardView;
     }
 
     @Override
-    public void onUnbindInput() {
-        super.onUnbindInput();
+    public void onFinishInputView(boolean finishingInput) {
+        super.onFinishInputView(finishingInput);
 
         if (recorder != null) {
             recorder.stop();
@@ -332,6 +377,142 @@ public class DictateInputMethodService extends InputMethodService {
             if (recordTimeRunnable != null) {
                 recordTimeHandler.removeCallbacks(recordTimeRunnable);
             }
+        }
+        pauseButton.setVisibility(View.GONE);
+        trashButton.setVisibility(View.GONE);
+        resendButton.setVisibility(View.GONE);
+        infoCl.setVisibility(View.GONE);
+        isRecording = false;
+        isPaused = false;
+        am.abandonAudioFocusRequest(audioFocusRequest);
+        recordButton.setText(R.string.dictate_record);
+        recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_mic_24));
+        recordButton.setEnabled(true);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void onStartInputView(EditorInfo info, boolean restarting) {
+        super.onStartInputView(info, restarting);
+
+        if (sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
+            promptsLl.setVisibility(View.VISIBLE);
+
+            List<PromptModel> data;
+            if (getCurrentInputConnection().getSelectedText(0) == null) {
+                data = promptsDb.getAll(false);
+            } else {
+                data = promptsDb.getAll(true);
+            }
+            noPromptsTv.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
+
+            promptsAdapter = new PromptsKeyboardAdapter(data, position -> {
+                PromptModel model = data.get(position);
+
+                promptsAdapter.removeAllExcept(position);
+                promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_pb).setVisibility(View.VISIBLE);
+                promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_btn).setEnabled(false);
+                infoCl.setVisibility(View.GONE);
+
+                String apiKey = sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY");
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("https://api.openai.com/")
+                        .client(defaultClient(apiKey.replaceAll("[^ -~]", ""), Duration.ofSeconds(120)).newBuilder().build())
+                        .addConverterFactory(JacksonConverterFactory.create(defaultObjectMapper()))
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                        .build();
+                OpenAiService service = new OpenAiService(retrofit.create(OpenAiApi.class));
+
+                rewordingApiThread = Executors.newSingleThreadExecutor();
+                rewordingApiThread.execute(() -> {
+                    try {
+                        String prompt = model.getPrompt();
+                        if (getCurrentInputConnection().getSelectedText(0) != null) {
+                            prompt += "\n\n" + getCurrentInputConnection().getSelectedText(0).toString();
+                        }
+
+                        ChatCompletionRequest request = ChatCompletionRequest.builder()
+                                .model("gpt-4o-mini")
+                                .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER.value(), prompt)))
+                                .build();
+                        ChatCompletionResult rewordedResult = service.createChatCompletion(request);
+                        String rewordedText = rewordedResult.getChoices().get(0).getMessage().getContent();
+
+                        sp.edit().putLong("net.devemperor.dictate.translation_input_tokens",
+                                sp.getLong("net.devemperor.dictate.translation_input_tokens", 0) + rewordedResult.getUsage().getPromptTokens()).apply();
+                        sp.edit().putLong("net.devemperor.dictate.translation_output_tokens",
+                                sp.getLong("net.devemperor.dictate.translation_output_tokens", 0) + rewordedResult.getUsage().getCompletionTokens()).apply();
+
+                        InputConnection inputConnection = getCurrentInputConnection();
+                        if (inputConnection != null) {
+                            inputConnection.commitText(rewordedText, 1);
+                        }
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();  //TODO firebase crashlytics
+                        if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
+
+                        mainHandler.post(() -> {
+                            if (Objects.requireNonNull(e.getMessage()).contains("SocketTimeoutException")) {
+                                showInfo("timeout");
+                            } else if (e.getMessage().contains("API key")) {
+                                showInfo("invalid_api_key");
+                            } else if (e.getMessage().contains("quota")) {
+                                showInfo("quota_exceeded");
+                            } else {
+                                showInfo("internet_error");
+                            }
+                        });
+                    }
+
+                    mainHandler.post(() -> {
+                        promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_pb).setVisibility(View.GONE);
+                        promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_btn).setEnabled(true);
+
+                        List<PromptModel> newData = promptsDb.getAll(false);
+                        promptsAdapter.getData().clear();
+                        promptsAdapter.getData().addAll(newData);
+                        promptsAdapter.notifyDataSetChanged();
+                        noPromptsTv.setVisibility(newData.isEmpty() ? View.VISIBLE : View.GONE);
+                    });
+                });
+            });
+            promptsRv.setAdapter(promptsAdapter);
+        } else {
+            promptsLl.setVisibility(View.GONE);
+        }
+
+        if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
+            showInfo("update");
+        } else if (sp.getFloat("net.devemperor.dictate.total_duration", 0.0f) > 180 && !sp.getBoolean("net.devemperor.dictate.flag_has_rated_in_playstore", false)) {
+            showInfo("rate");
+        } else if (sp.getFloat("net.devemperor.dictate.total_duration", 0.0f) > 600 && !sp.getBoolean("net.devemperor.dictate.flag_has_donated", false)) {
+            showInfo("donate");
+        }
+
+        if (sp.getBoolean("net.devemperor.dictate.instant_recording", false)) {
+            recordButton.performClick();
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void onUpdateSelection (int oldSelStart, int oldSelEnd, int newSelStart, int newSelEnd, int candidatesStart, int candidatesEnd) {
+        super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd);
+
+        if (sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
+            List<PromptModel> data;
+            if (getCurrentInputConnection().getSelectedText(0) == null) {
+                data = promptsDb.getAll(false);
+                selectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_select_all_24));
+            } else {
+                data = promptsDb.getAll(true);
+                selectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_deselect_24));
+            }
+
+            promptsAdapter.getData().clear();
+            promptsAdapter.getData().addAll(data);
+            promptsAdapter.notifyDataSetChanged();
+            noPromptsTv.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -416,8 +597,8 @@ public class DictateInputMethodService extends InputMethodService {
                 .build();
         OpenAiService service = new OpenAiService(retrofit.create(OpenAiApi.class));
 
-        apiThread = Executors.newSingleThreadExecutor();
-        apiThread.execute(() -> {
+        speechApiThread = Executors.newSingleThreadExecutor();
+        speechApiThread.execute(() -> {
             try {
                 CreateTranscriptionRequest request = CreateTranscriptionRequest.builder()
                         .model("whisper-1")
@@ -434,7 +615,7 @@ public class DictateInputMethodService extends InputMethodService {
                     mainHandler.post(() -> recordButton.setText(R.string.dictate_translating));
                     ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(),
                             String.format(translationPrompt, sp.getString("net.devemperor.dictate.translation_language", "English"), resultText));
-                    ChatCompletionRequest translationRequest = ChatCompletionRequest.builder().model("gpt-4o").messages(Collections.singletonList(message)).build();
+                    ChatCompletionRequest translationRequest = ChatCompletionRequest.builder().model("gpt-4o-mini").messages(Collections.singletonList(message)).build();
                     ChatCompletionResult translationResult = service.createChatCompletion(translationRequest);
                     resultText = translationResult.getChoices().get(0).getMessage().getContent();
                     sp.edit().putLong("net.devemperor.dictate.translation_input_tokens",
@@ -512,11 +693,27 @@ public class DictateInputMethodService extends InputMethodService {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=net.devemperor.dictate"));
                     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(browserIntent);
-                    sp.edit().putBoolean("net.devemperor.dictate.has_rated_in_playstore", true).apply();
+                    sp.edit().putBoolean("net.devemperor.dictate.flag_has_rated_in_playstore", true).apply();
                     infoCl.setVisibility(View.GONE);
                 });
                 infoNoButton.setOnClickListener(v -> {
-                    sp.edit().putBoolean("net.devemperor.dictate.has_rated_in_playstore", true).apply();
+                    sp.edit().putBoolean("net.devemperor.dictate.flag_has_rated_in_playstore", true).apply();
+                    infoCl.setVisibility(View.GONE);
+                });
+                break;
+            case "donate":
+                infoTv.setTextColor(getResources().getColor(R.color.dictate_green, getTheme()));
+                infoTv.setText(R.string.dictate_donate_msg);
+                infoYesButton.setVisibility(View.VISIBLE);
+                infoYesButton.setOnClickListener(v -> {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://paypal.me/DevEmperor"));
+                    browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(browserIntent);
+                    sp.edit().putBoolean("net.devemperor.dictate.flag_has_donated", true).apply();
+                    infoCl.setVisibility(View.GONE);
+                });
+                infoNoButton.setOnClickListener(v -> {
+                    sp.edit().putBoolean("net.devemperor.dictate.flag_has_donated", true).apply();
                     infoCl.setVisibility(View.GONE);
                 });
                 break;
