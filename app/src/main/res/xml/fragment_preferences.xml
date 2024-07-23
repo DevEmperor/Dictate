@@ -33,7 +33,7 @@
             app:iconSpaceReserved="false"
             app:entries="@array/dictate_input_languages"
             app:entryValues="@array/dictate_input_languages_values"
-            app:defaultValue="@string/dictate_detect_automatically"
+            app:defaultValue="detect"
             app:summary="%s"/>
 
         <androidx.preference.EditTextPreference
