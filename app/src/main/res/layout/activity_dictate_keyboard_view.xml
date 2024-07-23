@@ -191,10 +191,10 @@
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
         android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/info_cl">
+        app:layout_constraintTop_toBottomOf="@id/info_cl"
+        tools:visibility="visible">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/select_all_btn"
@@ -219,12 +219,26 @@
             android:id="@+id/prompts_keyboard_no_prompts_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="16dp"
-            android:textStyle="italic"
-            android:layout_gravity="center"
-            android:visibility="gone"
             android:text="@string/dictate_prompts_keyboard_no_prompts"
+            android:textStyle="italic"
+            android:visibility="gone"
             tools:visibility="visible" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/overlay_characters_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/enter_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/prompts_keyboard_ll"
+        tools:visibility="visible"
+        tools:layout_width="72dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -145,4 +145,7 @@
     <string name="dictate_enable_keyboard_message">The Dictate keyboard isn\'t enabled in the system settings anymore. Do you want to open the system keyboard settings to correct this?</string>
     <string name="dictate_donate_msg">If you like Dictate, I would be very happy about a small. 🥰</string>
     <string name="dictate_prompts_keyboard_no_prompts">You haven\'t created any prompts yet.\nClick here to add one.</string>
+    <string name="dictate_default_overlay_characters" translatable="false">()-:!?,.</string>
+    <string name="dictate_settings_overlay_characters_title">Edit custom characters (hold ⏎ button)</string>
+    <string name="dictate_overlay_characters_empty">You have to set at least one character.</string>
 </resources>

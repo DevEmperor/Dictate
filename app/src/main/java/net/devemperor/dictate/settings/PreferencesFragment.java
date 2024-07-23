@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
@@ -18,6 +20,8 @@ import net.devemperor.dictate.R;
 import net.devemperor.dictate.rewording.PromptsOverviewActivity;
 
 import org.apache.commons.validator.routines.UrlValidator;
+
+import java.util.stream.Collectors;
 
 public class PreferencesFragment extends PreferenceFragmentCompat {
 
@@ -33,6 +37,34 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (editPrompts != null) {
             editPrompts.setOnPreferenceClickListener(preference -> {
                 startActivity(new Intent(requireContext(), PromptsOverviewActivity.class));
+                return true;
+            });
+        }
+
+        EditTextPreference overlayCharacters = findPreference("net.devemperor.dictate.overlay_characters");
+        if (overlayCharacters != null) {
+            overlayCharacters.setSummaryProvider((Preference.SummaryProvider<EditTextPreference>) preference -> {
+                String text = preference.getText();
+                if (TextUtils.isEmpty(text)) {
+                    return getString(R.string.dictate_default_overlay_characters);
+                }
+                return text.chars().mapToObj(c -> String.valueOf((char) c)).collect(Collectors.joining(" "));
+            });
+
+            overlayCharacters.setOnBindEditTextListener(editText -> {
+                editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+                editText.setSingleLine(true);
+                editText.setHint(R.string.dictate_default_overlay_characters);
+                editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(8)});
+                editText.setSelection(editText.getText().length());
+            });
+
+            overlayCharacters.setOnPreferenceChangeListener((preference, newValue) -> {
+                String text = (String) newValue;
+                if (text.isEmpty()) {
+                    Toast.makeText(requireContext(), R.string.dictate_overlay_characters_empty, Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 return true;
             });
         }

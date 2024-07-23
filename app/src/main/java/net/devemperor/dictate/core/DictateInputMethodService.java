@@ -89,6 +89,7 @@ public class DictateInputMethodService extends InputMethodService {
     private boolean isPaused = false;
     private boolean vibrationEnabled = true;
     private String translationPrompt = "";
+    private TextView selectedCharacter = null;
 
     private MediaRecorder recorder;
     private ExecutorService speechApiThread;
@@ -117,6 +118,7 @@ public class DictateInputMethodService extends InputMethodService {
     private RecyclerView promptsRv;
     private MaterialButton selectAllButton;
     private TextView noPromptsTv;
+    private LinearLayout overlayCharactersLl;
 
     PromptsDatabaseHelper promptsDb;
     PromptsKeyboardAdapter promptsAdapter;
@@ -157,6 +159,8 @@ public class DictateInputMethodService extends InputMethodService {
         promptsRv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_rv);
         selectAllButton = dictateKeyboardView.findViewById(R.id.select_all_btn);
         noPromptsTv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_no_prompts_tv);
+
+        overlayCharactersLl = dictateKeyboardView.findViewById(R.id.overlay_characters_ll);
 
         promptsRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
@@ -362,6 +366,51 @@ public class DictateInputMethodService extends InputMethodService {
             startActivity(intent);
         });
 
+        enterButton.setOnLongClickListener(v -> {
+            vibrate();
+            overlayCharactersLl.setVisibility(View.VISIBLE);
+            return true;
+        });
+
+        enterButton.setOnTouchListener((v, event) -> {
+            if (overlayCharactersLl.getVisibility() == View.VISIBLE) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        for (int i = 0; i < overlayCharactersLl.getChildCount(); i++) {
+                            TextView charView = (TextView) overlayCharactersLl.getChildAt(i);
+                            if (isPointInsideView(event.getRawX(), charView)) {
+                                if (selectedCharacter != charView) {
+                                    selectedCharacter = charView;
+                                    highlightSelectedCharacter(selectedCharacter);
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (selectedCharacter != null) {
+                            InputConnection inputConnection = getCurrentInputConnection();
+                            if (inputConnection != null) {
+                                inputConnection.commitText(selectedCharacter.getText(), 1);
+                            }
+                            selectedCharacter.setBackgroundColor(getResources().getColor(android.R.color.transparent, getTheme()));
+                            selectedCharacter = null;
+                        }
+                        overlayCharactersLl.setVisibility(View.GONE);
+                        return true;
+                    case MotionEvent.ACTION_CANCEL:
+                        overlayCharactersLl.setVisibility(View.GONE);
+                        return true;
+                }
+            }
+            return false;
+        });
+
+        for (int i = 0; i < 8; i++) {
+            TextView charView = (TextView) LayoutInflater.from(context).inflate(R.layout.item_overlay_characters, overlayCharactersLl, false);
+            overlayCharactersLl.addView(charView);
+        }
+
         return dictateKeyboardView;
     }
 
@@ -479,6 +528,17 @@ public class DictateInputMethodService extends InputMethodService {
             promptsRv.setAdapter(promptsAdapter);
         } else {
             promptsLl.setVisibility(View.GONE);
+        }
+
+        String charactersString = sp.getString("net.devemperor.dictate.overlay_characters", "()-:!?,.");
+        for (int i = 0; i < overlayCharactersLl.getChildCount(); i++) {
+            TextView charView = (TextView) overlayCharactersLl.getChildAt(i);
+            if (i >= charactersString.length()) {
+                charView.setVisibility(View.GONE);
+            } else {
+                charView.setVisibility(View.VISIBLE);
+                charView.setText(charactersString.substring(i, i + 1));
+            }
         }
 
         if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
@@ -768,6 +828,23 @@ public class DictateInputMethodService extends InputMethodService {
                 inputConnection.commitText("", 1);
             } else {
                 inputConnection.deleteSurroundingText(1, 0);
+            }
+        }
+    }
+
+    private boolean isPointInsideView(float x, View view) {
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        return x > location[0] && x < location[0] + view.getWidth();
+    }
+
+    private void highlightSelectedCharacter(TextView selectedView) {
+        for (int i = 0; i < overlayCharactersLl.getChildCount(); i++) {
+            TextView charView = (TextView) overlayCharactersLl.getChildAt(i);
+            if (charView == selectedView) {
+                charView.setBackgroundColor(getResources().getColor(R.color.dictate_blue_dark, getTheme()));
+            } else {
+                charView.setBackgroundColor(getResources().getColor(R.color.dictate_blue, getTheme()));
             }
         }
     }

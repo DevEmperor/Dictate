@@ -58,6 +58,16 @@
             app:defaultValue="@string/dictate_detect_automatically"
             app:summary="%s"/>
 
+        <androidx.preference.EditTextPreference
+            android:key="net.devemperor.dictate.overlay_characters"
+            android:title="@string/dictate_settings_overlay_characters_title"
+            android:summary="@string/dictate_default_overlay_characters"
+            android:defaultValue="()-:!?,."
+            app:positiveButtonText="@string/dictate_okay"
+            app:negativeButtonText="@string/dictate_cancel"
+            app:dialogTitle="@string/dictate_settings_overlay_characters_title"
+            app:iconSpaceReserved="false"/>
+
         <androidx.preference.SwitchPreference
             android:key="net.devemperor.dictate.instant_output"
             android:title="@string/dictate_settings_instant_output_title"
