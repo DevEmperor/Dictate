@@ -144,4 +144,12 @@
     <string name="dictate_default_overlay_characters" translatable="false">()-:!?,.</string>
     <string name="dictate_settings_overlay_characters_title">Edit custom characters (hold ⏎ button)</string>
     <string name="dictate_overlay_characters_empty">You have to set at least one character.</string>
+    <string name="dictate_example_prompt_one_name">French Translator</string>
+    <string name="dictate_example_prompt_one_prompt">I want you to act as a French translator. I will speak to you in any language and you will detect the language, translate it and answer in the French version of my text. I want you to only reply the correction, the improvements and nothing else, do not write explanations and don\'t write quotation marks at start and end.</string>
+    <string name="dictate_example_prompt_two_name">Summarise</string>
+    <string name="dictate_example_prompt_two_prompt">Summarise the provided text. Do not add any new information or change the writing style. Just make sure that the text is shorter. Only output the summarised text, without any further information and without inverted commas at the beginning or end. Also make sure that you retain the input language of the text.</string>
+    <string name="dictate_example_prompt_three_name">Insert ❤️</string>
+    <string name="dictate_example_prompt_three_prompt">Insert a Unicode emoji symbol with a red heart. Only output the emoji, with no other text or characters.</string>
+    <string name="dictate_example_prompt_four_name">Add joke</string>
+    <string name="dictate_example_prompt_four_prompt">"Tell me a funny joke. Only output the joke, without any further explanation. "</string>
 </resources>

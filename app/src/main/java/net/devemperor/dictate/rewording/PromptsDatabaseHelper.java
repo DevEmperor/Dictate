@@ -8,18 +8,51 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import net.devemperor.dictate.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class PromptsDatabaseHelper extends SQLiteOpenHelper {
+    private final Context context;
 
     public PromptsDatabaseHelper(@Nullable Context context) {
         super(context, "prompts.db", null, 1);
+        this.context = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE PROMPTS (ID INTEGER PRIMARY KEY, POS INTEGER, NAME TEXT, PROMPT TEXT, REQUIRES_SELECTION BOOLEAN)");
+
+        if (context == null) return;
+        ContentValues cv = new ContentValues();
+        cv.put("POS", 0);
+        cv.put("NAME", context.getString(R.string.dictate_example_prompt_one_name));
+        cv.put("PROMPT", context.getString(R.string.dictate_example_prompt_one_prompt));
+        cv.put("REQUIRES_SELECTION", 1);
+        sqLiteDatabase.insert("PROMPTS", null, cv);
+
+        cv = new ContentValues();
+        cv.put("POS", 1);
+        cv.put("NAME", context.getString(R.string.dictate_example_prompt_two_name));
+        cv.put("PROMPT", context.getString(R.string.dictate_example_prompt_two_prompt));
+        cv.put("REQUIRES_SELECTION", 1);
+        sqLiteDatabase.insert("PROMPTS", null, cv);
+
+        cv = new ContentValues();
+        cv.put("POS", 2);
+        cv.put("NAME", context.getString(R.string.dictate_example_prompt_three_name));
+        cv.put("PROMPT", context.getString(R.string.dictate_example_prompt_three_prompt));
+        cv.put("REQUIRES_SELECTION", 0);
+        sqLiteDatabase.insert("PROMPTS", null, cv);
+
+        cv = new ContentValues();
+        cv.put("POS", 3);
+        cv.put("NAME", context.getString(R.string.dictate_example_prompt_four_name));
+        cv.put("PROMPT", context.getString(R.string.dictate_example_prompt_four_prompt));
+        cv.put("REQUIRES_SELECTION", 0);
+        sqLiteDatabase.insert("PROMPTS", null, cv);
     }
 
     @Override

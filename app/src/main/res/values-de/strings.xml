@@ -136,4 +136,12 @@
     <string name="dictate_prompts_keyboard_no_prompts">Du hast noch keine Anweisungen erstellt.\nKlicke hier, um eine hinzuzufügen.</string>
     <string name="dictate_settings_overlay_characters_title">Eigene Zeichen bearbeiten (halte die ⏎ Taste)</string>
     <string name="dictate_overlay_characters_empty">Du musst mindestens ein Zeichen festlegen.</string>
+    <string name="dictate_example_prompt_one_name">Französisch Übersetzer</string>
+    <string name="dictate_example_prompt_one_prompt">Ich möchte, dass du als französischer Übersetzer agierst. Ich werde in einer beliebigen Sprache mit dir sprechen und du wirst die Sprache erkennen, sie übersetzen und die französische Version meines Textes antworten. Antworte nur mit der Korrektur und den Verbesserungen, ohne Erklärungen oder Anführungszeichen am Anfang und Ende.</string>
+    <string name="dictate_example_prompt_two_name">Zusammenfassen</string>
+    <string name="dictate_example_prompt_two_prompt">Fass den angegebenen Text zusammen. Füge keine neuen Informationen hinzu und ändere nicht den Schreibstil. Der Text soll einfach kürzer sein. Gib nur den zusammengefassten Text aus, ohne weitere Informationen und ohne Anführungszeichen am Anfang oder Ende. Achte darauf, dass die Eingabesprache des Textes beibehalten wird.</string>
+    <string name="dictate_example_prompt_three_name">❤️ einfügen</string>
+    <string name="dictate_example_prompt_three_prompt">Füge ein Unicode-Emoji-Symbol mit einem roten Herz ein. Gib nur das Emoji aus, ohne weiteren Text oder Zeichen.</string>
+    <string name="dictate_example_prompt_four_name">Witz hinzufügen</string>
+    <string name="dictate_example_prompt_four_prompt">Erzähl mir einen lustigen Witz. Gib nur den Witz aus, ohne weitere Erklärungen.</string>
 </resources>
