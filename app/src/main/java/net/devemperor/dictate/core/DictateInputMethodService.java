@@ -57,10 +57,8 @@ import net.devemperor.dictate.rewording.PromptsOverviewActivity;
 import net.devemperor.dictate.settings.DictateSettingsActivity;
 import net.devemperor.dictate.R;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -88,7 +86,6 @@ public class DictateInputMethodService extends InputMethodService {
     private boolean isRecording = false;
     private boolean isPaused = false;
     private boolean vibrationEnabled = true;
-    private String translationPrompt = "";
     private TextView selectedCharacter = null;
 
     private MediaRecorder recorder;
@@ -163,14 +160,6 @@ public class DictateInputMethodService extends InputMethodService {
         overlayCharactersLl = dictateKeyboardView.findViewById(R.id.overlay_characters_ll);
 
         promptsRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("dictate_translation_prompt.txt")));
-            translationPrompt = reader.readLine();
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();  //TODO firebase crashlytics
-        }
 
         recordTimeRunnable = new Runnable() {
             @Override
@@ -670,19 +659,6 @@ public class DictateInputMethodService extends InputMethodService {
                 String resultText = result.getText();
                 double duration = result.getDuration();
                 sp.edit().putFloat("net.devemperor.dictate.total_duration", sp.getFloat("net.devemperor.dictate.total_duration", 0) + (float) duration).apply();
-
-                if (sp.getBoolean("net.devemperor.dictate.translate", false)) {
-                    mainHandler.post(() -> recordButton.setText(R.string.dictate_translating));
-                    ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(),
-                            String.format(translationPrompt, sp.getString("net.devemperor.dictate.translation_language", "English"), resultText));
-                    ChatCompletionRequest translationRequest = ChatCompletionRequest.builder().model("gpt-4o-mini").messages(Collections.singletonList(message)).build();
-                    ChatCompletionResult translationResult = service.createChatCompletion(translationRequest);
-                    resultText = translationResult.getChoices().get(0).getMessage().getContent();
-                    sp.edit().putLong("net.devemperor.dictate.translation_input_tokens",
-                            sp.getLong("net.devemperor.dictate.translation_input_tokens", 0) + translationResult.getUsage().getPromptTokens()).apply();
-                    sp.edit().putLong("net.devemperor.dictate.translation_output_tokens",
-                            sp.getLong("net.devemperor.dictate.translation_output_tokens", 0) + translationResult.getUsage().getCompletionTokens()).apply();
-                }
 
                 InputConnection inputConnection = getCurrentInputConnection();
                 if (inputConnection != null) {

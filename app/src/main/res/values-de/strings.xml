@@ -75,7 +75,6 @@
     <string name="dictate_settings_vibration_title">Haptisches Feedback 📳</string>
     <string name="dictate_settings_instant_output_title">Sofortige Ausgabe ⏱️</string>
     <string name="dictate_settings_instant_output_summary">Tippanimation deaktivieren, wenn die Erkennung fertig ist</string>
-    <string name="dictate_settings_translate_title">Ergebnis übersetzen 🌎</string>
     <string name="dictate_settings_vibration_summary">Vibration bei Tastendrucken und Fehlern</string>
     <string name="dictate_settings_tap_to_reset_usage">Tippen, um die Nutzung zurückzusetzen</string>
     <string name="dictate_yes">Ja</string>
@@ -95,9 +94,6 @@
     <string name="dictate_onboarding_api_key_finish">API-Schlüssel festlegen und Einrichtung beenden</string>
     <string name="dictate_onboarding_complete_dialog_title">Wie du zur Dictate Tastatur wechselst</string>
     <string name="dictate_onboarding_complete_dialog_message">Du kannst jederzeit zwischen deiner normalen Tastatur und Dictate wechseln. Klicke einfach auf das Symbol für die Tastatur unter deiner Standardtastatur und wähle Dictate aus. Viel Spaß. 💪</string>
-    <string name="dictate_settings_translate_language_title">Übersetzungs-Sprache</string>
-    <string name="dictate_translating">Übersetzt …</string>
-    <string name="dictate_settings_translation_title">Übersetzungs Einstellungen</string>
     <string name="dictate_settings_instant_recording_title">Sofortige Aufnahme 🎙️</string>
     <string name="dictate_settings_instant_recording_summary">Aufnahme mit dem Wechseln zur Dictate-Tastatur starten</string>
     <string name="dictate_settings_api_title">API Einstellungen</string>
