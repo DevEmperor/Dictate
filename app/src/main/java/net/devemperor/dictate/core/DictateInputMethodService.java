@@ -53,7 +53,6 @@ import net.devemperor.dictate.BuildConfig;
 import net.devemperor.dictate.rewording.PromptModel;
 import net.devemperor.dictate.rewording.PromptsDatabaseHelper;
 import net.devemperor.dictate.rewording.PromptsKeyboardAdapter;
-import net.devemperor.dictate.rewording.PromptsOverviewActivity;
 import net.devemperor.dictate.settings.DictateSettingsActivity;
 import net.devemperor.dictate.R;
 
@@ -348,13 +347,6 @@ public class DictateInputMethodService extends InputMethodService {
             }
         });
 
-        noPromptsTv.setOnClickListener(v -> {
-            vibrate();
-            Intent intent = new Intent(this, PromptsOverviewActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        });
-
         enterButton.setOnLongClickListener(v -> {
             vibrate();
             overlayCharactersLl.setVisibility(View.VISIBLE);
@@ -442,7 +434,7 @@ public class DictateInputMethodService extends InputMethodService {
             } else {
                 data = promptsDb.getAll(true);
             }
-            noPromptsTv.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
+            noPromptsTv.setVisibility(data.size() == 1 ? View.VISIBLE : View.GONE);
 
             promptsAdapter = new PromptsKeyboardAdapter(data, position -> {
                 PromptModel model = data.get(position);
@@ -510,7 +502,7 @@ public class DictateInputMethodService extends InputMethodService {
                         promptsAdapter.getData().clear();
                         promptsAdapter.getData().addAll(newData);
                         promptsAdapter.notifyDataSetChanged();
-                        noPromptsTv.setVisibility(newData.isEmpty() ? View.VISIBLE : View.GONE);
+                        noPromptsTv.setVisibility(newData.size() == 1 ? View.VISIBLE : View.GONE);
                     });
                 });
             });
@@ -561,7 +553,7 @@ public class DictateInputMethodService extends InputMethodService {
             promptsAdapter.getData().clear();
             promptsAdapter.getData().addAll(data);
             promptsAdapter.notifyDataSetChanged();
-            noPromptsTv.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
+            noPromptsTv.setVisibility(data.size() == 1 ? View.VISIBLE : View.GONE);
         }
     }
 

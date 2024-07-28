@@ -122,6 +122,7 @@ public class PromptsDatabaseHelper extends SQLiteOpenHelper {
                 models.add(new PromptModel(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor.getString(3), cursor.getInt(4) == 1));
             } while (cursor.moveToNext());
         }
+        models.add(new PromptModel(-1, Integer.MAX_VALUE, null, null, false));  // Add empty model for add button
         cursor.close();
         db.close();
         return models;

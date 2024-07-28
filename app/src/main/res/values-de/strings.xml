@@ -103,7 +103,7 @@
     <string name="dictate_invalid_custom_host_msg">Ungültiger eigener API Server. Einstellungen öffnen, um ihn zu korrigieren?</string>
     <string name="dictate_custom_host_invalid_title">Ungültiger eigener API Server</string>
     <string name="dictate_custom_host_invalid_message">Dein benutzerdefinierter API-Server muss mit \'http:\' oder \'https:\' beginnen. Bitte überprüfe dies noch einmal.</string>
-    <string name="dictate_settings_input_language_title">Aufnahme-Sprache</string>
+    <string name="dictate_settings_input_language_title">Aufnahme-Sprache 🌎</string>
     <string name="dictate_settings_usage">Gesamte Aufnahme Zeit: %1$d min, %2$d s.\nGesamter Token Verbrauch: %3$d.\nGeschätzte Kosten: %4$.2f $</string>
     <string name="dictate_onboarding_welcome">Willkommen bei\nDictate\n→</string>
     <string name="dictate_detect_automatically">Automatisch erkennen</string>
@@ -133,7 +133,7 @@
     <string name="dictate_enable_keyboard_title">Dictate Tastatur aktivieren?</string>
     <string name="dictate_enable_keyboard_message">Die Dictate Tastatur ist in den Systemeinstellungen nicht mehr aktiviert. Möchtest du die Systemeinstellungen für die Tastatur öffnen, um dies zu korrigieren?</string>
     <string name="dictate_donate_msg">Wenn dir Dictate gefällt, würde ich mich sehr über eine kleine Spende freuen. 🥰</string>
-    <string name="dictate_prompts_keyboard_no_prompts">Du hast noch keine Anweisungen erstellt.\nKlicke hier, um eine hinzuzufügen.</string>
+    <string name="dictate_prompts_keyboard_no_prompts">Du hast noch keine Anweisungen erstellt.</string>
     <string name="dictate_settings_overlay_characters_title">Eigene Zeichen bearbeiten (halte die ⏎ Taste)</string>
     <string name="dictate_overlay_characters_empty">Du musst mindestens ein Zeichen festlegen.</string>
     <string name="dictate_example_prompt_one_name">Französisch Übersetzer</string>
