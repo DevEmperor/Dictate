@@ -109,7 +109,7 @@
     <string name="dictate_custom_host_hint" translatable="false">https://api.example.com/</string>
     <string name="dictate_invalid_custom_host_msg">Invalid custom API host. Open settings to correct it?</string>
     <string name="dictate_custom_host_invalid_title">Invalid custom API address</string>
-    <string name="dictate_custom_host_invalid_message">Your custom API server has to start with \'http:\' or \'https:\'. Please check this again.</string>
+    <string name="dictate_custom_host_invalid_message">Your custom API server has to start with \'http:\' or \'https:\' and end with a \'/\'. Please check this again.</string>
     <string name="dictate_settings_input_language_title">Input language 🌎</string>
     <string name="dictate_detect_automatically">Detect automatically</string>
     <string name="dictate_update_installed_msg">Dictate has been updated. View changes?</string>

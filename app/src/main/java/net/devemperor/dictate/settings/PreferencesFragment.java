@@ -142,7 +142,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
             customHostPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 String host = (String) newValue;
-                if (new UrlValidator().isValid(host)) return true;
+                if (new UrlValidator().isValid(host) && host.endsWith("/")) return true;
                 else {
                     new MaterialAlertDialogBuilder(requireContext())
                             .setTitle(R.string.dictate_custom_host_invalid_title)

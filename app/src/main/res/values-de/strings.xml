@@ -102,7 +102,7 @@
     <string name="dictate_settings_custom_api_host_title">Eigene API Server Adresse</string>
     <string name="dictate_invalid_custom_host_msg">Ungültiger eigener API Server. Einstellungen öffnen, um ihn zu korrigieren?</string>
     <string name="dictate_custom_host_invalid_title">Ungültiger eigener API Server</string>
-    <string name="dictate_custom_host_invalid_message">Dein benutzerdefinierter API-Server muss mit \'http:\' oder \'https:\' beginnen. Bitte überprüfe dies noch einmal.</string>
+    <string name="dictate_custom_host_invalid_message">Dein benutzerdefinierter API-Server muss mit \'http:\' oder \'https:\' beginnen und mit einem \'/\' enden. Bitte überprüfe dies noch einmal.</string>
     <string name="dictate_settings_input_language_title">Aufnahme-Sprache 🌎</string>
     <string name="dictate_settings_usage">Gesamte Aufnahme Zeit: %1$d min, %2$d s.\nGesamter Token Verbrauch: %3$d.\nGeschätzte Kosten: %4$.2f $</string>
     <string name="dictate_onboarding_welcome">Willkommen bei\nDictate\n→</string>
