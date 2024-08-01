@@ -120,4 +120,19 @@
         <item>vi</item>
         <item>cy</item>
     </string-array>
+
+    <string-array name="dictate_rewording_models">
+        <item>GPT-4o mini</item>
+        <item>GPT-4o</item>
+        <item>GPT-4 Turbo</item>
+        <item>GPT-4</item>
+        <item>GPT-3.5 Turbo</item>
+    </string-array>
+    <string-array name="dictate_rewording_models_values">
+        <item>gpt-4o-mini</item>
+        <item>gpt-4o</item>
+        <item>gpt-4-turbo</item>
+        <item>gpt-4</item>
+        <item>gpt-3.5-turbo</item>
+    </string-array>
 </resources>

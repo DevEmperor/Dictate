@@ -21,6 +21,16 @@
             app:iconSpaceReserved="false"
             app:dependency="net.devemperor.dictate.rewording_enabled"/>
 
+        <androidx.preference.ListPreference
+            android:key="net.devemperor.dictate.rewording_model"
+            android:title="@string/dictate_settings_rewording_model_title"
+            app:iconSpaceReserved="false"
+            app:entries="@array/dictate_rewording_models"
+            app:entryValues="@array/dictate_rewording_models_values"
+            app:defaultValue="gpt-4o-mini"
+            app:dependency="net.devemperor.dictate.rewording_enabled"
+            app:summary="%s"/>
+
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory

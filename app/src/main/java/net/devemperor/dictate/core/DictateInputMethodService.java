@@ -463,7 +463,7 @@ public class DictateInputMethodService extends InputMethodService {
                         }
 
                         ChatCompletionRequest request = ChatCompletionRequest.builder()
-                                .model("gpt-4o-mini")
+                                .model(sp.getString("net.devemperor.dictate.rewording_model", "gpt-4o-mini"))
                                 .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER.value(), prompt)))
                                 .build();
                         ChatCompletionResult rewordedResult = service.createChatCompletion(request);
