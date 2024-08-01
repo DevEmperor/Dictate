@@ -41,7 +41,8 @@ public class DictateSettingsActivity extends AppCompatActivity {
         } else if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
             String whatsNewMessage = getString(R.string.dictate_changelog_donate);
             int lastVersionCode = sp.getInt("net.devemperor.dictate.last_version_code", 0);
-            if (lastVersionCode < 8) whatsNewMessage += getString(R.string.dictate_changelog_7);
+            if (lastVersionCode < 8) whatsNewMessage += getString(R.string.dictate_changelog_8);
+            if (lastVersionCode < 7) whatsNewMessage += getString(R.string.dictate_changelog_7);
             if (lastVersionCode < 6) whatsNewMessage += getString(R.string.dictate_changelog_6);
             if (lastVersionCode < 5) whatsNewMessage += getString(R.string.dictate_changelog_5);
             new MaterialAlertDialogBuilder(this)
