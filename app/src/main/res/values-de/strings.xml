@@ -76,13 +76,11 @@
     <string name="dictate_settings_instant_output_title">Sofortige Ausgabe ⏱️</string>
     <string name="dictate_settings_instant_output_summary">Tippanimation deaktivieren, wenn die Erkennung fertig ist</string>
     <string name="dictate_settings_vibration_summary">Vibration bei Tastendrucken und Fehlern</string>
-    <string name="dictate_settings_tap_to_reset_usage">Tippen, um die Nutzung zurückzusetzen</string>
     <string name="dictate_yes">Ja</string>
     <string name="dictate_no">Nein</string>
-    <string name="dictate_settings_reset_usage_title">Nutzung zurücksetzen?</string>
-    <string name="dictate_settings_reset_usage_message">Bist du sicher, dass du die Nutzungsstatistik zurücksetzen willst?</string>
+    <string name="dictate_usage_reset_usage_title">Nutzung zurücksetzen?</string>
+    <string name="dictate_usage_reset_usage_message">Bist du sicher, dass du die Nutzungsstatistik zurücksetzen willst?</string>
     <string name="dictate_settings_feedback">Feedback geben 💌</string>
-    <string name="dictate_settings_buy_credits_title">Neue Credits auf openai.com kaufen 💰</string>
     <string name="dictate_feedback_body">Schreibe dein Feedback hier</string>
     <string name="dictate_feedback_title">Wähle eine E-Mail App</string>
     <string name="dictate_onboarding_permissions_microphone_request">Dictate benötigt deine Erlaubnis, das Mikrofon zu verwenden. Klicke auf die Schaltfläche unten, um diese Erlaubnis zu erteilen.</string>
@@ -104,7 +102,7 @@
     <string name="dictate_custom_host_invalid_title">Ungültiger eigener API Server</string>
     <string name="dictate_custom_host_invalid_message">Dein benutzerdefinierter API-Server muss mit \'http:\' oder \'https:\' beginnen und mit einem \'/\' enden. Bitte überprüfe dies noch einmal.</string>
     <string name="dictate_settings_input_language_title">Aufnahme-Sprache 🌎</string>
-    <string name="dictate_settings_usage">Gesamte Aufnahme Zeit: %1$d min, %2$d s.\nGesamter Token Verbrauch: %3$d.\nGeschätzte Kosten: %4$.2f $</string>
+    <string name="dictate_settings_usage">Verbrauch einsehen 📊</string>
     <string name="dictate_onboarding_welcome">Willkommen bei\nDictate\n→</string>
     <string name="dictate_detect_automatically">Automatisch erkennen</string>
     <string name="dictate_update_installed_msg">Dictate wurde aktualisiert. Änderungen ansehen?</string>
@@ -146,4 +144,13 @@
     <string name="dictate_example_prompt_four_prompt">Erzähl mir einen lustigen Witz. Gib nur den Witz aus, ohne weitere Erklärungen.</string>
     <string name="dictate_changelog_7">v2.0\n\nDieses Update bringt einige große Änderungen, die aus Dictate ein wirklich mächtiges Werkzeug machen:\n\n- In den Einstellungen kannst du jetzt eigene Überarbeitungs-Anweisungen festlegen. Damit kannst du den diktierten Text von ChatGPT überarbeiten lassen, was endlos viele Möglichkeiten bietet. Du findest in den Einstellungen einige Beispiel-Anweisungen, an denen du dich orientieren kannst. 💡\n\n- Die vorherige Übersetzungs-Funktion wurde entfernt, da du nun mit den Überarbeitungs-Anweisungen flexibler übersetzen kannst. ❌\n\n- Wenn du die Enter-Taste gedrückt hälst, kannst du nun per Swipen schnell Zeichen einfügen, ohne zu einem anderen Keyboard wechseln zu müssen. Du kannst in den Einstellungen bis zu 8 eigene Zeichen festlegen. 🔤\n\n- Dictate verwendet nun GPT-4o-mini, um weniger Kosten zu verursachen. Ich plane, dass du demnächst selbst das GPT-Modell für die Überarbeitung wählen kannst. 💸\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\n\n</string>
     <string name="dictate_settings_rewording_model_title">OpenAI Modell wechseln</string>
+    <string name="dictate_usage_no_usage">Hier gibt es noch nichts zu sehen.\nStarte die Transkription mit Dictate,\num den Verbrauch hier zu sehen.</string>
+    <string name="dictate_usage_buy_new_credits">Neue Credits auf openai.com kaufen</string>
+    <string name="dictate_usage_reset">Verbrauch zurücksetzen?</string>
+    <string name="dictate_usage">Verbrauch</string>
+    <string name="dictate_usage_total_cost">Geschätzte Gesamt-Kosten: %1$.2f $</string>
+    <string name="dictate_usage_input_tokens_description">Gesamter Verbrauch an Eingabe-Tokens</string>
+    <string name="dictate_usage_output_tokens_description">Gesamter Verbrauch an Ausgabe-Tokens</string>
+    <string name="dictate_usage_audio_time_description">Gesamte Aufnahme-Zeit</string>
+    <string name="dictate_usage_model_cost_description">Geschätzte Kosten für dieses Modell</string>
 </resources>

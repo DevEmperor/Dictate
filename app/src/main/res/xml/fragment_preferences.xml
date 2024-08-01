@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fragment_preferences">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.preference.PreferenceCategory
         android:title="@string/dictate_settings_rewording_title"
@@ -80,12 +79,7 @@
         <androidx.preference.Preference
             android:key="net.devemperor.dictate.usage"
             android:title="@string/dictate_settings_usage"
-            android:summary="@string/dictate_settings_tap_to_reset_usage"
-            app:iconSpaceReserved="false"/>
-
-        <androidx.preference.Preference
-            android:key="net.devemperor.dictate.buy_credits"
-            android:title="@string/dictate_settings_buy_credits_title"
+            tools:summary="Estimated cost: 1.34 $"
             app:iconSpaceReserved="false"/>
 
     </androidx.preference.PreferenceCategory>

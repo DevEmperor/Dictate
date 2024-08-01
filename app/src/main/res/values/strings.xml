@@ -78,14 +78,12 @@
     <string name="dictate_settings_instant_output_summary">Disable typing animation when the result is ready</string>
     <string name="dictate_settings_vibration_summary">Vibrate on button presses and errors</string>
     <string name="dictate_about" translatable="false">Dictate v%1$s\nMade with ❤️ by DevEmperor</string>
-    <string name="dictate_settings_tap_to_reset_usage">Tap to reset usage</string>
-    <string name="dictate_settings_usage">Total audio time: %1$d min, %2$d s.\nTotal token usage: %3$d.\nEstimated cost: %4$.2f $</string>
+    <string name="dictate_settings_usage">View usage 📊</string>
     <string name="dictate_yes">Yes</string>
     <string name="dictate_no">No</string>
-    <string name="dictate_settings_reset_usage_title">Reset usage?</string>
-    <string name="dictate_settings_reset_usage_message">Are you sure to reset Dictate usage?</string>
+    <string name="dictate_usage_reset_usage_title">Reset usage?</string>
+    <string name="dictate_usage_reset_usage_message">Are you sure to reset Dictate usage?</string>
     <string name="dictate_settings_feedback">Give feedback 💌</string>
-    <string name="dictate_settings_buy_credits_title">Buy new credits at openai.com 💰</string>
     <string name="dictate_feedback_subject" translatable="false">Dictate Feedback</string>
     <string name="dictate_feedback_body">Write your feedback here</string>
     <string name="dictate_feedback_title">Choose an email client</string>
@@ -154,4 +152,15 @@
     <string name="dictate_example_prompt_four_prompt">"Tell me a funny joke. Only output the joke, without any further explanation. "</string>
     <string name="dictate_changelog_7">v2.0\n\nThis update brings some major changes that make Dictate a truly powerful tool:\n\n- In the settings, you can now define your own rewording prompts. This allows you to have dictated text revised by ChatGPT, offering endless possibilities. You will find some example prompts in the settings that you can use as guides. 💡\n\n- The previous translation function has been removed, as you can now translate more flexibly with the rewording prompts. ❌\n\n- When you hold down the Enter button, you can now swipe to quickly insert characters without having to switch to another keyboard. You can set up to 8 custom characters in the settings. 🔤\n\n- Dictate now uses GPT-4o-mini to reduce costs. I plan to let you choose the GPT model for rewording in the future. 💸\n\n- Some design changes and bug fixes have been made. ✨\n\n\n</string>
     <string name="dictate_settings_rewording_model_title">Change OpenAI model</string>
+    <string name="dictate_usage_cost" translatable="false">%1$.2f $</string>
+    <string name="dictate_usage_audio_time" translatable="false">%1$d min, %2$d s</string>
+    <string name="dictate_usage_no_usage">There is nothing to see here yet.\nStart transcription with Dictate\nto see the usage here.</string>
+    <string name="dictate_usage_buy_new_credits">Buy new credits at openai.com</string>
+    <string name="dictate_usage_reset">Reset usage?</string>
+    <string name="dictate_usage">Usage</string>
+    <string name="dictate_usage_total_cost">Estimated total cost: %1$.2f $</string>
+    <string name="dictate_usage_input_tokens_description">Total usage of input tokens</string>
+    <string name="dictate_usage_output_tokens_description">Total usage of output tokens</string>
+    <string name="dictate_usage_audio_time_description">Total recording time</string>
+    <string name="dictate_usage_model_cost_description">Estimated cost for this model</string>
 </resources>

@@ -18,6 +18,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import net.devemperor.dictate.BuildConfig;
 import net.devemperor.dictate.R;
 import net.devemperor.dictate.rewording.PromptsOverviewActivity;
+import net.devemperor.dictate.usage.UsageActivity;
+import net.devemperor.dictate.usage.UsageDatabaseHelper;
 
 import org.apache.commons.validator.routines.UrlValidator;
 
@@ -26,12 +28,14 @@ import java.util.stream.Collectors;
 public class PreferencesFragment extends PreferenceFragmentCompat {
 
     SharedPreferences sp;
+    UsageDatabaseHelper usageDatabaseHelper;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         getPreferenceManager().setSharedPreferencesName("net.devemperor.dictate");
         setPreferencesFromResource(R.xml.fragment_preferences, null);
         sp = getPreferenceManager().getSharedPreferences();
+        usageDatabaseHelper = new UsageDatabaseHelper(requireContext());
 
         Preference editPrompts = findPreference("net.devemperor.dictate.edit_custom_rewording_prompts");
         if (editPrompts != null) {
@@ -71,32 +75,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         Preference usage = findPreference("net.devemperor.dictate.usage");
         if (usage != null) {
-            float duration = sp.getFloat("net.devemperor.dictate.total_duration", 0f);
-            long translationInputTokens = sp.getLong("net.devemperor.dictate.translation_input_tokens", 0);
-            long translationOutputTokens = sp.getLong("net.devemperor.dictate.translation_output_tokens", 0);
-            usage.setTitle(getString(R.string.dictate_settings_usage, (int) (duration / 60), (int) (duration % 60),
-                    translationInputTokens + translationOutputTokens, duration * 0.0001f + translationInputTokens * 0.00000015f + translationOutputTokens * 0.0000006f));
-            usage.setOnPreferenceClickListener(preference -> {
-                new MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(R.string.dictate_settings_reset_usage_title)
-                        .setMessage(R.string.dictate_settings_reset_usage_message)
-                        .setPositiveButton(R.string.dictate_yes, (dialog, which) -> {
-                            sp.edit().putFloat("net.devemperor.dictate.total_duration", 0f).apply();
-                            sp.edit().putLong("net.devemperor.dictate.translation_input_tokens", 0).apply();
-                            sp.edit().putLong("net.devemperor.dictate.translation_output_tokens", 0).apply();
-                            usage.setTitle(getString(R.string.dictate_settings_usage, 0, 0, 0, 0f));
-                        })
-                        .setNegativeButton(R.string.dictate_no, null)
-                        .show();
-                return true;
-            });
-        }
+            usage.setSummary(getString(R.string.dictate_usage_total_cost, usageDatabaseHelper.getTotalCost()));
 
-        Preference buyCredits = findPreference("net.devemperor.dictate.buy_credits");
-        if (buyCredits != null) {
-            buyCredits.setOnPreferenceClickListener(preference -> {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://platform.openai.com/settings/organization/billing/overview"));
-                startActivity(browserIntent);
+            usage.setOnPreferenceClickListener(preference -> {
+                Intent intent = new Intent(requireContext(), UsageActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 return true;
             });
         }

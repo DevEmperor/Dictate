@@ -39,26 +39,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".onboarding.OnboardingActivity"
             android:exported="false" />
-
         <activity
             android:name=".rewording.PromptEditActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false" >
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".rewording.PromptsOverviewActivity"/>
+                android:value=".rewording.PromptsOverviewActivity" />
         </activity>
-
         <activity
             android:name=".rewording.PromptsOverviewActivity"
-            android:exported="false" >
+            android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".settings.DictateSettingsActivity"/>
+                android:value=".settings.DictateSettingsActivity" />
+        </activity>
+        <activity
+            android:name=".usage.UsageActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".settings.DictateSettingsActivity" />
         </activity>
     </application>
 

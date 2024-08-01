@@ -57,6 +57,7 @@ import net.devemperor.dictate.rewording.PromptsDatabaseHelper;
 import net.devemperor.dictate.rewording.PromptsKeyboardAdapter;
 import net.devemperor.dictate.settings.DictateSettingsActivity;
 import net.devemperor.dictate.R;
+import net.devemperor.dictate.usage.UsageDatabaseHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -121,6 +122,8 @@ public class DictateInputMethodService extends InputMethodService {
     PromptsDatabaseHelper promptsDb;
     PromptsKeyboardAdapter promptsAdapter;
 
+    UsageDatabaseHelper usageDb;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateInputView() {
@@ -134,6 +137,7 @@ public class DictateInputMethodService extends InputMethodService {
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         sp = getSharedPreferences("net.devemperor.dictate", MODE_PRIVATE);
         promptsDb = new PromptsDatabaseHelper(this);
+        usageDb = new UsageDatabaseHelper(this);
         vibrationEnabled = sp.getBoolean("net.devemperor.dictate.vibration", true);
 
         dictateKeyboardView = (ConstraintLayout) LayoutInflater.from(context).inflate(R.layout.activity_dictate_keyboard_view, null);
@@ -462,17 +466,15 @@ public class DictateInputMethodService extends InputMethodService {
                             prompt += "\n\n" + getCurrentInputConnection().getSelectedText(0).toString();
                         }
 
+                        String gptModel = sp.getString("net.devemperor.dictate.rewording_model", "gpt-4o-mini");
                         ChatCompletionRequest request = ChatCompletionRequest.builder()
-                                .model(sp.getString("net.devemperor.dictate.rewording_model", "gpt-4o-mini"))
+                                .model(gptModel)
                                 .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER.value(), prompt)))
                                 .build();
                         ChatCompletionResult rewordedResult = service.createChatCompletion(request);
                         String rewordedText = rewordedResult.getChoices().get(0).getMessage().getContent();
 
-                        sp.edit().putLong("net.devemperor.dictate.translation_input_tokens",
-                                sp.getLong("net.devemperor.dictate.translation_input_tokens", 0) + rewordedResult.getUsage().getPromptTokens()).apply();
-                        sp.edit().putLong("net.devemperor.dictate.translation_output_tokens",
-                                sp.getLong("net.devemperor.dictate.translation_output_tokens", 0) + rewordedResult.getUsage().getCompletionTokens()).apply();
+                        usageDb.edit(gptModel, 0, rewordedResult.getUsage().getPromptTokens(), rewordedResult.getUsage().getCompletionTokens());
 
                         InputConnection inputConnection = getCurrentInputConnection();
                         if (inputConnection != null) {
@@ -651,8 +653,8 @@ public class DictateInputMethodService extends InputMethodService {
                         .build();
                 TranscriptionResult result = service.createTranscription(request, audioFile);
                 String resultText = result.getText();
-                double duration = result.getDuration();
-                sp.edit().putFloat("net.devemperor.dictate.total_duration", sp.getFloat("net.devemperor.dictate.total_duration", 0) + (float) duration).apply();
+
+                usageDb.edit("whisper-1", result.getDuration().longValue(), 0, 0);
 
                 InputConnection inputConnection = getCurrentInputConnection();
                 if (inputConnection != null) {
