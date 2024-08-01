@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -40,6 +41,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.theokanning.openai.audio.CreateTranscriptionRequest;
 import com.theokanning.openai.audio.TranscriptionResult;
 import com.theokanning.openai.client.OpenAiApi;
@@ -159,6 +161,11 @@ public class DictateInputMethodService extends InputMethodService {
         overlayCharactersLl = dictateKeyboardView.findViewById(R.id.overlay_characters_ll);
 
         promptsRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        // if user id is not set, set a random number as user id
+        if (sp.getString("net.devemperor.dictate.user_id", "null").equals("null")) {
+            sp.edit().putString("net.devemperor.dictate.user_id", String.valueOf((int) (Math.random() * 1000000))).apply();
+        }
 
         recordTimeRunnable = new Runnable() {
             @Override
@@ -445,13 +452,7 @@ public class DictateInputMethodService extends InputMethodService {
                 infoCl.setVisibility(View.GONE);
 
                 String apiKey = sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY");
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("https://api.openai.com/")
-                        .client(defaultClient(apiKey.replaceAll("[^ -~]", ""), Duration.ofSeconds(120)).newBuilder().build())
-                        .addConverterFactory(JacksonConverterFactory.create(defaultObjectMapper()))
-                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                        .build();
-                OpenAiService service = new OpenAiService(retrofit.create(OpenAiApi.class));
+                OpenAiService service = new OpenAiService(apiKey.replaceAll("[^ -~]", ""), Duration.ofSeconds(120));
 
                 rewordingApiThread = Executors.newSingleThreadExecutor();
                 rewordingApiThread.execute(() -> {
@@ -478,7 +479,8 @@ public class DictateInputMethodService extends InputMethodService {
                             inputConnection.commitText(rewordedText, 1);
                         }
                     } catch (RuntimeException e) {
-                        e.printStackTrace();  //TODO firebase crashlytics
+                        sendLogToCrashlytics(e);
+
                         if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
 
                         mainHandler.post(() -> {
@@ -586,7 +588,7 @@ public class DictateInputMethodService extends InputMethodService {
             recorder.prepare();
             recorder.start();
         } catch (IOException e) {
-            e.printStackTrace();  //TODO firebase crashlytics
+            sendLogToCrashlytics(e);
         }
 
         recordButton.setText(R.string.dictate_send);
@@ -664,7 +666,8 @@ public class DictateInputMethodService extends InputMethodService {
                     }
                 }
             } catch (RuntimeException e) {
-                e.printStackTrace();  //TODO firebase crashlytics
+                sendLogToCrashlytics(e);
+
                 if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
 
                 mainHandler.post(() -> {
@@ -693,6 +696,28 @@ public class DictateInputMethodService extends InputMethodService {
                 recordButton.setEnabled(true);
             });
         });
+    }
+
+    private void sendLogToCrashlytics(Exception e) {
+        // get all values from SharedPreferences and add them as custom keys to crashlytics
+        FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+        for (String key : sp.getAll().keySet()) {
+            Object value = sp.getAll().get(key);
+            if (value instanceof Boolean) {
+                crashlytics.setCustomKey(key, (Boolean) value);
+            } else if (value instanceof Float) {
+                crashlytics.setCustomKey(key, (Float) value);
+            } else if (value instanceof Integer) {
+                crashlytics.setCustomKey(key, (Integer) value);
+            } else if (value instanceof Long) {
+                crashlytics.setCustomKey(key, (Long) value);
+            } else if (value instanceof String) {
+                crashlytics.setCustomKey(key, (String) value);
+            }
+        }
+        crashlytics.setUserId(sp.getString("net.devemperor.dictate.user_id", "null"));
+        crashlytics.recordException(e);
+        Log.e("DictateInputMethodService", "Recorded crashlytics report");
     }
 
     private void showInfo(String type) {

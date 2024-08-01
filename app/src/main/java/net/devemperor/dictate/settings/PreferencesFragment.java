@@ -160,7 +160,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                 emailIntent.setData(Uri.parse("mailto:contact@devemperor.net"));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.dictate_feedback_subject));
-                emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.dictate_feedback_body));
+                emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.dictate_feedback_body)
+                        + "\n\nDictate User-ID: " + sp.getString("net.devemperor.dictate.user_id", "null"));
                 startActivity(Intent.createChooser(emailIntent, getString(R.string.dictate_feedback_title)));
                 return true;
             });
@@ -178,6 +179,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Preference about = findPreference("net.devemperor.dictate.about");
         if (about != null) {
             about.setTitle(getString(R.string.dictate_about, BuildConfig.VERSION_NAME));
+            about.setOnPreferenceClickListener(preference -> {
+                Toast.makeText(requireContext(), "User-ID: " + sp.getString("net.devemperor.dictate.user_id", "null"), Toast.LENGTH_LONG).show();
+                return true;
+            });
         }
     }
 }

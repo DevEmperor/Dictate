@@ -1,5 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
+
+    // Add the Google services Gradle plugin
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -46,4 +50,8 @@ dependencies {
     implementation libs.service
     implementation libs.converter.jackson
     implementation libs.commons.validator
+
+    // Import the Firebase BoM
+    implementation platform(libs.firebase.bom)
+    implementation libs.firebase.crashlytics
 }

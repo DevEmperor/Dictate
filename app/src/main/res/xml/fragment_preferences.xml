@@ -139,7 +139,6 @@
         <androidx.preference.Preference
             android:key="net.devemperor.dictate.about"
             android:title="@string/dictate_about"
-            android:enabled="false"
             app:iconSpaceReserved="false" />
 
     </androidx.preference.PreferenceCategory>
