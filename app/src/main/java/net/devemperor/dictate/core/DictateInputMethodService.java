@@ -441,10 +441,13 @@ public class DictateInputMethodService extends InputMethodService {
             promptsLl.setVisibility(View.VISIBLE);
 
             List<PromptModel> data;
-            if (getCurrentInputConnection().getSelectedText(0) == null) {
+            InputConnection inputConnection = getCurrentInputConnection();
+            if (inputConnection != null && inputConnection.getSelectedText(0) == null) {
                 data = promptsDb.getAll(false);
+                selectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_select_all_24));
             } else {
                 data = promptsDb.getAll(true);
+                selectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_deselect_24));
             }
             noPromptsTv.setVisibility(data.size() == 1 ? View.VISIBLE : View.GONE);
 
@@ -477,7 +480,6 @@ public class DictateInputMethodService extends InputMethodService {
 
                         usageDb.edit(gptModel, 0, rewordedResult.getUsage().getPromptTokens(), rewordedResult.getUsage().getCompletionTokens());
 
-                        InputConnection inputConnection = getCurrentInputConnection();
                         if (inputConnection != null) {
                             inputConnection.commitText(rewordedText, 1);
                         }
@@ -631,7 +633,7 @@ public class DictateInputMethodService extends InputMethodService {
 
         am.abandonAudioFocusRequest(audioFocusRequest);
 
-        String stylePrompt = "";
+        String stylePrompt;
         switch (sp.getInt("net.devemperor.dictate.style_prompt_selection", 1)) {
             case 1:
                 stylePrompt = DictateUtils.PROMPT_PUNCTUATION_CAPITALIZATION;
@@ -639,6 +641,8 @@ public class DictateInputMethodService extends InputMethodService {
             case 2:
                 stylePrompt = sp.getString("net.devemperor.dictate.style_prompt_custom_text", "");
                 break;
+            default:
+                stylePrompt = "";
         }
 
         String customApiHost = sp.getString("net.devemperor.dictate.custom_api_host", getString(R.string.dictate_custom_host_hint));
@@ -653,14 +657,13 @@ public class DictateInputMethodService extends InputMethodService {
         OpenAiService service = new OpenAiService(retrofit.create(OpenAiApi.class));
 
         speechApiThread = Executors.newSingleThreadExecutor();
-        String finalStylePrompt = stylePrompt;
         speechApiThread.execute(() -> {
             try {
                 CreateTranscriptionRequest request = CreateTranscriptionRequest.builder()
                         .model("whisper-1")
                         .responseFormat("verbose_json")
                         .language(!language.equals("detect") ? language : null)
-                        .prompt(!finalStylePrompt.isEmpty() ? finalStylePrompt : null)
+                        .prompt(!stylePrompt.isEmpty() ? stylePrompt : null)
                         .build();
                 TranscriptionResult result = service.createTranscription(request, audioFile);
                 String resultText = result.getText();
