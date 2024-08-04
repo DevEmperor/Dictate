@@ -52,6 +52,7 @@ import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
 
 import net.devemperor.dictate.BuildConfig;
+import net.devemperor.dictate.DictateUtils;
 import net.devemperor.dictate.rewording.PromptModel;
 import net.devemperor.dictate.rewording.PromptsDatabaseHelper;
 import net.devemperor.dictate.rewording.PromptsKeyboardAdapter;
@@ -630,10 +631,19 @@ public class DictateInputMethodService extends InputMethodService {
 
         am.abandonAudioFocusRequest(audioFocusRequest);
 
+        String stylePrompt = "";
+        switch (sp.getInt("net.devemperor.dictate.style_prompt_selection", 1)) {
+            case 1:
+                stylePrompt = DictateUtils.PROMPT_PUNCTUATION_CAPITALIZATION;
+                break;
+            case 2:
+                stylePrompt = sp.getString("net.devemperor.dictate.style_prompt_custom_text", "");
+                break;
+        }
+
         String customApiHost = sp.getString("net.devemperor.dictate.custom_api_host", getString(R.string.dictate_custom_host_hint));
         String apiKey = sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY");
         String language = sp.getString("net.devemperor.dictate.input_language", "detect");
-        String prompt = sp.getString("net.devemperor.dictate.prompt", "NO_PROMPT");
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(sp.getBoolean("net.devemperor.dictate.custom_api_host_enabled", false) ? customApiHost : "https://api.openai.com/")
                 .client(defaultClient(apiKey.replaceAll("[^ -~]", ""), Duration.ofSeconds(120)).newBuilder().build())
@@ -643,13 +653,14 @@ public class DictateInputMethodService extends InputMethodService {
         OpenAiService service = new OpenAiService(retrofit.create(OpenAiApi.class));
 
         speechApiThread = Executors.newSingleThreadExecutor();
+        String finalStylePrompt = stylePrompt;
         speechApiThread.execute(() -> {
             try {
                 CreateTranscriptionRequest request = CreateTranscriptionRequest.builder()
                         .model("whisper-1")
                         .responseFormat("verbose_json")
                         .language(!language.equals("detect") ? language : null)
-                        .prompt(!prompt.equals("NO_PROMPT") ? prompt : null)
+                        .prompt(!finalStylePrompt.isEmpty() ? finalStylePrompt : null)
                         .build();
                 TranscriptionResult result = service.createTranscription(request, audioFile);
                 String resultText = result.getText();

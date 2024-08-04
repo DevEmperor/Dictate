@@ -97,13 +97,10 @@
             app:dialogTitle="@string/dictate_settings_api_key_title"
             app:iconSpaceReserved="false"/>
 
-        <androidx.preference.EditTextPreference
+        <androidx.preference.Preference
             android:key="net.devemperor.dictate.prompt"
             android:title="@string/dictate_settings_prompt_title"
-            android:summary="@string/dictate_no_prompt"
-            app:positiveButtonText="@string/dictate_okay"
-            app:negativeButtonText="@string/dictate_cancel"
-            app:dialogTitle="@string/dictate_settings_prompt_title"
+            android:summary="@string/dictate_settings_prompt_summary"
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.SwitchPreference

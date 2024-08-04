@@ -101,12 +101,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
-        EditTextPreference promptPreference = findPreference("net.devemperor.dictate.prompt");
+        Preference promptPreference = findPreference("net.devemperor.dictate.prompt");
         if (promptPreference != null) {
-            promptPreference.setSummaryProvider((Preference.SummaryProvider<EditTextPreference>) preference -> {
-                String text = preference.getText();
-                if (TextUtils.isEmpty(text)) return getString(R.string.dictate_no_prompt);
-                return text;
+            promptPreference.setOnPreferenceClickListener(preference -> {
+                Intent intent = new Intent(requireContext(), StylePromptActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                return true;
             });
         }
 

@@ -116,7 +116,6 @@
     <string name="dictate_settings_donate">Donate 🤝</string>
     <string name="dictate_settings_feedback_address" translatable="false">contact@devemperor.net</string>
     <string name="dictate_settings_donate_address" translatable="false">paypal.me/DevEmperor</string>
-    <string name="dictate_no_prompt">No prompt set</string>
     <string name="dictate_settings_prompt_title">Change style prompt 💬</string>
     <string name="dictate_changelog_donate">If you like Dictate, I would be very happy about a small donation to support this project. 🥰\n\n</string>
     <string name="dictate_changelog_6">v1.5\n\n- In the settings, you can now store a system prompt for Whisper to guide speech recognition in a certain direction (e.g. specify special words in advance or influence the punctuation and filler words). ✏️\n\n- After a failed transcription, you can now resend the last recording. 🔄\n\n- Holding down the delete button for longer now speeds up the deletion process. 🚀\n\n- A donate button has been added in the settings. 🤝\n\n- Some design changes and bug fixes have been made. ✨\n\n\n</string>
@@ -164,4 +163,10 @@
     <string name="dictate_usage_audio_time_description">Total recording time</string>
     <string name="dictate_usage_model_cost_description">Estimated cost for this model</string>
     <string name="dictate_changelog_8">v2.1\n\nThis is just a small update with some new features requested by you:\n\n- In the settings, you can now change the OpenAI model used for rewording in the background. Newer models released by OpenAI will always be added in the future. 💪\n\n- I added a detailed usage page in the settings, where you can track the usage and the cost of Dictate at any time. 📊\n\n- You will find a button in the rewording section of the keyboard to quickly add new prompts. ✏️\n\n- Errors and logs will automatically sent to me, so that I can easier investigate them to fix bugs and improve the app. 🐛\n\n- Some design changes and bug fixes have been made. ✨\n\n\nPreview of the next update 🤩\n\nThe next update will be released soon, containing a feature to record a rewording prompt spontaneously without adding it as a predefined prompt first.\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
+    <string name="dictate_style_prompt_custom">Custom style prompt</string>
+    <string name="dictate_settings_prompt_summary">Change the style how Whisper transcribes</string>
+    <string name="dictate_style_prompt">Style prompt</string>
+    <string name="dictate_style_prompt_custom_hint">Umm, let me think like, hmm… Okay, here\'s what I\'m, like, thinking.</string>
+    <string name="dictate_style_prompt_punctuation_capitalization">Use punctuation and capitalization</string>
+    <string name="dictate_style_prompt_nothing">No style prompt</string>
 </resources>
