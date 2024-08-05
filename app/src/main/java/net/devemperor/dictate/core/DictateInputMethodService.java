@@ -337,28 +337,6 @@ public class DictateInputMethodService extends InputMethodService {
             }
         });
 
-        selectAllButton.setOnClickListener(v -> {
-            vibrate();
-
-            InputConnection inputConnection = getCurrentInputConnection();
-            if (inputConnection != null) {
-                ExtractedText extractedText = inputConnection.getExtractedText(new ExtractedTextRequest(), 0);
-
-                if (inputConnection.getSelectedText(0) == null && extractedText.text.length() > 0) {
-                    inputConnection.performContextMenuAction(android.R.id.selectAll);
-                    selectAllButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_deselect_24));
-                } else {
-                    inputConnection.clearMetaKeyStates(0);
-                    if (extractedText == null || extractedText.text == null) {
-                        inputConnection.setSelection(0, 0);
-                    } else {
-                        inputConnection.setSelection(extractedText.text.length(), extractedText.text.length());
-                    }
-                    selectAllButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_select_all_24));
-                }
-            }
-        });
-
         enterButton.setOnLongClickListener(v -> {
             vibrate();
             overlayCharactersLl.setVisibility(View.VISIBLE);
@@ -386,7 +364,7 @@ public class DictateInputMethodService extends InputMethodService {
                             if (inputConnection != null) {
                                 inputConnection.commitText(selectedCharacter.getText(), 1);
                             }
-                            selectedCharacter.setBackgroundColor(getResources().getColor(android.R.color.transparent, getTheme()));
+                            selectedCharacter.setBackground(AppCompatResources.getDrawable(this, R.drawable.border_textview));
                             selectedCharacter = null;
                         }
                         overlayCharactersLl.setVisibility(View.GONE);
@@ -403,6 +381,28 @@ public class DictateInputMethodService extends InputMethodService {
             TextView charView = (TextView) LayoutInflater.from(context).inflate(R.layout.item_overlay_characters, overlayCharactersLl, false);
             overlayCharactersLl.addView(charView);
         }
+
+        selectAllButton.setOnClickListener(v -> {
+            vibrate();
+
+            InputConnection inputConnection = getCurrentInputConnection();
+            if (inputConnection != null) {
+                ExtractedText extractedText = inputConnection.getExtractedText(new ExtractedTextRequest(), 0);
+
+                if (inputConnection.getSelectedText(0) == null && extractedText.text.length() > 0) {
+                    inputConnection.performContextMenuAction(android.R.id.selectAll);
+                    selectAllButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_deselect_24));
+                } else {
+                    inputConnection.clearMetaKeyStates(0);
+                    if (extractedText == null || extractedText.text == null) {
+                        inputConnection.setSelection(0, 0);
+                    } else {
+                        inputConnection.setSelection(extractedText.text.length(), extractedText.text.length());
+                    }
+                    selectAllButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_select_all_24));
+                }
+            }
+        });
 
         return dictateKeyboardView;
     }
@@ -851,9 +851,9 @@ public class DictateInputMethodService extends InputMethodService {
         for (int i = 0; i < overlayCharactersLl.getChildCount(); i++) {
             TextView charView = (TextView) overlayCharactersLl.getChildAt(i);
             if (charView == selectedView) {
-                charView.setBackgroundColor(getResources().getColor(R.color.dictate_blue_dark, getTheme()));
+                charView.setBackground(AppCompatResources.getDrawable(this, R.drawable.border_textview_selected));
             } else {
-                charView.setBackgroundColor(getResources().getColor(R.color.dictate_blue, getTheme()));
+                charView.setBackground(AppCompatResources.getDrawable(this, R.drawable.border_textview));
             }
         }
     }
