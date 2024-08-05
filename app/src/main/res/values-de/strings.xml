@@ -159,4 +159,5 @@
     <string name="dictate_style_prompt_custom_hint">Ähm, lass mich mal nachdenken, so, hmmm… Okay, hier ist, was ich so denke.</string>
     <string name="dictate_style_prompt_punctuation_capitalization">Benutze Satzzeichen und Großschreibung</string>
     <string name="dictate_style_prompt_nothing">Keine Stil-Anweisung</string>
+    <string name="dictate_content_size_limit_msg">Deine Audio Datei ist zu groß (>25 MB).</string>
 </resources>

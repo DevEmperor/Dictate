@@ -62,6 +62,7 @@ import net.devemperor.dictate.usage.UsageDatabaseHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -420,6 +421,10 @@ public class DictateInputMethodService extends InputMethodService {
                 recordTimeHandler.removeCallbacks(recordTimeRunnable);
             }
         }
+
+        if (speechApiThread != null) speechApiThread.shutdownNow();
+        if (rewordingApiThread != null) rewordingApiThread.shutdownNow();
+
         pauseButton.setVisibility(View.GONE);
         trashButton.setVisibility(View.GONE);
         resendButton.setVisibility(View.GONE);
@@ -682,28 +687,33 @@ public class DictateInputMethodService extends InputMethodService {
                     }
                 }
             } catch (RuntimeException e) {
-                sendLogToCrashlytics(e);
+                // check if RuntimeException was caused by InterruptedIOException
+                if (!(e.getCause() instanceof InterruptedIOException)) {
+                    sendLogToCrashlytics(e);
 
-                if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
+                    if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
 
-                mainHandler.post(() -> {
-                    resendButton.setVisibility(View.VISIBLE);
-                    if (Objects.requireNonNull(e.getMessage()).contains("SocketTimeoutException")) {
-                        showInfo("timeout");
-                    } else if (e.getMessage().contains("API key")) {
-                        showInfo("invalid_api_key");
-                    } else if (e.getMessage().contains("quota")) {
-                        showInfo("quota_exceeded");
-                    } else if (sp.getBoolean("net.devemperor.dictate.custom_api_host_enabled", false)) {
-                        if (e.getMessage().contains("ConnectException")) {
-                            showInfo("internet_error");
+                    mainHandler.post(() -> {
+                        resendButton.setVisibility(View.VISIBLE);
+                        if (Objects.requireNonNull(e.getMessage()).contains("SocketTimeoutException")) {
+                            showInfo("timeout");
+                        } else if (e.getMessage().contains("API key")) {
+                            showInfo("invalid_api_key");
+                        } else if (e.getMessage().contains("quota")) {
+                            showInfo("quota_exceeded");
+                        } else if (e.getMessage().contains("content size limit")) {
+                            showInfo("content_size_limit");
+                        } else if (sp.getBoolean("net.devemperor.dictate.custom_api_host_enabled", false)) {
+                            if (e.getMessage().contains("ConnectException")) {
+                                showInfo("internet_error");
+                            } else {
+                                showInfo("unknown_host");
+                            }
                         } else {
-                            showInfo("unknown_host");
+                            showInfo("internet_error");
                         }
-                    } else {
-                        showInfo("internet_error");
-                    }
-                });
+                    });
+                }
             }
 
             mainHandler.post(() -> {
@@ -809,6 +819,11 @@ public class DictateInputMethodService extends InputMethodService {
                     startActivity(browserIntent);
                     infoCl.setVisibility(View.GONE);
                 });
+                infoNoButton.setOnClickListener(v -> infoCl.setVisibility(View.GONE));
+                break;
+            case "content_size_limit":
+                infoTv.setText(R.string.dictate_content_size_limit_msg);
+                infoYesButton.setVisibility(View.GONE);
                 infoNoButton.setOnClickListener(v -> infoCl.setVisibility(View.GONE));
                 break;
             case "unknown_host":

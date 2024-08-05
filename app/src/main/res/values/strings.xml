@@ -169,4 +169,5 @@
     <string name="dictate_style_prompt_custom_hint">Umm, let me think like, hmm… Okay, here\'s what I\'m, like, thinking.</string>
     <string name="dictate_style_prompt_punctuation_capitalization">Use punctuation and capitalization</string>
     <string name="dictate_style_prompt_nothing">No style prompt</string>
+    <string name="dictate_content_size_limit_msg">Your audio file is too large (>25 MB).</string>
 </resources>
