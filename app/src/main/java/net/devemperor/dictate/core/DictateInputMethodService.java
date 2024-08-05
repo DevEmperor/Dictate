@@ -63,6 +63,8 @@ import net.devemperor.dictate.usage.UsageDatabaseHelper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -413,7 +415,9 @@ public class DictateInputMethodService extends InputMethodService {
         super.onFinishInputView(finishingInput);
 
         if (recorder != null) {
-            recorder.stop();
+            try {
+                recorder.stop();
+            } catch (RuntimeException ignored) { }
             recorder.release();
             recorder = null;
 
@@ -614,7 +618,9 @@ public class DictateInputMethodService extends InputMethodService {
 
     private void stopRecording() {
         if (recorder != null) {
-            recorder.stop();
+            try {
+                recorder.stop();
+            } catch (RuntimeException ignored) { }
             recorder.release();
             recorder = null;
 
@@ -743,6 +749,9 @@ public class DictateInputMethodService extends InputMethodService {
         }
         crashlytics.setUserId(sp.getString("net.devemperor.dictate.user_id", "null"));
         crashlytics.recordException(e);
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        Log.e("DictateInputMethodService", sw.toString());
         Log.e("DictateInputMethodService", "Recorded crashlytics report");
     }
 
