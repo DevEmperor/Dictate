@@ -160,4 +160,8 @@
     <string name="dictate_style_prompt_punctuation_capitalization">Benutze Satzzeichen und Großschreibung</string>
     <string name="dictate_style_prompt_nothing">Keine Stil-Anweisung</string>
     <string name="dictate_content_size_limit_msg">Deine Audio Datei ist zu groß (>25 MB).</string>
+    <string name="dictate_choose_audio_file">Wähl eine Audiodatei aus</string>
+    <string name="dictate_file_too_large_title">Mediendatei zu groß</string>
+    <string name="dictate_file_too_large_message">Leider ist diese Mediendatei zu groß. Whisper akzeptiert maximal 25 MB auf einmal. 🥲</string>
+    <string name="dictate_file_copying_to_cache">Kopiere Datei in den Cache …</string>
 </resources>

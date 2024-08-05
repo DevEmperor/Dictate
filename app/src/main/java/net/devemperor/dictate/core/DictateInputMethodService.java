@@ -137,7 +137,6 @@ public class DictateInputMethodService extends InputMethodService {
         deleteHandler = new Handler();
         recordTimeHandler = new Handler(Looper.getMainLooper());
 
-        audioFile = new File(getFilesDir(), "audio.mp3");
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         sp = getSharedPreferences("net.devemperor.dictate", MODE_PRIVATE);
         promptsDb = new PromptsDatabaseHelper(this);
@@ -207,6 +206,7 @@ public class DictateInputMethodService extends InputMethodService {
             openSettingsActivity();
         });
 
+        recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
         recordButton.setOnClickListener(v -> {
             vibrate();
 
@@ -218,6 +218,18 @@ public class DictateInputMethodService extends InputMethodService {
             } else {
                 stopRecording();
             }
+        });
+
+        recordButton.setOnLongClickListener(v -> {
+            vibrate();
+
+            if (!isRecording) {
+                Intent intent = new Intent(this, DictateSettingsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("net.devemperor.dictate.open_file_picker", true);
+                startActivity(intent);
+            }
+            return true;
         });
 
         resendButton.setOnClickListener(v -> {
@@ -296,7 +308,7 @@ public class DictateInputMethodService extends InputMethodService {
             isRecording = false;
             isPaused = false;
             recordButton.setText(R.string.dictate_record);
-            recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_mic_24));
+            recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
             recordButton.setEnabled(true);
             pauseButton.setVisibility(View.GONE);
             pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_pause_24));
@@ -437,7 +449,7 @@ public class DictateInputMethodService extends InputMethodService {
         isPaused = false;
         am.abandonAudioFocusRequest(audioFocusRequest);
         recordButton.setText(R.string.dictate_record);
-        recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_mic_24));
+        recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
         recordButton.setEnabled(true);
     }
 
@@ -546,7 +558,12 @@ public class DictateInputMethodService extends InputMethodService {
             showInfo("donate");
         }
 
-        if (sp.getBoolean("net.devemperor.dictate.instant_recording", false)) {
+        if (!sp.getString("net.devemperor.dictate.transcription_audio_file", "").isEmpty()) {
+            audioFile = new File(getCacheDir(), sp.getString("net.devemperor.dictate.transcription_audio_file", ""));
+            sp.edit().remove("net.devemperor.dictate.transcription_audio_file").apply();
+            startApiRequest();
+
+        } else if (sp.getBoolean("net.devemperor.dictate.instant_recording", false)) {
             recordButton.performClick();
         }
     }
@@ -588,6 +605,7 @@ public class DictateInputMethodService extends InputMethodService {
     }
 
     private void startRecording() {
+        audioFile = new File(getCacheDir(), "audio.mp3");
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -606,7 +624,7 @@ public class DictateInputMethodService extends InputMethodService {
         }
 
         recordButton.setText(R.string.dictate_send);
-        recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_send_24));
+        recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_send_20, 0, 0, 0);
         pauseButton.setVisibility(View.VISIBLE);
         trashButton.setVisibility(View.VISIBLE);
         resendButton.setVisibility(View.GONE);
@@ -634,6 +652,7 @@ public class DictateInputMethodService extends InputMethodService {
 
     private void startApiRequest() {
         recordButton.setText(R.string.dictate_sending);
+        recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_send_20, 0, 0, 0);
         recordButton.setEnabled(false);
         pauseButton.setVisibility(View.GONE);
         trashButton.setVisibility(View.GONE);
@@ -692,6 +711,10 @@ public class DictateInputMethodService extends InputMethodService {
                         }
                     }
                 }
+
+                // remove audioFile from cache dir
+                if (audioFile != null) audioFile.delete();
+
             } catch (RuntimeException e) {
                 // check if RuntimeException was caused by InterruptedIOException
                 if (!(e.getCause() instanceof InterruptedIOException)) {
@@ -724,7 +747,7 @@ public class DictateInputMethodService extends InputMethodService {
 
             mainHandler.post(() -> {
                 recordButton.setText(R.string.dictate_record);
-                recordButton.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_mic_24));
+                recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
                 recordButton.setEnabled(true);
             });
         });
