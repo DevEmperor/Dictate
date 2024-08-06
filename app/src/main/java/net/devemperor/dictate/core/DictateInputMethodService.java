@@ -443,6 +443,7 @@ public class DictateInputMethodService extends InputMethodService {
         if (speechApiThread != null) speechApiThread.shutdownNow();
         if (rewordingApiThread != null) rewordingApiThread.shutdownNow();
 
+        pauseButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_pause_24));
         pauseButton.setVisibility(View.GONE);
         trashButton.setVisibility(View.GONE);
         resendButton.setVisibility(View.GONE);
@@ -615,6 +616,7 @@ public class DictateInputMethodService extends InputMethodService {
         recordButton.setText(R.string.dictate_sending);
         recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_send_20, 0, 0, 0);
         recordButton.setEnabled(false);
+        pauseButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_pause_24));
         pauseButton.setVisibility(View.GONE);
         trashButton.setVisibility(View.GONE);
         resendButton.setVisibility(View.GONE);
