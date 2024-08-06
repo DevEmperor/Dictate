@@ -174,4 +174,5 @@
     <string name="dictate_file_too_large_title">Media file too large</string>
     <string name="dictate_file_too_large_message">Sadly, this media file is too large. Whisper accepts a maximum of 25 MB at once. 🥲</string>
     <string name="dictate_file_copying_to_cache">Copying file to cache …</string>
+    <string name="dictate_changelog_9">v2.2\n\nThis update brings some cool new features:\n\n- You can now record new rewording prompts instantly. Just click on the small microphone icon in the top bar, to start the recording. ChatGPT will use your spoken prompt to edit your selected text. 🎤\n\n- If you press and hold the recording button, you can select an audio or video file up to 25 MB and Dictate will send this file for transcription. 📄\n\n- In the settings, it is now easier to choose a style prompt for Whisper. For most of you, the default value \"Use punctuation and capitalization\" should work fine. ⚙️\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
 </resources>
