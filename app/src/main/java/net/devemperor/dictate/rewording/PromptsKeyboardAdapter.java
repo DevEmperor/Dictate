@@ -1,7 +1,6 @@
 package net.devemperor.dictate.rewording;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,19 +51,18 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, final int position) {
         PromptModel model = data.get(position);
-        if (model.getName() == null) {
+        if (model.getId() == -1) {
+            holder.promptBtn.setText("");
+            holder.promptBtn.setForeground(AppCompatResources.getDrawable(holder.promptBtn.getContext(), R.drawable.ic_baseline_mic_20));
+        }
+        else if (model.getId() == -2) {
             holder.promptBtn.setText("");
             holder.promptBtn.setForeground(AppCompatResources.getDrawable(holder.promptBtn.getContext(), R.drawable.ic_baseline_add_24));
-            holder.promptBtn.setOnClickListener(v -> {
-                Intent intent = new Intent(v.getContext(), PromptsOverviewActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                v.getContext().startActivity(intent);
-            });
         } else {
             holder.promptBtn.setText(model.getName());
             holder.promptBtn.setForeground(null);
-            holder.promptBtn.setOnClickListener(v -> callback.onItemClicked(position));
         }
+        holder.promptBtn.setOnClickListener(v -> callback.onItemClicked(position));
     }
 
     @Override

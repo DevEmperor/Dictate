@@ -56,6 +56,7 @@ import net.devemperor.dictate.DictateUtils;
 import net.devemperor.dictate.rewording.PromptModel;
 import net.devemperor.dictate.rewording.PromptsDatabaseHelper;
 import net.devemperor.dictate.rewording.PromptsKeyboardAdapter;
+import net.devemperor.dictate.rewording.PromptsOverviewActivity;
 import net.devemperor.dictate.settings.DictateSettingsActivity;
 import net.devemperor.dictate.R;
 import net.devemperor.dictate.usage.UsageDatabaseHelper;
@@ -91,6 +92,7 @@ public class DictateInputMethodService extends InputMethodService {
     private int currentDeleteDelay = 50;
     private boolean isRecording = false;
     private boolean isPaused = false;
+    private boolean instantPrompt = false;
     private boolean vibrationEnabled = true;
     private TextView selectedCharacter = null;
 
@@ -234,7 +236,7 @@ public class DictateInputMethodService extends InputMethodService {
 
         resendButton.setOnClickListener(v -> {
             vibrate();
-            startApiRequest();
+            startWhisperApiRequest();
         });
 
         backspaceButton.setOnClickListener(v -> {
@@ -470,69 +472,28 @@ public class DictateInputMethodService extends InputMethodService {
                 data = promptsDb.getAll(true);
                 selectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_deselect_24));
             }
-            noPromptsTv.setVisibility(data.size() == 1 ? View.VISIBLE : View.GONE);
+            noPromptsTv.setVisibility(data.size() == 2 ? View.VISIBLE : View.GONE);
 
             promptsAdapter = new PromptsKeyboardAdapter(data, position -> {
+                vibrate();
                 PromptModel model = data.get(position);
 
-                promptsAdapter.removeAllExcept(position);
-                promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_pb).setVisibility(View.VISIBLE);
-                promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_btn).setEnabled(false);
-                infoCl.setVisibility(View.GONE);
-
-                String apiKey = sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY");
-                OpenAiService service = new OpenAiService(apiKey.replaceAll("[^ -~]", ""), Duration.ofSeconds(120));
-
-                rewordingApiThread = Executors.newSingleThreadExecutor();
-                rewordingApiThread.execute(() -> {
-                    try {
-                        String prompt = model.getPrompt();
-                        if (getCurrentInputConnection().getSelectedText(0) != null) {
-                            prompt += "\n\n" + getCurrentInputConnection().getSelectedText(0).toString();
-                        }
-
-                        String gptModel = sp.getString("net.devemperor.dictate.rewording_model", "gpt-4o-mini");
-                        ChatCompletionRequest request = ChatCompletionRequest.builder()
-                                .model(gptModel)
-                                .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER.value(), prompt)))
-                                .build();
-                        ChatCompletionResult rewordedResult = service.createChatCompletion(request);
-                        String rewordedText = rewordedResult.getChoices().get(0).getMessage().getContent();
-
-                        usageDb.edit(gptModel, 0, rewordedResult.getUsage().getPromptTokens(), rewordedResult.getUsage().getCompletionTokens());
-
-                        if (inputConnection != null) {
-                            inputConnection.commitText(rewordedText, 1);
-                        }
-                    } catch (RuntimeException e) {
-                        sendLogToCrashlytics(e);
-
-                        if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
-
-                        mainHandler.post(() -> {
-                            if (Objects.requireNonNull(e.getMessage()).contains("SocketTimeoutException")) {
-                                showInfo("timeout");
-                            } else if (e.getMessage().contains("API key")) {
-                                showInfo("invalid_api_key");
-                            } else if (e.getMessage().contains("quota")) {
-                                showInfo("quota_exceeded");
-                            } else {
-                                showInfo("internet_error");
-                            }
-                        });
+                if (model.getId() == -1) {
+                    instantPrompt = true;
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                        openSettingsActivity();
+                    } else if (!isRecording) {
+                        startRecording();
+                    } else {
+                        stopRecording();
                     }
-
-                    mainHandler.post(() -> {
-                        promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_pb).setVisibility(View.GONE);
-                        promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_btn).setEnabled(true);
-
-                        List<PromptModel> newData = promptsDb.getAll(false);
-                        promptsAdapter.getData().clear();
-                        promptsAdapter.getData().addAll(newData);
-                        promptsAdapter.notifyDataSetChanged();
-                        noPromptsTv.setVisibility(newData.size() == 1 ? View.VISIBLE : View.GONE);
-                    });
-                });
+                } else if (model.getId() == -2) {
+                    Intent intent = new Intent(this, PromptsOverviewActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } else {
+                    startGPTApiRequest(position, model);
+                }
             });
             promptsRv.setAdapter(promptsAdapter);
         } else {
@@ -561,7 +522,7 @@ public class DictateInputMethodService extends InputMethodService {
         if (!sp.getString("net.devemperor.dictate.transcription_audio_file", "").isEmpty()) {
             audioFile = new File(getCacheDir(), sp.getString("net.devemperor.dictate.transcription_audio_file", ""));
             sp.edit().remove("net.devemperor.dictate.transcription_audio_file").apply();
-            startApiRequest();
+            startWhisperApiRequest();
 
         } else if (sp.getBoolean("net.devemperor.dictate.instant_recording", false)) {
             recordButton.performClick();
@@ -586,7 +547,7 @@ public class DictateInputMethodService extends InputMethodService {
             promptsAdapter.getData().clear();
             promptsAdapter.getData().addAll(data);
             promptsAdapter.notifyDataSetChanged();
-            noPromptsTv.setVisibility(data.size() == 1 ? View.VISIBLE : View.GONE);
+            noPromptsTv.setVisibility(data.size() == 2 ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -646,11 +607,11 @@ public class DictateInputMethodService extends InputMethodService {
                 recordTimeHandler.removeCallbacks(recordTimeRunnable);
             }
 
-            startApiRequest();
+            startWhisperApiRequest();
         }
     }
 
-    private void startApiRequest() {
+    private void startWhisperApiRequest() {
         recordButton.setText(R.string.dictate_sending);
         recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_send_20, 0, 0, 0);
         recordButton.setEnabled(false);
@@ -700,16 +661,21 @@ public class DictateInputMethodService extends InputMethodService {
 
                 usageDb.edit("whisper-1", result.getDuration().longValue(), 0, 0);
 
-                InputConnection inputConnection = getCurrentInputConnection();
-                if (inputConnection != null) {
-                    if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
-                        inputConnection.commitText(resultText, 1);
-                    } else {
-                        for (int i = 0; i < resultText.length(); i++) {
-                            char character = resultText.charAt(i);
-                            mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), i * 20L);
+                if (!instantPrompt) {
+                    InputConnection inputConnection = getCurrentInputConnection();
+                    if (inputConnection != null) {
+                        if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
+                            inputConnection.commitText(resultText, 1);
+                        } else {
+                            for (int i = 0; i < resultText.length(); i++) {
+                                char character = resultText.charAt(i);
+                                mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), i * 20L);
+                            }
                         }
                     }
+                } else {
+                    instantPrompt = false;
+                    startGPTApiRequest(0, new PromptModel(-1, Integer.MIN_VALUE, "", resultText, false));
                 }
 
                 // remove audioFile from cache dir
@@ -753,6 +719,70 @@ public class DictateInputMethodService extends InputMethodService {
         });
     }
 
+    private void startGPTApiRequest(Integer position, PromptModel model) {
+        mainHandler.post(() -> {
+            promptsAdapter.removeAllExcept(position);
+            promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_pb).setVisibility(View.VISIBLE);
+            promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_btn).setEnabled(false);
+            infoCl.setVisibility(View.GONE);
+        });
+
+        String apiKey = sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY");
+        OpenAiService service = new OpenAiService(apiKey.replaceAll("[^ -~]", ""), Duration.ofSeconds(120));
+
+        rewordingApiThread = Executors.newSingleThreadExecutor();
+        rewordingApiThread.execute(() -> {
+            try {
+                String prompt = model.getPrompt();
+                if (getCurrentInputConnection().getSelectedText(0) != null) {
+                    prompt += "\n\n" + getCurrentInputConnection().getSelectedText(0).toString();
+                }
+
+                String gptModel = sp.getString("net.devemperor.dictate.rewording_model", "gpt-4o-mini");
+                ChatCompletionRequest request = ChatCompletionRequest.builder()
+                        .model(gptModel)
+                        .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER.value(), prompt)))
+                        .build();
+                ChatCompletionResult rewordedResult = service.createChatCompletion(request);
+                String rewordedText = rewordedResult.getChoices().get(0).getMessage().getContent();
+
+                usageDb.edit(gptModel, 0, rewordedResult.getUsage().getPromptTokens(), rewordedResult.getUsage().getCompletionTokens());
+
+                InputConnection inputConnection = getCurrentInputConnection();
+                if (inputConnection != null) {
+                    inputConnection.commitText(rewordedText, 1);
+                }
+            } catch (RuntimeException e) {
+                sendLogToCrashlytics(e);
+
+                if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
+
+                mainHandler.post(() -> {
+                    if (Objects.requireNonNull(e.getMessage()).contains("SocketTimeoutException")) {
+                        showInfo("timeout");
+                    } else if (e.getMessage().contains("API key")) {
+                        showInfo("invalid_api_key");
+                    } else if (e.getMessage().contains("quota")) {
+                        showInfo("quota_exceeded");
+                    } else {
+                        showInfo("internet_error");
+                    }
+                });
+            }
+
+            mainHandler.post(() -> {
+                promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_pb).setVisibility(View.GONE);
+                promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_btn).setEnabled(true);
+
+                List<PromptModel> newData = promptsDb.getAll(false);
+                promptsAdapter.getData().clear();
+                promptsAdapter.getData().addAll(newData);
+                promptsAdapter.notifyDataSetChanged();
+                noPromptsTv.setVisibility(newData.size() == 2 ? View.VISIBLE : View.GONE);
+            });
+        });
+    }
+
     private void sendLogToCrashlytics(Exception e) {
         // get all values from SharedPreferences and add them as custom keys to crashlytics
         FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
@@ -771,7 +801,7 @@ public class DictateInputMethodService extends InputMethodService {
             }
         }
         crashlytics.setUserId(sp.getString("net.devemperor.dictate.user_id", "null"));
-        crashlytics.recordException(e);
+        crashlytics.recordException(e);  // TODO uncomment while testing
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
         Log.e("DictateInputMethodService", sw.toString());
