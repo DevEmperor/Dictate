@@ -309,6 +309,7 @@ public class DictateInputMethodService extends InputMethodService {
 
             isRecording = false;
             isPaused = false;
+            instantPrompt = false;
             recordButton.setText(R.string.dictate_record);
             recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
             recordButton.setEnabled(true);
@@ -450,6 +451,7 @@ public class DictateInputMethodService extends InputMethodService {
         infoCl.setVisibility(View.GONE);
         isRecording = false;
         isPaused = false;
+        instantPrompt = false;
         am.abandonAudioFocusRequest(audioFocusRequest);
         recordButton.setText(R.string.dictate_record);
         recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
