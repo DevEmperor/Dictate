@@ -761,7 +761,7 @@ public class DictateInputMethodService extends InputMethodService {
                         int speed = sp.getInt("net.devemperor.dictate.output_speed", 5);
                         for (int i = 0; i < rewordedText.length(); i++) {
                             char character = rewordedText.charAt(i);
-                            mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), i * (20L / (speed / 5)));
+                            mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), (long) (i * (20L / (speed / 5f))));
                         }
                     }
                 }
