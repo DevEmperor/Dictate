@@ -671,9 +671,10 @@ public class DictateInputMethodService extends InputMethodService {
                         if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
                             inputConnection.commitText(resultText, 1);
                         } else {
+                            int speed = sp.getInt("net.devemperor.dictate.output_speed", 5);
                             for (int i = 0; i < resultText.length(); i++) {
                                 char character = resultText.charAt(i);
-                                mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), i * 20L);
+                                mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), (long) (i * (20L / (speed / 5f))));
                             }
                         }
                     }
@@ -757,9 +758,10 @@ public class DictateInputMethodService extends InputMethodService {
                     if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
                         inputConnection.commitText(rewordedText, 1);
                     } else {
+                        int speed = sp.getInt("net.devemperor.dictate.output_speed", 5);
                         for (int i = 0; i < rewordedText.length(); i++) {
                             char character = rewordedText.charAt(i);
-                            mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), i * 20L);
+                            mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), i * (20L / (speed / 5)));
                         }
                     }
                 }

@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SeekBarPreference;
+import androidx.preference.SwitchPreference;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -71,6 +73,16 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 }
                 return true;
             });
+        }
+
+        SwitchPreference instantOutput = findPreference("net.devemperor.dictate.instant_output");
+        SeekBarPreference outputSpeed = findPreference("net.devemperor.dictate.output_speed");
+        if (instantOutput != null && outputSpeed != null) {
+            instantOutput.setOnPreferenceChangeListener((preference, newValue) -> {
+                outputSpeed.setEnabled(!(Boolean) newValue);
+                return true;
+            });
+            outputSpeed.setEnabled(!instantOutput.isChecked());
         }
 
         Preference usage = findPreference("net.devemperor.dictate.usage");

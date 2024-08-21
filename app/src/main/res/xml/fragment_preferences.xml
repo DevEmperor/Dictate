@@ -62,6 +62,14 @@
             android:defaultValue="false"
             app:iconSpaceReserved="false"/>
 
+        <androidx.preference.SeekBarPreference
+            android:key="net.devemperor.dictate.output_speed"
+            android:title="@string/dictate_settings_output_speed_title"
+            android:defaultValue="5"
+            android:max="10"
+            app:min="1"
+            app:iconSpaceReserved="false"/>
+
         <androidx.preference.SwitchPreference
             android:key="net.devemperor.dictate.instant_recording"
             android:title="@string/dictate_settings_instant_recording_title"
@@ -129,6 +137,7 @@
             android:key="net.devemperor.dictate.feedback"
             android:title="@string/dictate_settings_feedback"
             android:summary="@string/dictate_settings_feedback_address"
+            app:enableCopying="true"
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.Preference
