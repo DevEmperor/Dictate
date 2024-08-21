@@ -754,7 +754,14 @@ public class DictateInputMethodService extends InputMethodService {
 
                 InputConnection inputConnection = getCurrentInputConnection();
                 if (inputConnection != null) {
-                    inputConnection.commitText(rewordedText, 1);
+                    if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
+                        inputConnection.commitText(rewordedText, 1);
+                    } else {
+                        for (int i = 0; i < rewordedText.length(); i++) {
+                            char character = rewordedText.charAt(i);
+                            mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), i * 20L);
+                        }
+                    }
                 }
             } catch (RuntimeException e) {
                 sendLogToCrashlytics(e);
@@ -805,7 +812,7 @@ public class DictateInputMethodService extends InputMethodService {
             }
         }
         crashlytics.setUserId(sp.getString("net.devemperor.dictate.user_id", "null"));
-        crashlytics.recordException(e);  // TODO uncomment while testing
+        crashlytics.recordException(e);  // TODO comment while testing
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
         Log.e("DictateInputMethodService", sw.toString());
