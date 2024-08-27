@@ -1,10 +1,8 @@
 package net.devemperor.dictate.rewording;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -39,12 +37,10 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
         final MaterialButton promptBtn;
-        final ProgressBar promptPb;
 
         public RecyclerViewHolder(View itemView) {
             super(itemView);
             promptBtn = itemView.findViewById(R.id.prompts_keyboard_btn);
-            promptPb = itemView.findViewById(R.id.prompts_keyboard_pb);
         }
     }
 
@@ -72,15 +68,5 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
 
     public List<PromptModel> getData() {
         return data;
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void removeAllExcept(int position) {
-        for (int i = data.size() - 1; i >= 0; i--) {
-            if (i != position) {
-                data.remove(i);
-            }
-        }
-        notifyDataSetChanged();
     }
 }

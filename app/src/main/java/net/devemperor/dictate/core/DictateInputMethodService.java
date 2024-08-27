@@ -32,6 +32,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.content.res.AppCompatResources;
@@ -123,6 +124,8 @@ public class DictateInputMethodService extends InputMethodService {
     private RecyclerView promptsRv;
     private MaterialButton selectAllButton;
     private TextView noPromptsTv;
+    private TextView runningPromptTv;
+    private ProgressBar runningPromptPb;
     private LinearLayout overlayCharactersLl;
 
     PromptsDatabaseHelper promptsDb;
@@ -166,6 +169,8 @@ public class DictateInputMethodService extends InputMethodService {
         promptsRv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_rv);
         selectAllButton = dictateKeyboardView.findViewById(R.id.select_all_btn);
         noPromptsTv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_no_prompts_tv);
+        runningPromptPb = dictateKeyboardView.findViewById(R.id.prompts_keyboard_running_pb);
+        runningPromptTv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_running_prompt_tv);
 
         overlayCharactersLl = dictateKeyboardView.findViewById(R.id.overlay_characters_ll);
 
@@ -458,7 +463,6 @@ public class DictateInputMethodService extends InputMethodService {
         recordButton.setEnabled(true);
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting);
@@ -495,7 +499,7 @@ public class DictateInputMethodService extends InputMethodService {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
-                    startGPTApiRequest(position, model);
+                    startGPTApiRequest(model);
                 }
             });
             promptsRv.setAdapter(promptsAdapter);
@@ -680,7 +684,7 @@ public class DictateInputMethodService extends InputMethodService {
                     }
                 } else {
                     instantPrompt = false;
-                    startGPTApiRequest(0, new PromptModel(-1, Integer.MIN_VALUE, "", resultText, false));
+                    startGPTApiRequest(new PromptModel(-1, Integer.MIN_VALUE, "", resultText, false));
                 }
 
                 // remove audioFile from cache dir
@@ -724,11 +728,12 @@ public class DictateInputMethodService extends InputMethodService {
         });
     }
 
-    private void startGPTApiRequest(Integer position, PromptModel model) {
+    private void startGPTApiRequest(PromptModel model) {
         mainHandler.post(() -> {
-            promptsAdapter.removeAllExcept(position);
-            promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_pb).setVisibility(View.VISIBLE);
-            promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_btn).setEnabled(false);
+            promptsRv.setVisibility(View.GONE);
+            runningPromptTv.setVisibility(View.VISIBLE);
+            runningPromptTv.setText(model.getId() == -1 ? getString(R.string.dictate_live_prompt) : model.getName());
+            runningPromptPb.setVisibility(View.VISIBLE);
             infoCl.setVisibility(View.GONE);
         });
 
@@ -784,14 +789,9 @@ public class DictateInputMethodService extends InputMethodService {
             }
 
             mainHandler.post(() -> {
-                promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_pb).setVisibility(View.GONE);
-                promptsRv.getChildAt(0).findViewById(R.id.prompts_keyboard_btn).setEnabled(true);
-
-                List<PromptModel> newData = promptsDb.getAll(false);
-                promptsAdapter.getData().clear();
-                promptsAdapter.getData().addAll(newData);
-                promptsAdapter.notifyDataSetChanged();
-                noPromptsTv.setVisibility(newData.size() == 2 ? View.VISIBLE : View.GONE);
+                promptsRv.setVisibility(View.VISIBLE);
+                runningPromptTv.setVisibility(View.GONE);
+                runningPromptPb.setVisibility(View.GONE);
             });
         });
     }

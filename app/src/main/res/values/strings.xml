@@ -177,4 +177,5 @@
     <string name="dictate_changelog_9">v2.2\n\nThis update brings some cool new features:\n\n- You can now record new rewording prompts instantly. Just click on the small microphone icon in the top bar, to start the recording. ChatGPT will use your spoken prompt to edit your selected text. 🎤\n\n- If you press and hold the recording button, you can select an audio or video file up to 25 MB and Dictate will send this file for transcription. 📄\n\n- In the settings, it is now easier to choose a style prompt for Whisper. For most of you, the default value \"Use punctuation and capitalization\" should work fine. ⚙️\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_changelog_10">v2.2.1\n\nThis update is just a fix for a bug in the last version, that you probably didn\'t even notice. 🙃\n\n\n</string>
     <string name="dictate_settings_output_speed_title">Output speed</string>
+    <string name="dictate_live_prompt">Live prompt</string>
 </resources>
