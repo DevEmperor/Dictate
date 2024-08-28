@@ -56,6 +56,13 @@
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.SwitchPreference
+            android:key="net.devemperor.dictate.resend_button"
+            android:title="@string/dictate_settings_enable_resend_button_title"
+            android:summary="@string/dictate_settings_enable_resend_button_summary"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.SwitchPreference
             android:key="net.devemperor.dictate.instant_output"
             android:title="@string/dictate_settings_instant_output_title"
             android:summary="@string/dictate_settings_instant_output_summary"

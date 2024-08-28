@@ -241,6 +241,8 @@ public class DictateInputMethodService extends InputMethodService {
 
         resendButton.setOnClickListener(v -> {
             vibrate();
+            // if user clicked on resendButton without error before, audioFile is default audio
+            if (audioFile == null) audioFile = new File(getCacheDir(), sp.getString("net.devemperor.dictate.last_file_name", "audio.mp3"));
             startWhisperApiRequest();
         });
 
@@ -507,6 +509,13 @@ public class DictateInputMethodService extends InputMethodService {
             promptsLl.setVisibility(View.GONE);
         }
 
+        if (new File(getCacheDir(), sp.getString("net.devemperor.dictate.last_file_name", "audio.mp3")).exists()
+                && sp.getBoolean("net.devemperor.dictate.resend_button", false)) {
+            resendButton.setVisibility(View.VISIBLE);
+        } else {
+            resendButton.setVisibility(View.GONE);
+        }
+
         String charactersString = sp.getString("net.devemperor.dictate.overlay_characters", "()-:!?,.");
         for (int i = 0; i < overlayCharactersLl.getChildCount(); i++) {
             TextView charView = (TextView) overlayCharactersLl.getChildAt(i);
@@ -528,6 +537,8 @@ public class DictateInputMethodService extends InputMethodService {
 
         if (!sp.getString("net.devemperor.dictate.transcription_audio_file", "").isEmpty()) {
             audioFile = new File(getCacheDir(), sp.getString("net.devemperor.dictate.transcription_audio_file", ""));
+            sp.edit().putString("net.devemperor.dictate.last_file_name", audioFile.getName()).apply();
+
             sp.edit().remove("net.devemperor.dictate.transcription_audio_file").apply();
             startWhisperApiRequest();
 
@@ -574,6 +585,8 @@ public class DictateInputMethodService extends InputMethodService {
 
     private void startRecording() {
         audioFile = new File(getCacheDir(), "audio.mp3");
+        sp.edit().putString("net.devemperor.dictate.last_file_name", audioFile.getName()).apply();
+
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -687,8 +700,10 @@ public class DictateInputMethodService extends InputMethodService {
                     startGPTApiRequest(new PromptModel(-1, Integer.MIN_VALUE, "", resultText, false));
                 }
 
-                // remove audioFile from cache dir
-                if (audioFile != null) audioFile.delete();
+                if (new File(getCacheDir(), sp.getString("net.devemperor.dictate.last_file_name", "audio.mp3")).exists()
+                        && sp.getBoolean("net.devemperor.dictate.resend_button", false)) {
+                    mainHandler.post(() -> resendButton.setVisibility(View.VISIBLE));
+                }
 
             } catch (RuntimeException e) {
                 // check if RuntimeException was caused by InterruptedIOException

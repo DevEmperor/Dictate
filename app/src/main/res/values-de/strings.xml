@@ -168,4 +168,6 @@
     <string name="dictate_changelog_10">v2.2.1\n\nDieses Update ist nur ein Bugfix für einen Fehler in der letzten Version, den du wahrscheinlich nicht mal bemerkt hast. 🙃\n\n\n</string>
     <string name="dictate_settings_output_speed_title">Ausgabe Geschwindigkeit</string>
     <string name="dictate_live_prompt">Live Anweisung</string>
+    <string name="dictate_settings_enable_resend_button_title">Erneut senden-Button 🔄</string>
+    <string name="dictate_settings_enable_resend_button_summary">Zeig einen Button, um die letzte Aufnahme nochmal zu schicken</string>
 </resources>

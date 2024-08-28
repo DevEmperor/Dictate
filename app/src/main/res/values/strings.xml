@@ -178,4 +178,6 @@
     <string name="dictate_changelog_10">v2.2.1\n\nThis update is just a fix for a bug in the last version, that you probably didn\'t even notice. 🙃\n\n\n</string>
     <string name="dictate_settings_output_speed_title">Output speed</string>
     <string name="dictate_live_prompt">Live prompt</string>
+    <string name="dictate_settings_enable_resend_button_title">Resend button 🔄</string>
+    <string name="dictate_settings_enable_resend_button_summary">Show a button to send the previous recording</string>
 </resources>
