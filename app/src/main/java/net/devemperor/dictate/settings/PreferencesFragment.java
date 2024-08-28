@@ -25,6 +25,8 @@ import net.devemperor.dictate.usage.UsageDatabaseHelper;
 
 import org.apache.commons.validator.routines.UrlValidator;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class PreferencesFragment extends PreferenceFragmentCompat {
@@ -148,6 +150,33 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             .show();
                     return false;
                 }
+            });
+        }
+
+        Preference cache = findPreference("net.devemperor.dictate.cache");
+        File[] cacheFiles = requireContext().getCacheDir().listFiles();
+        if (cache != null) {
+            if (cacheFiles != null) {
+                long cacheSize = Arrays.stream(cacheFiles).mapToLong(File::length).sum();
+                cache.setTitle(getString(R.string.dictate_settings_cache, cacheFiles.length, cacheSize / 1024f / 1024f));
+            }
+
+            cache.setOnPreferenceClickListener(preference -> {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.dictate_cache_clear_title)
+                        .setMessage(R.string.dictate_cache_clear_message)
+                        .setPositiveButton(R.string.dictate_yes, (dialog, which) -> {
+                            if (cacheFiles != null) {
+                                for (File file : cacheFiles) {
+                                    file.delete();
+                                }
+                            }
+                            cache.setTitle(getString(R.string.dictate_settings_cache, 0, 0f));
+                            Toast.makeText(requireContext(), R.string.dictate_cache_cleared, Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton(R.string.dictate_no, null)
+                        .show();
+                return true;
             });
         }
 

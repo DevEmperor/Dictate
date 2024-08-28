@@ -180,4 +180,9 @@
     <string name="dictate_live_prompt">Live prompt</string>
     <string name="dictate_settings_enable_resend_button_title">Resend button 🔄</string>
     <string name="dictate_settings_enable_resend_button_summary">Show a button to send the previous recording</string>
+    <string name="dictate_settings_cache">Cache size: %1$d files (%2$.1f MB)</string>
+    <string name="dictate_settings_cache_summary">Tap to clear cache</string>
+    <string name="dictate_cache_cleared">Dictate cache cleared.</string>
+    <string name="dictate_cache_clear_title">Clear cache?</string>
+    <string name="dictate_cache_clear_message">Are you sure to clear the Dictate cache?</string>
 </resources>
