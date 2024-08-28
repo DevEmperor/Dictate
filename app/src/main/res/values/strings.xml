@@ -185,4 +185,5 @@
     <string name="dictate_cache_cleared">Dictate cache cleared.</string>
     <string name="dictate_cache_clear_title">Clear cache?</string>
     <string name="dictate_cache_clear_message">Are you sure to clear the Dictate cache?</string>
+    <string name="dictate_changelog_11">v2.3.0\n\nThis update brings some cool new features:\n\n- You can now change a setting to enable a resend button. This button will send the previous recorded file, or an aborted file if something happened during the last recording. 🔄\n\n- You can now change the typing animation speed in the settings. This animation now also works for rewording. 💪\n\n- In the settings, you can now see the audio cache size and clear it. 🧹\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
 </resources>
