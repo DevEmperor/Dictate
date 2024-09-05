@@ -759,19 +759,24 @@ public class DictateInputMethodService extends InputMethodService {
         rewordingApiThread.execute(() -> {
             try {
                 String prompt = model.getPrompt();
-                if (getCurrentInputConnection().getSelectedText(0) != null) {
-                    prompt += "\n\n" + getCurrentInputConnection().getSelectedText(0).toString();
+                String rewordedText;
+                if (prompt.startsWith("[") && prompt.endsWith("]")) {
+                    rewordedText = prompt.substring(1, prompt.length() - 1);
+                } else {
+                    if (getCurrentInputConnection().getSelectedText(0) != null) {
+                        prompt += "\n\n" + getCurrentInputConnection().getSelectedText(0).toString();
+                    }
+
+                    String gptModel = sp.getString("net.devemperor.dictate.rewording_model", "gpt-4o-mini");
+                    ChatCompletionRequest request = ChatCompletionRequest.builder()
+                            .model(gptModel)
+                            .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER.value(), prompt)))
+                            .build();
+                    ChatCompletionResult rewordedResult = service.createChatCompletion(request);
+                    rewordedText = rewordedResult.getChoices().get(0).getMessage().getContent();
+
+                    usageDb.edit(gptModel, 0, rewordedResult.getUsage().getPromptTokens(), rewordedResult.getUsage().getCompletionTokens());
                 }
-
-                String gptModel = sp.getString("net.devemperor.dictate.rewording_model", "gpt-4o-mini");
-                ChatCompletionRequest request = ChatCompletionRequest.builder()
-                        .model(gptModel)
-                        .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER.value(), prompt)))
-                        .build();
-                ChatCompletionResult rewordedResult = service.createChatCompletion(request);
-                String rewordedText = rewordedResult.getChoices().get(0).getMessage().getContent();
-
-                usageDb.edit(gptModel, 0, rewordedResult.getUsage().getPromptTokens(), rewordedResult.getUsage().getCompletionTokens());
 
                 InputConnection inputConnection = getCurrentInputConnection();
                 if (inputConnection != null) {

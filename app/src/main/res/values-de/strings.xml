@@ -123,7 +123,7 @@
     <string name="dictate_requires_selection">Erfordert Textauswahl</string>
     <string name="dictate_save">Speichern</string>
     <string name="dictate_edit_prompt_name_hint">Gib einen Namen für diese Anweisung ein</string>
-    <string name="dictate_edit_prompt_prompt_hint">Gib hier eine Anweisung ein, was das GPT-Modell mit deinem Text machen soll.\nWenn du \"Erfordert Textauswahl\" ausgewählt hast, wird dein eingesprochener Text automatisch mit gesendet.</string>
+    <string name="dictate_edit_prompt_prompt_hint">Gib hier eine Anweisung ein, was das GPT-Modell mit deinem Text machen soll.\n\nWenn du \"Erfordert Textauswahl\" ausgewählt hast, wird dein ausgewählter Text automatisch mit gesendet.\n\nUm genau einen bestimmten Text auszugeben, füge [ und ] an den Anfang und das Ende des Prompts, und es wird genau der Text in den Klammern ausgegeben.</string>
     <string name="dictate_edit_prompt">Anweisung bearbeiten</string>
     <string name="dictate_prompts">Anweisungen</string>
     <string name="dictate_rate_app_msg">Gefällt dir Dictate? Ich freue mich über eine Bewertung im PlayStore. 😇</string>
