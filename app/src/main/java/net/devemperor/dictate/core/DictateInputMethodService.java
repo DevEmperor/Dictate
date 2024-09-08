@@ -770,6 +770,8 @@ public class DictateInputMethodService extends InputMethodService {
                             showInfo("quota_exceeded");
                         } else if (e.getMessage().contains("content size limit")) {
                             showInfo("content_size_limit");
+                        } else if (e.getMessage().contains("format")) {
+                            showInfo("format_not_supported");
                         } else if (sp.getBoolean("net.devemperor.dictate.custom_api_host_enabled", false)) {
                             if (e.getMessage().contains("ConnectException")) {
                                 showInfo("internet_error");
@@ -966,6 +968,11 @@ public class DictateInputMethodService extends InputMethodService {
                 break;
             case "content_size_limit":
                 infoTv.setText(R.string.dictate_content_size_limit_msg);
+                infoYesButton.setVisibility(View.GONE);
+                infoNoButton.setOnClickListener(v -> infoCl.setVisibility(View.GONE));
+                break;
+            case "format_not_supported":
+                infoTv.setText(R.string.dictate_format_not_supported_msg);
                 infoYesButton.setVisibility(View.GONE);
                 infoNoButton.setOnClickListener(v -> infoCl.setVisibility(View.GONE));
                 break;

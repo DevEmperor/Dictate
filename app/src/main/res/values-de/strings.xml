@@ -176,4 +176,5 @@
     <string name="dictate_cache_clear_title">Cache leeren?</string>
     <string name="dictate_cache_clear_message">Bist du sicher, dass du den Dictate Cache leeren möchtest?</string>
     <string name="dictate_changelog_11">v2.3.0\n\nMit diesem Update gibt\'s ein paar coole neue Features:\n\n- Du kannst jetzt eine Einstellung ändern, um einen Resend-Button zu aktivieren. Mit diesem Button wird die letzte aufgezeichnete Aufnahme nochmal gesendet, oder eine abgebrochene Aufnahme, falls während der letzten Aufnahme etwas schiefgegangen ist. 🔄\n\n- Du kannst jetzt die Geschwindigkeit der Tipp-Animation in den Einstellungen anpassen. Diese Animation funktioniert jetzt auch beim Überarbeiten. 💪\n\n- In den Einstellungen siehst du jetzt die Größe des Audio-Caches und kannst ihn leeren. 🧹\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\nWie immer, zögere nicht, mich mit Fragen und Ideen über GitHub oder den E-Mail-Button unten zu kontaktieren. ☺️\n\n\n</string>
+    <string name="dictate_format_not_supported_msg">Dieses Audiodateiformat wird nicht unterstützt.</string>
 </resources>
