@@ -96,6 +96,7 @@ public class DictateInputMethodService extends InputMethodService {
     private boolean instantPrompt = false;
     private boolean vibrationEnabled = true;
     private TextView selectedCharacter = null;
+    private boolean spaceButtonUserHasSwiped = false;
 
     private MediaRecorder recorder;
     private ExecutorService speechApiThread;
@@ -325,13 +326,42 @@ public class DictateInputMethodService extends InputMethodService {
             trashButton.setVisibility(View.GONE);
         });
 
-        spaceButton.setOnClickListener(v -> {
-            vibrate();
-
+        spaceButton.setOnTouchListener((v, event) -> {
             InputConnection inputConnection = getCurrentInputConnection();
-            if (inputConnection != null) {
-                inputConnection.commitText(" ", 1);
+            if (inputConnection != null && isPointInsideView(event.getRawX(), spaceButton)) {
+                spaceButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_keyboard_double_arrow_left_24,
+                        0, R.drawable.ic_baseline_keyboard_double_arrow_right_24, 0);
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        spaceButtonUserHasSwiped = false;
+                        spaceButton.setTag(event.getX());
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+                        float x = (float) spaceButton.getTag();
+                        if (event.getX() - x > 50) {
+                            inputConnection.commitText("", 2);
+                            spaceButton.setTag(event.getX());
+                            spaceButtonUserHasSwiped = true;
+                        } else if (x - event.getX() > 50) {
+                            inputConnection.commitText("", -1);
+                            spaceButton.setTag(event.getX());
+                            spaceButtonUserHasSwiped = true;
+                        }
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        if (!spaceButtonUserHasSwiped) {
+                            vibrate();
+                            inputConnection.commitText(" ", 1);
+                        }
+                        spaceButton.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+                        break;
+                }
+            } else {
+                spaceButton.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
             }
+            return false;
         });
 
         pauseButton.setOnClickListener(v -> {
