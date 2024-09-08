@@ -48,10 +48,12 @@ public class DictateSettingsActivity extends AppCompatActivity {
 
         SharedPreferences sp = getSharedPreferences("net.devemperor.dictate", MODE_PRIVATE);
 
+        // start onboarding if this is the first time for the user to open Dictate
         if (!sp.getBoolean("net.devemperor.dictate.onboarding_complete", false)) {
             startActivity(new Intent(this, OnboardingActivity.class));
             finish();
 
+        // open file picker if user wants to transcribe a file
         } else if (getIntent().getBooleanExtra("net.devemperor.dictate.open_file_picker", false)) {
             filePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                     if (result.getResultCode() == RESULT_OK) {
@@ -117,6 +119,8 @@ public class DictateSettingsActivity extends AppCompatActivity {
             filePickerLauncher.launch(Intent.createChooser(intent, getString(R.string.dictate_choose_audio_file)));
 
         } else if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
+
+            // show changelog if user has a new version
             String whatsNewMessage = getString(R.string.dictate_changelog_donate);
             int lastVersionCode = sp.getInt("net.devemperor.dictate.last_version_code", 0);
 
@@ -137,6 +141,7 @@ public class DictateSettingsActivity extends AppCompatActivity {
             requestPermissions(new String[]{ Manifest.permission.RECORD_AUDIO }, 1337);
 
         } else {
+            // check if keyboard is still enabled
             List<InputMethodInfo> inputMethodsList = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).getEnabledInputMethodList();
             boolean keyboardEnabled = false;
             for (InputMethodInfo inputMethod : inputMethodsList) {

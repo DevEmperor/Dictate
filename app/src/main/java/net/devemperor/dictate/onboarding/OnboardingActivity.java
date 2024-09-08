@@ -43,6 +43,7 @@ public class OnboardingActivity extends AppCompatActivity {
         tabLayoutMediator.attach();
     }
 
+    // checks if the user enabled the keyboard and updates the status text
     @Override
     public void onResume() {
         super.onResume();
@@ -54,6 +55,7 @@ public class OnboardingActivity extends AppCompatActivity {
         }
     }
 
+    // checks if the user granted the storage permission and updates the status text
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

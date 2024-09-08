@@ -90,7 +90,7 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.Vi
                 }
                 reader.close();
             } catch (IOException e) {
-                e.printStackTrace();  //TODO firebase crashlytics
+                e.printStackTrace();
             }
             requestApiKeyTv.setMovementMethod(LinkMovementMethod.getInstance());
             requestApiKeyTv.setText(Html.fromHtml(stringBuilder.toString(), Html.FROM_HTML_MODE_LEGACY));

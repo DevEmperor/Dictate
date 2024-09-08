@@ -79,14 +79,17 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+// MAIN CLASS
 public class DictateInputMethodService extends InputMethodService {
 
+    // define handlers and runnables for background tasks
     private Handler mainHandler;
     private Handler deleteHandler;
     private Handler recordTimeHandler;
     private Runnable deleteRunnable;
     private Runnable recordTimeRunnable;
 
+    // define variables and objects
     private long elapsedTime;
     private boolean isDeleting = false;
     private long startDeleteTime = 0;
@@ -107,6 +110,7 @@ public class DictateInputMethodService extends InputMethodService {
     private AudioManager am;
     private AudioFocusRequest audioFocusRequest;
 
+    // define views
     private ConstraintLayout dictateKeyboardView;
     private MaterialButton settingsButton;
     private MaterialButton recordButton;
@@ -134,11 +138,13 @@ public class DictateInputMethodService extends InputMethodService {
 
     UsageDatabaseHelper usageDb;
 
+    // start method that is called when user opens the keyboard
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateInputView() {
         Context context = new ContextThemeWrapper(this, R.style.Theme_Dictate);
 
+        // initialize some stuff
         mainHandler = new Handler(Looper.getMainLooper());
         deleteHandler = new Handler();
         recordTimeHandler = new Handler(Looper.getMainLooper());
@@ -182,7 +188,7 @@ public class DictateInputMethodService extends InputMethodService {
             sp.edit().putString("net.devemperor.dictate.user_id", String.valueOf((int) (Math.random() * 1000000))).apply();
         }
 
-        recordTimeRunnable = new Runnable() {
+        recordTimeRunnable = new Runnable() {  // runnable to update the record button time text
             @Override
             public void run() {
                 elapsedTime += 100;
@@ -192,6 +198,7 @@ public class DictateInputMethodService extends InputMethodService {
             }
         };
 
+        // initialize audio manager to stop and start background audio
         am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
                 .setAudioAttributes(new AudioAttributes.Builder()
@@ -206,7 +213,7 @@ public class DictateInputMethodService extends InputMethodService {
                 })
                 .build();
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) switchButton.setEnabled(false);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) switchButton.setEnabled(false);  // switch to previous keyboard only works for API 28+
 
         settingsButton.setOnClickListener(v -> {
             if (isRecording) trashButton.performClick();
@@ -231,7 +238,7 @@ public class DictateInputMethodService extends InputMethodService {
         recordButton.setOnLongClickListener(v -> {
             vibrate();
 
-            if (!isRecording) {
+            if (!isRecording) {  // open real settings activity to start file picker
                 Intent intent = new Intent(this, DictateSettingsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("net.devemperor.dictate.open_file_picker", true);
@@ -302,6 +309,7 @@ public class DictateInputMethodService extends InputMethodService {
             return true;
         });
 
+        // trash button to abort the recording and reset all variables and views
         trashButton.setOnClickListener(v -> {
             vibrate();
             if (recorder != null) {
@@ -326,6 +334,7 @@ public class DictateInputMethodService extends InputMethodService {
             trashButton.setVisibility(View.GONE);
         });
 
+        // space button that changes cursor position if user swipes over it
         spaceButton.setOnTouchListener((v, event) -> {
             InputConnection inputConnection = getCurrentInputConnection();
             if (inputConnection != null && isPointInsideView(event.getRawX(), spaceButton)) {
@@ -387,9 +396,7 @@ public class DictateInputMethodService extends InputMethodService {
             vibrate();
 
             InputConnection inputConnection = getCurrentInputConnection();
-            if (inputConnection != null) {
-                inputConnection.commitText("\n", 1);
-            }
+            if (inputConnection != null) inputConnection.commitText("\n", 1);
         });
 
         enterButton.setOnLongClickListener(v -> {
@@ -432,6 +439,7 @@ public class DictateInputMethodService extends InputMethodService {
             return false;
         });
 
+        // initialize overlay characters
         for (int i = 0; i < 8; i++) {
             TextView charView = (TextView) LayoutInflater.from(context).inflate(R.layout.item_overlay_characters, overlayCharactersLl, false);
             overlayCharactersLl.addView(charView);
@@ -462,6 +470,7 @@ public class DictateInputMethodService extends InputMethodService {
         return dictateKeyboardView;
     }
 
+    // method is called if the user closed the keyboard
     @Override
     public void onFinishInputView(boolean finishingInput) {
         super.onFinishInputView(finishingInput);
@@ -495,6 +504,7 @@ public class DictateInputMethodService extends InputMethodService {
         recordButton.setEnabled(true);
     }
 
+    // method is called if the keyboard appears again
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting);
@@ -502,6 +512,7 @@ public class DictateInputMethodService extends InputMethodService {
         if (sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
             promptsLl.setVisibility(View.VISIBLE);
 
+            // collect all prompts from database
             List<PromptModel> data;
             InputConnection inputConnection = getCurrentInputConnection();
             if (inputConnection != null && inputConnection.getSelectedText(0) == null) {
@@ -517,7 +528,7 @@ public class DictateInputMethodService extends InputMethodService {
                 vibrate();
                 PromptModel model = data.get(position);
 
-                if (model.getId() == -1) {
+                if (model.getId() == -1) {  // instant prompt clicked
                     instantPrompt = true;
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                         openSettingsActivity();
@@ -526,12 +537,12 @@ public class DictateInputMethodService extends InputMethodService {
                     } else {
                         stopRecording();
                     }
-                } else if (model.getId() == -2) {
+                } else if (model.getId() == -2) {  // add prompt clicked
                     Intent intent = new Intent(this, PromptsOverviewActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
-                    startGPTApiRequest(model);
+                    startGPTApiRequest(model);  // another normal prompt clicked
                 }
             });
             promptsRv.setAdapter(promptsAdapter);
@@ -539,6 +550,7 @@ public class DictateInputMethodService extends InputMethodService {
             promptsLl.setVisibility(View.GONE);
         }
 
+        // enable resend button if previous audio file still exists in cache
         if (new File(getCacheDir(), sp.getString("net.devemperor.dictate.last_file_name", "audio.mp3")).exists()
                 && sp.getBoolean("net.devemperor.dictate.resend_button", false)) {
             resendButton.setVisibility(View.VISIBLE);
@@ -546,6 +558,7 @@ public class DictateInputMethodService extends InputMethodService {
             resendButton.setVisibility(View.GONE);
         }
 
+        // fill all overlay characters
         String charactersString = sp.getString("net.devemperor.dictate.overlay_characters", "()-:!?,.");
         for (int i = 0; i < overlayCharactersLl.getChildCount(); i++) {
             TextView charView = (TextView) overlayCharactersLl.getChildAt(i);
@@ -557,6 +570,7 @@ public class DictateInputMethodService extends InputMethodService {
             }
         }
 
+        // show infos for updates, ratings or donations
         if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
             showInfo("update");
         } else if (sp.getFloat("net.devemperor.dictate.total_duration", 0.0f) > 180 && !sp.getBoolean("net.devemperor.dictate.flag_has_rated_in_playstore", false)) {
@@ -565,6 +579,7 @@ public class DictateInputMethodService extends InputMethodService {
             showInfo("donate");
         }
 
+        // start audio file transcription if user selected an audio file
         if (!sp.getString("net.devemperor.dictate.transcription_audio_file", "").isEmpty()) {
             audioFile = new File(getCacheDir(), sp.getString("net.devemperor.dictate.transcription_audio_file", ""));
             sp.edit().putString("net.devemperor.dictate.last_file_name", audioFile.getName()).apply();
@@ -577,11 +592,13 @@ public class DictateInputMethodService extends InputMethodService {
         }
     }
 
+    // method is called if user changed text selection
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onUpdateSelection (int oldSelStart, int oldSelEnd, int newSelStart, int newSelEnd, int candidatesStart, int candidatesEnd) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd);
 
+        // refill all prompts
         if (sp != null && sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
             List<PromptModel> data;
             if (getCurrentInputConnection().getSelectedText(0) == null) {
@@ -726,6 +743,7 @@ public class DictateInputMethodService extends InputMethodService {
                         }
                     }
                 } else {
+                    // continue with ChatGPT API request
                     instantPrompt = false;
                     startGPTApiRequest(new PromptModel(-1, Integer.MIN_VALUE, "", resultText, false));
                 }
@@ -981,6 +999,7 @@ public class DictateInputMethodService extends InputMethodService {
         }
     }
 
+    // checks whether a point is inside a view based on its horizontal position
     private boolean isPointInsideView(float x, View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
