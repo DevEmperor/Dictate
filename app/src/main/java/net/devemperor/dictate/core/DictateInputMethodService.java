@@ -552,7 +552,7 @@ public class DictateInputMethodService extends InputMethodService {
     public void onUpdateSelection (int oldSelStart, int oldSelEnd, int newSelStart, int newSelEnd, int candidatesStart, int candidatesEnd) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd);
 
-        if (sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
+        if (sp != null && sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
             List<PromptModel> data;
             if (getCurrentInputConnection().getSelectedText(0) == null) {
                 data = promptsDb.getAll(false);
