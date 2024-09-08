@@ -128,7 +128,6 @@ public class DictateInputMethodService extends InputMethodService {
     private LinearLayout promptsLl;
     private RecyclerView promptsRv;
     private MaterialButton selectAllButton;
-    private TextView noPromptsTv;
     private TextView runningPromptTv;
     private ProgressBar runningPromptPb;
     private LinearLayout overlayCharactersLl;
@@ -175,7 +174,6 @@ public class DictateInputMethodService extends InputMethodService {
         promptsLl = dictateKeyboardView.findViewById(R.id.prompts_keyboard_ll);
         promptsRv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_rv);
         selectAllButton = dictateKeyboardView.findViewById(R.id.select_all_btn);
-        noPromptsTv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_no_prompts_tv);
         runningPromptPb = dictateKeyboardView.findViewById(R.id.prompts_keyboard_running_pb);
         runningPromptTv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_running_prompt_tv);
 
@@ -522,7 +520,6 @@ public class DictateInputMethodService extends InputMethodService {
                 data = promptsDb.getAll(true);
                 selectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_deselect_24));
             }
-            noPromptsTv.setVisibility(data.size() == 2 ? View.VISIBLE : View.GONE);
 
             promptsAdapter = new PromptsKeyboardAdapter(data, position -> {
                 vibrate();
@@ -612,7 +609,6 @@ public class DictateInputMethodService extends InputMethodService {
             promptsAdapter.getData().clear();
             promptsAdapter.getData().addAll(data);
             promptsAdapter.notifyDataSetChanged();
-            noPromptsTv.setVisibility(data.size() == 2 ? View.VISIBLE : View.GONE);
         }
     }
 

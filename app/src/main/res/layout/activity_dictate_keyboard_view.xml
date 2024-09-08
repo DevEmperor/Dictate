@@ -243,20 +243,6 @@
             android:visibility="gone"
             android:indeterminate="true"
             tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/prompts_keyboard_no_prompts_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="16dp"
-            android:maxLines="1"
-            android:text="@string/dictate_prompts_keyboard_no_prompts"
-            android:textStyle="italic"
-            android:visibility="gone"
-            tools:visibility="visible"
-            tools:text="You haven't ..." />
     </LinearLayout>
 
     <LinearLayout

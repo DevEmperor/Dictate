@@ -130,7 +130,6 @@
     <string name="dictate_enable_keyboard_title">Dictate Tastatur aktivieren?</string>
     <string name="dictate_enable_keyboard_message">Die Dictate Tastatur ist in den Systemeinstellungen nicht mehr aktiviert. Möchtest du die Systemeinstellungen für die Tastatur öffnen, um dies zu korrigieren?</string>
     <string name="dictate_donate_msg">Wenn dir Dictate gefällt, würde ich mich sehr über eine kleine Spende freuen. 🥰</string>
-    <string name="dictate_prompts_keyboard_no_prompts">Du hast noch keine Anweisungen erstellt.</string>
     <string name="dictate_settings_overlay_characters_title">Eigene Zeichen bearbeiten (halte die ⏎ Taste)</string>
     <string name="dictate_overlay_characters_empty">Du musst mindestens ein Zeichen festlegen.</string>
     <string name="dictate_example_prompt_one_name">Französisch Übersetzer</string>
