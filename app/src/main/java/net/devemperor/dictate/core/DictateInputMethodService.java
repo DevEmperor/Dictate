@@ -335,7 +335,7 @@ public class DictateInputMethodService extends InputMethodService {
         // space button that changes cursor position if user swipes over it
         spaceButton.setOnTouchListener((v, event) -> {
             InputConnection inputConnection = getCurrentInputConnection();
-            if (inputConnection != null && isPointInsideView(event.getRawX(), spaceButton)) {
+            if (inputConnection != null) {
                 spaceButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_keyboard_double_arrow_left_24,
                         0, R.drawable.ic_baseline_keyboard_double_arrow_right_24, 0);
                 switch (event.getAction()) {
@@ -346,11 +346,11 @@ public class DictateInputMethodService extends InputMethodService {
 
                     case MotionEvent.ACTION_MOVE:
                         float x = (float) spaceButton.getTag();
-                        if (event.getX() - x > 50) {
+                        if (event.getX() - x > 30) {
                             inputConnection.commitText("", 2);
                             spaceButton.setTag(event.getX());
                             spaceButtonUserHasSwiped = true;
-                        } else if (x - event.getX() > 50) {
+                        } else if (x - event.getX() > 30) {
                             inputConnection.commitText("", -1);
                             spaceButton.setTag(event.getX());
                             spaceButtonUserHasSwiped = true;
