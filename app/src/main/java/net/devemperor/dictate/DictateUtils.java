@@ -11,7 +11,7 @@ public class DictateUtils {
             case "gpt-4o-mini":
                 return inputTokens * 0.00000015f + outputTokens * 0.0000006f;
             case "gpt-4o":
-                return inputTokens * 0.000005f + outputTokens * 0.000015f;
+                return inputTokens * 0.0000025f + outputTokens * 0.00001f;
             case "gpt-4-turbo":
                 return inputTokens * 0.00001f + outputTokens * 0.00003f;
             case "gpt-4":
