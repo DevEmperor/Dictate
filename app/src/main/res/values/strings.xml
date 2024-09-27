@@ -188,4 +188,5 @@
     <string name="dictate_format_not_supported_msg">This audio file format is not supported.</string>
     <string name="dictate_changelog_12">v2.4.0\n\nThis update brings some cool new features:\n\n- If you want a rewording prompt to print an exact string, you can simply surround this text with [ and ] and exactly this string will be printed. ✍️\n\n- If you swipe over the space button, you can move the cursor to a specific position in the text. 📍\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_changelog_13">v2.4.1\n\nThis is just a tiny update that updates the GPT-4 Omni model and its prices, because GPT-4 Omni is much cheaper now. 🤩</string>
+    <string name="dictate_changelog_14">v2.4.2\n\nThis is just a tiny update that instructs GPT models during rewording to be more precise and output only the actual text. For example, if you ask for an emoji, the keyboard will now only print the emoji without annoying introductory sentences. 🤩</string>
 </resources>
