@@ -3,6 +3,7 @@ package net.devemperor.dictate;
 public class DictateUtils {
 
     public static final String PROMPT_PUNCTUATION_CAPITALIZATION = "The Great Wall of China, the Eiffel Tower, the Pyramids of Giza, and the Statue of Liberty are among the most iconic landmarks in the world, and they draw countless tourists every year who marvel at their grandeur and historical significance.";
+    public static final String PROMPT_REWORDING_BE_PRECISE = "Be accurate with your output. Only output exactly what the user has asked for above. Do not add any text before or after the actual output. Output the text in the language of the instruction, unless a different language was explicitly requested.";
 
     public static double calcModelCost(String modelName, long audioTime, long inputTokens, long outputTokens) {
         switch (modelName) {

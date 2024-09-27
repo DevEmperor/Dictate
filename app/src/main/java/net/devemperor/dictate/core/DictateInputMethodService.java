@@ -809,6 +809,7 @@ public class DictateInputMethodService extends InputMethodService {
                 if (prompt.startsWith("[") && prompt.endsWith("]")) {
                     rewordedText = prompt.substring(1, prompt.length() - 1);
                 } else {
+                    prompt += "\n\n" + DictateUtils.PROMPT_REWORDING_BE_PRECISE;
                     if (getCurrentInputConnection().getSelectedText(0) != null) {
                         prompt += "\n\n" + getCurrentInputConnection().getSelectedText(0).toString();
                     }
