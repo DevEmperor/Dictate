@@ -109,7 +109,7 @@
     <string name="dictate_custom_host_invalid_title">Invalid custom API address</string>
     <string name="dictate_custom_host_invalid_message">Your custom API server has to start with \'http:\' or \'https:\' and end with a \'/\'. Please check this again.</string>
     <string name="dictate_detect_automatically">Detect automatically</string>
-    <string name="dictate_update_installed_msg">Dictate has been updated. View changes?</string>
+    <string name="dictate_update_installed_msg">Dictate has been updated. See changes?</string>
     <string name="dictate_whats_new">What\'s new</string>
     <string name="dictate_changelog_5">v1.4\n\n- You can now pause and resume while recording your voice. ⏯️\n\n- During recording, other media are now paused and then continued. 💡\n\n- Long-click on the keyboard-switch-button opens input method picker ⌨️\n\n- The translation function works more reliable now. 💪\n\n- Added German app translation 🇩🇪\n\n\n</string>
     <string name="dictate_settings_donate">Donate 🤝</string>
@@ -186,9 +186,10 @@
     <string name="dictate_changelog_11">v2.3.0\n\nThis update brings some cool new features:\n\n- You can now change a setting to enable a resend button. This button will send the previous recorded file, or an aborted file if something happened during the last recording. 🔄\n\n- You can now change the typing animation speed in the settings. This animation now also works for rewording. 💪\n\n- In the settings, you can now see the audio cache size and clear it. 🧹\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_format_not_supported_msg">This audio file format is not supported.</string>
     <string name="dictate_changelog_12">v2.4.0\n\nThis update brings some cool new features:\n\n- If you want a rewording prompt to print an exact string, you can simply surround this text with [ and ] and exactly this string will be printed. ✍️\n\n- If you swipe over the space button, you can move the cursor to a specific position in the text. 📍\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
-    <string name="dictate_changelog_13">v2.4.1\n\nThis is just a tiny update that updates the GPT-4 Omni model and its prices, because GPT-4 Omni is much cheaper now. 🤩</string>
-    <string name="dictate_changelog_14">v2.4.2\n\nThis is just a tiny update that instructs GPT models during rewording to be more precise and output only the actual text. For example, if you ask for an emoji, the keyboard will now only print the emoji without annoying introductory sentences. 🤩</string>
+    <string name="dictate_changelog_13">v2.4.1\n\nThis is just a tiny update that updates the GPT-4 Omni model and its prices, because GPT-4 Omni is much cheaper now. 🤩\n\n\n</string>
+    <string name="dictate_changelog_14">v2.4.2\n\nThis is just a tiny update that instructs GPT models during rewording to be more precise and output only the actual text. For example, if you ask for an emoji, the keyboard will now only print the emoji without annoying introductory sentences. 🤩\n\n\n</string>
     <string name="dictate_settings_input_languages_title">Input languages 🌎</string>
     <string name="dictate_input_languages_empty">You have to select at least one input language.</string>
     <string name="dictate_language_switched_msg">Input language: %1$s</string>
+    <string name="dictate_changelog_15">v2.4.3\n\nThis is just a small update. In the settings, you can now select multiple input languages. If you then press and hold the switch-button while using Dictate, you can switch to one of these input languages faster. 💪\n\n\n</string>
 </resources>
