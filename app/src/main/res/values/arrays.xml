@@ -135,4 +135,9 @@
         <item>gpt-4</item>
         <item>gpt-3.5-turbo</item>
     </string-array>
+
+    <string-array name="dictate_default_input_languages">
+        <item>detect</item>
+        <item>en</item>
+    </string-array>
 </resources>

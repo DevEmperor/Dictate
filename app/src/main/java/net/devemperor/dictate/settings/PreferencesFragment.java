@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import androidx.preference.EditTextPreference;
+import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
@@ -18,6 +19,7 @@ import androidx.preference.SwitchPreference;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import net.devemperor.dictate.BuildConfig;
+import net.devemperor.dictate.DictateUtils;
 import net.devemperor.dictate.R;
 import net.devemperor.dictate.rewording.PromptsOverviewActivity;
 import net.devemperor.dictate.usage.UsageActivity;
@@ -27,6 +29,7 @@ import org.apache.commons.validator.routines.UrlValidator;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PreferencesFragment extends PreferenceFragmentCompat {
@@ -45,6 +48,24 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (editPrompts != null) {
             editPrompts.setOnPreferenceClickListener(preference -> {
                 startActivity(new Intent(requireContext(), PromptsOverviewActivity.class));
+                return true;
+            });
+        }
+
+        MultiSelectListPreference inputLanguages = findPreference("net.devemperor.dictate.input_languages");
+        if (inputLanguages != null) {
+            inputLanguages.setSummaryProvider((Preference.SummaryProvider<MultiSelectListPreference>) preference -> {
+                String[] selectedLanguagesValues = preference.getValues().toArray(new String[0]);
+                return Arrays.stream(selectedLanguagesValues).map(DictateUtils::translateLanguageToEmoji).collect(Collectors.joining(" "));
+            });
+
+            inputLanguages.setOnPreferenceChangeListener((preference, newValue) -> {
+                Set<String> selectedLanguages = (Set<String>) newValue;
+                if (selectedLanguages.isEmpty()) {
+                    Toast.makeText(requireContext(), R.string.dictate_input_languages_empty, Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                sp.edit().putInt("net.devemperor.dictate.input_language_pos", 0).apply();
                 return true;
             });
         }

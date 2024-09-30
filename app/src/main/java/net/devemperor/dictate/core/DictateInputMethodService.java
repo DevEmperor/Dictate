@@ -29,7 +29,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -68,10 +67,13 @@ import java.io.InterruptedIOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -88,6 +90,7 @@ public class DictateInputMethodService extends InputMethodService {
     private Handler recordTimeHandler;
     private Runnable deleteRunnable;
     private Runnable recordTimeRunnable;
+    private Runnable disableInfoRunnable;
 
     // define variables and objects
     private long elapsedTime;
@@ -100,6 +103,9 @@ public class DictateInputMethodService extends InputMethodService {
     private boolean vibrationEnabled = true;
     private TextView selectedCharacter = null;
     private boolean spaceButtonUserHasSwiped = false;
+    private Set<String> inputLanguages;
+    private int currentInputLanguagePos;
+    private String currentInputLanguageValue;
 
     private MediaRecorder recorder;
     private ExecutorService speechApiThread;
@@ -196,6 +202,8 @@ public class DictateInputMethodService extends InputMethodService {
             }
         };
 
+        disableInfoRunnable = () -> infoCl.setVisibility(View.GONE);
+
         // initialize audio manager to stop and start background audio
         am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
@@ -210,8 +218,6 @@ public class DictateInputMethodService extends InputMethodService {
                     }
                 })
                 .build();
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) switchButton.setEnabled(false);  // switch to previous keyboard only works for API 28+
 
         settingsButton.setOnClickListener(v -> {
             if (isRecording) trashButton.performClick();
@@ -302,8 +308,15 @@ public class DictateInputMethodService extends InputMethodService {
         });
 
         switchButton.setOnLongClickListener(v -> {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null) imm.showInputMethodPicker();
+            vibrate();
+
+            if (currentInputLanguagePos < inputLanguages.size() - 1)  currentInputLanguagePos++;
+            else currentInputLanguagePos = 0;
+
+            sp.edit().putInt("net.devemperor.dictate.input_language_pos", currentInputLanguagePos).apply();
+            currentInputLanguageValue = inputLanguages.toArray()[currentInputLanguagePos].toString();
+            showInfo("language_switched");
+
             return true;
         });
 
@@ -567,6 +580,12 @@ public class DictateInputMethodService extends InputMethodService {
             }
         }
 
+        // get the currently selected input language
+        inputLanguages = new HashSet<>(Arrays.asList(getResources().getStringArray(R.array.dictate_default_input_languages)));
+        inputLanguages = sp.getStringSet("net.devemperor.dictate.input_languages", inputLanguages);
+        currentInputLanguagePos = sp.getInt("net.devemperor.dictate.input_language_pos", 0);
+        currentInputLanguageValue = inputLanguages.toArray()[currentInputLanguagePos].toString();
+
         // show infos for updates, ratings or donations
         if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
             showInfo("update");
@@ -702,7 +721,7 @@ public class DictateInputMethodService extends InputMethodService {
 
         String customApiHost = sp.getString("net.devemperor.dictate.custom_api_host", getString(R.string.dictate_custom_host_hint));
         String apiKey = sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY");
-        String language = sp.getString("net.devemperor.dictate.input_language", "detect");
+        String language = currentInputLanguageValue;
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(sp.getBoolean("net.devemperor.dictate.custom_api_host_enabled", false) ? customApiHost : "https://api.openai.com/")
                 .client(defaultClient(apiKey.replaceAll("[^ -~]", ""), Duration.ofSeconds(120)).newBuilder().build())
@@ -894,7 +913,7 @@ public class DictateInputMethodService extends InputMethodService {
         infoTv.setTextColor(getResources().getColor(R.color.dictate_red, getTheme()));
         switch (type) {
             case "update":
-                infoTv.setTextColor(getResources().getColor(R.color.dictate_green, getTheme()));
+                infoTv.setTextColor(getResources().getColor(R.color.dictate_blue, getTheme()));
                 infoTv.setText(R.string.dictate_update_installed_msg);
                 infoYesButton.setVisibility(View.VISIBLE);
                 infoYesButton.setOnClickListener(v -> {
@@ -907,7 +926,7 @@ public class DictateInputMethodService extends InputMethodService {
                 });
                 break;
             case "rate":
-                infoTv.setTextColor(getResources().getColor(R.color.dictate_green, getTheme()));
+                infoTv.setTextColor(getResources().getColor(R.color.dictate_blue, getTheme()));
                 infoTv.setText(R.string.dictate_rate_app_msg);
                 infoYesButton.setVisibility(View.VISIBLE);
                 infoYesButton.setOnClickListener(v -> {
@@ -923,7 +942,7 @@ public class DictateInputMethodService extends InputMethodService {
                 });
                 break;
             case "donate":
-                infoTv.setTextColor(getResources().getColor(R.color.dictate_green, getTheme()));
+                infoTv.setTextColor(getResources().getColor(R.color.dictate_blue, getTheme()));
                 infoTv.setText(R.string.dictate_donate_msg);
                 infoYesButton.setVisibility(View.VISIBLE);
                 infoYesButton.setOnClickListener(v -> {
@@ -986,6 +1005,17 @@ public class DictateInputMethodService extends InputMethodService {
                 infoTv.setText(R.string.dictate_internet_error_msg);
                 infoYesButton.setVisibility(View.GONE);
                 infoNoButton.setOnClickListener(v -> infoCl.setVisibility(View.GONE));
+                break;
+            case "language_switched":
+                List<String> allLanguages = Arrays.asList(getResources().getStringArray(R.array.dictate_input_languages));
+                List<String> allLanguagesValues = Arrays.asList(getResources().getStringArray(R.array.dictate_input_languages_values));
+
+                infoTv.setTextColor(getResources().getColor(R.color.dictate_blue, getTheme()));
+                infoTv.setText(getString(R.string.dictate_language_switched_msg, allLanguages.get(allLanguagesValues.indexOf(currentInputLanguageValue))));
+                infoNoButton.setVisibility(View.GONE);
+                infoYesButton.setVisibility(View.GONE);
+                infoCl.removeCallbacks(disableInfoRunnable);
+                infoCl.postDelayed(disableInfoRunnable, 3000);
                 break;
         }
     }

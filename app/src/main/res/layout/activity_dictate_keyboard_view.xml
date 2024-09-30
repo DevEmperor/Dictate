@@ -145,7 +145,7 @@
             android:id="@+id/info_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginHorizontal="8dp"
             android:text="@string/dictate_internet_error_msg"
             android:textColor="@color/dictate_red"
             android:textSize="16sp"

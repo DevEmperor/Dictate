@@ -108,7 +108,6 @@
     <string name="dictate_invalid_custom_host_msg">Invalid custom API host. Open settings to correct it?</string>
     <string name="dictate_custom_host_invalid_title">Invalid custom API address</string>
     <string name="dictate_custom_host_invalid_message">Your custom API server has to start with \'http:\' or \'https:\' and end with a \'/\'. Please check this again.</string>
-    <string name="dictate_settings_input_language_title">Input language 🌎</string>
     <string name="dictate_detect_automatically">Detect automatically</string>
     <string name="dictate_update_installed_msg">Dictate has been updated. View changes?</string>
     <string name="dictate_whats_new">What\'s new</string>
@@ -189,4 +188,7 @@
     <string name="dictate_changelog_12">v2.4.0\n\nThis update brings some cool new features:\n\n- If you want a rewording prompt to print an exact string, you can simply surround this text with [ and ] and exactly this string will be printed. ✍️\n\n- If you swipe over the space button, you can move the cursor to a specific position in the text. 📍\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_changelog_13">v2.4.1\n\nThis is just a tiny update that updates the GPT-4 Omni model and its prices, because GPT-4 Omni is much cheaper now. 🤩</string>
     <string name="dictate_changelog_14">v2.4.2\n\nThis is just a tiny update that instructs GPT models during rewording to be more precise and output only the actual text. For example, if you ask for an emoji, the keyboard will now only print the emoji without annoying introductory sentences. 🤩</string>
+    <string name="dictate_settings_input_languages_title">Input languages 🌎</string>
+    <string name="dictate_input_languages_empty">You have to select at least one input language.</string>
+    <string name="dictate_language_switched_msg">Input language: %1$s</string>
 </resources>
