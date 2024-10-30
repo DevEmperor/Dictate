@@ -1,0 +1,21 @@
+{
+	"name": "Android Development",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "android-dev",
+	"workspaceFolder": "/workspace",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vscjava.vscode-java-pack",
+				"vscjava.vscode-gradle",
+				"redhat.java",
+				"visualstudioexptteam.vscodeintellicode",
+				"ms-azuretools.vscode-docker"
+			],
+			"settings": {
+				"java.configuration.updateBuildConfiguration": "automatic",
+				"java.import.gradle.enabled": true
+			}
+		}
+	}
+}
