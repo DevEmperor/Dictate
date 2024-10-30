@@ -7,14 +7,11 @@
 		"vscode": {
 			"extensions": [
 				"vscjava.vscode-java-pack",
-				"vscjava.vscode-gradle",
 				"redhat.java",
-				"visualstudioexptteam.vscodeintellicode",
 				"ms-azuretools.vscode-docker"
 			],
 			"settings": {
-				"java.configuration.updateBuildConfiguration": "automatic",
-				"java.import.gradle.enabled": true
+				"java.configuration.updateBuildConfiguration": "automatic"
 			}
 		}
 	}

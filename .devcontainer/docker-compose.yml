@@ -7,7 +7,4 @@ services:
     volumes:
       - ..:/workspace:cached
       - ~/.gradle:/root/.gradle:cached
-    environment:
-      - ANDROID_SDK_ROOT=/opt/android-sdk
-      - ANDROID_HOME=/opt/android-sdk
     command: sleep infinity
