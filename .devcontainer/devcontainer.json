@@ -7,8 +7,9 @@
 		"vscode": {
 			"extensions": [
 				"vscjava.vscode-java-pack",
-				"redhat.java",
-				"ms-azuretools.vscode-docker"
+				"Codeium.codeium",
+				"YuichiNakamura.code-to-clipboard",
+				"DiemasMichiels.emulate"
 			],
 			"settings": {
 				"java.configuration.updateBuildConfiguration": "automatic"
