@@ -30,4 +30,8 @@ ENV ANDROID_HOME=/usr/lib/android-sdk
 ENV GRADLE_HOME=/usr/share/gradle
 ENV PATH=${PATH}:${ANDROID_SDK_ROOT}/platform-tools:${GRADLE_HOME}/bin
 
+# Create and set permissions for Gradle directories
+RUN mkdir -p /workspace/.gradle && \
+    chmod -R 777 /workspace/.gradle
+
 WORKDIR /workspace

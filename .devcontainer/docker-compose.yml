@@ -1,11 +1,16 @@
 version: '3'
 services:
   android-dev:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     volumes:
       - ..:/workspace:cached
       - ~/.gradle:/root/.gradle:cached
-    network_mode: "host" 
+      - gradle-cache:/workspace/.gradle
+
+    network_mode: "host"
     command: sleep infinity
+
+volumes:
+  gradle-cache:
