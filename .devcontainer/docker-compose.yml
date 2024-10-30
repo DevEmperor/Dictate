@@ -7,4 +7,5 @@ services:
     volumes:
       - ..:/workspace:cached
       - ~/.gradle:/root/.gradle:cached
+    network_mode: "host" 
     command: sleep infinity
