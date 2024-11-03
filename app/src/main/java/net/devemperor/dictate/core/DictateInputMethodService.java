@@ -22,6 +22,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -407,7 +408,15 @@ public class DictateInputMethodService extends InputMethodService {
             vibrate();
 
             InputConnection inputConnection = getCurrentInputConnection();
-            if (inputConnection != null) inputConnection.commitText("\n", 1);
+            if (inputConnection != null) {
+                EditorInfo editorInfo = getCurrentInputEditorInfo();
+                if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
+                    inputConnection.commitText("\n", 1);
+                } else {
+                    inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                    inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
+                }
+            }
         });
 
         enterButton.setOnLongClickListener(v -> {
