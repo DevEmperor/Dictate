@@ -1,4 +1,3 @@
-version: '3'
 services:
   android-dev:
     build:
@@ -11,6 +10,19 @@ services:
 
     network_mode: "host"
     command: sleep infinity
+
+  android-emulator:
+    image: budtmo/docker-android:emulator_13.0
+    container_name: android-emulator
+    privileged: true
+    devices:
+      - /dev/kvm:/dev/kvm
+    ports:
+      - "6080:6080"  # VNC Web Interface
+      - "5555:5555"  # ADB connection
+    environment:
+      - EMULATOR_DEVICE="Samsung Galaxy S10"
+      - WEB_VNC=true
 
 volumes:
   gradle-cache:
