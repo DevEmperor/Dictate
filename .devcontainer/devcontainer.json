@@ -8,8 +8,7 @@
 			"extensions": [
 				"vscjava.vscode-java-pack",
 				"Codeium.codeium",
-				"YuichiNakamura.code-to-clipboard",
-				"DiemasMichiels.emulate"
+				"YuichiNakamura.code-to-clipboard"
 			],
 			"settings": {
 				"java.configuration.updateBuildConfiguration": "automatic"
