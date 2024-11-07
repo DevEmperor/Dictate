@@ -21,8 +21,8 @@ services:
       - "6080:6080"  # VNC Web Interface
       - "5555:5555"  # ADB connection
     environment:
-      - EMULATOR_DEVICE="Samsung Galaxy S10"
-      - WEB_VNC=true
+      EMULATOR_DEVICE: "Samsung Galaxy S10"
+      WEB_VNC: "true"
 
 volumes:
   gradle-cache:
