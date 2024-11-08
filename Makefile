@@ -16,19 +16,35 @@ build: ## Build the APK
 	@printf $(_TITLE) "Build" "Building APK"
 	@$(GRADLE)
 
-copy-apk: ## Copy APK to Root
+copy-apk:
 	@printf $(_TITLE) "Copy" "Copying APK to Root"
 	@cp $(APK_SOURCE) $(APK_TARGET)
 
-remove-apk: ## Remove APK from Root
+remove-apk:
 	@printf $(_TITLE) "Remove" "Removing APK from Root"
 	@rm $(APK_TARGET)
+
+### Emulator
+verify-emulator:
+	printf $(_TITLE) "Verify" "Checking emulator status"
+	if adb devices | grep -q "localhost:5555.*device"; then \
+		printf $(_INFO) "Status" "SUCCESS - Emulator is running"; \
+	else \
+		printf $(_WARN) "Status" "FAILED - Emulator not running"; \
+		exit 1; \
+	fi
+
+adb-install: verify-emulator
+	printf $(_TITLE) "Install" "Installing APK to emulator"
+	adb -s localhost:5555 install -r $(APK_TARGET) > $(OUT) || (printf $(_WARN) "Error" "Failed to install APK" && exit 1)
+	printf $(_INFO) "Success" "APK installed successfully"
 
 ### Workflows
 info: ## Info
 infos: info ## Extended Info
 prepare: ## Onetime Setup
 setup: build copy-apk ## Setup
+install: setup adb-install ## Build and install APK to emulator
 clean: remove-apk ## Clean
 reset: clean setup info ## Reset
 all:prepare reset ## Run All Targets
