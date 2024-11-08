@@ -25,7 +25,7 @@ remove-apk:
 	@rm $(APK_TARGET)
 
 ### Emulator
-verify-emulator:
+verify:
 	printf $(_TITLE) "Verify" "Checking emulator status"
 	if adb devices | grep -q "localhost:5555.*device"; then \
 		printf $(_INFO) "Status" "SUCCESS - Emulator is running"; \
@@ -34,7 +34,7 @@ verify-emulator:
 		exit 1; \
 	fi
 
-adb-install: verify-emulator
+adb-install: verify
 	printf $(_TITLE) "Install" "Installing APK to emulator"
 	adb -s localhost:5555 install -r $(APK_TARGET) > $(OUT) || (printf $(_WARN) "Error" "Failed to install APK" && exit 1)
 	printf $(_INFO) "Success" "APK installed successfully"
