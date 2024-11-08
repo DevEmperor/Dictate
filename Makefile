@@ -12,9 +12,10 @@ help: ## Show this help
 	printf $(_TITLE) "FirstTime: prepare/all, OUT=/dev/stdout (Debug) "
 
 ### APK Setup
+.PHONY: build copy-apk remove-apk
 build: ## Build the APK
 	@printf $(_TITLE) "Build" "Building APK"
-	@$(GRADLE)
+	@$(GRADLE) build
 
 copy-apk:
 	@printf $(_TITLE) "Copy" "Copying APK to Root"
