@@ -3,7 +3,8 @@
 OUT := /dev/null
 
 GRADLE := ./gradlew
-APK_SOURCE := app/build/outputs/apk/debug/app-debug.apk
+BUILD_DIR := app/build
+APK_SOURCE := $(BUILD_DIR)/outputs/apk/debug/app-debug.apk
 APK_TARGET := ./dictate.apk
 
 ### Basic
@@ -21,13 +22,18 @@ copy-apk:
 	@printf $(_TITLE) "Copy" "Copying APK to Root"
 	@cp $(APK_SOURCE) $(APK_TARGET)
 
+### Clean
 remove-apk:
 	@printf $(_TITLE) "Remove" "Removing APK from Root"
 	@rm $(APK_TARGET)
 
+clean-gradle: ## Clean Gradle
+	@printf $(_TITLE) "Clean" "Cleaning Gradle"
+	@$(GRADLE) clean
+
 ### Emulator
 verify:
-	printf $(_TITLE) "Verify" "Checking emulator status"
+	@printf $(_TITLE) "Verify" "Checking emulator status"
 	if adb devices | grep -q "localhost:5555.*device"; then \
 		printf $(_INFO) "Status" "SUCCESS - Emulator is running"; \
 	else \
