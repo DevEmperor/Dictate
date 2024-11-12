@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     git \
     openssh-client \
     make \
-    && rm -rf /var/lib/apt/lists/*
+    android-tools-adb \
+    && apt-get clean
 
 # Use the provided helper script to accept licenses
 RUN /opt/license-accepter.sh
