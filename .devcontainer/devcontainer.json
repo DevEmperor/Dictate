@@ -10,7 +10,8 @@
 				"vscjava.vscode-java-pack",
 				"Codeium.codeium",
 				"YuichiNakamura.code-to-clipboard",
-				"Oracle.oracle-java"
+				"Oracle.oracle-java",
+				"saoudrizwan.claude-dev"
 			],
 			"settings": {
 				"java.configuration.updateBuildConfiguration": "automatic"
