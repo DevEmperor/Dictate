@@ -193,4 +193,6 @@
     <string name="dictate_language_switched_msg">Input language: %1$s</string>
     <string name="dictate_changelog_15">v2.4.3\n\nThis is just a small update. In the settings, you can now select multiple input languages. If you then press and hold the switch-button while using Dictate, you can switch to one of these input languages faster. 💪\n\n\n</string>
     <string name="dictate_changelog_16">v2.4.4\n\nThis is just a small update with some minor improvements.\n\n- The device screen now remains turned on during recording to make longer recordings more comfortable.\n\n- If you have activated backups via Google Drive, all settings are backed up from time to time so that you can continue dictating directly on a new device.\n\n- Bugfix: The Enter button now sends text in URL bars in browsers.\n\n\n</string>
+    <string name="dictate_settings_audio_focus_title">Audio focus ⏸️</string>
+    <string name="dictate_settings_audio_focus_summary">Pause background media while recording</string>
 </resources>

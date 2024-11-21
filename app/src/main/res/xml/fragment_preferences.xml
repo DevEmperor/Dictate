@@ -84,6 +84,13 @@
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.SwitchPreference
+            android:key="net.devemperor.dictate.audio_focus"
+            android:title="@string/dictate_settings_audio_focus_title"
+            android:summary="@string/dictate_settings_audio_focus_summary"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.SwitchPreference
             android:key="net.devemperor.dictate.vibration"
             android:title="@string/dictate_settings_vibration_title"
             android:summary="@string/dictate_settings_vibration_summary"

@@ -102,6 +102,7 @@ public class DictateInputMethodService extends InputMethodService {
     private boolean isPaused = false;
     private boolean instantPrompt = false;
     private boolean vibrationEnabled = true;
+    private boolean audioFocusEnabled = true;
     private TextView selectedCharacter = null;
     private boolean spaceButtonUserHasSwiped = false;
     private Set<String> inputLanguages;
@@ -333,7 +334,7 @@ public class DictateInputMethodService extends InputMethodService {
                     recordTimeHandler.removeCallbacks(recordTimeRunnable);
                 }
             }
-            am.abandonAudioFocusRequest(audioFocusRequest);
+            if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
 
             isRecording = false;
             isPaused = false;
@@ -389,13 +390,13 @@ public class DictateInputMethodService extends InputMethodService {
             vibrate();
             if (recorder != null) {
                 if (isPaused) {
-                    am.requestAudioFocus(audioFocusRequest);
+                    if (audioFocusEnabled) am.requestAudioFocus(audioFocusRequest);
                     recorder.resume();
                     recordTimeHandler.post(recordTimeRunnable);
                     pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_pause_24));
                     isPaused = false;
                 } else {
-                    am.abandonAudioFocusRequest(audioFocusRequest);
+                    if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
                     recorder.pause();
                     recordTimeHandler.removeCallbacks(recordTimeRunnable);
                     pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_mic_24));
@@ -518,7 +519,7 @@ public class DictateInputMethodService extends InputMethodService {
         isRecording = false;
         isPaused = false;
         instantPrompt = false;
-        am.abandonAudioFocusRequest(audioFocusRequest);
+        if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
         recordButton.setText(R.string.dictate_record);
         recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
         recordButton.setEnabled(true);
@@ -595,6 +596,9 @@ public class DictateInputMethodService extends InputMethodService {
         currentInputLanguagePos = sp.getInt("net.devemperor.dictate.input_language_pos", 0);
         currentInputLanguageValue = inputLanguages.toArray()[currentInputLanguagePos].toString();
 
+        // check if user enabled audio focus
+        audioFocusEnabled = sp.getBoolean("net.devemperor.dictate.audio_focus", true);
+
         // show infos for updates, ratings or donations
         if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
             showInfo("update");
@@ -666,7 +670,7 @@ public class DictateInputMethodService extends InputMethodService {
         recorder.setAudioSamplingRate(44100);
         recorder.setOutputFile(audioFile);
 
-        am.requestAudioFocus(audioFocusRequest);
+        if (audioFocusEnabled) am.requestAudioFocus(audioFocusRequest);
 
         try {
             recorder.prepare();
@@ -714,7 +718,7 @@ public class DictateInputMethodService extends InputMethodService {
         isRecording = false;
         isPaused = false;
 
-        am.abandonAudioFocusRequest(audioFocusRequest);
+        if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
 
         String stylePrompt;
         switch (sp.getInt("net.devemperor.dictate.style_prompt_selection", 1)) {
