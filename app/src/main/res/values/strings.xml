@@ -195,4 +195,5 @@
     <string name="dictate_changelog_16">v2.4.4\n\nThis is just a small update with some minor improvements.\n\n- The device screen now remains turned on during recording to make longer recordings more comfortable.\n\n- If you have activated backups via Google Drive, all settings are backed up from time to time so that you can continue dictating directly on a new device.\n\n- Bugfix: The Enter button now sends text in URL bars in browsers.\n\n\n</string>
     <string name="dictate_settings_audio_focus_title">Audio focus ⏸️</string>
     <string name="dictate_settings_audio_focus_summary">Pause background media while recording</string>
+    <string name="dictate_changelog_17">v2.4.5\n\nThis is just a tiny update that adds a settings option to disable the audio focus. You can now control whether background audio (e.g. music, podcasts, …) should be paused automatically.\n\n\n</string>
 </resources>

@@ -124,6 +124,7 @@ public class DictateSettingsActivity extends AppCompatActivity {
             String whatsNewMessage = getString(R.string.dictate_changelog_donate);
             int lastVersionCode = sp.getInt("net.devemperor.dictate.last_version_code", 0);
 
+            if (lastVersionCode < 17) whatsNewMessage += getString(R.string.dictate_changelog_17);
             if (lastVersionCode < 16) whatsNewMessage += getString(R.string.dictate_changelog_16);
             if (lastVersionCode < 15) whatsNewMessage += getString(R.string.dictate_changelog_15);
             if (lastVersionCode < 14) whatsNewMessage += getString(R.string.dictate_changelog_14);

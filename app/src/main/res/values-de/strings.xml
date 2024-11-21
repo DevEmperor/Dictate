@@ -185,4 +185,5 @@
     <string name="dictate_changelog_16">v2.4.4\n\nDas ist nur ein kleines Update mit ein paar Verbesserungen.\n\n- Der Bildschirm bleibt jetzt während der Aufnahme an, damit längere Aufnahmen angenehmer sind.\n\n- Wenn du Backups über Google Drive aktiviert hast, werden die Einstellungen von Zeit zu Zeit gesichert, damit du direkt auf einem neuen Gerät weitermachen kannst.\n\n- Bugfix: Der Enter-Button sendet jetzt Text in URL-Leisten in Browsern.\n\n\n</string>
     <string name="dictate_settings_audio_focus_title">Audio Fokus ⏸️</string>
     <string name="dictate_settings_audio_focus_summary">Hintergrund Medien während der Aufnahme pausieren</string>
+    <string name="dictate_changelog_17">v2.4.5\n\nDas ist nur ein kleines Update, das eine Einstellungs-Option hinzufügt, um den Audio-Fokus zu deaktivieren. Du kannst jetzt selbst entscheiden, ob Hintergrundaudio (z. B. Musik, Podcasts, …) automatisch pausiert werden soll.\n\n\n</string>
 </resources>
