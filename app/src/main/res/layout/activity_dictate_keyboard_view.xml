@@ -27,6 +27,7 @@
         android:layout_marginEnd="8dp"
         android:text="@string/dictate_record"
         android:textSize="14sp"
+        android:maxLines="1"
         app:layout_constraintBottom_toTopOf="@+id/space_btn"
         app:layout_constraintEnd_toStartOf="@+id/resend_btn"
         app:layout_constraintStart_toEndOf="@+id/settings_btn"
