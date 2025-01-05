@@ -68,6 +68,7 @@ import java.io.InterruptedIOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -108,6 +109,8 @@ public class DictateInputMethodService extends InputMethodService {
     private Set<String> inputLanguages;
     private int currentInputLanguagePos;
     private String currentInputLanguageValue;
+    private ArrayList<String> rewordingHistory = new ArrayList<>();
+    private int rewordingHistoryIndex = 0;
 
     private MediaRecorder recorder;
     private ExecutorService speechApiThread;
@@ -557,7 +560,29 @@ public class DictateInputMethodService extends InputMethodService {
                     } else {
                         stopRecording();
                     }
-                } else if (model.getId() == -2) {  // add prompt clicked
+                } else if (model.getId() == -2) {  // undo prompt clicked
+                    try {  // use try-catch to prevent IndexOutOfBoundsException when start or end of history is reached
+                        String previousText = rewordingHistory.get(rewordingHistoryIndex - 2);
+                        // replace current text in input connection with previousText
+                        if (inputConnection != null) {
+                            inputConnection.performContextMenuAction(android.R.id.selectAll);
+                            inputConnection.commitText(previousText, previousText.length());
+
+                            rewordingHistoryIndex--;
+                        }
+                    } catch (IndexOutOfBoundsException ignored) { }
+                } else if (model.getId() == -3) {  // redo prompt clicked
+                    try {
+                        String nextText = rewordingHistory.get(rewordingHistoryIndex);
+                        // replace current text in input connection with nextText
+                        if (inputConnection != null) {
+                            inputConnection.performContextMenuAction(android.R.id.selectAll);
+                            inputConnection.commitText(nextText, nextText.length());
+
+                            rewordingHistoryIndex++;
+                        }
+                    } catch (IndexOutOfBoundsException ignored) { }
+                } else if (model.getId() == -4) {  // add prompt clicked
                     Intent intent = new Intent(this, PromptsOverviewActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
@@ -760,6 +785,17 @@ public class DictateInputMethodService extends InputMethodService {
                 if (!instantPrompt) {
                     InputConnection inputConnection = getCurrentInputConnection();
                     if (inputConnection != null) {
+                        // add previous text to rewording history if it is not the same as the last item
+                        String textBeforeTranscript = inputConnection.getExtractedText(new ExtractedTextRequest(), 0).text.toString();
+                        if (rewordingHistoryIndex == 0 || !textBeforeTranscript.equals(rewordingHistory.get(rewordingHistoryIndex - 1))) {
+                            rewordingHistory.add(textBeforeTranscript);
+                            rewordingHistoryIndex++;
+                        }
+                        // remove all items from rewordingHistory that are after rewordingHistoryIndex
+                        if (rewordingHistoryIndex < rewordingHistory.size()) {
+                            rewordingHistory.subList(rewordingHistoryIndex, rewordingHistory.size()).clear();
+                        }
+
                         if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
                             inputConnection.commitText(resultText, 1);
                         } else {
@@ -769,6 +805,10 @@ public class DictateInputMethodService extends InputMethodService {
                                 mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), (long) (i * (20L / (speed / 5f))));
                             }
                         }
+
+                        // add transcribed text to history
+                        rewordingHistory.add(inputConnection.getExtractedText(new ExtractedTextRequest(), 0).text.toString());
+                        rewordingHistoryIndex = rewordingHistory.size();
                     }
                 } else {
                     // continue with ChatGPT API request
@@ -859,6 +899,17 @@ public class DictateInputMethodService extends InputMethodService {
 
                 InputConnection inputConnection = getCurrentInputConnection();
                 if (inputConnection != null) {
+                    // add previous text to rewording history if it is not the same as the last item
+                    String textBeforeRewording = inputConnection.getExtractedText(new ExtractedTextRequest(), 0).text.toString();
+                    if (rewordingHistoryIndex == 0 || !textBeforeRewording.equals(rewordingHistory.get(rewordingHistoryIndex - 1))) {
+                        rewordingHistory.add(textBeforeRewording);
+                        rewordingHistoryIndex++;
+                    }
+                    // remove all items from rewordingHistory that are after rewordingHistoryIndex
+                    if (rewordingHistoryIndex < rewordingHistory.size()) {
+                        rewordingHistory.subList(rewordingHistoryIndex, rewordingHistory.size()).clear();
+                    }
+
                     if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
                         inputConnection.commitText(rewordedText, 1);
                     } else {
@@ -868,6 +919,10 @@ public class DictateInputMethodService extends InputMethodService {
                             mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), (long) (i * (20L / (speed / 5f))));
                         }
                     }
+
+                    // add reworded text to history
+                    rewordingHistory.add(inputConnection.getExtractedText(new ExtractedTextRequest(), 0).text.toString());
+                    rewordingHistoryIndex = rewordingHistory.size();
                 }
             } catch (RuntimeException e) {
                 sendLogToCrashlytics(e);

@@ -50,8 +50,13 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
         if (model.getId() == -1) {
             holder.promptBtn.setText("");
             holder.promptBtn.setForeground(AppCompatResources.getDrawable(holder.promptBtn.getContext(), R.drawable.ic_baseline_auto_awesome_18));
-        }
-        else if (model.getId() == -2) {
+        } else if (model.getId() == -2) {
+            holder.promptBtn.setText("");
+            holder.promptBtn.setForeground(AppCompatResources.getDrawable(holder.promptBtn.getContext(), R.drawable.ic_baseline_undo_24));
+        } else if (model.getId() == -3) {
+            holder.promptBtn.setText("");
+            holder.promptBtn.setForeground(AppCompatResources.getDrawable(holder.promptBtn.getContext(), R.drawable.ic_baseline_redo_24));
+        } else if (model.getId() == -4) {
             holder.promptBtn.setText("");
             holder.promptBtn.setForeground(AppCompatResources.getDrawable(holder.promptBtn.getContext(), R.drawable.ic_baseline_add_24));
         } else {

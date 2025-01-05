@@ -1,8 +1,8 @@
 [versions]
-agp = "8.7.2"
+agp = "8.7.3"
 commonsValidator = "1.9.0"
 converterJackson = "2.11.0"
-firebaseBom = "33.5.1"
+firebaseBom = "33.7.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"

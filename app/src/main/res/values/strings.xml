@@ -196,4 +196,6 @@
     <string name="dictate_settings_audio_focus_title">Audio focus ⏸️</string>
     <string name="dictate_settings_audio_focus_summary">Pause background media while recording</string>
     <string name="dictate_changelog_17">v2.4.5\n\nThis is just a tiny update that adds a settings option to disable the audio focus. You can now control whether background audio (e.g. music, podcasts, …) should be paused automatically.\n\n\n</string>
+    <string name="dictate_settings_rewording_history_title">Rewording history ⏪</string>
+    <string name="dictate_settings_rewording_history_summary">Show buttons to undo/redo rewording</string>
 </resources>
