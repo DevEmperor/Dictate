@@ -188,4 +188,6 @@
     <string name="dictate_changelog_17">v2.4.5\n\nDas ist nur ein kleines Update, das eine Einstellungs-Option hinzufügt, um den Audio-Fokus zu deaktivieren. Du kannst jetzt selbst entscheiden, ob Hintergrundaudio (z. B. Musik, Podcasts, …) automatisch pausiert werden soll.\n\n\n</string>
     <string name="dictate_settings_rewording_history_title">Überarbeitungsverlauf ⏪</string>
     <string name="dictate_settings_rewording_history_summary">Zeige Buttons für Rückgängig/Wiederherstellen der Überarbeitungen</string>
+    <string name="dictate_changelog_18">v2.5.0\n\n- Dieses Update bringt eine coole neue Funktion:\nDu kannst jetzt Änderungen rückgängig machen oder wiederherstellen, die nach dem Transkribieren oder Überarbeitung eines Textes gemacht wurden. Klick einfach auf die beiden Buttons im Überarbeitungs-Bereich, um durch die Historie zu springen. ⏪\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\nWie immer, zögere nicht, mich mit Fragen und Ideen über GitHub oder den E-Mail-Button unten zu kontaktieren. ☺️\n\n\n</string>
+
 </resources>
