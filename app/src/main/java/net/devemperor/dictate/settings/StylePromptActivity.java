@@ -57,7 +57,7 @@ public class StylePromptActivity extends AppCompatActivity {
 
         //open browser with prompting explanation page
         helpIv.setOnClickListener(v -> {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://platform.openai.com/docs/guides/speech-to-text/prompting"));
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://platform.openai.com/docs/guides/speech-to-text#prompting"));
             startActivity(browserIntent);
         });
 
