@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace 'net.devemperor.dictate'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "net.devemperor.dictate"
         minSdk 26
-        targetSdk 34
+        targetSdk 35
         versionCode 18
         versionName "2.5.0"
 
