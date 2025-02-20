@@ -92,7 +92,6 @@ public class DictateInputMethodService extends InputMethodService {
     private Handler recordTimeHandler;
     private Runnable deleteRunnable;
     private Runnable recordTimeRunnable;
-    private Runnable disableInfoRunnable;
 
     // define variables and objects
     private long elapsedTime;
@@ -106,7 +105,6 @@ public class DictateInputMethodService extends InputMethodService {
     private boolean audioFocusEnabled = true;
     private TextView selectedCharacter = null;
     private boolean spaceButtonUserHasSwiped = false;
-    private Set<String> inputLanguages;
     private int currentInputLanguagePos;
     private String currentInputLanguageValue;
     private ArrayList<String> rewordingHistory = new ArrayList<>();
@@ -164,6 +162,7 @@ public class DictateInputMethodService extends InputMethodService {
         promptsDb = new PromptsDatabaseHelper(this);
         usageDb = new UsageDatabaseHelper(this);
         vibrationEnabled = sp.getBoolean("net.devemperor.dictate.vibration", true);
+        currentInputLanguagePos = sp.getInt("net.devemperor.dictate.input_language_pos", 0);
 
         dictateKeyboardView = (ConstraintLayout) LayoutInflater.from(context).inflate(R.layout.activity_dictate_keyboard_view, null);
 
@@ -206,8 +205,6 @@ public class DictateInputMethodService extends InputMethodService {
                 recordTimeHandler.postDelayed(this, 100);
             }
         };
-
-        disableInfoRunnable = () -> infoCl.setVisibility(View.GONE);
 
         // initialize audio manager to stop and start background audio
         am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -315,13 +312,8 @@ public class DictateInputMethodService extends InputMethodService {
         switchButton.setOnLongClickListener(v -> {
             vibrate();
 
-            if (currentInputLanguagePos < inputLanguages.size() - 1)  currentInputLanguagePos++;
-            else currentInputLanguagePos = 0;
-
-            sp.edit().putInt("net.devemperor.dictate.input_language_pos", currentInputLanguagePos).apply();
-            currentInputLanguageValue = inputLanguages.toArray()[currentInputLanguagePos].toString();
-            showInfo("language_switched");
-
+            currentInputLanguagePos++;
+            recordButton.setText(getDictateButtonText());
             return true;
         });
 
@@ -616,10 +608,7 @@ public class DictateInputMethodService extends InputMethodService {
         }
 
         // get the currently selected input language
-        inputLanguages = new HashSet<>(Arrays.asList(getResources().getStringArray(R.array.dictate_default_input_languages)));
-        inputLanguages = sp.getStringSet("net.devemperor.dictate.input_languages", inputLanguages);
-        currentInputLanguagePos = sp.getInt("net.devemperor.dictate.input_language_pos", 0);
-        currentInputLanguageValue = inputLanguages.toArray()[currentInputLanguagePos].toString();
+        recordButton.setText(getDictateButtonText());
 
         // check if user enabled audio focus
         audioFocusEnabled = sp.getBoolean("net.devemperor.dictate.audio_focus", true);
@@ -1074,18 +1063,20 @@ public class DictateInputMethodService extends InputMethodService {
                 infoYesButton.setVisibility(View.GONE);
                 infoNoButton.setOnClickListener(v -> infoCl.setVisibility(View.GONE));
                 break;
-            case "language_switched":
-                List<String> allLanguages = Arrays.asList(getResources().getStringArray(R.array.dictate_input_languages));
-                List<String> allLanguagesValues = Arrays.asList(getResources().getStringArray(R.array.dictate_input_languages_values));
-
-                infoTv.setTextColor(getResources().getColor(R.color.dictate_blue, getTheme()));
-                infoTv.setText(getString(R.string.dictate_language_switched_msg, allLanguages.get(allLanguagesValues.indexOf(currentInputLanguageValue))));
-                infoNoButton.setVisibility(View.GONE);
-                infoYesButton.setVisibility(View.GONE);
-                infoCl.removeCallbacks(disableInfoRunnable);
-                infoCl.postDelayed(disableInfoRunnable, 3000);
-                break;
         }
+    }
+
+    private String getDictateButtonText() {
+        Set<String> currentInputLanguagesValues = new HashSet<>(Arrays.asList(getResources().getStringArray(R.array.dictate_default_input_languages)));
+        currentInputLanguagesValues = sp.getStringSet("net.devemperor.dictate.input_languages", currentInputLanguagesValues);
+        List<String> allLanguagesValues = Arrays.asList(getResources().getStringArray(R.array.dictate_input_languages_values));
+        List<String> recordDifferentLanguages = Arrays.asList(getResources().getStringArray(R.array.dictate_record_different_languages));
+
+        if (currentInputLanguagePos >= currentInputLanguagesValues.size()) currentInputLanguagePos = 0;
+        sp.edit().putInt("net.devemperor.dictate.input_language_pos", currentInputLanguagePos).apply();
+
+        currentInputLanguageValue = currentInputLanguagesValues.toArray()[currentInputLanguagePos].toString();
+        return recordDifferentLanguages.get(allLanguagesValues.indexOf(currentInputLanguagesValues.toArray()[currentInputLanguagePos].toString()));
     }
 
     private void deleteOneCharacter() {

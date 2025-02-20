@@ -120,6 +120,124 @@
         <item>vi</item>
         <item>cy</item>
     </string-array>
+    <string-array name="dictate_record_different_languages">
+        <!-- 1. Detect automatically (Spezialfall: hier unverändert "Detect") -->
+        <item>@string/dictate_detect_automatically</item>
+        <!-- 2. Afrikaans -->
+        <item>Neem op</item>
+        <!-- 3. Arabic -->
+        <item>تسجيل</item>
+        <!-- 4. Armenian -->
+        <item>Գրանցել</item>
+        <!-- 5. Azerbaijani -->
+        <item>Qeyd et</item>
+        <!-- 6. Belarusian -->
+        <item>Запісаць</item>
+        <!-- 7. Bosnian -->
+        <item>Snimi</item>
+        <!-- 8. Bulgarian -->
+        <item>Запиши</item>
+        <!-- 9. Catalan -->
+        <item>Gravar</item>
+        <!-- 10. Chinese -->
+        <item>录音</item>
+        <!-- 11. Croatian -->
+        <item>Snimi</item>
+        <!-- 12. Czech -->
+        <item>Nahrát</item>
+        <!-- 13. Danish -->
+        <item>Optag</item>
+        <!-- 14. Dutch -->
+        <item>Opnemen</item>
+        <!-- 15. English -->
+        <item>Record</item>
+        <!-- 16. Estonian -->
+        <item>Salvesta</item>
+        <!-- 17. Finnish -->
+        <item>Nauhoita</item>
+        <!-- 18. French -->
+        <item>Enregistrer</item>
+        <!-- 19. Galician -->
+        <item>Gravar</item>
+        <!-- 20. German -->
+        <item>Aufnehmen</item>
+        <!-- 21. Greek -->
+        <item>Ηχογράφησε</item>
+        <!-- 22. Hebrew -->
+        <item>הקלט</item>
+        <!-- 23. Hindi -->
+        <item>रिकॉर्ड</item>
+        <!-- 24. Hungarian -->
+        <item>Felvétel</item>
+        <!-- 25. Icelandic -->
+        <item>Taka upp</item>
+        <!-- 26. Indonesian -->
+        <item>Rekam</item>
+        <!-- 27. Italian -->
+        <item>Registra</item>
+        <!-- 28. Japanese -->
+        <item>録音</item>
+        <!-- 29. Kannada -->
+        <item>ರೆಕಾರ್ಡ್</item>
+        <!-- 30. Kazakh -->
+        <item>Жазу</item>
+        <!-- 31. Korean -->
+        <item>녹음</item>
+        <!-- 32. Latvian -->
+        <item>Ierakstīt</item>
+        <!-- 33. Lithuanian -->
+        <item>Įrašyti</item>
+        <!-- 34. Macedonian -->
+        <item>Сними</item>
+        <!-- 35. Malay -->
+        <item>Rakam</item>
+        <!-- 36. Marathi -->
+        <item>रेकॉर्ड करा</item>
+        <!-- 37. Maori -->
+        <item>Rekota</item>
+        <!-- 38. Nepali -->
+        <item>रेकर्ड गर्नुहोस्</item>
+        <!-- 39. Norwegian -->
+        <item>Ta opp</item>
+        <!-- 40. Persian -->
+        <item>ضبط</item>
+        <!-- 41. Polish -->
+        <item>Nagraj</item>
+        <!-- 42. Portuguese -->
+        <item>Gravar</item>
+        <!-- 43. Romanian -->
+        <item>Înregistrează</item>
+        <!-- 44. Russian -->
+        <item>Записать</item>
+        <!-- 45. Serbian -->
+        <item>Snimi</item>
+        <!-- 46. Slovak -->
+        <item>Nahrať</item>
+        <!-- 47. Slovenian -->
+        <item>Posnemi</item>
+        <!-- 48. Spanish -->
+        <item>Grabar</item>
+        <!-- 49. Swahili -->
+        <item>Rekodi</item>
+        <!-- 50. Swedish -->
+        <item>Spela in</item>
+        <!-- 51. Tagalog -->
+        <item>I-record</item>
+        <!-- 52. Tamil -->
+        <item>பதிவு</item>
+        <!-- 53. Thai -->
+        <item>บันทึก</item>
+        <!-- 54. Turkish -->
+        <item>Kaydet</item>
+        <!-- 55. Ukrainian -->
+        <item>Записати</item>
+        <!-- 56. Urdu -->
+        <item>ریکارڈ کریں</item>
+        <!-- 57. Vietnamese -->
+        <item>Ghi âm</item>
+        <!-- 58. Welsh -->
+        <item>Recordio</item>
+    </string-array>
 
     <string-array name="dictate_rewording_models">
         <item>OpenAI o3 mini</item>
