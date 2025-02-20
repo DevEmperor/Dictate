@@ -122,6 +122,9 @@
     </string-array>
 
     <string-array name="dictate_rewording_models">
+        <item>OpenAI o3 mini</item>
+        <item>OpenAI o1 mini</item>
+        <item>OpenAI o1</item>
         <item>GPT-4o mini</item>
         <item>GPT-4o</item>
         <item>GPT-4 Turbo</item>
@@ -129,6 +132,9 @@
         <item>GPT-3.5 Turbo</item>
     </string-array>
     <string-array name="dictate_rewording_models_values">
+        <item>o3-mini</item>
+        <item>o1-mini</item>
+        <item>o1</item>
         <item>gpt-4o-mini</item>
         <item>gpt-4o</item>
         <item>gpt-4-turbo</item>

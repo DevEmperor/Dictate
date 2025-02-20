@@ -9,6 +9,11 @@ public class DictateUtils {
         switch (modelName) {
             case "whisper-1":
                 return audioTime * 0.0001f;
+            case "o3-mini":
+            case "o1-mini":
+                return inputTokens * 0.0000011f + outputTokens * 0.0000044f;
+            case "o1":
+                return inputTokens * 0.000015f + outputTokens * 0.00006f;
             case "gpt-4o-mini":
                 return inputTokens * 0.00000015f + outputTokens * 0.0000006f;
             case "gpt-4o":
@@ -28,6 +33,12 @@ public class DictateUtils {
         switch (modelName) {
             case "whisper-1":
                 return "Whisper";
+            case "o3-mini":
+                return "OpenAI o3 mini";
+            case "o1-mini":
+                return "OpenAI o1 mini";
+            case "o1":
+                return "OpenAI o1";
             case "gpt-4o-mini":
                 return "GPT-4o mini";
             case "gpt-4o":
