@@ -14,11 +14,15 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -39,11 +43,17 @@ public class DictateSettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dictate_settings);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_dictate_settings), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.dictate_settings, new PreferencesFragment())
+                .replace(R.id.activity_dictate_settings, new PreferencesFragment())
                 .commit();
 
         SharedPreferences sp = getSharedPreferences("net.devemperor.dictate", MODE_PRIVATE);

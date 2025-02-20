@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -20,7 +20,7 @@
         <service
             android:name=".core.DictateInputMethodService"
             android:exported="true"
-            android:permission="android.permission.BIND_INPUT_METHOD">
+            android:permission="android.permission.BIND_INPUT_METHOD" >
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -32,7 +32,7 @@
 
         <activity
             android:name=".settings.DictateSettingsActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,25 +41,26 @@
         </activity>
         <activity
             android:name=".onboarding.OnboardingActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".rewording.PromptEditActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".rewording.PromptsOverviewActivity" />
         </activity>
         <activity
             android:name=".rewording.PromptsOverviewActivity"
-            android:exported="false">
+            android:exported="false" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".settings.DictateSettingsActivity" />
         </activity>
         <activity
             android:name=".usage.UsageActivity"
-            android:exported="false">
+            android:exported="false" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".settings.DictateSettingsActivity" />
@@ -67,7 +68,7 @@
         <activity
             android:name=".settings.StylePromptActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".settings.DictateSettingsActivity" />
