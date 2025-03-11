@@ -68,7 +68,6 @@ import java.io.InterruptedIOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -107,8 +106,6 @@ public class DictateInputMethodService extends InputMethodService {
     private boolean spaceButtonUserHasSwiped = false;
     private int currentInputLanguagePos;
     private String currentInputLanguageValue;
-    private ArrayList<String> rewordingHistory = new ArrayList<>();
-    private int rewordingHistoryIndex = 0;
 
     private MediaRecorder recorder;
     private ExecutorService speechApiThread;
@@ -136,9 +133,14 @@ public class DictateInputMethodService extends InputMethodService {
     private Button infoNoButton;
     private LinearLayout promptsLl;
     private RecyclerView promptsRv;
-    private MaterialButton selectAllButton;
     private TextView runningPromptTv;
     private ProgressBar runningPromptPb;
+    private MaterialButton editSelectAllButton;
+    private MaterialButton editUndoButton;
+    private MaterialButton editRedoButton;
+    private MaterialButton editCutButton;
+    private MaterialButton editCopyButton;
+    private MaterialButton editPasteButton;
     private LinearLayout overlayCharactersLl;
 
     PromptsDatabaseHelper promptsDb;
@@ -183,9 +185,15 @@ public class DictateInputMethodService extends InputMethodService {
 
         promptsLl = dictateKeyboardView.findViewById(R.id.prompts_keyboard_ll);
         promptsRv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_rv);
-        selectAllButton = dictateKeyboardView.findViewById(R.id.select_all_btn);
         runningPromptPb = dictateKeyboardView.findViewById(R.id.prompts_keyboard_running_pb);
         runningPromptTv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_running_prompt_tv);
+
+        editSelectAllButton = dictateKeyboardView.findViewById(R.id.edit_select_all_btn);
+        editUndoButton = dictateKeyboardView.findViewById(R.id.edit_undo_btn);
+        editRedoButton = dictateKeyboardView.findViewById(R.id.edit_redo_btn);
+        editCutButton = dictateKeyboardView.findViewById(R.id.edit_cut_btn);
+        editCopyButton = dictateKeyboardView.findViewById(R.id.edit_copy_btn);
+        editPasteButton = dictateKeyboardView.findViewById(R.id.edit_paste_btn);
 
         overlayCharactersLl = dictateKeyboardView.findViewById(R.id.overlay_characters_ll);
 
@@ -455,13 +463,7 @@ public class DictateInputMethodService extends InputMethodService {
             return false;
         });
 
-        // initialize overlay characters
-        for (int i = 0; i < 8; i++) {
-            TextView charView = (TextView) LayoutInflater.from(context).inflate(R.layout.item_overlay_characters, overlayCharactersLl, false);
-            overlayCharactersLl.addView(charView);
-        }
-
-        selectAllButton.setOnClickListener(v -> {
+        editSelectAllButton.setOnClickListener(v -> {
             vibrate();
 
             InputConnection inputConnection = getCurrentInputConnection();
@@ -470,7 +472,7 @@ public class DictateInputMethodService extends InputMethodService {
 
                 if (inputConnection.getSelectedText(0) == null && extractedText.text.length() > 0) {
                     inputConnection.performContextMenuAction(android.R.id.selectAll);
-                    selectAllButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_deselect_24));
+                    editSelectAllButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_deselect_24));
                 } else {
                     inputConnection.clearMetaKeyStates(0);
                     if (extractedText == null || extractedText.text == null) {
@@ -478,10 +480,35 @@ public class DictateInputMethodService extends InputMethodService {
                     } else {
                         inputConnection.setSelection(extractedText.text.length(), extractedText.text.length());
                     }
-                    selectAllButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_select_all_24));
+                    editSelectAllButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_select_all_24));
                 }
             }
         });
+
+        // initialize all edit buttons
+        Object[][] buttonsActions = {
+                { editUndoButton, android.R.id.undo },
+                { editRedoButton, android.R.id.redo },
+                { editCutButton,  android.R.id.cut },
+                { editCopyButton, android.R.id.copy },
+                { editPasteButton, android.R.id.paste }
+        };
+
+        for (Object[] pair : buttonsActions) {
+            ((Button) pair[0]).setOnClickListener(v -> {
+                vibrate();
+                InputConnection inputConnection = getCurrentInputConnection();
+                if (inputConnection != null) {
+                    inputConnection.performContextMenuAction((int) pair[1]);
+                }
+            });
+        }
+
+        // initialize overlay characters
+        for (int i = 0; i < 8; i++) {
+            TextView charView = (TextView) LayoutInflater.from(context).inflate(R.layout.item_overlay_characters, overlayCharactersLl, false);
+            overlayCharactersLl.addView(charView);
+        }
 
         return dictateKeyboardView;
     }
@@ -533,10 +560,10 @@ public class DictateInputMethodService extends InputMethodService {
             InputConnection inputConnection = getCurrentInputConnection();
             if (inputConnection != null && inputConnection.getSelectedText(0) == null) {
                 data = promptsDb.getAll(false);
-                selectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_select_all_24));
+                editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_select_all_24));
             } else {
                 data = promptsDb.getAll(true);
-                selectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_deselect_24));
+                editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_deselect_24));
             }
 
             promptsAdapter = new PromptsKeyboardAdapter(data, position -> {
@@ -552,29 +579,7 @@ public class DictateInputMethodService extends InputMethodService {
                     } else {
                         stopRecording();
                     }
-                } else if (model.getId() == -2) {  // undo prompt clicked
-                    try {  // use try-catch to prevent IndexOutOfBoundsException when start or end of history is reached
-                        String previousText = rewordingHistory.get(rewordingHistoryIndex - 2);
-                        // replace current text in input connection with previousText
-                        if (inputConnection != null) {
-                            inputConnection.performContextMenuAction(android.R.id.selectAll);
-                            inputConnection.commitText(previousText, previousText.length());
-
-                            rewordingHistoryIndex--;
-                        }
-                    } catch (IndexOutOfBoundsException ignored) { }
-                } else if (model.getId() == -3) {  // redo prompt clicked
-                    try {
-                        String nextText = rewordingHistory.get(rewordingHistoryIndex);
-                        // replace current text in input connection with nextText
-                        if (inputConnection != null) {
-                            inputConnection.performContextMenuAction(android.R.id.selectAll);
-                            inputConnection.commitText(nextText, nextText.length());
-
-                            rewordingHistoryIndex++;
-                        }
-                    } catch (IndexOutOfBoundsException ignored) { }
-                } else if (model.getId() == -4) {  // add prompt clicked
+                } else if (model.getId() == -2) {  // add prompt clicked
                     Intent intent = new Intent(this, PromptsOverviewActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
@@ -646,10 +651,10 @@ public class DictateInputMethodService extends InputMethodService {
             List<PromptModel> data;
             if (getCurrentInputConnection().getSelectedText(0) == null) {
                 data = promptsDb.getAll(false);
-                selectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_select_all_24));
+                editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_select_all_24));
             } else {
                 data = promptsDb.getAll(true);
-                selectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_deselect_24));
+                editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_deselect_24));
             }
 
             promptsAdapter.getData().clear();
@@ -774,17 +779,6 @@ public class DictateInputMethodService extends InputMethodService {
                 if (!instantPrompt) {
                     InputConnection inputConnection = getCurrentInputConnection();
                     if (inputConnection != null) {
-                        // add previous text to rewording history if it is not the same as the last item
-                        String textBeforeTranscript = inputConnection.getExtractedText(new ExtractedTextRequest(), 0).text.toString();
-                        if (rewordingHistoryIndex == 0 || !textBeforeTranscript.equals(rewordingHistory.get(rewordingHistoryIndex - 1))) {
-                            rewordingHistory.add(textBeforeTranscript);
-                            rewordingHistoryIndex++;
-                        }
-                        // remove all items from rewordingHistory that are after rewordingHistoryIndex
-                        if (rewordingHistoryIndex < rewordingHistory.size()) {
-                            rewordingHistory.subList(rewordingHistoryIndex, rewordingHistory.size()).clear();
-                        }
-
                         if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
                             inputConnection.commitText(resultText, 1);
                         } else {
@@ -794,10 +788,6 @@ public class DictateInputMethodService extends InputMethodService {
                                 mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), (long) (i * (20L / (speed / 5f))));
                             }
                         }
-
-                        // add transcribed text to history
-                        rewordingHistory.add(inputConnection.getExtractedText(new ExtractedTextRequest(), 0).text.toString());
-                        rewordingHistoryIndex = rewordingHistory.size();
                     }
                 } else {
                     // continue with ChatGPT API request
@@ -888,17 +878,6 @@ public class DictateInputMethodService extends InputMethodService {
 
                 InputConnection inputConnection = getCurrentInputConnection();
                 if (inputConnection != null) {
-                    // add previous text to rewording history if it is not the same as the last item
-                    String textBeforeRewording = inputConnection.getExtractedText(new ExtractedTextRequest(), 0).text.toString();
-                    if (rewordingHistoryIndex == 0 || !textBeforeRewording.equals(rewordingHistory.get(rewordingHistoryIndex - 1))) {
-                        rewordingHistory.add(textBeforeRewording);
-                        rewordingHistoryIndex++;
-                    }
-                    // remove all items from rewordingHistory that are after rewordingHistoryIndex
-                    if (rewordingHistoryIndex < rewordingHistory.size()) {
-                        rewordingHistory.subList(rewordingHistoryIndex, rewordingHistory.size()).clear();
-                    }
-
                     if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
                         inputConnection.commitText(rewordedText, 1);
                     } else {
@@ -908,10 +887,6 @@ public class DictateInputMethodService extends InputMethodService {
                             mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), (long) (i * (20L / (speed / 5f))));
                         }
                     }
-
-                    // add reworded text to history
-                    rewordingHistory.add(inputConnection.getExtractedText(new ExtractedTextRequest(), 0).text.toString());
-                    rewordingHistoryIndex = rewordingHistory.size();
                 }
             } catch (RuntimeException e) {
                 sendLogToCrashlytics(e);

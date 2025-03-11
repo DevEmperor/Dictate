@@ -30,14 +30,6 @@
             app:dependency="net.devemperor.dictate.rewording_enabled"
             app:summary="%s"/>
 
-        <androidx.preference.SwitchPreference
-            android:key="net.devemperor.dictate.rewording_history"
-            android:title="@string/dictate_settings_rewording_history_title"
-            android:summary="@string/dictate_settings_rewording_history_summary"
-            android:defaultValue="true"
-            app:iconSpaceReserved="false"
-            app:dependency="net.devemperor.dictate.rewording_enabled"/>
-
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory

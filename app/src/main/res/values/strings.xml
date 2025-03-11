@@ -195,8 +195,6 @@
     <string name="dictate_settings_audio_focus_title">Audio focus ⏸️</string>
     <string name="dictate_settings_audio_focus_summary">Pause background media while recording</string>
     <string name="dictate_changelog_17">v2.4.5\n\nThis is just a tiny update that adds a settings option to disable the audio focus. You can now control whether background audio (e.g. music, podcasts, …) should be paused automatically.\n\n\n</string>
-    <string name="dictate_settings_rewording_history_title">Rewording history ⏪</string>
-    <string name="dictate_settings_rewording_history_summary">Show buttons to undo/redo rewording</string>
     <string name="dictate_changelog_18">v2.5.0\n\n- This update brings a cool new feature:\nYou can now undo and redo changes that were made after transcribing or rewording a text. Just click on the two buttons in the rewording section to jump through the history. ⏪\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_changelog_19">v2.6.0\n\n- Advanced reasoning models were added (o1, o3, o3-mini), which allow even better rewording. ✨\n\n- This update adds a better indicator for switching between input languages: The text on the record button now adapts to the currently selected input language. 💪\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
 </resources>

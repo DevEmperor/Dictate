@@ -18,7 +18,7 @@
         android:minWidth="56dp"
         app:layout_constraintBottom_toTopOf="@+id/switch_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/prompts_keyboard_ll" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_buttons_keyboard_ll" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/record_btn"
@@ -32,7 +32,7 @@
         app:layout_constraintBottom_toTopOf="@+id/space_btn"
         app:layout_constraintEnd_toStartOf="@+id/resend_btn"
         app:layout_constraintStart_toEndOf="@+id/settings_btn"
-        app:layout_constraintTop_toBottomOf="@+id/prompts_keyboard_ll" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_buttons_keyboard_ll" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/resend_btn"
@@ -46,7 +46,7 @@
         app:layout_constraintBottom_toTopOf="@+id/space_btn"
         app:layout_constraintEnd_toStartOf="@+id/backspace_btn"
         app:layout_constraintStart_toEndOf="@+id/record_btn"
-        app:layout_constraintTop_toBottomOf="@+id/prompts_keyboard_ll"
+        app:layout_constraintTop_toBottomOf="@+id/edit_buttons_keyboard_ll"
         tools:visibility="visible" />
 
     <com.google.android.material.button.MaterialButton
@@ -61,7 +61,7 @@
         app:layout_constraintBottom_toTopOf="@+id/enter_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/resend_btn"
-        app:layout_constraintTop_toBottomOf="@+id/prompts_keyboard_ll" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_buttons_keyboard_ll" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/switch_btn"
@@ -192,6 +192,80 @@
             tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/edit_buttons_keyboard_ll"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/prompts_keyboard_ll">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_select_all_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:foreground="@drawable/ic_baseline_select_all_24"
+            android:foregroundGravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/edit_undo_btn"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_undo_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:foreground="@drawable/ic_baseline_undo_24"
+            android:foregroundGravity="center"
+            android:layout_marginHorizontal="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/edit_redo_btn"
+            app:layout_constraintStart_toEndOf="@+id/edit_select_all_btn" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_redo_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:foreground="@drawable/ic_baseline_redo_24"
+            android:foregroundGravity="center"
+            android:layout_marginHorizontal="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/edit_cut_btn"
+            app:layout_constraintStart_toEndOf="@+id/edit_undo_btn" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_cut_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:foreground="@drawable/ic_baseline_content_cut_24"
+            android:foregroundGravity="center"
+            android:layout_marginHorizontal="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/edit_copy_btn"
+            app:layout_constraintStart_toEndOf="@+id/edit_redo_btn" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_copy_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:foreground="@drawable/ic_baseline_content_copy_24"
+            android:foregroundGravity="center"
+            android:layout_marginHorizontal="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/edit_paste_btn"
+            app:layout_constraintStart_toEndOf="@+id/edit_cut_btn" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_paste_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:foreground="@drawable/ic_baseline_content_paste_24"
+            android:foregroundGravity="center"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/edit_copy_btn"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <LinearLayout
         android:id="@+id/prompts_keyboard_ll"
         android:layout_width="0dp"
@@ -204,21 +278,11 @@
         app:layout_constraintTop_toBottomOf="@id/info_cl"
         tools:visibility="visible">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/select_all_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
-            android:foreground="@drawable/ic_baseline_select_all_24"
-            android:foregroundGravity="center"
-            android:minWidth="0dp"/>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/prompts_keyboard_rv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginHorizontal="12dp"
             android:layout_gravity="center_vertical"
             android:scrollbars="horizontal"
             android:scrollbarSize="1dp"
@@ -257,7 +321,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/enter_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/prompts_keyboard_ll"
+        app:layout_constraintTop_toBottomOf="@+id/edit_buttons_keyboard_ll"
         tools:visibility="visible"
         tools:layout_width="72dp" />
 
