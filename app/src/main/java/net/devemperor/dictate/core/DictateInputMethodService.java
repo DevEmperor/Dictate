@@ -843,7 +843,7 @@ public class DictateInputMethodService extends InputMethodService {
             }
 
             mainHandler.post(() -> {
-                recordButton.setText(R.string.dictate_record);
+                recordButton.setText(getDictateButtonText());
                 recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
                 recordButton.setEnabled(true);
             });
