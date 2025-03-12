@@ -38,6 +38,8 @@ import android.widget.TextView;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -167,6 +169,10 @@ public class DictateInputMethodService extends InputMethodService {
         currentInputLanguagePos = sp.getInt("net.devemperor.dictate.input_language_pos", 0);
 
         dictateKeyboardView = (ConstraintLayout) LayoutInflater.from(context).inflate(R.layout.activity_dictate_keyboard_view, null);
+        ViewCompat.setOnApplyWindowInsetsListener(dictateKeyboardView, (v, insets) -> {
+            v.setPadding(0, 0, 0, insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom);
+            return insets;  // fix for overlapping with navigation bar on Android 15+
+        });
 
         settingsButton = dictateKeyboardView.findViewById(R.id.settings_btn);
         recordButton = dictateKeyboardView.findViewById(R.id.record_btn);
