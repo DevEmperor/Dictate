@@ -200,7 +200,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/prompts_keyboard_ll">
+        app:layout_constraintTop_toBottomOf="@id/prompts_keyboard_cl">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_select_all_btn"
@@ -266,12 +266,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/prompts_keyboard_ll"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/prompts_keyboard_cl"
         android:layout_width="0dp"
         android:layout_height="36dp"
         android:layout_marginTop="16dp"
-        android:orientation="horizontal"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -280,37 +279,51 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/prompts_keyboard_rv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
-            android:layout_gravity="center_vertical"
             android:scrollbars="horizontal"
             android:scrollbarSize="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:layout_height="32dp" />
 
-        <TextView
-            android:id="@+id/prompts_keyboard_running_prompt_tv"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="16dp"
-            android:maxLines="1"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="@color/dictate_blue"
-            android:visibility="gone"
-            tools:visibility="visible"
-            tools:text="French translator"/>
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <ProgressBar
-            android:id="@+id/prompts_keyboard_running_pb"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:indeterminate="true"
-            tools:visibility="visible" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/prompts_keyboard_running_prompt_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:maxLines="1"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/dictate_blue"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:text="French translator"/>
+
+            <ProgressBar
+                android:id="@+id/prompts_keyboard_running_pb"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:indeterminate="true"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/overlay_characters_ll"

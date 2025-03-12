@@ -133,7 +133,7 @@ public class DictateInputMethodService extends InputMethodService {
     private TextView infoTv;
     private Button infoYesButton;
     private Button infoNoButton;
-    private LinearLayout promptsLl;
+    private ConstraintLayout promptsCl;
     private RecyclerView promptsRv;
     private TextView runningPromptTv;
     private ProgressBar runningPromptPb;
@@ -189,7 +189,7 @@ public class DictateInputMethodService extends InputMethodService {
         infoYesButton = dictateKeyboardView.findViewById(R.id.info_yes_btn);
         infoNoButton = dictateKeyboardView.findViewById(R.id.info_no_btn);
 
-        promptsLl = dictateKeyboardView.findViewById(R.id.prompts_keyboard_ll);
+        promptsCl = dictateKeyboardView.findViewById(R.id.prompts_keyboard_cl);
         promptsRv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_rv);
         runningPromptPb = dictateKeyboardView.findViewById(R.id.prompts_keyboard_running_pb);
         runningPromptTv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_running_prompt_tv);
@@ -559,7 +559,7 @@ public class DictateInputMethodService extends InputMethodService {
         super.onStartInputView(info, restarting);
 
         if (sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
-            promptsLl.setVisibility(View.VISIBLE);
+            promptsCl.setVisibility(View.VISIBLE);
 
             // collect all prompts from database
             List<PromptModel> data;
@@ -595,7 +595,7 @@ public class DictateInputMethodService extends InputMethodService {
             });
             promptsRv.setAdapter(promptsAdapter);
         } else {
-            promptsLl.setVisibility(View.GONE);
+            promptsCl.setVisibility(View.GONE);
         }
 
         // enable resend button if previous audio file still exists in cache
