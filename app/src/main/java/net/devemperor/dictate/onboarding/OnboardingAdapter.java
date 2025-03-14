@@ -82,7 +82,7 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.Vi
             StringBuilder stringBuilder = new StringBuilder();
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(
-                        activity.getAssets().open("dictate_api_key_info_" + Locale.getDefault().getLanguage() + ".html")));
+                        activity.getAssets().open("dictate_api_key_info_" + (Locale.getDefault().getLanguage().equals("de") ? "de" : "en") + ".html")));
                 String line;
                 while ((line = reader.readLine()) != null) {
                     stringBuilder.append(line);
