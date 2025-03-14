@@ -1,0 +1,59 @@
+Recording and transcribing texts
+The dictation function is at the heart of the Dictate keyboard. Once you have opened the keyboard, you can press the "Record" button to start recording. Now simply speak your text freely and WhisperAI will work in the background to ensure that your thoughts with punctuation marks are correctly converted into text.\n\nYou will also see a message showing how long you have been recording and can press "Send" at any time to start text recognition. After a short moment, the text is inserted into the current text field.
+dictate_how_to_main
+
+Pause or delete recordings
+During recording, you can press the "Pause" button at any time to pause the recording. The recording will resume when you press this button again. If you want to end the recording, press "Send". If you want to cancel the recording, press the button with the trash can.
+dictate_how_to_pause_delete
+
+Rewording with AI
+In addition to the dictation function, the rewording function of the Dictate keyboard is another highlight. You can store your own rewording instructions for ChatGPT in the settings. For example, if you want to translate a dictated text into French, you can use the example instruction "French translator".\n\nJust press the "Select all" button and then press one of your instructions to send the selected text to ChatGPT together with your previously written instruction. After a short moment, the edited text will be inserted into the current text field. You can also press an instruction without highlighting any text to generate a text from ChatGPT independently of the spoken text. Depending on the type of revision instruction you want to create, you must activate or deactivate the "Requires text selection" switch when creating a new instruction.
+dictate_how_to_rewording
+
+Live rewording and exact output
+If you want to reword your text spontaneously, you can press the button with the three stars to enter your instructions for the selected text. After you have pressed "Send" and your instruction has been sent to ChatGPT, the revised text will be inserted into the current text field.\n\nIf you often want to insert a specific text or emoji, you can enter this text as an instruction and enclose it with [square brackets]. If you then click on the button for this rewording instruction, only this exact text will be displayed.
+dictate_how_to_live_rewording
+
+Transcribing audio files
+If you have already recorded an audio file, you can press and hold the "Record" button. A selection dialog will appear in which you can select the desired audio file. After you have selected the file and returned to the previous app, the transcription is started and the text is inserted into the current text field.
+dictate_how_to_file_transcription
+
+Editing texts
+You will find a delete button on the right-hand side of the Dictate keyboard to delete words. The longer you hold this button down, the faster the deletion.\n\nBelow it is an "Enter" button and in the middle you will find a button for spaces. If you hold down this button, you can move the cursor in the current text field by swiping.
+dictate_how_to_delete_enter_space
+
+Copy, paste and history
+You can cut text to the clipboard, copy it or paste it from there after you have selected the text. You can also use the arrow keys to undo or redo the last changes in the focused text field.
+dictate_how_to_copy_paste_undo_redo
+
+Inserting additional characters
+To avoid having to switch to a normal keyboard every time you make a small change, you can hold down the "Enter" button. Up to 8 additional characters will then appear, which you can customize to your wishes in the settings. Simply swipe left or right with your finger to select the desired character.
+dictate_how_to_special_characters
+
+Changing the language and keyboard
+If you press the button with the keyboard at the bottom left, you can quickly switch to the previously used keyboard. If you press and hold this button, you can change the recording language of Dictate. You can select several languages in the settings, which you can then switch between. The text on the "Record" button shows you which input language is currently active.
+dictate_how_to_switch
+
+Rewording settings
+In the settings above, you can manage your rewording instructions, change the AI model for rewording or switch this function off completely if you don't need it.
+dictate_how_to_rewording_settings
+
+Further settings
+You will find many more options in the settings to customize the Dictate keyboard according to your wishes.
+dictate_how_to_settings
+
+View usage
+You can view the consumption of tokens for the rewording and the time recorded so far in the settings. Dictate calculates the estimated costs based on the current prices so that you have a good overview directly in the app.\n\nYou can also reset the statistics there or quickly buy new credit so that you can continue dictating.
+dictate_how_to_usage
+
+Change style prompt for Whisper
+With a style prompt you can easily influence how Whisper recognizes your recordings. Sometimes it can happen that Whisper does not set any punctuation marks without such an instruction. Therefore, by default, an instruction is always selected that tells Whisper to set punctuation marks. If you want to select a different statement, you can do so in the settings.\n\nFor more detailed information, press the blue question mark there to be redirected to an OpenAI page that gives you more information about the style statements.
+dictate_how_to_style
+
+Use your own Whisper API server
+If you operate your own Whisper API server that is compatible with the OpenAI API, you can configure it in the settings. This allows you to have your recordings transcribed via your own server. Make sure you also change the API key entered.
+dictate_how_to_own_server
+
+Feedback and support
+If you have any questions or problems, you can click on "Give feedback" in the settings to send an email to the developer. I am always happy to receive feedback and suggestions for improvements. There you will also find a button to donate via PayPal if you like the app.
+dictate_how_to_feedback_support

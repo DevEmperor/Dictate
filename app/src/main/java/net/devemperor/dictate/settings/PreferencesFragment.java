@@ -44,22 +44,22 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         sp = getPreferenceManager().getSharedPreferences();
         usageDatabaseHelper = new UsageDatabaseHelper(requireContext());
 
-        Preference editPrompts = findPreference("net.devemperor.dictate.edit_custom_rewording_prompts");
-        if (editPrompts != null) {
-            editPrompts.setOnPreferenceClickListener(preference -> {
+        Preference editPromptsPreference = findPreference("net.devemperor.dictate.edit_custom_rewording_prompts");
+        if (editPromptsPreference != null) {
+            editPromptsPreference.setOnPreferenceClickListener(preference -> {
                 startActivity(new Intent(requireContext(), PromptsOverviewActivity.class));
                 return true;
             });
         }
 
-        MultiSelectListPreference inputLanguages = findPreference("net.devemperor.dictate.input_languages");
-        if (inputLanguages != null) {
-            inputLanguages.setSummaryProvider((Preference.SummaryProvider<MultiSelectListPreference>) preference -> {
+        MultiSelectListPreference inputLanguagesPreference = findPreference("net.devemperor.dictate.input_languages");
+        if (inputLanguagesPreference != null) {
+            inputLanguagesPreference.setSummaryProvider((Preference.SummaryProvider<MultiSelectListPreference>) preference -> {
                 String[] selectedLanguagesValues = preference.getValues().toArray(new String[0]);
                 return Arrays.stream(selectedLanguagesValues).map(DictateUtils::translateLanguageToEmoji).collect(Collectors.joining(" "));
             });
 
-            inputLanguages.setOnPreferenceChangeListener((preference, newValue) -> {
+            inputLanguagesPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 Set<String> selectedLanguages = (Set<String>) newValue;
                 if (selectedLanguages.isEmpty()) {
                     Toast.makeText(requireContext(), R.string.dictate_input_languages_empty, Toast.LENGTH_SHORT).show();
@@ -70,9 +70,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
-        EditTextPreference overlayCharacters = findPreference("net.devemperor.dictate.overlay_characters");
-        if (overlayCharacters != null) {
-            overlayCharacters.setSummaryProvider((Preference.SummaryProvider<EditTextPreference>) preference -> {
+        EditTextPreference overlayCharactersPreference = findPreference("net.devemperor.dictate.overlay_characters");
+        if (overlayCharactersPreference != null) {
+            overlayCharactersPreference.setSummaryProvider((Preference.SummaryProvider<EditTextPreference>) preference -> {
                 String text = preference.getText();
                 if (TextUtils.isEmpty(text)) {
                     return getString(R.string.dictate_default_overlay_characters);
@@ -80,7 +80,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 return text.chars().mapToObj(c -> String.valueOf((char) c)).collect(Collectors.joining(" "));
             });
 
-            overlayCharacters.setOnBindEditTextListener(editText -> {
+            overlayCharactersPreference.setOnBindEditTextListener(editText -> {
                 editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 editText.setSingleLine(true);
                 editText.setHint(R.string.dictate_default_overlay_characters);
@@ -88,7 +88,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 editText.setSelection(editText.getText().length());
             });
 
-            overlayCharacters.setOnPreferenceChangeListener((preference, newValue) -> {
+            overlayCharactersPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 String text = (String) newValue;
                 if (text.isEmpty()) {
                     Toast.makeText(requireContext(), R.string.dictate_overlay_characters_empty, Toast.LENGTH_SHORT).show();
@@ -98,21 +98,21 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
-        SwitchPreference instantOutput = findPreference("net.devemperor.dictate.instant_output");
-        SeekBarPreference outputSpeed = findPreference("net.devemperor.dictate.output_speed");
-        if (instantOutput != null && outputSpeed != null) {
-            instantOutput.setOnPreferenceChangeListener((preference, newValue) -> {
-                outputSpeed.setEnabled(!(Boolean) newValue);
+        SwitchPreference instantOutputPreference = findPreference("net.devemperor.dictate.instant_output");
+        SeekBarPreference outputSpeedPreference = findPreference("net.devemperor.dictate.output_speed");
+        if (instantOutputPreference != null && outputSpeedPreference != null) {
+            instantOutputPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                outputSpeedPreference.setEnabled(!(Boolean) newValue);
                 return true;
             });
-            outputSpeed.setEnabled(!instantOutput.isChecked());
+            outputSpeedPreference.setEnabled(!instantOutputPreference.isChecked());
         }
 
-        Preference usage = findPreference("net.devemperor.dictate.usage");
-        if (usage != null) {
-            usage.setSummary(getString(R.string.dictate_usage_total_cost, usageDatabaseHelper.getTotalCost()));
+        Preference usagePreference = findPreference("net.devemperor.dictate.usage");
+        if (usagePreference != null) {
+            usagePreference.setSummary(getString(R.string.dictate_usage_total_cost, usageDatabaseHelper.getTotalCost()));
 
-            usage.setOnPreferenceClickListener(preference -> {
+            usagePreference.setOnPreferenceClickListener(preference -> {
                 Intent intent = new Intent(requireContext(), UsageActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -174,15 +174,25 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
-        Preference cache = findPreference("net.devemperor.dictate.cache");
+        Preference howToPreference = findPreference("net.devemperor.dictate.how_to");
+        if (howToPreference != null) {
+            howToPreference.setOnPreferenceClickListener(preference -> {
+                Intent intent = new Intent(requireContext(), HowToActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                return true;
+            });
+        }
+
+        Preference cachePreference = findPreference("net.devemperor.dictate.cache");
         File[] cacheFiles = requireContext().getCacheDir().listFiles();
-        if (cache != null) {
+        if (cachePreference != null) {
             if (cacheFiles != null) {
                 long cacheSize = Arrays.stream(cacheFiles).mapToLong(File::length).sum();
-                cache.setTitle(getString(R.string.dictate_settings_cache, cacheFiles.length, cacheSize / 1024f / 1024f));
+                cachePreference.setTitle(getString(R.string.dictate_settings_cache, cacheFiles.length, cacheSize / 1024f / 1024f));
             }
 
-            cache.setOnPreferenceClickListener(preference -> {
+            cachePreference.setOnPreferenceClickListener(preference -> {
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle(R.string.dictate_cache_clear_title)
                         .setMessage(R.string.dictate_cache_clear_message)
@@ -192,7 +202,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                                     file.delete();
                                 }
                             }
-                            cache.setTitle(getString(R.string.dictate_settings_cache, 0, 0f));
+                            cachePreference.setTitle(getString(R.string.dictate_settings_cache, 0, 0f));
                             Toast.makeText(requireContext(), R.string.dictate_cache_cleared, Toast.LENGTH_SHORT).show();
                         })
                         .setNegativeButton(R.string.dictate_no, null)
@@ -201,9 +211,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
-        Preference feedback = findPreference("net.devemperor.dictate.feedback");
-        if (feedback != null) {
-            feedback.setOnPreferenceClickListener(preference -> {
+        Preference feedbackPreference = findPreference("net.devemperor.dictate.feedback");
+        if (feedbackPreference != null) {
+            feedbackPreference.setOnPreferenceClickListener(preference -> {
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                 emailIntent.setData(Uri.parse("mailto:contact@devemperor.net"));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.dictate_feedback_subject));
@@ -214,19 +224,19 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
-        Preference donate = findPreference("net.devemperor.dictate.donate");
-        if (donate != null) {
-            donate.setOnPreferenceClickListener(preference -> {
+        Preference donatePreference = findPreference("net.devemperor.dictate.donate");
+        if (donatePreference != null) {
+            donatePreference.setOnPreferenceClickListener(preference -> {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://paypal.me/DevEmperor"));
                 startActivity(browserIntent);
                 return true;
             });
         }
 
-        Preference about = findPreference("net.devemperor.dictate.about");
-        if (about != null) {
-            about.setTitle(getString(R.string.dictate_about, BuildConfig.VERSION_NAME));
-            about.setOnPreferenceClickListener(preference -> {
+        Preference aboutPreference = findPreference("net.devemperor.dictate.about");
+        if (aboutPreference != null) {
+            aboutPreference.setTitle(getString(R.string.dictate_about, BuildConfig.VERSION_NAME));
+            aboutPreference.setOnPreferenceClickListener(preference -> {
                 Toast.makeText(requireContext(), "User-ID: " + sp.getString("net.devemperor.dictate.user_id", "null"), Toast.LENGTH_LONG).show();
                 return true;
             });

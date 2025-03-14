@@ -90,14 +90,14 @@
     <string name="dictate_onboarding_welcome">Welcome to\nDictate\n→</string>
     <string name="dictate_onboarding_permissions_microphone_request">Dictate needs your permission to use the microphone. Click the button below to grant this permission.</string>
     <string name="dictate_onboarding_permissions_microphone_button">Grant microphone permission</string>
-    <string name="dictate_onboarding_permissions_keyboard_request">Dictate must be activated as a keyboard in the settings. Click on the button below to enable this.</string>
+    <string name="dictate_onboarding_permissions_keyboard_request">Dictate must be activated as a keyboard in the settings. Click on the button below to enable this.\n\nYou can also activate the keyboard button on the navigation bar to switch to Dictate more quickly.</string>
     <string name="dictate_onboarding_permissions_keyboard_button">Enable Dictate keyboard</string>
     <string name="dictate_keyboard_disabled">Dictate keyboard disabled ❌.</string>
     <string name="dictate_keyboard_enabled">Dictate keyboard enabled ✅.</string>
     <string name="dictate_api_key_hint" translatable="false">sk-mV3Aj …</string>
     <string name="dictate_onboarding_api_key_finish">Set API key and finish setup</string>
     <string name="dictate_onboarding_complete_dialog_title">How to switch to Dictate keyboard</string>
-    <string name="dictate_onboarding_complete_dialog_message">You can switch between your normal keyboard and Dictate at any time. Simply click on the keyboard status icon below your standard keyboard and select Dictate. Have fun with it. 💪</string>
+    <string name="dictate_onboarding_complete_dialog_message">You can switch between your normal keyboard and Dictate at any time. Simply click on the keyboard status icon below your standard keyboard and select Dictate.\n\nIf you want to know the full potential of Dictate, go to the settings and check out the How-To page for detailed app instructions.\nHave fun with it. 💪</string>
     <string name="dictate_settings_instant_recording_title">Instant recording 🎙️</string>
     <string name="dictate_settings_instant_recording_summary">Start recording as soon as you switch to Dictate keyboard</string>
     <string name="dictate_settings_api_title">API settings</string>
@@ -199,4 +199,7 @@
     <string name="dictate_changelog_17">v2.4.5\n\nThis is just a tiny update that adds a settings option to disable the audio focus. You can now control whether background audio (e.g. music, podcasts, …) should be paused automatically.\n\n\n</string>
     <string name="dictate_changelog_18">v2.5.0\n\n- This update brings a cool new feature:\nYou can now undo and redo changes that were made after transcribing or rewording a text. Just click on the two buttons in the rewording section to jump through the history. ⏪\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_changelog_19">v2.6.0\n\n- Advanced reasoning models were added (o1, o3, o3-mini), which allow even better rewording. ✨\n\n- This update adds a better indicator for switching between input languages: The text on the record button now adapts to the currently selected input language. 💪\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
+    <string name="dictate_how_to_use_dictate">How to use Dictate</string>
+    <string name="dictate_settings_how_to">How to use Dictate ❓</string>
+    <string name="dictate_settings_how_to_summary">Read more detailed instructions about all features of Dictate</string>
 </resources>

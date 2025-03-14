@@ -1,0 +1,59 @@
+Texte aufnehmen und transkribieren
+Das Zentrum der Dictate-Tastatur ist die Diktierfunktion. Wenn du die Tastatur geöffnet hast, kannst du auf "Aufnehmen"-Button drücken, um die Aufnahme zu starten. Sprich nun einfach frei deinen Text, und WhisperAI wird sich im Hintergrund darum kümmern, dass deine Gedanken mit Satzzeichen korrekt in Text verwandelt werden.\n\nDu siehst außerdem eine Anzeige, wie lange du bereits aufnimmst und kannst jederzeit auf "Senden" drücken, um die Texterkennung zu starten. Nach einem kurzen Moment wird der Text in das aktuelle Textfeld eingefügt.
+dictate_how_to_main
+
+Aufnahmen pausieren oder löschen
+Während der Aufnahme kannst du jederzeit auf den "Pause"-Button drücken, um die Aufnahme zu unterbrechen. Die Aufnahme wird fortgesetzt, wenn du diesen Button erneut drückst. Wenn du die Aufnahme beenden möchtest, drücke auf "Senden". Wenn du die Aufnahme abbrechen möchtest, drücke auf den Button mit dem Mülleimer.
+dictate_how_to_pause_delete
+
+Überarbeiten mit KI
+Neben der Diktierfunktion ist die Überarbeitungsfunktion der Dictate-Tastatur ein weiteres Highlight. Du kannst in den Einstellungen nach Belieben eigene Überarbeitungs-Anweisungen für ChatGPT hinterlegen. Wenn du beispielsweise einen diktierten Text auf Französisch übersetzen möchtest, kannst du die Beispiel-Anweisung "Übersetzer Französisch" verwenden.\n\nDrücke einfach auf den "Alles auswählen"-Button, und dann auf eine deiner Anweisungen, um den markierten Text an ChatGPT zusammen mit deiner vorher geschriebenen Anweisung zu senden. Nach einem kurzen Moment, wird der überarbeitete Text in das aktuelle Textfeld eingefügt. Außerdem kannst du ohne einen Text zu markieren, auf eine Anweisung drücken, um unabhängig von dem eingesprochenen Text einen Text von ChatGPT zu generieren. Je nachdem, welche Art von Überarbeitungsanweisung du erstellen möchtest, musst du beim Erstellen einer neuen Anweisung den Schalter "Erfordert Textauswahl" aktivieren oder deaktivieren.
+dictate_how_to_rewording
+
+Live-Überarbeitung und exakte Ausgaben
+Wenn du spontan deinen Text überarbeiten möchtest, kannst du den Button mit den drei Sternen drücken, um deine Anweisung für den markierten Text einzusprechen. Nachdem du auf "Senden" gedrückt hast und deine Anweisung an ChatGPT gesendet wurde, wird der überarbeitete Text in das aktuelle Textfeld eingefügt.\n\nWenn du oft einen bestimmten Text oder ein Emoji einfügen möchtest, kannst du diesen Text als Anweisung eintragen und mit [eckigen Klammern] umschließen. Wenn du dann auf den Button für diese Überarbeitungsanweisung klickst, wird nur dieser exakte Text ausgegeben.
+dictate_how_to_live_rewording
+
+Audio-Dateien transkribieren
+Wenn du bereits eine Audio-Datei aufgenommen hast, kannst du den "Aufnehmen"-Button gedrückt halten. Es erscheint ein Auswahl-Dialog, in dem du die gewünschte Audio-Datei auswählen kannst. Nachdem du die Datei ausgewählt hast und zur vorherigen App zurückgekehrt bist, wird die Transkription gestartet und der Text in das aktuelle Textfeld eingefügt.
+dictate_how_to_file_transcription
+
+Texte bearbeiten
+Du findest auf der Dictate-Tastatur rechts einen Löschen-Button, um Wörter zu löschen. Je länger du diesen Button gedrückt hältst, desto schneller wird gelöscht.\n\nDarunter ist ein "Enter"-Button und in der Mitte findest du einen Button für Leerzeichen. Wenn du diesen Button gedrückt hältst, kannst du durch Wischen den Cursor im aktuellen Textfeld bewegen.
+dictate_how_to_delete_enter_space
+
+Kopieren, Einfügen und Verlauf
+Du kannst Text in die Zwischenablage ausschneiden, kopieren oder von dort wieder einfügen, nachdem du den Text markiert hast. Außerdem kannst du mit den Pfeiltasten die letzten Änderungen im fokussierten Textfeld rückgängig machen oder wiederherstellen.
+dictate_how_to_copy_paste_undo_redo
+
+Weitere Zeichen einfügen
+Um nicht bei jeder kleinen Änderung zu einer normalen Tastatur wechseln zu müssen, kannst du den "Enter"-Button gedrückt halten. Dann erscheinen bis zu 8 weitere Zeichen, die du in den Einstellungen nach deinen Wünschen anpassen kannst. Wische einfach mit gedrücktem Finger nach links oder rechts, um das gewünschte Zeichen auszuwählen.
+dictate_how_to_special_characters
+
+Wechsel der Sprache und Tastatur
+Wenn du auf den Button mit der Tastatur unten links drückst, kannst du schnell zur vorher verwendeten Tastatur wechseln. Wenn du diesen Button gedrückt hältst, kannst du die Aufnahme-Sprache von Dictate wechseln. Du kannst in den Einstellungen mehrere Sprachen auswählen, zwischen denen du dann wechseln kannst. Der Text auf dem "Aufnehmen"-Button zeigt dir, welche Eingabe-Sprache gerade aktiv ist.
+dictate_how_to_switch
+
+Überarbeitungs-Einstellungen
+In den Einstellungen kannst du oben deine Überarbeitungsanweisungen verwalten, das KI-Modell für die Überarbeitung ändern oder diese Funktion komplett abschalten, falls du sie nicht benötigst.
+dictate_how_to_rewording_settings
+
+Weitere Einstellungen
+Du findest in den Einstellungen noch viele weitere Optionen, um die Dictate-Tastatur nach deinen Wünschen anzupassen.
+dictate_how_to_settings
+
+Verbrauch einsehen
+Du kannst in den Einstellungen den Verbrauch von Tokens für die Überarbeitung und die bisher aufgenommene Zeit einsehen. Dictate berechnet nach den aktuellen Preisen die geschätzten Kosten, damit du direkt in der App einen guten Überblick hast.\n\nDort kannst du die Statistik auch zurücksetzen oder schnell neues Guthaben kaufen, um weiter diktieren zu können.
+dictate_how_to_usage
+
+Stil Anweisung für Whisper ändern
+Mit einer Stil Anweisung kannst du leicht beeinflussen, wie Whisper deine Aufnahmen erkennt. Manchmal kann es vorkommen, dass ohne so eine Anweisung Whisper keine Satzzeichen setzt. Daher ist standardmäßig immer eine Anweisung ausgewählt, die Whisper dazu anhält, Satzzeichen zu setzen. Wenn du eine andere Anweisung auswählen möchtest, kannst du dies in den Einstellungen tun.\n\nFür genauere Informationen, drücke dort auf das blaue Fragezeichen, um zu einer Seite von OpenAI weitergeleitet zu werden, die dir mehr Informationen zu den Stil Anweisungen gibt.
+dictate_how_to_style
+
+Eigenen Whisper API Server verwenden
+Wenn du einen eigenen mit der OpenAI-API kompatiblen Whisper API Server betreibst, kannst du diesen in den Einstellungen eintragen. So kannst du deine Aufnahmen über deinen eigenen Server transkribieren lassen. Achte dann darauf, auch den eingetragenen API-Schlüssel zu ändern.
+dictate_how_to_own_server
+
+Feedback und Support
+Wenn du Fragen oder Probleme hast, kannst du in den Einstellungen auf "Feedback geben" drücken, um eine E-Mail an den Entwickler zu schreiben. Ich freue mich immer über Feedback und Verbesserungsvorschläge. Dort findest du auch einen Button, um über PayPal zu spenden, falls dir die App gut gefällt.
+dictate_how_to_feedback_support

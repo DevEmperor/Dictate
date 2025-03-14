@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="6dp"
+    android:paddingVertical="16dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/how_to_item_body_tv"
+        android:textSize="16sp"
+        android:lineSpacingMultiplier="1.2"
+        android:padding="6dp"
+        tools:text="Body\nNext line\nThird line\n\nEven more text\nDevEmperor" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/how_to_item_body_iv"
+        android:padding="6dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        tools:src="@raw/dictate_how_to_main" />
+
+</LinearLayout>

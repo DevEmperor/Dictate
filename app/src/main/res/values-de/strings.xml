@@ -85,13 +85,13 @@
     <string name="dictate_feedback_title">Wähle eine E-Mail App</string>
     <string name="dictate_onboarding_permissions_microphone_request">Dictate benötigt deine Erlaubnis, das Mikrofon zu verwenden. Klicke auf die Schaltfläche unten, um diese Erlaubnis zu erteilen.</string>
     <string name="dictate_onboarding_permissions_microphone_button">Mikrofon Berechtigung erteilen</string>
-    <string name="dictate_onboarding_permissions_keyboard_request">Dictate muss in den Einstellungen als Tastatur aktiviert werden. Klicke auf die Schaltfläche unten, um dies zu aktivieren.</string>
+    <string name="dictate_onboarding_permissions_keyboard_request">Dictate muss in den Einstellungen als Tastatur aktiviert werden. Klicke auf die Schaltfläche unten, um dies zu aktivieren.\n\nDu kannst zusätzlich auch die Tastatur-Schaltfläche auf der Navigationsleiste aktivieren, um schneller zu Dictate wechseln zu können.</string>
     <string name="dictate_onboarding_permissions_keyboard_button">Dictate Tastatur aktivieren</string>
     <string name="dictate_keyboard_disabled">Dictate Tastatur deaktiviert ❌.</string>
     <string name="dictate_keyboard_enabled">Dictate Tastatur aktiviert ✅.</string>
     <string name="dictate_onboarding_api_key_finish">API-Schlüssel festlegen und Einrichtung beenden</string>
     <string name="dictate_onboarding_complete_dialog_title">Wie du zur Dictate Tastatur wechselst</string>
-    <string name="dictate_onboarding_complete_dialog_message">Du kannst jederzeit zwischen deiner normalen Tastatur und Dictate wechseln. Klicke einfach auf das Symbol für die Tastatur unter deiner Standardtastatur und wähle Dictate aus. Viel Spaß. 💪</string>
+    <string name="dictate_onboarding_complete_dialog_message">Du kannst jederzeit zwischen deiner normalen Tastatur und Dictate wechseln. Klicke einfach auf das Symbol für die Tastatur unter deiner Standardtastatur und wähle Dictate aus.\n\nWenn du das volle Potenzial von Dictate ausschöpfen willst, geh zu den Einstellungen und sieh dir die Anleitung für die App im Detail an.\nViel Spaß. 💪</string>
     <string name="dictate_settings_instant_recording_title">Sofortige Aufnahme 🎙️</string>
     <string name="dictate_settings_instant_recording_summary">Aufnahme mit dem Wechseln zur Dictate-Tastatur starten</string>
     <string name="dictate_settings_api_title">API Einstellungen</string>
@@ -189,4 +189,7 @@
     <string name="dictate_changelog_17">v2.4.5\n\nDas ist nur ein kleines Update, das eine Einstellungs-Option hinzufügt, um den Audio-Fokus zu deaktivieren. Du kannst jetzt selbst entscheiden, ob Hintergrundaudio (z. B. Musik, Podcasts, …) automatisch pausiert werden soll.\n\n\n</string>
     <string name="dictate_changelog_18">v2.5.0\n\n- Dieses Update bringt eine coole neue Funktion:\nDu kannst jetzt Änderungen rückgängig machen oder wiederherstellen, die nach dem Transkribieren oder Überarbeitung eines Textes gemacht wurden. Klick einfach auf die beiden Buttons im Überarbeitungs-Bereich, um durch die Historie zu springen. ⏪\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\nWie immer, zögere nicht, mich mit Fragen und Ideen über GitHub oder den E-Mail-Button unten zu kontaktieren. ☺️\n\n\n</string>
     <string name="dictate_changelog_19">v2.6.0\n\n- Aktuelle Reasoning-Modelle (o1, o3, o3-mini) wurden hinzugefügt, die ein noch besseres Überarbeiten ermöglichen. ✨\n\n- Dieses Update bringt eine bessere Anzeige zum Wechseln zwischen Eingabesprachen: Der Text auf der Aufnahme-Taste passt sich jetzt der aktuell ausgewählten Eingabesprache an. 💪\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\nWie immer, zögere nicht, mich mit Fragen und Ideen über GitHub oder den E-Mail-Button unten zu kontaktieren. ☺️\n\n\n</string>
+    <string name="dictate_how_to_use_dictate">Wie nutzt man Dictate</string>
+    <string name="dictate_settings_how_to">Wie nutzt man Dictate ❓</string>
+    <string name="dictate_settings_how_to_summary">Lies ausführliche Anleitungen zu allen Funktionen von Dictate</string>
 </resources>

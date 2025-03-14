@@ -147,6 +147,12 @@
         app:iconSpaceReserved="false">
 
         <androidx.preference.Preference
+            android:key="net.devemperor.dictate.how_to"
+            android:title="@string/dictate_settings_how_to"
+            android:summary="@string/dictate_settings_how_to_summary"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.Preference
             android:key="net.devemperor.dictate.cache"
             android:title="@string/dictate_settings_cache"
             android:summary="@string/dictate_settings_cache_summary"
