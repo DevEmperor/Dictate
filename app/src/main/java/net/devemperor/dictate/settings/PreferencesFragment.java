@@ -224,6 +224,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
+        Preference githubPreference = findPreference("net.devemperor.dictate.github");
+        if (githubPreference != null) {
+            githubPreference.setOnPreferenceClickListener(preference -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/DevEmperor/Dictate"));
+                startActivity(browserIntent);
+                return true;
+            });
+        }
+
         Preference donatePreference = findPreference("net.devemperor.dictate.donate");
         if (donatePreference != null) {
             donatePreference.setOnPreferenceClickListener(preference -> {

@@ -192,4 +192,6 @@
     <string name="dictate_how_to_use_dictate">Wie nutzt man Dictate</string>
     <string name="dictate_settings_how_to">Wie nutzt man Dictate ❓</string>
     <string name="dictate_settings_how_to_summary">Lies ausführliche Anleitungen zu allen Funktionen von Dictate</string>
+    <string name="dictate_settings_github">Mitwirken 💡</string>
+    <string name="dictate_settings_github_summary">GitHub-Projekt besuchen, um Code-Einblicke zu erhalten und beizutragen</string>
 </resources>

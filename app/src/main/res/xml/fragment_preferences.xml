@@ -166,6 +166,12 @@
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.Preference
+            android:key="net.devemperor.dictate.github"
+            android:title="@string/dictate_settings_github"
+            android:summary="@string/dictate_settings_github_summary"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.Preference
             android:key="net.devemperor.dictate.donate"
             android:title="@string/dictate_settings_donate"
             android:summary="@string/dictate_settings_donate_address"
