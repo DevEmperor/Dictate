@@ -96,8 +96,8 @@
     <string name="dictate_keyboard_enabled">Dictate keyboard enabled ✅.</string>
     <string name="dictate_api_key_hint" translatable="false">sk-mV3Aj …</string>
     <string name="dictate_onboarding_api_key_finish">Set API key and finish setup</string>
-    <string name="dictate_onboarding_complete_dialog_title">How to switch to Dictate keyboard</string>
-    <string name="dictate_onboarding_complete_dialog_message">You can switch between your normal keyboard and Dictate at any time. Simply click on the keyboard status icon below your standard keyboard and select Dictate.\n\nIf you want to know the full potential of Dictate, go to the settings and check out the How-To page for detailed app instructions.\nHave fun with it. 💪</string>
+    <string name="dictate_onboarding_complete_dialog_title">Just some final information</string>
+    <string name="dictate_onboarding_complete_dialog_message">You can switch between your normal keyboard and Dictate at any time. Simply click on the keyboard status icon below your standard keyboard and select Dictate.\n\nIf you want to know the full potential of Dictate, go to the settings and check out the How-To page for detailed app instructions.\n\nDictate does not send any of your transcribed audios/texts anywhere (except to OpenAI for transcription of course). Since the developer values data protection, he does not receive any information about what you are recording. If you don\'t trust these words, feel free to look into the source code, to which you will find a link in the settings.\n\nHave fun with it 💪</string>
     <string name="dictate_settings_instant_recording_title">Instant recording 🎙️</string>
     <string name="dictate_settings_instant_recording_summary">Start recording as soon as you switch to Dictate keyboard</string>
     <string name="dictate_settings_api_title">API settings</string>

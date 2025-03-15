@@ -90,8 +90,8 @@
     <string name="dictate_keyboard_disabled">Dictate Tastatur deaktiviert ❌.</string>
     <string name="dictate_keyboard_enabled">Dictate Tastatur aktiviert ✅.</string>
     <string name="dictate_onboarding_api_key_finish">API-Schlüssel festlegen und Einrichtung beenden</string>
-    <string name="dictate_onboarding_complete_dialog_title">Wie du zur Dictate Tastatur wechselst</string>
-    <string name="dictate_onboarding_complete_dialog_message">Du kannst jederzeit zwischen deiner normalen Tastatur und Dictate wechseln. Klicke einfach auf das Symbol für die Tastatur unter deiner Standardtastatur und wähle Dictate aus.\n\nWenn du das volle Potenzial von Dictate ausschöpfen willst, geh zu den Einstellungen und sieh dir die Anleitung für die App im Detail an.\nViel Spaß. 💪</string>
+    <string name="dictate_onboarding_complete_dialog_title">Noch einige abschließende Informationen</string>
+    <string name="dictate_onboarding_complete_dialog_message">Du kannst jederzeit zwischen deiner normalen Tastatur und Dictate wechseln. Klicke einfach auf das Symbol für die Tastatur unter deiner Standardtastatur und wähle Dictate aus.\n\nWenn du das volle Potenzial von Dictate ausschöpfen willst, geh zu den Einstellungen und sieh dir die Anleitung für die App im Detail an.\n\nDictate sendet keine deiner transkribierten Audios/Texte irgendwohin (außer an OpenAI für die Transkription natürlich). Da der Entwickler den Datenschutz sehr schätzt, erhält er keine Informationen darüber, was du aufnimmst. Wenn du diesen Worten nicht traust, kannst du gerne einen Blick in den Quellcode werfen, zu dem du einen Link in den Einstellungen findest.\n\nViel Spaß 💪</string>
     <string name="dictate_settings_instant_recording_title">Sofortige Aufnahme 🎙️</string>
     <string name="dictate_settings_instant_recording_summary">Aufnahme mit dem Wechseln zur Dictate-Tastatur starten</string>
     <string name="dictate_settings_api_title">API Einstellungen</string>
