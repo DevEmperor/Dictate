@@ -204,4 +204,5 @@
     <string name="dictate_settings_how_to_summary">Read more detailed instructions about all features of Dictate</string>
     <string name="dictate_settings_github">Contribute 💡</string>
     <string name="dictate_settings_github_summary">Visit GitHub project to get code insights and contribute</string>
+    <string name="dictate_changelog_20">v2.7.0\n\nThis update brings some cool new features 🤩\n\n- Three buttons for cutting, copying and pasting have been added. In addition, the undo and redo functions are now more reliable. 📋\n\n- As I always get questions about functions that have already been added in the many emails I receive every day, I have created a detailed guide to all Dictate functions in the settings. If you want to get the most out of the app, have a look there. 📜\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
 </resources>

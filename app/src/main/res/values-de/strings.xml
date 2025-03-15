@@ -194,4 +194,5 @@
     <string name="dictate_settings_how_to_summary">Lies ausführliche Anleitungen zu allen Funktionen von Dictate</string>
     <string name="dictate_settings_github">Mitwirken 💡</string>
     <string name="dictate_settings_github_summary">GitHub-Projekt besuchen, um Code-Einblicke zu erhalten und beizutragen</string>
+    <string name="dictate_changelog_20">v2.7.0\n\nDieses Update bringt ein paar coole neue Features 🤩\n\n- Drei Buttons zum Ausschneiden, Kopieren und Einfügen wurden hinzugefügt. Außerdem sind die Funktionen rückgängig und wiederherstellen nun zuverlässiger. 📋\n\n- Da ich in den vielen E-Mails, die ich täglich bekomme, immer wieder Fragen zu bereits hinzugefügten Funktionen erhalte, habe ich in den Einstellungen eine detaillierte Anleitung zu allen Funktionen von Dictate erstellt. Wenn du alles aus der App herausholen möchtest, schaue gerne dort vorbei. 📜\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\nWie immer, zögere nicht, mich mit Fragen und Ideen über GitHub oder den E-Mail-Button unten zu kontaktieren. ☺️\n\n\n</string>
 </resources>
