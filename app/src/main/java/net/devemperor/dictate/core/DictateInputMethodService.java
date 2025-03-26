@@ -618,9 +618,9 @@ public class DictateInputMethodService extends InputMethodService {
         // show infos for updates, ratings or donations
         if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
             showInfo("update");
-        } else if (sp.getFloat("net.devemperor.dictate.total_duration", 0.0f) > 180 && !sp.getBoolean("net.devemperor.dictate.flag_has_rated_in_playstore", false)) {
+        } else if (usageDb.getTotalAudioTime() > 180 && !sp.getBoolean("net.devemperor.dictate.flag_has_rated_in_playstore", false)) {
             showInfo("rate");
-        } else if (sp.getFloat("net.devemperor.dictate.total_duration", 0.0f) > 600 && !sp.getBoolean("net.devemperor.dictate.flag_has_donated", false)) {
+        } else if (usageDb.getTotalAudioTime() > 600 && !sp.getBoolean("net.devemperor.dictate.flag_has_donated", false)) {
             showInfo("donate");
         }
 

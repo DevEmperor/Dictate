@@ -104,4 +104,18 @@ public class UsageDatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return totalCost;
     }
+
+    public long getTotalAudioTime() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM USAGE", null);
+
+        long totalAudioTime = 0;
+        if (cursor.moveToFirst()) {
+            do {
+                totalAudioTime += cursor.getLong(1);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return totalAudioTime;
+    }
 }
