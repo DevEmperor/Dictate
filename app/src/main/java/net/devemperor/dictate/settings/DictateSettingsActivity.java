@@ -131,28 +131,17 @@ public class DictateSettingsActivity extends AppCompatActivity {
         } else if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
 
             // show changelog if user has a new version
-            String whatsNewMessage = getString(R.string.dictate_changelog_donate);
+            StringBuilder whatsNewMessage = new StringBuilder(getString(R.string.dictate_changelog_donate));
             int lastVersionCode = sp.getInt("net.devemperor.dictate.last_version_code", 0);
-
-            if (lastVersionCode < 20) whatsNewMessage += getString(R.string.dictate_changelog_20);
-            if (lastVersionCode < 19) whatsNewMessage += getString(R.string.dictate_changelog_19);
-            if (lastVersionCode < 18) whatsNewMessage += getString(R.string.dictate_changelog_18);
-            if (lastVersionCode < 17) whatsNewMessage += getString(R.string.dictate_changelog_17);
-            if (lastVersionCode < 16) whatsNewMessage += getString(R.string.dictate_changelog_16);
-            if (lastVersionCode < 15) whatsNewMessage += getString(R.string.dictate_changelog_15);
-            if (lastVersionCode < 14) whatsNewMessage += getString(R.string.dictate_changelog_14);
-            if (lastVersionCode < 13) whatsNewMessage += getString(R.string.dictate_changelog_13);
-            if (lastVersionCode < 12) whatsNewMessage += getString(R.string.dictate_changelog_12);
-            if (lastVersionCode < 11) whatsNewMessage += getString(R.string.dictate_changelog_11);
-            if (lastVersionCode < 10) whatsNewMessage += getString(R.string.dictate_changelog_10);
-            if (lastVersionCode < 9) whatsNewMessage += getString(R.string.dictate_changelog_9);
-            if (lastVersionCode < 8) whatsNewMessage += getString(R.string.dictate_changelog_8);
-            if (lastVersionCode < 7) whatsNewMessage += getString(R.string.dictate_changelog_7);
-            if (lastVersionCode < 6) whatsNewMessage += getString(R.string.dictate_changelog_6);
-            if (lastVersionCode < 5) whatsNewMessage += getString(R.string.dictate_changelog_5);
+            for (int version = 21; version >= 5; version--) {
+                if (lastVersionCode < version) {
+                    int resId = getResources().getIdentifier("dictate_changelog_" + version, "string", getPackageName());
+                    whatsNewMessage.append(getString(resId));
+                }
+            }
             new MaterialAlertDialogBuilder(this)
                     .setTitle(R.string.dictate_whats_new)
-                    .setMessage(whatsNewMessage)
+                    .setMessage(whatsNewMessage.toString())
                     .setPositiveButton(R.string.dictate_okay, (di, i) -> sp.edit().putInt("net.devemperor.dictate.last_version_code", BuildConfig.VERSION_CODE).apply())
                     .show();
 
