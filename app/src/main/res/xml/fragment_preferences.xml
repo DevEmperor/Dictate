@@ -118,6 +118,15 @@
             app:dialogTitle="@string/dictate_settings_api_key_title"
             app:iconSpaceReserved="false"/>
 
+        <androidx.preference.ListPreference
+            android:key="net.devemperor.dictate.transcription_model"
+            android:title="@string/dictate_settings_transcription_model_title"
+            app:iconSpaceReserved="false"
+            app:entries="@array/dictate_transcription_models"
+            app:entryValues="@array/dictate_transcription_models_values"
+            app:defaultValue="gpt-4o-mini-transcribe"
+            app:summary="%s"/>
+
         <androidx.preference.Preference
             android:key="net.devemperor.dictate.prompt"
             android:title="@string/dictate_settings_prompt_title"

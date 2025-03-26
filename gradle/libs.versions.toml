@@ -1,8 +1,8 @@
 [versions]
-agp = "8.8.2"
+agp = "8.9.1"
 commonsValidator = "1.9.0"
 converterJackson = "2.11.0"
-firebaseBom = "33.10.0"
+firebaseBom = "33.11.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -10,7 +10,7 @@ appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
-service = "0.18.2"
+openaiJava = "0.37.0"
 preference = "1.2.1"
 
 [libraries]
@@ -25,7 +25,7 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-service = { module = "com.theokanning.openai-gpt3-java:service", version.ref = "service" }
+openai-java = { module = "com.openai:openai-java", version.ref = "openaiJava" }
 preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 
 [plugins]

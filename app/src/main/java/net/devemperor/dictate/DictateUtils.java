@@ -1,5 +1,9 @@
 package net.devemperor.dictate;
 
+import android.media.MediaMetadataRetriever;
+
+import java.io.File;
+
 public class DictateUtils {
 
     public static final String PROMPT_PUNCTUATION_CAPITALIZATION = "The Great Wall of China, the Eiffel Tower, the Pyramids of Giza, and the Statue of Liberty are among the most iconic landmarks in the world, and they draw countless tourists every year who marvel at their grandeur and historical significance.";
@@ -7,9 +11,13 @@ public class DictateUtils {
 
     public static double calcModelCost(String modelName, long audioTime, long inputTokens, long outputTokens) {
         switch (modelName) {
-            case "whisper-1":
+            case "whisper-1":  // whisper-1 and gpt-4o-transcribe cost the same
+            case "gpt-4o-transcribe":
                 return audioTime * 0.0001f;
-            case "o3-mini":
+            case "gpt-4o-mini-transcribe":
+                return audioTime * 0.00005f;
+
+            case "o3-mini":  // o3-mini and o1-mini cost the same
             case "o1-mini":
                 return inputTokens * 0.0000011f + outputTokens * 0.0000044f;
             case "o1":
@@ -32,7 +40,11 @@ public class DictateUtils {
     public static String translateModelName(String modelName) {
         switch (modelName) {
             case "whisper-1":
-                return "Whisper";
+                return "Whisper V2";
+            case "gpt-4o-transcribe":
+                return "GPT-4o transcribe";
+            case "gpt-4o-mini-transcribe":
+                return "GPT-4o mini transcribe";
             case "o3-mini":
                 return "OpenAI o3 mini";
             case "o1-mini":
@@ -51,6 +63,21 @@ public class DictateUtils {
                 return "GPT-3.5 Turbo";
             default:
                 return "Unknown";
+        }
+    }
+
+    public static long getAudioDuration(File file) {
+        try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
+            retriever.setDataSource(file.getAbsolutePath());
+            String durationStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            retriever.release();
+            if (durationStr != null) {
+                return Long.parseLong(durationStr) / 1000; // duration in seconds
+            } else {
+                return -1;
+            }
+        } catch (Exception e) {
+            return -1;
         }
     }
 

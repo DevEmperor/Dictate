@@ -64,7 +64,7 @@
     <string name="dictate_record">Aufnehmen</string>
     <string name="dictate_send">Senden (%1$s)</string>
     <string name="dictate_sending">Sendet …</string>
-    <string name="dictate_timeout_msg">Timeout überschritten. Vielleicht ist OpenAI überlastet oder du hast eine langsame Internetverbindung. ❌</string>
+    <string name="dictate_timeout_msg">Timeout überschritten. Vielleicht ist OpenAI überlastet oder du hast eine langsame Internetverbindung.</string>
     <string name="dictate_invalid_api_key_msg">Ungültiger API-Schlüssel. Einstellungen öffnen, um ihn zu korrigieren?</string>
     <string name="dictate_quota_exceeded_msg">Dein Budget ist überschritten. OpenAI-Account öffnen, um neue Credits zu kaufen?</string>
     <string name="dictate_internet_error_msg">Verbindung mit OpenAI fehlgeschlagen. Bitte prüfe deine Internetverbindung.</string>
@@ -98,7 +98,6 @@
     <string name="dictate_settings_about_title">Über</string>
     <string name="dictate_settings_custom_api_host_enabled_title">Eigenen Whisper API Server verwenden 🛠️</string>
     <string name="dictate_settings_custom_api_host_title">Eigene API Server Adresse</string>
-    <string name="dictate_invalid_custom_host_msg">Ungültiger eigener API Server. Einstellungen öffnen, um ihn zu korrigieren?</string>
     <string name="dictate_custom_host_invalid_title">Ungültiger eigener API Server</string>
     <string name="dictate_custom_host_invalid_message">Dein benutzerdefinierter API-Server muss mit \'http:\' oder \'https:\' beginnen und mit einem \'/\' enden. Bitte überprüfe dies noch einmal.</string>
     <string name="dictate_settings_usage">Verbrauch einsehen 📊</string>
@@ -142,7 +141,7 @@
     <string name="dictate_example_prompt_five_name">Shrug</string>
     <string name="dictate_example_prompt_five_prompt">[¯\_(ツ)_/¯]</string>
     <string name="dictate_changelog_7">v2.0\n\nDieses Update bringt einige große Änderungen, die aus Dictate ein wirklich mächtiges Werkzeug machen:\n\n- In den Einstellungen kannst du jetzt eigene Überarbeitungs-Anweisungen festlegen. Damit kannst du den diktierten Text von ChatGPT überarbeiten lassen, was endlos viele Möglichkeiten bietet. Du findest in den Einstellungen einige Beispiel-Anweisungen, an denen du dich orientieren kannst. 💡\n\n- Die vorherige Übersetzungs-Funktion wurde entfernt, da du nun mit den Überarbeitungs-Anweisungen flexibler übersetzen kannst. ❌\n\n- Wenn du die Enter-Taste gedrückt hälst, kannst du nun per Swipen schnell Zeichen einfügen, ohne zu einem anderen Keyboard wechseln zu müssen. Du kannst in den Einstellungen bis zu 8 eigene Zeichen festlegen. 🔤\n\n- Dictate verwendet nun GPT-4o-mini, um weniger Kosten zu verursachen. Ich plane, dass du demnächst selbst das GPT-Modell für die Überarbeitung wählen kannst. 💸\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\n\n</string>
-    <string name="dictate_settings_rewording_model_title">OpenAI Modell wechseln</string>
+    <string name="dictate_settings_rewording_model_title">Überarbeitungs-Modell wechseln</string>
     <string name="dictate_usage_no_usage">Hier gibt es noch nichts zu sehen.\nStarte die Transkription mit Dictate,\num den Verbrauch hier zu sehen.</string>
     <string name="dictate_usage_buy_new_credits">Neue Credits auf openai.com kaufen</string>
     <string name="dictate_usage_reset">Verbrauch zurücksetzen?</string>
@@ -159,7 +158,7 @@
     <string name="dictate_style_prompt_custom_hint">Ähm, lass mich mal nachdenken, so, hmmm… Okay, hier ist, was ich so denke.</string>
     <string name="dictate_style_prompt_punctuation_capitalization">Benutze Satzzeichen und Großschreibung</string>
     <string name="dictate_style_prompt_nothing">Keine Stil-Anweisung</string>
-    <string name="dictate_content_size_limit_msg">Deine Audio Datei ist zu groß (>25 MB).</string>
+    <string name="dictate_content_size_limit_msg">Deine Audio Datei ist zu groß (>25 MB) oder zu lang (>25 Minuten).</string>
     <string name="dictate_choose_audio_file">Wähl eine Audiodatei aus</string>
     <string name="dictate_file_too_large_title">Mediendatei zu groß</string>
     <string name="dictate_file_too_large_message">Leider ist diese Mediendatei zu groß. Whisper akzeptiert maximal 25 MB auf einmal. 🥲</string>
@@ -195,4 +194,5 @@
     <string name="dictate_settings_github">Mitwirken 💡</string>
     <string name="dictate_settings_github_summary">GitHub-Projekt besuchen, um Code-Einblicke zu erhalten und beizutragen</string>
     <string name="dictate_changelog_20">v2.7.0\n\nDieses Update bringt ein paar coole neue Features 🤩\n\n- Drei Buttons zum Ausschneiden, Kopieren und Einfügen wurden hinzugefügt. Außerdem sind die Funktionen rückgängig und wiederherstellen nun zuverlässiger. 📋\n\n- Da ich in den vielen E-Mails, die ich täglich bekomme, immer wieder Fragen zu bereits hinzugefügten Funktionen erhalte, habe ich in den Einstellungen eine detaillierte Anleitung zu allen Funktionen von Dictate erstellt. Wenn du alles aus der App herausholen möchtest, schaue gerne dort vorbei. 📜\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\nWie immer, zögere nicht, mich mit Fragen und Ideen über GitHub oder den E-Mail-Button unten zu kontaktieren. ☺️\n\n\n</string>
+    <string name="dictate_settings_transcription_model_title">Transkriptions-Modell wechseln 🎙️</string>
 </resources>

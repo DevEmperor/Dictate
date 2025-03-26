@@ -34,6 +34,10 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
@@ -47,7 +51,7 @@ dependencies {
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
 
-    implementation libs.service
+    implementation libs.openai.java
     implementation libs.converter.jackson
     implementation libs.commons.validator
 
