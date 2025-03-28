@@ -146,6 +146,34 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
+        EditTextPreference proxyHostPreference = findPreference("net.devemperor.dictate.proxy_host");
+        if (proxyHostPreference != null) {
+            proxyHostPreference.setSummaryProvider((Preference.SummaryProvider<EditTextPreference>) preference -> {
+                String host = preference.getText();
+                if (TextUtils.isEmpty(host)) return getString(R.string.dictate_settings_proxy_hint);
+                return host;
+            });
+
+            proxyHostPreference.setOnBindEditTextListener(editText -> {
+                editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_URI);
+                editText.setSingleLine(true);
+                editText.setHint(R.string.dictate_settings_proxy_hint);
+            });
+
+            proxyHostPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                String host = (String) newValue;
+                if (DictateUtils.isValidProxy(host)) return true;
+                else {
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.dictate_proxy_invalid_title)
+                            .setMessage(R.string.dictate_proxy_invalid_message)
+                            .setPositiveButton(R.string.dictate_okay, null)
+                            .show();
+                    return false;
+                }
+            });
+        }
+
         EditTextPreference customHostPreference = findPreference("net.devemperor.dictate.custom_api_host");
         if (customHostPreference != null) {
             customHostPreference.setSummaryProvider((Preference.SummaryProvider<EditTextPreference>) preference -> {

@@ -42,7 +42,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.audio.AudioResponseFormat;
 import com.openai.models.audio.transcriptions.Transcription;
@@ -65,6 +64,8 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -751,25 +752,28 @@ public class DictateInputMethodService extends InputMethodService {
         String customApiHost = sp.getString("net.devemperor.dictate.custom_api_host", getString(R.string.dictate_custom_host_hint));
         String apiKey = sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY").replaceAll("[^ -~]", "");
         String transcriptionModel = sp.getString("net.devemperor.dictate.transcription_model", "gpt-4o-mini-transcribe");
-
-        OpenAIClient client = OpenAIOkHttpClient.builder()
-                .apiKey(apiKey)
-                .baseUrl(sp.getBoolean("net.devemperor.dictate.custom_api_host_enabled", false) ? customApiHost : "https://api.openai.com/v1/")
-                .timeout(Duration.ofSeconds(120))
-                .build();
+        String proxyHost = sp.getString("net.devemperor.dictate.proxy_host", getString(R.string.dictate_settings_proxy_hint));
 
         speechApiThread = Executors.newSingleThreadExecutor();
         speechApiThread.execute(() -> {
             try {
-                TranscriptionCreateParams.Builder builder = TranscriptionCreateParams.builder()
+                OpenAIOkHttpClient.Builder clientBuilder = OpenAIOkHttpClient.builder()
+                        .apiKey(apiKey)
+                        .baseUrl(sp.getBoolean("net.devemperor.dictate.custom_api_host_enabled", false) ? customApiHost : "https://api.openai.com/v1/")
+                        .timeout(Duration.ofSeconds(120));
+
+                TranscriptionCreateParams.Builder transcriptionBuilder = TranscriptionCreateParams.builder()
                         .file(audioFile.toPath())
                         .model(transcriptionModel)
                         .responseFormat(AudioResponseFormat.JSON);  // gpt-4o-transcribe only supports json
 
-                if (!currentInputLanguageValue.equals("detect")) builder.language(currentInputLanguageValue);
-                if (!stylePrompt.isEmpty()) builder.prompt(stylePrompt);
+                if (!currentInputLanguageValue.equals("detect")) transcriptionBuilder.language(currentInputLanguageValue);
+                if (!stylePrompt.isEmpty()) transcriptionBuilder.prompt(stylePrompt);
+                if (sp.getBoolean("net.devemperor.dictate.proxy_enabled", false)) {
+                    clientBuilder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.split(":")[0], Integer.parseInt(proxyHost.split(":")[1]))));
+                }
 
-                Transcription transcription = client.audio().transcriptions().create(builder.build()).asTranscription();
+                Transcription transcription = clientBuilder.build().audio().transcriptions().create(transcriptionBuilder.build()).asTranscription();
                 String resultText = transcription.text();
 
                 usageDb.edit(transcriptionModel, DictateUtils.getAudioDuration(audioFile), 0, 0);
@@ -816,7 +820,7 @@ public class DictateInputMethodService extends InputMethodService {
                             showInfo("internet_error");
                         }
                     });
-                } else if (e.getCause().getMessage() != null && e.getCause().getMessage().contains("timeout")) {
+                } else if (e.getCause().getMessage() != null && (e.getCause().getMessage().contains("timeout") || e.getCause().getMessage().contains("failed to connect"))) {
                     sendLogToCrashlytics(e);
                     if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
                     mainHandler.post(() -> {
@@ -844,14 +848,18 @@ public class DictateInputMethodService extends InputMethodService {
             infoCl.setVisibility(View.GONE);
         });
 
-        OpenAIClient client = OpenAIOkHttpClient.builder()
-                .apiKey(sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY").replaceAll("[^ -~]", ""))
-                .timeout(Duration.ofSeconds(120))
-                .build();
-
         rewordingApiThread = Executors.newSingleThreadExecutor();
         rewordingApiThread.execute(() -> {
             try {
+                OpenAIOkHttpClient.Builder clientBuilder = OpenAIOkHttpClient.builder()
+                        .apiKey(sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY").replaceAll("[^ -~]", ""))
+                        .timeout(Duration.ofSeconds(120));
+
+                String proxyHost = sp.getString("net.devemperor.dictate.proxy_host", getString(R.string.dictate_settings_proxy_hint));
+                if (sp.getBoolean("net.devemperor.dictate.proxy_enabled", false)) {
+                    clientBuilder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.split(":")[0], Integer.parseInt(proxyHost.split(":")[1]))));
+                }
+
                 String prompt = model.getPrompt();
                 String rewordedText;
                 if (prompt.startsWith("[") && prompt.endsWith("]")) {
@@ -867,7 +875,7 @@ public class DictateInputMethodService extends InputMethodService {
                             .input(prompt)
                             .model(gptModel)
                             .build();
-                    Response response = client.responses().create(responseCreateParams);
+                    Response response = clientBuilder.build().responses().create(responseCreateParams);
                     rewordedText = response.output().get(0).asMessage().content().get(0).asOutputText().text();
 
                     response.usage().ifPresent(usage -> usageDb.edit(gptModel, 0, usage.inputTokens(), usage.outputTokens()));

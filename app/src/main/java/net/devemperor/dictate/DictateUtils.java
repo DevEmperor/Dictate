@@ -3,6 +3,9 @@ package net.devemperor.dictate;
 import android.media.MediaMetadataRetriever;
 
 import java.io.File;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DictateUtils {
 
@@ -80,6 +83,61 @@ public class DictateUtils {
             return -1;
         }
     }
+
+    public static boolean isValidProxy(String proxy) {
+        if (proxy == null) return false;
+
+        if (proxy.startsWith("http://") || proxy.startsWith("https://")) {
+            return false;
+        }
+
+        // Check if the proxy is in the format "IP:Port" or "Domain:Port"
+        String regex = "^(?:" +
+                // Group 1: IP address (four octets separated by dots)
+                "((?:\\d{1,3}\\.){3}\\d{1,3})" +
+                "|" +
+                // Group 2: Domain name (at least two parts separated by dots)
+                "((?:[a-zA-Z0-9][-a-zA-Z0-9]*\\.)+[a-zA-Z]{2,})" +
+                ")" +
+                // Group 3: Port number
+                ":(\\d+)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(proxy);
+        if (!matcher.matches()) {
+            return false;
+        }
+
+        // Check if port is between 1 and 65535
+        int port;
+        try {
+            port = Integer.parseInt(Objects.requireNonNull(matcher.group(3)));
+        } catch (NumberFormatException | NullPointerException e) {
+            return false;
+        }
+        if (port < 1 || port > 65535) {
+            return false;
+        }
+
+        // Check if each part of the IP address is between 0 and 255
+        String ipPart = matcher.group(1);
+        if (ipPart != null) {
+            String[] octets = ipPart.split("\\.");
+            for (String octet : octets) {
+                int value;
+                try {
+                    value = Integer.parseInt(octet);
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+                if (value < 0 || value > 255) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
 
     public static String translateLanguageToEmoji(String language) {
         switch (language) {

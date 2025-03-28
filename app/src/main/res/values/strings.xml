@@ -103,7 +103,7 @@
     <string name="dictate_settings_api_title">API settings</string>
     <string name="dictate_settings_about_title">About</string>
     <string name="dictate_settings_custom_api_host_enabled_title">Use custom Whisper API server 🛠️</string>
-    <string name="dictate_settings_custom_api_host_title">Custom API server hostname</string>
+    <string name="dictate_settings_custom_api_host_title">Custom Whisper API server hostname</string>
     <string name="dictate_custom_host_hint" translatable="false">https://api.example.com/</string>
     <string name="dictate_custom_host_invalid_title">Invalid custom API address</string>
     <string name="dictate_custom_host_invalid_message">Your custom API server has to start with \'http:\' or \'https:\' and end with a \'/\'. Please check this again.</string>
@@ -206,4 +206,9 @@
     <string name="dictate_changelog_20">v2.7.0\n\nThis update brings some cool new features 🤩\n\n- Three buttons for cutting, copying and pasting have been added. In addition, the undo and redo functions are now more reliable. 📋\n\n- As I always get questions about functions that have already been added in the many emails I receive every day, I have created a detailed guide to all Dictate functions in the settings. If you want to get the most out of the app, have a look there. 📜\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_settings_transcription_model_title">Change transcription model 🎙️</string>
     <string name="dictate_changelog_21">v2.7.1\n\nThis update adds the new transcription models released by OpenAI last week. GPT-4o-transcribe and GPT-4o-mini-transcribe both have a smaller word-error-rate and GPT-4o-mini-transcribe costs just half the price that Whisper has cost. 🙌\nGPT-4o-mini-transcribe is selected by default now, but you can switch between these models at any time in the settings.\n\nFurthermore, I implemented a new library for all connections to OpenAI like transcription and rewording. This will allow more flexibility like adding proxy-settings, which will be added in the upcoming updates. 💪\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
+    <string name="dictate_settings_proxy_enabled_title">Use HTTP-Proxy 🛡️</string>
+    <string name="dictate_settings_proxy_host_title">HTTP-Proxy address</string>
+    <string name="dictate_settings_proxy_hint" translatable="false">123.123.123.123:4567</string>
+    <string name="dictate_proxy_invalid_title">Invalid proxy address</string>
+    <string name="dictate_proxy_invalid_message">Your proxy address must start with the IP or domain of your proxy server, a \':\', followed by the port. Please check this again.</string>
 </resources>

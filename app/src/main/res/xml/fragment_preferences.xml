@@ -134,6 +134,22 @@
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.SwitchPreference
+            android:key="net.devemperor.dictate.proxy_enabled"
+            android:title="@string/dictate_settings_proxy_enabled_title"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.EditTextPreference
+            android:key="net.devemperor.dictate.proxy_host"
+            android:title="@string/dictate_settings_proxy_host_title"
+            android:summary="@string/dictate_settings_proxy_hint"
+            app:positiveButtonText="@string/dictate_okay"
+            app:negativeButtonText="@string/dictate_cancel"
+            app:dialogTitle="@string/dictate_settings_proxy_host_title"
+            app:dependency="net.devemperor.dictate.proxy_enabled"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.SwitchPreference
             android:key="net.devemperor.dictate.custom_api_host_enabled"
             android:title="@string/dictate_settings_custom_api_host_enabled_title"
             android:defaultValue="false"
