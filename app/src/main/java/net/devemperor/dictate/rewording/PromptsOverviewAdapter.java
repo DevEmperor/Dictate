@@ -60,64 +60,70 @@ public class PromptsOverviewAdapter extends RecyclerView.Adapter<PromptsOverview
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, final int position) {
-        PromptModel model = data.get(position);
-        holder.itemNameTv.setText(model.getName());
-        holder.itemNameTv.setOnClickListener(v -> callback.onItemClicked(position));
-        holder.itemPromptTv.setText(model.getPrompt());
-        holder.itemPromptTv.setOnClickListener(v -> callback.onItemClicked(position));
+        int currentPosition = holder.getAdapterPosition();
+        if(currentPosition == RecyclerView.NO_POSITION) return;
 
-        holder.moveUpBtn.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
-        holder.moveDownBtn.setVisibility(position == data.size() - 1 ? View.GONE : View.VISIBLE);
+        PromptModel model = data.get(currentPosition);
+        holder.itemNameTv.setText(model.getName());
+        holder.itemNameTv.setOnClickListener(v -> callback.onItemClicked(currentPosition));
+        holder.itemPromptTv.setText(model.getPrompt());
+        holder.itemPromptTv.setOnClickListener(v -> callback.onItemClicked(currentPosition));
+
+        holder.moveUpBtn.setVisibility(currentPosition == 0 ? View.GONE : View.VISIBLE);
+        holder.moveDownBtn.setVisibility(currentPosition == data.size() - 1 ? View.GONE : View.VISIBLE);
 
         holder.moveUpBtn.setOnClickListener(v -> {
-            PromptModel prevModel = data.get(position - 1);
-            model.setPos(position - 1);
-            prevModel.setPos(position);
-            db.update(model);
-            db.update(prevModel);
-            data.set(position, prevModel);
-            data.set(position - 1, model);
+            int pos = holder.getAdapterPosition();
+            if (pos <= 0) return;
 
-            notifyItemMoved(position, position - 1);
-            notifyItemChanged(position);
-            notifyItemChanged(position - 1);
+            PromptModel currentModel = data.get(pos);
+            PromptModel prevModel = data.get(pos - 1);
+
+            currentModel.setPos(pos - 1);
+            prevModel.setPos(pos);
+            db.update(currentModel);
+            db.update(prevModel);
+            data.set(pos, prevModel);
+            data.set(pos - 1, currentModel);
+
+            notifyItemMoved(pos, pos - 1);
+            notifyItemChanged(pos);
+            notifyItemChanged(pos - 1);
         });
 
         holder.moveDownBtn.setOnClickListener(v -> {
-            PromptModel nextModel = data.get(position + 1);
-            model.setPos(position + 1);
-            nextModel.setPos(position);
-            db.update(model);
-            db.update(nextModel);
-            data.set(position, nextModel);
-            data.set(position + 1, model);
+            int pos = holder.getAdapterPosition();
+            if (pos >= data.size() - 1) return;
 
-            notifyItemMoved(position, position + 1);
-            notifyItemChanged(position);
-            notifyItemChanged(position + 1);
+            PromptModel currentModel = data.get(pos);
+            PromptModel nextModel = data.get(pos + 1);
+
+            currentModel.setPos(pos + 1);
+            nextModel.setPos(pos);
+            db.update(currentModel);
+            db.update(nextModel);
+            data.set(pos, nextModel);
+            data.set(pos + 1, currentModel);
+
+            notifyItemMoved(pos, pos + 1);
+            notifyItemChanged(pos);
+            notifyItemChanged(pos + 1);
         });
 
         holder.deleteBtn.setOnClickListener(v -> new MaterialAlertDialogBuilder(v.getContext())
                 .setTitle(R.string.dictate_delete_prompt)
                 .setMessage(R.string.dictate_delete_prompt_message)
                 .setPositiveButton(R.string.dictate_yes, (di, i) -> {
+                    int pos = holder.getAdapterPosition();
+                    if (pos == RecyclerView.NO_POSITION) return;
                     db.delete(model.getId());
-                    data.remove(position);
-                    notifyItemRemoved(position);
-                    updateMoveButtons(activity.findViewById(R.id.prompts_overview_rv));
+                    data.remove(pos);
+                    notifyItemRemoved(pos);
 
                     activity.findViewById(R.id.prompts_overview_no_prompts_tv).setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
                 })
                 .setNegativeButton(R.string.dictate_no, null)
                 .show());
-    }
-
-    public void updateMoveButtons(RecyclerView rv) {
-        for (int i = 0; i < rv.getChildCount(); i++) {
-            RecyclerViewHolder holder = (RecyclerViewHolder) rv.getChildViewHolder(rv.getChildAt(i));
-            holder.moveUpBtn.setVisibility(i == 0 ? View.GONE : View.VISIBLE);
-            holder.moveDownBtn.setVisibility(i == data.size() - 1 ? View.GONE : View.VISIBLE);
-        }
     }
 
     @Override

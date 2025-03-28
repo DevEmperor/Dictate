@@ -75,8 +75,8 @@ public class PromptsOverviewActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK) {
-                        int updatedId = 0;
-                        int addedId = 0;
+                        int updatedId = -1;
+                        int addedId = -1;
                         if (result.getData() != null) {
                             updatedId = result.getData().getIntExtra("updated_id", -1);
                             addedId = result.getData().getIntExtra("added_id", -1);
@@ -93,7 +93,6 @@ public class PromptsOverviewActivity extends AppCompatActivity {
                         } else if (addedId != -1) {
                             data.add(db.get(addedId));
                             adapter.notifyItemInserted(data.size() - 1);
-                            adapter.updateMoveButtons(recyclerView);
                             findViewById(R.id.prompts_overview_no_prompts_tv).setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
                         }
                     }
