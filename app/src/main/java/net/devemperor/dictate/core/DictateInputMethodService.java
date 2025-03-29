@@ -617,11 +617,12 @@ public class DictateInputMethodService extends InputMethodService {
         audioFocusEnabled = sp.getBoolean("net.devemperor.dictate.audio_focus", true);
 
         // show infos for updates, ratings or donations
+        long totalAudioTime = usageDb.getTotalAudioTime();
         if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
             showInfo("update");
-        } else if (usageDb.getTotalAudioTime() > 180 && !sp.getBoolean("net.devemperor.dictate.flag_has_rated_in_playstore", false)) {
-            showInfo("rate");
-        } else if (usageDb.getTotalAudioTime() > 600 && !sp.getBoolean("net.devemperor.dictate.flag_has_donated", false)) {
+        } else if (totalAudioTime > 180 && totalAudioTime <= 600 && !sp.getBoolean("net.devemperor.dictate.flag_has_rated_in_playstore", false)) {
+            showInfo("rate");  // in case someone had Dictate installed before, he shouldn't get both messages
+        } else if (totalAudioTime > 600 && !sp.getBoolean("net.devemperor.dictate.flag_has_donated", false)) {
             showInfo("donate");
         }
 
@@ -992,11 +993,13 @@ public class DictateInputMethodService extends InputMethodService {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://paypal.me/DevEmperor"));
                     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(browserIntent);
-                    sp.edit().putBoolean("net.devemperor.dictate.flag_has_donated", true).apply();
+                    sp.edit().putBoolean("net.devemperor.dictate.flag_has_donated", true)  // in case someone had Dictate installed before, he shouldn't get both messages
+                            .putBoolean("net.devemperor.dictate.flag_has_rated_in_playstore", true).apply();
                     infoCl.setVisibility(View.GONE);
                 });
                 infoNoButton.setOnClickListener(v -> {
-                    sp.edit().putBoolean("net.devemperor.dictate.flag_has_donated", true).apply();
+                    sp.edit().putBoolean("net.devemperor.dictate.flag_has_donated", true)
+                            .putBoolean("net.devemperor.dictate.flag_has_rated_in_playstore", true).apply();
                     infoCl.setVisibility(View.GONE);
                 });
                 break;
