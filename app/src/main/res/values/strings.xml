@@ -211,4 +211,5 @@
     <string name="dictate_settings_proxy_hint" translatable="false">123.123.123.123:4567</string>
     <string name="dictate_proxy_invalid_title">Invalid proxy address</string>
     <string name="dictate_proxy_invalid_message">Your proxy address must start with the IP or domain of your proxy server, a \':\', followed by the port. Please check this again.</string>
+    <string name="dictate_changelog_22">v2.7.2\n\nThis is just a small update adding the ability to configure a http proxy in the settings for all connections to OpenAI. 🛡️\nFurthermore, some bugfixes hav been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
 </resources>

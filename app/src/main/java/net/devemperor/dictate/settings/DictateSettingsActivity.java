@@ -133,7 +133,7 @@ public class DictateSettingsActivity extends AppCompatActivity {
             // show changelog if user has a new version
             StringBuilder whatsNewMessage = new StringBuilder(getString(R.string.dictate_changelog_donate));
             int lastVersionCode = sp.getInt("net.devemperor.dictate.last_version_code", 0);
-            for (int version = 21; version >= 5; version--) {
+            for (int version = BuildConfig.VERSION_CODE; version >= 5; version--) {
                 if (lastVersionCode < version) {
                     int resId = getResources().getIdentifier("dictate_changelog_" + version, "string", getPackageName());
                     whatsNewMessage.append(getString(resId));
