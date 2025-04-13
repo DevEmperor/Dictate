@@ -73,7 +73,7 @@
     <string name="dictate_cancel">Cancel</string>
     <string name="dictate_no_api_key">No API key set</string>
     <string name="dictate_settings_api_key_title">Change OpenAI API key 🔑</string>
-    <string name="dictate_settings_vibration_title">Enable haptic feedback</string>
+    <string name="dictate_settings_vibration_title">Haptic feedback 📳</string>
     <string name="dictate_settings_instant_output_title">Instant output ⏱️</string>
     <string name="dictate_settings_instant_output_summary">Disable typing animation when the result is ready</string>
     <string name="dictate_settings_vibration_summary">Vibrate on button presses and errors</string>
