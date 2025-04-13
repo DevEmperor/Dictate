@@ -272,8 +272,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         Preference aboutPreference = findPreference("net.devemperor.dictate.about");
         if (aboutPreference != null) {
-            // asdf:wall
-
             aboutPreference.setTitle(getString(R.string.dictate_about, BuildConfig.VERSION_NAME));
             aboutPreference.setOnPreferenceClickListener(preference -> {
                 Toast.makeText(requireContext(), "User-ID: " + sp.getString("net.devemperor.dictate.user_id", "null"), Toast.LENGTH_LONG).show();
