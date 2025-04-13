@@ -73,11 +73,11 @@
     <string name="dictate_cancel">Cancel</string>
     <string name="dictate_no_api_key">No API key set</string>
     <string name="dictate_settings_api_key_title">Change OpenAI API key 🔑</string>
-    <string name="dictate_settings_vibration_title">Haptic feedback 📳</string>
+    <string name="dictate_settings_vibration_title">Enable haptic feedback</string>
     <string name="dictate_settings_instant_output_title">Instant output ⏱️</string>
     <string name="dictate_settings_instant_output_summary">Disable typing animation when the result is ready</string>
     <string name="dictate_settings_vibration_summary">Vibrate on button presses and errors</string>
-    <string name="dictate_about" translatable="false">Dictate v%1$s\nMade with ❤️ by DevEmperor\nSoli deo gloria ✝️</string>
+    <string name="dictate_about" translatable="false">Dictate v%1$s\nMade with ❤️ by DevEmperor\nBluetooth support by Cuyler Stuwe\nSoli deo gloria ✝️</string>
     <string name="dictate_settings_usage">View usage 📊</string>
     <string name="dictate_yes">Yes</string>
     <string name="dictate_no">No</string>
@@ -193,8 +193,10 @@
     <string name="dictate_input_languages_empty">You have to select at least one input language.</string>
     <string name="dictate_changelog_15">v2.4.3\n\nThis is just a small update. In the settings, you can now select multiple input languages. If you then press and hold the switch-button while using Dictate, you can switch to one of these input languages faster. 💪\n\n\n</string>
     <string name="dictate_changelog_16">v2.4.4\n\nThis is just a small update with some minor improvements.\n\n- The device screen now remains turned on during recording to make longer recordings more comfortable.\n\n- If you have activated backups via Google Drive, all settings are backed up from time to time so that you can continue dictating directly on a new device.\n\n- Bugfix: The Enter button now sends text in URL bars in browsers.\n\n\n</string>
-    <string name="dictate_settings_audio_focus_title">Audio focus ⏸️</string>
-    <string name="dictate_settings_audio_focus_summary">Pause background media while recording</string>
+    <string name="dictate_settings_audio_focus_title">Control music volume</string>
+    <string name="dictate_settings_audio_focus_summary">Lower background music volume during recording</string>
+    <string name="dictate_settings_bluetooth_mic_title">Use Bluetooth Microphone</string>
+    <string name="dictate_settings_bluetooth_mic_summary">Prefer Bluetooth microphone when available (headsets or car systems)</string>
     <string name="dictate_changelog_17">v2.4.5\n\nThis is just a tiny update that adds a settings option to disable the audio focus. You can now control whether background audio (e.g. music, podcasts, …) should be paused automatically.\n\n\n</string>
     <string name="dictate_changelog_18">v2.5.0\n\n- This update brings a cool new feature:\nYou can now undo and redo changes that were made after transcribing or rewording a text. Just click on the two buttons in the rewording section to jump through the history. ⏪\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_changelog_19">v2.6.0\n\n- Advanced reasoning models were added (o1, o3, o3-mini), which allow even better rewording. ✨\n\n- This update adds a better indicator for switching between input languages: The text on the record button now adapts to the currently selected input language. 💪\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>

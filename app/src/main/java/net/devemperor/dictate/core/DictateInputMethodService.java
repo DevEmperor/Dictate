@@ -2,8 +2,10 @@ package net.devemperor.dictate.core;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.inputmethodservice.InputMethodService;
@@ -41,7 +43,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.audio.AudioResponseFormat;
 import com.openai.models.audio.transcriptions.Transcription;
@@ -141,6 +142,8 @@ public class DictateInputMethodService extends InputMethodService {
     PromptsKeyboardAdapter promptsAdapter;
 
     UsageDatabaseHelper usageDb;
+
+    private boolean isBluetoothScoStarted = false;
 
     // start method that is called when user opens the keyboard
     @SuppressLint("ClickableViewAccessibility")
@@ -680,8 +683,15 @@ public class DictateInputMethodService extends InputMethodService {
         audioFile = new File(getCacheDir(), "audio.m4a");
         sp.edit().putString("net.devemperor.dictate.last_file_name", audioFile.getName()).apply();
 
+        boolean useBluetoothMic = sp.getBoolean("net.devemperor.dictate.use_bluetooth_mic", true);
+        boolean bluetoothAvailable = isBluetoothScoAvailable();
+        
+        if (useBluetoothMic && bluetoothAvailable) {
+            startBluetoothSco();
+        }
+        
         recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC); // This will pick up from Bluetooth SCO when SCO is active
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         recorder.setAudioEncodingBitRate(64000);
@@ -715,6 +725,10 @@ public class DictateInputMethodService extends InputMethodService {
             } catch (RuntimeException ignored) { }
             recorder.release();
             recorder = null;
+
+            if (isBluetoothScoStarted) {
+                stopBluetoothSco();
+            }
 
             if (recordTimeRunnable != null) {
                 recordTimeHandler.removeCallbacks(recordTimeRunnable);
@@ -927,6 +941,14 @@ public class DictateInputMethodService extends InputMethodService {
     }
 
     private void sendLogToCrashlytics(Exception e) {
+        // Temporarily disable Crashlytics since Firebase is not configured
+        // Log the error to console instead
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        Log.e("DictateInputMethodService", sw.toString());
+        Log.e("DictateInputMethodService", "Error logged (Crashlytics disabled)");
+        
+        /* Original Firebase code commented out
         // get all values from SharedPreferences and add them as custom keys to crashlytics
         FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
         for (String key : sp.getAll().keySet()) {
@@ -949,6 +971,7 @@ public class DictateInputMethodService extends InputMethodService {
         e.printStackTrace(new PrintWriter(sw));
         Log.e("DictateInputMethodService", sw.toString());
         Log.e("DictateInputMethodService", "Recorded crashlytics report");
+        */
     }
 
     private void showInfo(String type) {
@@ -1088,6 +1111,60 @@ public class DictateInputMethodService extends InputMethodService {
                 charView.setBackground(AppCompatResources.getDrawable(this, R.drawable.border_textview));
             }
         }
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        
+        // Register SCO state change receiver
+        IntentFilter filter = new IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
+        registerReceiver(scoStateReceiver, filter);
+    }
+    
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        
+        // Unregister SCO state change receiver
+        unregisterReceiver(scoStateReceiver);
+        
+        // Stop Bluetooth SCO if it's still running
+        if (isBluetoothScoStarted) {
+            stopBluetoothSco();
+        }
+    }
+    
+    private final BroadcastReceiver scoStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1);
+            if (state == AudioManager.SCO_AUDIO_STATE_CONNECTED) {
+                // Bluetooth SCO is now connected and can be used
+                Log.d("DictateInputMethodService", "Bluetooth SCO connected");
+            } else if (state == AudioManager.SCO_AUDIO_STATE_DISCONNECTED) {
+                Log.d("DictateInputMethodService", "Bluetooth SCO disconnected");
+            }
+        }
+    };
+    
+    private boolean isBluetoothScoAvailable() {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        return audioManager.isBluetoothScoAvailableOffCall();
+    }
+    
+    private void startBluetoothSco() {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.startBluetoothSco();
+        audioManager.setBluetoothScoOn(true);
+        isBluetoothScoStarted = true;
+    }
+    
+    private void stopBluetoothSco() {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.stopBluetoothSco();
+        audioManager.setBluetoothScoOn(false);
+        isBluetoothScoStarted = false;
     }
 
 }
