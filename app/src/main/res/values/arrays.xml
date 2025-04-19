@@ -269,11 +269,13 @@
         <item>GPT-4o mini transcribe\n(0.18 $ / h)</item>
         <item>GPT-4o transcribe\n(0.36 $ / h)</item>
         <item>Whisper V2\n(0.36 $ / h)</item>
+	<item>Whisper V3 (Groq Only)\n(0.11 $ / h or free for basic use)</item>
     </string-array>
 
     <string-array name="dictate_transcription_models_values">
         <item>gpt-4o-mini-transcribe</item>
         <item>gpt-4o-transcribe</item>
         <item>whisper-1</item>
+        <item>whisper-large-v3</item>
     </string-array>
 </resources>
