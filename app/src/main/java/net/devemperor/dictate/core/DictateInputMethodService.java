@@ -340,7 +340,7 @@ public class DictateInputMethodService extends InputMethodService {
             isRecording = false;
             isPaused = false;
             instantPrompt = false;
-            recordButton.setText(R.string.dictate_record);
+            recordButton.setText(getDictateButtonText());
             recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
             recordButton.setEnabled(true);
             pauseButton.setVisibility(View.GONE);
