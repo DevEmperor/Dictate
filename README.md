@@ -14,7 +14,9 @@
 
 **The app is available on [Google Play](https://play.google.com/store/apps/details?id=net.devemperor.dictate)** (for a small fee to support me and the future development), so you get easy installation and free lifetime updates. Just click on the badge above or [on this link](https://play.google.com/store/apps/details?id=net.devemperor.dictate).
 
-
+## Groq
+Groq's API is compatible with OpenAI. Set the API endpoint to use `https://api.groq.com/openai/v1/` and use your Groq API key, then select the model "Whisper V3". This model is only available on Groq, and will not work for OpenAI.
+This (as of April 2025) gives free access to Whisper transcription as [Groq's usage limits](https://console.groq.com/docs/rate-limits) are high for personal use.
 
 ## License
 

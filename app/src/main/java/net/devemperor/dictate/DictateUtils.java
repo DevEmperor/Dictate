@@ -19,6 +19,8 @@ public class DictateUtils {
                 return audioTime * 0.0001f;
             case "gpt-4o-mini-transcribe":
                 return audioTime * 0.00005f;
+            case "whisper-large-v3":
+                return audioTime * 0.000031f;
 
             case "o3-mini":  // o3-mini and o1-mini cost the same
             case "o1-mini":
@@ -48,6 +50,8 @@ public class DictateUtils {
                 return "GPT-4o transcribe";
             case "gpt-4o-mini-transcribe":
                 return "GPT-4o mini transcribe";
+            case "whisper-large-v3":
+                return "Whisper V3";
             case "o3-mini":
                 return "OpenAI o3 mini";
             case "o1-mini":
