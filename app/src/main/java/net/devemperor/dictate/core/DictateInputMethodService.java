@@ -46,8 +46,8 @@ import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.audio.AudioResponseFormat;
 import com.openai.models.audio.transcriptions.Transcription;
 import com.openai.models.audio.transcriptions.TranscriptionCreateParams;
-import com.openai.models.responses.Response;
-import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.chat.completions.ChatCompletion;
+import com.openai.models.chat.completions.ChatCompletionCreateParams;
 
 import net.devemperor.dictate.BuildConfig;
 import net.devemperor.dictate.DictateUtils;
@@ -363,10 +363,12 @@ public class DictateInputMethodService extends InputMethodService {
                     case MotionEvent.ACTION_MOVE:
                         float x = (float) spaceButton.getTag();
                         if (event.getX() - x > 30) {
+                            vibrate();
                             inputConnection.commitText("", 2);
                             spaceButton.setTag(event.getX());
                             spaceButtonUserHasSwiped = true;
                         } else if (x - event.getX() > 30) {
+                            vibrate();
                             inputConnection.commitText("", -1);
                             spaceButton.setTag(event.getX());
                             spaceButtonUserHasSwiped = true;
@@ -750,17 +752,26 @@ public class DictateInputMethodService extends InputMethodService {
                 stylePrompt = "";
         }
 
-        String customApiHost = sp.getString("net.devemperor.dictate.custom_api_host", getString(R.string.dictate_custom_host_hint));
-        String apiKey = sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY").replaceAll("[^ -~]", "");
-        String transcriptionModel = sp.getString("net.devemperor.dictate.transcription_model", "gpt-4o-mini-transcribe");
-        String proxyHost = sp.getString("net.devemperor.dictate.proxy_host", getString(R.string.dictate_settings_proxy_hint));
-
         speechApiThread = Executors.newSingleThreadExecutor();
         speechApiThread.execute(() -> {
             try {
+                int transcriptionProvider = sp.getInt("net.devemperor.dictate.transcription_provider", 0);
+                String apiHost = getResources().getStringArray(R.array.dictate_api_providers_values)[transcriptionProvider];
+                if (apiHost.equals("custom_server")) apiHost = sp.getString("net.devemperor.dictate.transcription_custom_host", getString(R.string.dictate_custom_server_host_hint));
+
+                String apiKey = sp.getString("net.devemperor.dictate.transcription_api_key", sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY")).replaceAll("[^ -~]", "");
+                String proxyHost = sp.getString("net.devemperor.dictate.proxy_host", getString(R.string.dictate_settings_proxy_hint));
+
+                String transcriptionModel = "";
+                switch (transcriptionProvider) {  // for upgrading: use old transcription_model preference
+                    case 0: transcriptionModel = sp.getString("net.devemperor.dictate.transcription_openai_model", sp.getString("net.devemperor.dictate.transcription_model", "gpt-4o-mini-transcribe")); break;
+                    case 1: transcriptionModel = sp.getString("net.devemperor.dictate.transcription_groq_model", "whisper-large-v3-turbo"); break;
+                    case 2: transcriptionModel = sp.getString("net.devemperor.dictate.transcription_custom_model", getString(R.string.dictate_custom_transcription_model_hint));
+                }
+
                 OpenAIOkHttpClient.Builder clientBuilder = OpenAIOkHttpClient.builder()
                         .apiKey(apiKey)
-                        .baseUrl(sp.getBoolean("net.devemperor.dictate.custom_api_host_enabled", false) ? customApiHost : "https://api.openai.com/v1/")
+                        .baseUrl(apiHost)
                         .timeout(Duration.ofSeconds(120));
 
                 TranscriptionCreateParams.Builder transcriptionBuilder = TranscriptionCreateParams.builder()
@@ -775,9 +786,9 @@ public class DictateInputMethodService extends InputMethodService {
                 }
 
                 Transcription transcription = clientBuilder.build().audio().transcriptions().create(transcriptionBuilder.build()).asTranscription();
-                String resultText = transcription.text();
+                String resultText = transcription.text().strip();  // Groq sometimes adds leading whitespace
 
-                usageDb.edit(transcriptionModel, DictateUtils.getAudioDuration(audioFile), 0, 0);
+                usageDb.edit(transcriptionModel, DictateUtils.getAudioDuration(audioFile), 0, 0, transcriptionProvider);
 
                 if (!instantPrompt) {
                     InputConnection inputConnection = getCurrentInputConnection();
@@ -809,13 +820,14 @@ public class DictateInputMethodService extends InputMethodService {
                     if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
                     mainHandler.post(() -> {
                         resendButton.setVisibility(View.VISIBLE);
-                        if (Objects.requireNonNull(e.getMessage()).contains("API key")) {
+                        String message = Objects.requireNonNull(e.getMessage()).toLowerCase();
+                        if (message.contains("api key")) {
                             showInfo("invalid_api_key");
-                        } else if (e.getMessage().contains("quota")) {
+                        } else if (message.contains("quota")) {
                             showInfo("quota_exceeded");
-                        } else if (e.getMessage().contains("audio duration") || e.getMessage().contains("content size limit")) {  // gpt-o-transcribe and whisper have different limits
+                        } else if (message.contains("audio duration") || message.contains("content size limit")) {  // gpt-o-transcribe and whisper have different limits
                             showInfo("content_size_limit");
-                        } else if (e.getMessage().contains("format")) {
+                        } else if (message.contains("format")) {
                             showInfo("format_not_supported");
                         } else {
                             showInfo("internet_error");
@@ -852,11 +864,25 @@ public class DictateInputMethodService extends InputMethodService {
         rewordingApiThread = Executors.newSingleThreadExecutor();
         rewordingApiThread.execute(() -> {
             try {
+                int rewordingProvider = sp.getInt("net.devemperor.dictate.rewording_provider", 0);
+                String apiHost = getResources().getStringArray(R.array.dictate_api_providers_values)[rewordingProvider];
+                if (apiHost.equals("custom_server")) apiHost = sp.getString("net.devemperor.dictate.rewording_custom_host", getString(R.string.dictate_custom_server_host_hint));
+
+                String apiKey = sp.getString("net.devemperor.dictate.rewording_api_key", sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY")).replaceAll("[^ -~]", "");
+                String proxyHost = sp.getString("net.devemperor.dictate.proxy_host", getString(R.string.dictate_settings_proxy_hint));
+
+                String rewordingModel = "";
+                switch (rewordingProvider) {
+                    case 0: rewordingModel = sp.getString("net.devemperor.dictate.rewording_openai_model", sp.getString("net.devemperor.dictate.rewording_model", "gpt-4o-mini")); break;
+                    case 1: rewordingModel = sp.getString("net.devemperor.dictate.rewording_groq_model", "llama-3.3-70b-versatile"); break;
+                    case 2: rewordingModel = sp.getString("net.devemperor.dictate.rewording_custom_model", getString(R.string.dictate_custom_rewording_model_hint));
+                }
+
                 OpenAIOkHttpClient.Builder clientBuilder = OpenAIOkHttpClient.builder()
-                        .apiKey(sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY").replaceAll("[^ -~]", ""))
+                        .apiKey(apiKey)
+                        .baseUrl(apiHost)
                         .timeout(Duration.ofSeconds(120));
 
-                String proxyHost = sp.getString("net.devemperor.dictate.proxy_host", getString(R.string.dictate_settings_proxy_hint));
                 if (sp.getBoolean("net.devemperor.dictate.proxy_enabled", false)) {
                     clientBuilder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.split(":")[0], Integer.parseInt(proxyHost.split(":")[1]))));
                 }
@@ -871,15 +897,16 @@ public class DictateInputMethodService extends InputMethodService {
                         prompt += "\n\n" + getCurrentInputConnection().getSelectedText(0).toString();
                     }
 
-                    String gptModel = sp.getString("net.devemperor.dictate.rewording_model", "gpt-4o-mini");
-                    ResponseCreateParams responseCreateParams = ResponseCreateParams.builder()
-                            .input(prompt)
-                            .model(gptModel)
+                    ChatCompletionCreateParams chatCompletionCreateParams = ChatCompletionCreateParams.builder()
+                            .addUserMessage(prompt)
+                            .model(rewordingModel)
                             .build();
-                    Response response = clientBuilder.build().responses().create(responseCreateParams);
-                    rewordedText = response.output().get(0).asMessage().content().get(0).asOutputText().text();
+                    ChatCompletion chatCompletion = clientBuilder.build().chat().completions().create(chatCompletionCreateParams);
+                    rewordedText = chatCompletion.choices().get(0).message().content().orElse("");
 
-                    response.usage().ifPresent(usage -> usageDb.edit(gptModel, 0, usage.inputTokens(), usage.outputTokens()));
+                    if (chatCompletion.usage().isPresent()) {
+                        usageDb.edit(rewordingModel, 0, chatCompletion.usage().get().promptTokens(), chatCompletion.usage().get().completionTokens(), rewordingProvider);
+                    }
                 }
 
                 InputConnection inputConnection = getCurrentInputConnection();
@@ -900,9 +927,10 @@ public class DictateInputMethodService extends InputMethodService {
                     if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
                     mainHandler.post(() -> {
                         resendButton.setVisibility(View.VISIBLE);
-                        if (Objects.requireNonNull(e.getMessage()).contains("API key")) {
+                        String message = Objects.requireNonNull(e.getMessage()).toLowerCase();
+                        if (message.contains("api key")) {
                             showInfo("invalid_api_key");
-                        } else if (e.getMessage().contains("quota")) {
+                        } else if (message.contains("quota")) {
                             showInfo("quota_exceeded");
                         } else {
                             showInfo("internet_error");

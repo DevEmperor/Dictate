@@ -70,7 +70,6 @@
     <string name="dictate_internet_error_msg">Verbindung mit OpenAI fehlgeschlagen. Bitte prüfe deine Internetverbindung.</string>
     <string name="dictate_okay">Okay</string>
     <string name="dictate_cancel">Abbrechen</string>
-    <string name="dictate_no_api_key">Kein API-Schlüssel festgelegt</string>
     <string name="dictate_settings_api_key_title">OpenAI API-Schlüssel ändern 🔑</string>
     <string name="dictate_settings_vibration_title">Haptisches Feedback 📳</string>
     <string name="dictate_settings_instant_output_title">Sofortige Ausgabe ⏱️</string>
@@ -96,10 +95,6 @@
     <string name="dictate_settings_instant_recording_summary">Aufnahme mit dem Wechseln zur Dictate-Tastatur starten</string>
     <string name="dictate_settings_api_title">API Einstellungen</string>
     <string name="dictate_settings_about_title">Über</string>
-    <string name="dictate_settings_custom_api_host_enabled_title">Eigenen Whisper API Server verwenden 🛠️</string>
-    <string name="dictate_settings_custom_api_host_title">Eigene Whisper API Server Adresse</string>
-    <string name="dictate_custom_host_invalid_title">Ungültiger eigener API Server</string>
-    <string name="dictate_custom_host_invalid_message">Dein benutzerdefinierter API-Server muss mit \'http:\' oder \'https:\' beginnen und mit einem \'/\' enden. Bitte überprüfe dies noch einmal.</string>
     <string name="dictate_settings_usage">Verbrauch einsehen 📊</string>
     <string name="dictate_onboarding_welcome">Willkommen bei\nDictate\n→</string>
     <string name="dictate_detect_automatically">Automatisch erkennen</string>
@@ -141,7 +136,6 @@
     <string name="dictate_example_prompt_five_name">Shrug</string>
     <string name="dictate_example_prompt_five_prompt">[¯\_(ツ)_/¯]</string>
     <string name="dictate_changelog_7">v2.0\n\nDieses Update bringt einige große Änderungen, die aus Dictate ein wirklich mächtiges Werkzeug machen:\n\n- In den Einstellungen kannst du jetzt eigene Überarbeitungs-Anweisungen festlegen. Damit kannst du den diktierten Text von ChatGPT überarbeiten lassen, was endlos viele Möglichkeiten bietet. Du findest in den Einstellungen einige Beispiel-Anweisungen, an denen du dich orientieren kannst. 💡\n\n- Die vorherige Übersetzungs-Funktion wurde entfernt, da du nun mit den Überarbeitungs-Anweisungen flexibler übersetzen kannst. ❌\n\n- Wenn du die Enter-Taste gedrückt hälst, kannst du nun per Swipen schnell Zeichen einfügen, ohne zu einem anderen Keyboard wechseln zu müssen. Du kannst in den Einstellungen bis zu 8 eigene Zeichen festlegen. 🔤\n\n- Dictate verwendet nun GPT-4o-mini, um weniger Kosten zu verursachen. Ich plane, dass du demnächst selbst das GPT-Modell für die Überarbeitung wählen kannst. 💸\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\n\n</string>
-    <string name="dictate_settings_rewording_model_title">Überarbeitungs-Modell wechseln</string>
     <string name="dictate_usage_no_usage">Hier gibt es noch nichts zu sehen.\nStarte die Transkription mit Dictate,\num den Verbrauch hier zu sehen.</string>
     <string name="dictate_usage_buy_new_credits">Neue Credits auf openai.com kaufen</string>
     <string name="dictate_usage_reset">Verbrauch zurücksetzen?</string>
@@ -194,11 +188,25 @@
     <string name="dictate_settings_github">Mitwirken 💡</string>
     <string name="dictate_settings_github_summary">GitHub-Projekt besuchen, um Code-Einblicke zu erhalten und beizutragen</string>
     <string name="dictate_changelog_20">v2.7.0\n\nDieses Update bringt ein paar coole neue Features 🤩\n\n- Drei Buttons zum Ausschneiden, Kopieren und Einfügen wurden hinzugefügt. Außerdem sind die Funktionen rückgängig und wiederherstellen nun zuverlässiger. 📋\n\n- Da ich in den vielen E-Mails, die ich täglich bekomme, immer wieder Fragen zu bereits hinzugefügten Funktionen erhalte, habe ich in den Einstellungen eine detaillierte Anleitung zu allen Funktionen von Dictate erstellt. Wenn du alles aus der App herausholen möchtest, schaue gerne dort vorbei. 📜\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\nWie immer, zögere nicht, mich mit Fragen und Ideen über GitHub oder den E-Mail-Button unten zu kontaktieren. ☺️\n\n\n</string>
-    <string name="dictate_settings_transcription_model_title">Transkriptions-Modell wechseln 🎙️</string>
     <string name="dictate_changelog_21">v2.7.1\n\nDieses Update fügt die neuen Transkriptions-Modelle von OpenAI hinzu, die letzte Woche veröffentlicht wurden. GPT-4o-transcribe und GPT-4o-mini-transcribe machen weniger Fehler, und GPT-4o-mini-transcribe kostet nur die Hälfte von Whisper. 🙌\nStandardmäßig ist jetzt GPT-4o-mini-transcribe ausgewählt, aber du kannst jederzeit in den Einstellungen wechseln.\n\nAußerdem habe ich eine neue Bibliothek für alle Verbindungen zu OpenAI eingebaut, wie für die Transkription und Überarbeitungen. Das erlaubt mehr Flexibilität, zum Beispiel für Proxy-Einstellungen – die kommen in einem der nächsten Updates. 💪\n\nWie immer, zögere nicht, mich mit Fragen und Ideen über GitHub oder den E-Mail-Button unten zu kontaktieren. ☺️\n\n\n</string>
     <string name="dictate_settings_proxy_enabled_title">HTTP-Proxy verwenden 🛡️</string>
     <string name="dictate_settings_proxy_host_title">HTTP-Proxy Adresse</string>
     <string name="dictate_proxy_invalid_title">Ungültige Proxy Adresse</string>
     <string name="dictate_proxy_invalid_message">Deine Proxy-Adresse muss mit der IP oder der Domain deines Proxy-Servers beginnen, einem \':\', gefolgt von dem Port. Bitte überprüfe dies noch einmal.</string>
     <string name="dictate_changelog_22">v2.7.2\n\nDies ist nur ein kleines Update, das die Option hinzugefügt hat, einen HTTP-Proxy in den Einstellungen für alle Verbindungen zu OpenAI festzulegen. 🛡️\nZusätzlich wurden einige Fehlerbehebungen vorgenommen. ✨\n\nWie immer, zögere nicht, mich mit Fragen und Ideen über GitHub oder den E-Mail-Button unten zu kontaktieren. ☺️\n\n\n</string>
+    <string name="dictate_settings_api_settings">API und Modell Einstellungen ändern 🔑</string>
+    <string name="dictate_settings_api_settings_summary">Einstellungen zum Ändern von API-Anbietern und Modellen öffnen</string>
+    <string name="dictate_api_settings">API und Modelleinstellungen</string>
+    <string name="dictate_custom_provider">Benutzerdefiniert</string>
+    <string name="change_transcription_provider">Transkriptions-Anbieter wechseln</string>
+    <string name="change_transcription_model">Transkriptions-Modell wechseln</string>
+    <string name="enter_transcription_api_key">API-Schlüssel für Transkriptionen eingeben</string>
+    <string name="set_your_custom_transcription_server_host">Benutzerdefinierten Transkriptionsserver-Host festlegen</string>
+    <string name="set_your_custom_transcription_model">Benutzerdefiniertes Transkriptionsmodell festlegen</string>
+    <string name="change_rewording_provider">Überarbeitungs-Anbieter wechseln</string>
+    <string name="change_rewording_model">Überarbeitungs-Modell wechseln</string>
+    <string name="enter_rewording_api_key">API-Schlüssel für Überarbeitungen eingeben</string>
+    <string name="set_your_custom_rewording_server_host">Benutzerdefinierten Überarbeitungs-Host festlegen</string>
+    <string name="set_your_custom_rewording_model">Benutzerdefiniertes Überarbeitungs-Modell festlegen</string>
+    <string name="dictate_usage_model_provider_custom">Benutzerdefiniert</string>
 </resources>

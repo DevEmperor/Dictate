@@ -74,6 +74,14 @@
                 android:value=".settings.DictateSettingsActivity" />
         </activity>
         <activity
+            android:name=".settings.APISettingsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".settings.DictateSettingsActivity" />
+        </activity>
+        <activity
             android:name=".settings.HowToActivity"
             android:exported="false">
             <meta-data

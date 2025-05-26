@@ -71,7 +71,6 @@
     <string name="dictate_internet_error_msg">Couldn\'t connect to OpenAI. Please check your internet connection.</string>
     <string name="dictate_okay">Okay</string>
     <string name="dictate_cancel">Cancel</string>
-    <string name="dictate_no_api_key">No API key set</string>
     <string name="dictate_settings_api_key_title">Change OpenAI API key 🔑</string>
     <string name="dictate_settings_vibration_title">Haptic feedback 📳</string>
     <string name="dictate_settings_instant_output_title">Instant output ⏱️</string>
@@ -94,7 +93,7 @@
     <string name="dictate_onboarding_permissions_keyboard_button">Enable Dictate keyboard</string>
     <string name="dictate_keyboard_disabled">Dictate keyboard disabled ❌.</string>
     <string name="dictate_keyboard_enabled">Dictate keyboard enabled ✅.</string>
-    <string name="dictate_api_key_hint" translatable="false">sk-mV3Aj …</string>
+    <string name="dictate_api_key_hint" translatable="false">sk-proj-kv … / gsk_TsWDxi …</string>
     <string name="dictate_onboarding_api_key_finish">Set API key and finish setup</string>
     <string name="dictate_onboarding_complete_dialog_title">Just some final information</string>
     <string name="dictate_onboarding_complete_dialog_message">You can switch between your normal keyboard and Dictate at any time. Simply click on the keyboard status icon below your standard keyboard and select Dictate.\n\nIf you want to know the full potential of Dictate, go to the settings and check out the How-To page for detailed app instructions.\n\nDictate does not send any of your transcribed audios/texts anywhere (except to OpenAI for transcription of course). Since the developer values data protection, he does not receive any information about what you are recording. If you don\'t trust these words, feel free to look into the source code, to which you will find a link in the settings.\n\nHave fun with it 💪</string>
@@ -102,11 +101,7 @@
     <string name="dictate_settings_instant_recording_summary">Start recording as soon as you switch to Dictate keyboard</string>
     <string name="dictate_settings_api_title">API settings</string>
     <string name="dictate_settings_about_title">About</string>
-    <string name="dictate_settings_custom_api_host_enabled_title">Use custom Whisper API server 🛠️</string>
-    <string name="dictate_settings_custom_api_host_title">Custom Whisper API server hostname</string>
     <string name="dictate_custom_host_hint" translatable="false">https://api.example.com/</string>
-    <string name="dictate_custom_host_invalid_title">Invalid custom API address</string>
-    <string name="dictate_custom_host_invalid_message">Your custom API server has to start with \'http:\' or \'https:\' and end with a \'/\'. Please check this again.</string>
     <string name="dictate_detect_automatically">Detect automatically</string>
     <string name="dictate_update_installed_msg">Dictate has been updated. See changes?</string>
     <string name="dictate_whats_new">What\'s new</string>
@@ -149,7 +144,6 @@
     <string name="dictate_example_prompt_five_name">Shrug</string>
     <string name="dictate_example_prompt_five_prompt">[¯\_(ツ)_/¯]</string>
     <string name="dictate_changelog_7">v2.0\n\nThis update brings some major changes that make Dictate a truly powerful tool:\n\n- In the settings, you can now define your own rewording prompts. This allows you to have dictated text revised by ChatGPT, offering endless possibilities. You will find some example prompts in the settings that you can use as guides. 💡\n\n- The previous translation function has been removed, as you can now translate more flexibly with the rewording prompts. ❌\n\n- When you hold down the Enter button, you can now swipe to quickly insert characters without having to switch to another keyboard. You can set up to 8 custom characters in the settings. 🔤\n\n- Dictate now uses GPT-4o-mini to reduce costs. I plan to let you choose the GPT model for rewording in the future. 💸\n\n- Some design changes and bug fixes have been made. ✨\n\n\n</string>
-    <string name="dictate_settings_rewording_model_title">Change rewording model</string>
     <string name="dictate_usage_cost" translatable="false">%1$.2f $</string>
     <string name="dictate_usage_audio_time" translatable="false">%1$d min, %2$d s</string>
     <string name="dictate_usage_no_usage">There is nothing to see here yet.\nStart transcription with Dictate\nto see the usage here.</string>
@@ -204,7 +198,6 @@
     <string name="dictate_settings_github">Contribute 💡</string>
     <string name="dictate_settings_github_summary">Visit GitHub project to get code insights and contribute</string>
     <string name="dictate_changelog_20">v2.7.0\n\nThis update brings some cool new features 🤩\n\n- Three buttons for cutting, copying and pasting have been added. In addition, the undo and redo functions are now more reliable. 📋\n\n- As I always get questions about functions that have already been added in the many emails I receive every day, I have created a detailed guide to all Dictate functions in the settings. If you want to get the most out of the app, have a look there. 📜\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
-    <string name="dictate_settings_transcription_model_title">Change transcription model 🎙️</string>
     <string name="dictate_changelog_21">v2.7.1\n\nThis update adds the new transcription models released by OpenAI last week. GPT-4o-transcribe and GPT-4o-mini-transcribe both have a smaller word-error-rate and GPT-4o-mini-transcribe costs just half the price that Whisper has cost. 🙌\nGPT-4o-mini-transcribe is selected by default now, but you can switch between these models at any time in the settings.\n\nFurthermore, I implemented a new library for all connections to OpenAI like transcription and rewording. This will allow more flexibility like adding proxy-settings, which will be added in the upcoming updates. 💪\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_settings_proxy_enabled_title">Use HTTP-Proxy 🛡️</string>
     <string name="dictate_settings_proxy_host_title">HTTP-Proxy address</string>
@@ -212,4 +205,24 @@
     <string name="dictate_proxy_invalid_title">Invalid proxy address</string>
     <string name="dictate_proxy_invalid_message">Your proxy address must start with the IP or domain of your proxy server, a \':\', followed by the port. Please check this again.</string>
     <string name="dictate_changelog_22">v2.7.2\n\nThis is just a small update adding the ability to configure a http proxy in the settings for all connections to OpenAI. 🛡️\nFurthermore, some bugfixes hav been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
+    <string name="dictate_settings_api_settings">Change API and model settings 🔑</string>
+    <string name="dictate_settings_api_settings_summary">Open settings for changing API providers and models</string>
+    <string name="dictate_api_settings">API and model settings</string>
+    <string name="dictate_custom_provider">Custom</string>
+    <string name="dictate_custom_server_host_hint" translatable="false">https://api.example.com/v1/</string>
+    <string name="dictate_custom_transcription_model_hint" translatable="false">example-v1-mini</string>
+    <string name="dictate_custom_rewording_model_hint" translatable="false">example-3.5-mini</string>
+    <string name="change_transcription_provider">Change transcription provider</string>
+    <string name="change_transcription_model">Change transcription model</string>
+    <string name="enter_transcription_api_key">Enter transcription API key</string>
+    <string name="set_your_custom_transcription_server_host">Set your custom transcription server host</string>
+    <string name="set_your_custom_transcription_model">Set your custom transcription model</string>
+    <string name="change_rewording_provider">Change rewording provider</string>
+    <string name="change_rewording_model">Change rewording model</string>
+    <string name="enter_rewording_api_key">Enter rewording API key</string>
+    <string name="set_your_custom_rewording_server_host">Set your custom rewording server host</string>
+    <string name="set_your_custom_rewording_model">Set your custom rewording model</string>
+    <string name="dictate_usage_model_provider_openai" translatable="false">OpenAI</string>
+    <string name="dictate_usage_model_provider_groq" translatable="false">Groq</string>
+    <string name="dictate_usage_model_provider_custom">Custom</string>
 </resources>

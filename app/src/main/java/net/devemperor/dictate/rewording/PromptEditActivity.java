@@ -3,7 +3,6 @@ package net.devemperor.dictate.rewording;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.widget.EditText;
 
@@ -18,6 +17,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
 
 import net.devemperor.dictate.R;
+import net.devemperor.dictate.SimpleTextWatcher;
 
 public class PromptEditActivity extends AppCompatActivity {
 
@@ -56,11 +56,7 @@ public class PromptEditActivity extends AppCompatActivity {
             savePromptBtn.setEnabled(true);
         }
 
-        TextWatcher tw = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+        SimpleTextWatcher tw = new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 savePromptBtn.setEnabled(!(promptNameEt.getText().toString().isEmpty()) && !(promptPromptEt.getText().toString().isEmpty()));

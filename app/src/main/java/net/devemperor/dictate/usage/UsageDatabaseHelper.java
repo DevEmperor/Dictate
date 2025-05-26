@@ -17,19 +17,23 @@ public class UsageDatabaseHelper extends SQLiteOpenHelper {
     Context context;
 
     public UsageDatabaseHelper(@Nullable Context context) {
-        super(context, "usage.db", null, 1);
+        super(context, "usage.db", null, 2);
         this.context = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE USAGE (MODEL_NAME TEXT PRIMARY KEY, AUDIO_TIME LONG, INPUT_TOKENS LONG, OUTPUT_TOKENS LONG)");
+        db.execSQL("CREATE TABLE USAGE (MODEL_NAME TEXT PRIMARY KEY, AUDIO_TIME LONG, INPUT_TOKENS LONG, OUTPUT_TOKENS LONG, MODEL_PROVIDER LONG)");
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) { }
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion <= 1 && newVersion >= 2) {
+            db.execSQL("ALTER TABLE USAGE ADD COLUMN MODEL_PROVIDER LONG DEFAULT 0");
+        }
+    }
 
-    public void edit(String model, long timeToAdd, long inputTokensToAdd, long outputTokensToAdd) {
+    public void edit(String model, long timeToAdd, long inputTokensToAdd, long outputTokensToAdd, long provider) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM USAGE WHERE MODEL_NAME='" + model + "'", null);
 
@@ -42,6 +46,7 @@ public class UsageDatabaseHelper extends SQLiteOpenHelper {
             cv.put("AUDIO_TIME", timeToAdd);
             cv.put("INPUT_TOKENS", inputTokensToAdd);
             cv.put("OUTPUT_TOKENS", outputTokensToAdd);
+            cv.put("MODEL_PROVIDER", provider);
             db.insert("USAGE", null, cv);
         } else {
             cursor = db.rawQuery("SELECT * FROM USAGE WHERE MODEL_NAME='" + model + "'", null);
@@ -71,7 +76,7 @@ public class UsageDatabaseHelper extends SQLiteOpenHelper {
         List<UsageModel> models = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
-                models.add(new UsageModel(cursor.getString(0), cursor.getLong(1), cursor.getLong(2), cursor.getLong(3)));
+                models.add(new UsageModel(cursor.getString(0), cursor.getLong(1), cursor.getLong(2), cursor.getLong(3), cursor.getLong(4)));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -85,7 +90,7 @@ public class UsageDatabaseHelper extends SQLiteOpenHelper {
 
         double cost = 0;
         if (cursor.moveToFirst()) {
-            cost = DictateUtils.calcModelCost(cursor.getString(0), cursor.getLong(1), cursor.getLong(2), cursor.getLong(3));
+            cost = DictateUtils.calcModelCost(cursor.getString(0), cursor.getLong(2), cursor.getLong(3), cursor.getLong(4));
         }
         cursor.close();
         return cost;
@@ -98,7 +103,7 @@ public class UsageDatabaseHelper extends SQLiteOpenHelper {
         double totalCost = 0;
         if (cursor.moveToFirst()) {
             do {
-                totalCost += DictateUtils.calcModelCost(cursor.getString(0), cursor.getLong(1), cursor.getLong(2), cursor.getLong(3));
+                totalCost += DictateUtils.calcModelCost(cursor.getString(0), cursor.getLong(2), cursor.getLong(3), cursor.getLong(4));
             } while (cursor.moveToNext());
         }
         cursor.close();

@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,6 +18,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import net.devemperor.dictate.R;
+import net.devemperor.dictate.SimpleTextWatcher;
 
 public class StylePromptActivity extends AppCompatActivity {
 
@@ -72,11 +72,7 @@ public class StylePromptActivity extends AppCompatActivity {
         });
 
         //save custom prompt on every change in the EditText
-        customEt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+        customEt.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 sp.edit().putString("net.devemperor.dictate.style_prompt_custom_text", s.toString()).apply();

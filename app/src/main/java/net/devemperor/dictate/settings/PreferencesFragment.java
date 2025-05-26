@@ -25,8 +25,6 @@ import net.devemperor.dictate.rewording.PromptsOverviewActivity;
 import net.devemperor.dictate.usage.UsageActivity;
 import net.devemperor.dictate.usage.UsageDatabaseHelper;
 
-import org.apache.commons.validator.routines.UrlValidator;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.Set;
@@ -120,19 +118,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
-        EditTextPreference apiKeyPreference = findPreference("net.devemperor.dictate.api_key");
-        if (apiKeyPreference != null) {
-            apiKeyPreference.setSummaryProvider((Preference.SummaryProvider<EditTextPreference>) preference -> {
-                String key = preference.getText();
-                if (TextUtils.isEmpty(key)) return getString(R.string.dictate_no_api_key);
-                if (key.length() <= 10) return key;
-                return key.substring(0, 8) + "..." + key.substring(key.length() - 8);
-            });
-
-            apiKeyPreference.setOnBindEditTextListener(editText -> {
-                editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                editText.setSingleLine(true);
-                editText.setHint(R.string.dictate_api_key_hint);
+        Preference apiSettingsPreference = findPreference("net.devemperor.dictate.api_settings");
+        if (apiSettingsPreference != null) {
+            apiSettingsPreference.setOnPreferenceClickListener(preference -> {
+                Intent intent = new Intent(requireContext(), APISettingsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                return true;
             });
         }
 
@@ -167,34 +159,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     new MaterialAlertDialogBuilder(requireContext())
                             .setTitle(R.string.dictate_proxy_invalid_title)
                             .setMessage(R.string.dictate_proxy_invalid_message)
-                            .setPositiveButton(R.string.dictate_okay, null)
-                            .show();
-                    return false;
-                }
-            });
-        }
-
-        EditTextPreference customHostPreference = findPreference("net.devemperor.dictate.custom_api_host");
-        if (customHostPreference != null) {
-            customHostPreference.setSummaryProvider((Preference.SummaryProvider<EditTextPreference>) preference -> {
-                String host = preference.getText();
-                if (TextUtils.isEmpty(host)) return getString(R.string.dictate_custom_host_hint);
-                return host;
-            });
-
-            customHostPreference.setOnBindEditTextListener(editText -> {
-                editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_URI);
-                editText.setSingleLine(true);
-                editText.setHint(R.string.dictate_custom_host_hint);
-            });
-
-            customHostPreference.setOnPreferenceChangeListener((preference, newValue) -> {
-                String host = (String) newValue;
-                if (new UrlValidator().isValid(host) && host.endsWith("/")) return true;
-                else {
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle(R.string.dictate_custom_host_invalid_title)
-                            .setMessage(R.string.dictate_custom_host_invalid_message)
                             .setPositiveButton(R.string.dictate_okay, null)
                             .show();
                     return false;

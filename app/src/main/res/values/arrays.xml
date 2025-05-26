@@ -239,7 +239,45 @@
         <item>Recordio</item>
     </string-array>
 
-    <string-array name="dictate_rewording_models">
+    <string-array name="dictate_default_input_languages">
+        <item>detect</item>
+        <item>en</item>
+    </string-array>
+
+    <string-array name="dictate_api_providers">
+        <item>OpenAI</item>
+        <item>Groq</item>
+        <item>@string/dictate_custom_provider</item>
+    </string-array>
+    <string-array name="dictate_api_providers_values">
+        <item>https://api.openai.com/v1/</item>
+        <item>https://api.groq.com/openai/v1/</item>
+        <item>custom_server</item>
+    </string-array>
+
+    <string-array name="dictate_transcription_models_openai">
+        <item>GPT-4o mini transcribe (0.18 $ / h)</item>
+        <item>GPT-4o transcribe (0.36 $ / h)</item>
+        <item>Whisper V2 (0.36 $ / h)</item>
+    </string-array>
+    <string-array name="dictate_transcription_models_openai_values">
+        <item>gpt-4o-mini-transcribe</item>
+        <item>gpt-4o-transcribe</item>
+        <item>whisper-1</item>
+    </string-array>
+
+    <string-array name="dictate_transcription_models_groq">
+        <item>Whisper Large V3 Turbo (0.04 $ / h)</item>
+        <item>Whisper Large V3 (0.111 $ / h)</item>
+        <item>Distil-Whisper English (0.02 $ / h)</item>
+    </string-array>
+    <string-array name="dictate_transcription_models_groq_values">
+        <item>whisper-large-v3-turbo</item>
+        <item>whisper-large-v3</item>
+        <item>distil-whisper-large-v3-en</item>
+    </string-array>
+
+    <string-array name="dictate_rewording_models_openai">
         <item>OpenAI o3 mini</item>
         <item>OpenAI o1 mini</item>
         <item>OpenAI o1</item>
@@ -249,7 +287,7 @@
         <item>GPT-4</item>
         <item>GPT-3.5 Turbo</item>
     </string-array>
-    <string-array name="dictate_rewording_models_values">
+    <string-array name="dictate_rewording_models_openai_values">
         <item>o3-mini</item>
         <item>o1-mini</item>
         <item>o1</item>
@@ -260,20 +298,20 @@
         <item>gpt-3.5-turbo</item>
     </string-array>
 
-    <string-array name="dictate_default_input_languages">
-        <item>detect</item>
-        <item>en</item>
+    <string-array name="dictate_rewording_models_groq">
+        <item>Gemma 2 9B IT</item>
+        <item>Llama 3.3 70B Versatile</item>
+        <item>Llama 3.1 8B Instant</item>
+        <item>Llama Guard 3 8B</item>
+        <item>Llama 3 70B 8192</item>
+        <item>Llama 3 8B 8192</item>
     </string-array>
-
-    <string-array name="dictate_transcription_models">
-        <item>GPT-4o mini transcribe\n(0.18 $ / h)</item>
-        <item>GPT-4o transcribe\n(0.36 $ / h)</item>
-        <item>Whisper V2\n(0.36 $ / h)</item>
-    </string-array>
-
-    <string-array name="dictate_transcription_models_values">
-        <item>gpt-4o-mini-transcribe</item>
-        <item>gpt-4o-transcribe</item>
-        <item>whisper-1</item>
+    <string-array name="dictate_rewording_models_groq_values">
+        <item>gemma2-9b-it</item>
+        <item>llama-3.3-70b-versatile</item>
+        <item>llama-3.1-8b-instant</item>
+        <item>llama-guard-3-8b</item>
+        <item>llama3-70b-8192</item>
+        <item>llama3-8b-8192</item>
     </string-array>
 </resources>

@@ -20,16 +20,6 @@
             app:iconSpaceReserved="false"
             app:dependency="net.devemperor.dictate.rewording_enabled"/>
 
-        <androidx.preference.ListPreference
-            android:key="net.devemperor.dictate.rewording_model"
-            android:title="@string/dictate_settings_rewording_model_title"
-            app:iconSpaceReserved="false"
-            app:entries="@array/dictate_rewording_models"
-            app:entryValues="@array/dictate_rewording_models_values"
-            app:defaultValue="gpt-4o-mini"
-            app:dependency="net.devemperor.dictate.rewording_enabled"
-            app:summary="%s"/>
-
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
@@ -109,23 +99,11 @@
         android:title="@string/dictate_settings_api_title"
         app:iconSpaceReserved="false">
 
-        <androidx.preference.EditTextPreference
-            android:key="net.devemperor.dictate.api_key"
-            android:title="@string/dictate_settings_api_key_title"
-            android:summary="@string/dictate_no_api_key"
-            app:positiveButtonText="@string/dictate_okay"
-            app:negativeButtonText="@string/dictate_cancel"
-            app:dialogTitle="@string/dictate_settings_api_key_title"
+        <androidx.preference.Preference
+            android:key="net.devemperor.dictate.api_settings"
+            android:title="@string/dictate_settings_api_settings"
+            android:summary="@string/dictate_settings_api_settings_summary"
             app:iconSpaceReserved="false"/>
-
-        <androidx.preference.ListPreference
-            android:key="net.devemperor.dictate.transcription_model"
-            android:title="@string/dictate_settings_transcription_model_title"
-            app:iconSpaceReserved="false"
-            app:entries="@array/dictate_transcription_models"
-            app:entryValues="@array/dictate_transcription_models_values"
-            app:defaultValue="gpt-4o-mini-transcribe"
-            app:summary="%s"/>
 
         <androidx.preference.Preference
             android:key="net.devemperor.dictate.prompt"
@@ -147,22 +125,6 @@
             app:negativeButtonText="@string/dictate_cancel"
             app:dialogTitle="@string/dictate_settings_proxy_host_title"
             app:dependency="net.devemperor.dictate.proxy_enabled"
-            app:iconSpaceReserved="false"/>
-
-        <androidx.preference.SwitchPreference
-            android:key="net.devemperor.dictate.custom_api_host_enabled"
-            android:title="@string/dictate_settings_custom_api_host_enabled_title"
-            android:defaultValue="false"
-            app:iconSpaceReserved="false"/>
-
-        <androidx.preference.EditTextPreference
-            android:key="net.devemperor.dictate.custom_api_host"
-            android:title="@string/dictate_settings_custom_api_host_title"
-            android:summary="@string/dictate_custom_host_hint"
-            app:positiveButtonText="@string/dictate_okay"
-            app:negativeButtonText="@string/dictate_cancel"
-            app:dialogTitle="@string/dictate_settings_custom_api_host_title"
-            app:dependency="net.devemperor.dictate.custom_api_host_enabled"
             app:iconSpaceReserved="false"/>
 
     </androidx.preference.PreferenceCategory>

@@ -49,6 +49,7 @@
         android:gravity="top"
         android:hint="@string/dictate_style_prompt_custom_hint"
         android:inputType="text|textLongMessage|textAutoComplete|textCapSentences|textMultiLine"
+        android:maxLength="800"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/activity_api_settings"
+    android:isScrollContainer="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:orientation="vertical">
+
+        <!-- Transcription Provider Group -->
+        <LinearLayout
+            android:id="@+id/transcription_provider_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/api_settings_transcription_provider_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/change_transcription_provider"
+                android:textColor="@color/dictate_blue" />
+
+            <Spinner
+                android:id="@+id/api_settings_transcription_provider_spn"
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
+        </LinearLayout>
+
+        <!-- Transcription Model Group -->
+        <LinearLayout
+            android:id="@+id/transcription_model_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/api_settings_transcription_model_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/change_transcription_model"
+                android:textColor="@color/dictate_blue" />
+
+            <Spinner
+                android:id="@+id/api_settings_transcription_model_spn"
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
+        </LinearLayout>
+
+        <!-- Transcription API Key Group -->
+        <LinearLayout
+            android:id="@+id/transcription_api_key_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/api_settings_transcription_api_key_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/enter_transcription_api_key"
+                android:textColor="@color/dictate_blue" />
+
+            <EditText
+                android:id="@+id/api_settings_transcription_api_key_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textNoSuggestions|textVisiblePassword"
+                android:hint="@string/dictate_api_key_hint"/>
+        </LinearLayout>
+
+        <!-- Transcription Custom Fields Wrapper -->
+        <LinearLayout
+            android:id="@+id/api_settings_transcription_custom_fields_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Transcription Custom Host Group -->
+            <LinearLayout
+                android:id="@+id/transcription_custom_host_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/api_settings_transcription_custom_host_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_your_custom_transcription_server_host"
+                    android:textColor="@color/dictate_blue" />
+
+                <EditText
+                    android:id="@+id/api_settings_transcription_custom_host_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textNoSuggestions|textUri"
+                    android:hint="@string/dictate_custom_server_host_hint" />
+            </LinearLayout>
+
+            <!-- Transcription Custom Model Group -->
+            <LinearLayout
+                android:id="@+id/transcription_custom_model_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/api_settings_transcription_custom_model_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_your_custom_transcription_model"
+                    android:textColor="@color/dictate_blue" />
+
+                <EditText
+                    android:id="@+id/api_settings_transcription_custom_model_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textNoSuggestions"
+                    android:hint="@string/dictate_custom_transcription_model_hint"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:id="@+id/api_settings_divider"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="36dp"
+            android:background="@color/dictate_blue" />
+
+        <!-- Rewording Provider Group -->
+        <LinearLayout
+            android:id="@+id/rewording_provider_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="36dp">
+
+            <TextView
+                android:id="@+id/api_settings_rewording_provider_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/change_rewording_provider"
+                android:textColor="@color/dictate_blue" />
+
+            <Spinner
+                android:id="@+id/api_settings_rewording_provider_spn"
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
+        </LinearLayout>
+
+        <!-- Rewording Model Group -->
+        <LinearLayout
+            android:id="@+id/rewording_model_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/api_settings_rewording_model_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/change_rewording_model"
+                android:textColor="@color/dictate_blue" />
+
+            <Spinner
+                android:id="@+id/api_settings_rewording_model_spn"
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
+        </LinearLayout>
+
+        <!-- Rewording API Key Group -->
+        <LinearLayout
+            android:id="@+id/rewording_api_key_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/api_settings_rewording_api_key_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/enter_rewording_api_key"
+                android:textColor="@color/dictate_blue" />
+
+            <EditText
+                android:id="@+id/api_settings_rewording_api_key_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textNoSuggestions|textVisiblePassword"
+                android:hint="@string/dictate_api_key_hint" />
+        </LinearLayout>
+
+        <!-- Rewording Custom Fields Wrapper -->
+        <LinearLayout
+            android:id="@+id/api_settings_rewording_custom_fields_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Rewording Custom Host Group -->
+            <LinearLayout
+                android:id="@+id/rewording_custom_host_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/api_settings_rewording_custom_host_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_your_custom_rewording_server_host"
+                    android:textColor="@color/dictate_blue" />
+
+                <EditText
+                    android:id="@+id/api_settings_rewording_custom_host_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textNoSuggestions|textUri"
+                    android:hint="@string/dictate_custom_server_host_hint" />
+            </LinearLayout>
+
+            <!-- Rewording Custom Model Group -->
+            <LinearLayout
+                android:id="@+id/rewording_custom_model_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp">
+
+                <TextView
+                    android:id="@+id/api_settings_rewording_custom_model_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_your_custom_rewording_model"
+                    android:textColor="@color/dictate_blue" />
+
+                <EditText
+                    android:id="@+id/api_settings_rewording_custom_model_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textNoSuggestions"
+                    android:hint="@string/dictate_custom_rewording_model_hint" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

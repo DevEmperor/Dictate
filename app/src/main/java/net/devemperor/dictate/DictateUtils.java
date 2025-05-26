@@ -9,17 +9,19 @@ import java.util.regex.Pattern;
 
 public class DictateUtils {
 
-    public static final String PROMPT_PUNCTUATION_CAPITALIZATION = "The Great Wall of China, the Eiffel Tower, the Pyramids of Giza, and the Statue of Liberty are among the most iconic landmarks in the world, and they draw countless tourists every year who marvel at their grandeur and historical significance.";
+    public static final String PROMPT_PUNCTUATION_CAPITALIZATION = "Write the output with correct punctuation, use capitalization for words like 'Monday', 'January', 'I', etc.";
     public static final String PROMPT_REWORDING_BE_PRECISE = "Be accurate with your output. Only output exactly what the user has asked for above. Do not add any text before or after the actual output. Output the text in the language of the instruction, unless a different language was explicitly requested.";
 
     public static double calcModelCost(String modelName, long audioTime, long inputTokens, long outputTokens) {
         switch (modelName) {
+            // OpenAI transcription models
             case "whisper-1":  // whisper-1 and gpt-4o-transcribe cost the same
             case "gpt-4o-transcribe":
-                return audioTime * 0.0001f;
+                return audioTime * 0.0001f;  // 0.0001 USD per second
             case "gpt-4o-mini-transcribe":
                 return audioTime * 0.00005f;
 
+            // OpenAI rewording models
             case "o3-mini":  // o3-mini and o1-mini cost the same
             case "o1-mini":
                 return inputTokens * 0.0000011f + outputTokens * 0.0000044f;
@@ -35,6 +37,25 @@ public class DictateUtils {
                 return inputTokens * 0.00003f + outputTokens * 0.00006f;
             case "gpt-3.5-turbo":
                 return inputTokens * 0.0000005f + outputTokens * 0.0000015f;
+
+            // Groq transcription models
+            case "whisper-large-v3-turbo":
+                return audioTime * 0.000011;  // rounded up
+            case "whisper-large-v3":
+                return audioTime * 0.000031;  // rounded up
+            case "distil-whisper-large-v3-en":
+                return audioTime * 0.000006;  // rounded up
+
+            // Groq rewording models
+            case "gemma2-9b-it":  // gemma2-9b-it and llama-guard-3-8b cost the same
+            case "llama-guard-3-8b":
+                return inputTokens * 0.00000020 + outputTokens * 0.00000020;
+            case "llama-3.3-70b-versatile":  // llama-3.3-70b-versatile and llama-3.1-8b-instant cost the same
+            case "llama3-70b-8192":
+                return inputTokens * 0.00000059 + outputTokens * 0.00000079;
+            case "llama-3.1-8b-instant":  // llama-3.1-8b-instant and llama3-8b-8192 cost the same
+            case "llama3-8b-8192":
+                return inputTokens * 0.00000005 + outputTokens * 0.00000008;
             default:
                 return 0;
         }
@@ -42,12 +63,15 @@ public class DictateUtils {
 
     public static String translateModelName(String modelName) {
         switch (modelName) {
+            // OpenAI transcription models
             case "whisper-1":
                 return "Whisper V2";
             case "gpt-4o-transcribe":
                 return "GPT-4o transcribe";
             case "gpt-4o-mini-transcribe":
                 return "GPT-4o mini transcribe";
+
+            // OpenAI rewording models
             case "o3-mini":
                 return "OpenAI o3 mini";
             case "o1-mini":
@@ -64,8 +88,32 @@ public class DictateUtils {
                 return "GPT-4";
             case "gpt-3.5-turbo":
                 return "GPT-3.5 Turbo";
+
+            // Groq transcription models
+            case "whisper-large-v3-turbo":
+                return "Whisper Large V3 Turbo";
+            case "whisper-large-v3":
+                return "Whisper Large V3";
+            case "distil-whisper-large-v3-en":
+                return "Distil-Whisper English";
+
+            // Groq rewording models
+            case "gemma2-9b-it":
+                return "Gemma 2 9B IT";
+            case "llama-3.3-70b-versatile":
+                return "Llama 3.3 70B Versatile";
+            case "llama-3.1-8b-instant":
+                return "Llama 3.1 8B Instant";
+            case "llama-guard-3-8b":
+                return "Llama Guard 3 8B";
+            case "llama3-70b-8192":
+                return "Llama 3 70B 8192";
+            case "llama3-8b-8192":
+                return "Llama 3 8B 8192";
+
+            // For custom models, return the model name as is
             default:
-                return "Unknown";
+                return modelName;
         }
     }
 

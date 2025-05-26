@@ -1,5 +1,6 @@
 package net.devemperor.dictate.usage;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,11 +58,23 @@ public class UsageAdapter extends RecyclerView.Adapter<UsageAdapter.RecyclerView
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, final int position) {
         UsageModel model = data.get(position);
+        String modelProvider = "";
+        switch ((int) model.getModelProvider()) {
+            case 0:
+                modelProvider = activity.getString(R.string.dictate_usage_model_provider_openai); break;
+            case 1:
+                modelProvider = activity.getString(R.string.dictate_usage_model_provider_groq); break;
+            case 2:
+                modelProvider = activity.getString(R.string.dictate_usage_model_provider_custom); break;
+            default:
+                break;
+        }
 
-        holder.itemModelNameTv.setText(DictateUtils.translateModelName(model.getModelName()));
+        holder.itemModelNameTv.setText(DictateUtils.translateModelName(model.getModelName()) + " (" + modelProvider + ")");
         holder.itemTotalCostValueTv.setText(activity.getString(R.string.dictate_usage_cost, db.getCost(model.getModelName())));
         if (model.getInputTokens() == 0) {
             holder.itemInputTokensTr.setVisibility(View.GONE);
