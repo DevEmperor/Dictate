@@ -1,18 +1,57 @@
-<p>
-    Der letzte Schritt besteht darin, einen <b>API-Schlüssel zu erstellen 🔑</b>. Dictate nutzt im Hintergrund OpenAI Whisper, um die Sprache in Text zu konvertieren.<br>Jede Anfrage kostet eine geringe Gebühr 💰 (etwa 0,36 $ pro Stunde Audio). Dafür musst du eine Kreditkarte zu deinem OpenAI-Account hinzufügen und den erstellten API-Schlüssel in die App kopieren. Es ist ganz einfach:
-</p>
-<p>
-    1. <a href="https://platform.openai.com/account/billing/overview">Öffne die Abrechnungsseite von OpenAI</a>, melde dich an und füge deine Kreditkarte 💳 über die Schaltfläche 'Add payment details' hinzu.
-</p>
-<p>
-    2. Du musst im Voraus Guthaben auf deinen Account aufladen. Dieses wird dann für die Transkription verwendet, wenn du Dictate nutzt.<br>Um dies zu tun, klicke auf die Schaltfläche 'Add to credit balance'. Der Mindestbetrag von 5$ sollte ausreichen.
-</p>
-<p>
-    3. Da du nun die API nutzen kannst, musst du nur noch den API-Schlüssel 🔑 erstellen und in das unten stehende Feld kopieren.<br>Rufe dazu die <a href="https://platform.openai.com/api-keys">API-Schlüssel-Seite auf</a> und klicke auf die Schaltfläche 'Create new secret key'. Du kannst einen Namen eingeben, z. B. 'Dictate Key', und dann auf die grüne Schaltfläche klicken. Nach kurzer Zeit siehst du einen langen Text mit zufälligen Buchstaben und Zahlen (er beginnt mit 'sk-...'). Klicke nun auf 'Kopieren'.<br>Gehe dann zurück zur Dictate-App.
-</p>
-<p>
-    4. Unter dieser Anleitung findest du ein Textfeld. Halte es gedrückt, und die Schaltfläche 'Einfügen' erscheint. Klicke darauf und der API-Schlüssel wird in Dictate gespeichert.
-</p>
-<p>
-    5. Klicke nun auf die Schaltfläche 'API-Schlüssel festlegen und Einrichtung beenden'. Du hast die Einrichtung jetzt abgeschlossen und kannst Dictate verwenden. 🥳
-</p>
+<body>
+    <p>
+        <b>Dictate</b> unterstützt zwei Dienste zur Spracherkennung:
+    </p>
+    <p>
+        <b>➀ Groq Whisper (empfohlen):</b> <i>Extrem schnell</i> und in der Regel <b>kostenlos</b> bei normaler Nutzung.
+    </p>
+    <p>
+        <b>➁ OpenAI Whisper / GPT-4o-transcribe:</b> <i>Sehr präzise</i> und weit verbreitet. Die Nutzung ist mit <b>sehr geringen Kosten</b> verbunden (ca. 0,18 $ pro Stunde Audio), eine <b>Kreditkarte</b> ist erforderlich.
+    </p>
+    <p>
+        Der letzte Schritt besteht darin, einen <b>API-Schlüssel zu erstellen 🔑</b>. <b>Dictate</b> nutzt im Hintergrund <b>Groq</b> oder <b>OpenAI Whisper</b>, um die Sprache in Text zu konvertieren.<br>
+        Dafür musst du dir auf der jeweiligen Webseite einen <b>API-Schlüssel</b> erstellen und ihn in <b>Dictate</b> hinterlegen. Entscheide dich nun für einen Anbieter, den du verwenden möchtest, und folge der jeweiligen Anleitung. Es ist ganz einfach:
+    </p>
+
+    <br><br>
+
+    <p><b>➀ Einrichtung mit Groq (kostenlos und empfohlen)</b></p>
+    <p>
+        <b>Groq</b> bietet <b>Whisper</b> in besonders schneller Ausführung an – und das aktuell <b>kostenlos</b> bei normalem Gebrauch. Die Einrichtung ist <b>einfacher</b> als bei <b>OpenAI</b>, da <b>keine Zahlungsmethode</b> erforderlich ist.
+    </p>
+    <p>
+        1. Gehe zur <a href="https://console.groq.com/keys">API-Key-Seite von Groq</a> und logge dich mit deinem <b>Groq-Account</b> ein. Falls du noch keinen hast, kannst du ihn dort <b>kostenlos</b> erstellen.
+    </p>
+    <p>
+        2. Klicke auf <b>'Create API Key'</b>, gib dem Schlüssel z. B. den Namen <i>'Dictate'</i> und <b>kopiere</b> den Schlüssel nach der Erstellung.
+    </p>
+    <p>
+        3. Kehre nun zur <b>Dictate App</b> zurück. Unten auf dieser Seite findest du ein <b>Textfeld</b>. Halte es gedrückt, und die Schaltfläche <b>'Einfügen'</b> erscheint. Klicke darauf und der <b>API-Schlüssel</b> wird in <b>Dictate</b> gespeichert.
+    </p>
+    <p>
+        4. Klicke nun auf die Schaltfläche <b>'API-Schlüssel festlegen und Einrichtung beenden'</b>. Du hast die Einrichtung jetzt abgeschlossen und kannst <b>Dictate</b> verwenden. 🥳
+    </p>
+
+    <br><br>
+
+    <p><b>➁ Einrichtung mit OpenAI (kostenpflichtig)</b></p>
+    <p>
+        1. <a href="https://platform.openai.com/account/billing/overview">Öffne die Abrechnungsseite von OpenAI</a>, melde dich an und füge deine <b>Kreditkarte 💳</b> über die Schaltfläche <b>'Add payment details'</b> hinzu.
+    </p>
+    <p>
+        2. Du musst im Voraus <b>Guthaben</b> auf deinen Account aufladen. Dieses wird dann für die <b>Transkription</b> verwendet, wenn du <b>Dictate</b> nutzt.<br>
+        Um dies zu tun, klicke auf die Schaltfläche <b>'Add to credit balance'</b>. Der Mindestbetrag von <b>5 $</b> sollte ausreichen.
+    </p>
+    <p>
+        3. Da du nun die API nutzen kannst, musst du nur noch den <b>API-Schlüssel 🔑</b> erstellen und in das unten stehende Feld <b>kopieren</b>.<br>
+        Rufe dazu die <a href="https://platform.openai.com/api-keys">API-Schlüssel-Seite</a> auf und klicke auf die Schaltfläche <b>'Create new secret key'</b>. Du kannst einen Namen eingeben, z. B. <i>'Dictate Key'</i>, und dann auf die grüne Schaltfläche klicken.<br>
+        Nach kurzer Zeit siehst du einen langen Text mit zufälligen Buchstaben und Zahlen (er beginnt mit <i>'sk-...'</i>). Klicke nun auf <b>'Kopieren'</b>.<br>
+        Gehe dann zurück zur <b>Dictate-App</b>.
+    </p>
+    <p>
+        4. Unter dieser Anleitung findest du ein <b>Textfeld</b>. Halte es gedrückt, und die Schaltfläche <b>'Einfügen'</b> erscheint. Klicke darauf und der <b>API-Schlüssel</b> wird in <b>Dictate</b> gespeichert.
+    </p>
+    <p>
+        5. Klicke nun auf die Schaltfläche <b>'API-Schlüssel festlegen und Einrichtung beenden'</b>. Du hast die Einrichtung jetzt abgeschlossen und kannst <b>Dictate</b> verwenden. 🥳
+    </p>
+</body>
