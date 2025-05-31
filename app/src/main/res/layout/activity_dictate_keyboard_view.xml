@@ -5,7 +5,7 @@
     android:id="@+id/dictate_keyboard_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/dictate_keyboard_background_dark"
+    android:background="@color/dictate_keyboard_background_light"
     android:keepScreenOn="true">
 
     <com.google.android.material.button.MaterialButton

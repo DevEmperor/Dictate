@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
@@ -165,6 +166,11 @@ public class DictateInputMethodService extends InputMethodService {
             v.setPadding(0, 0, 0, insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom);
             return insets;  // fix for overlapping with navigation bar on Android 15+
         });
+
+        // set background of dictateKeyboardView according to device theme (default in layout is already light)
+        if ((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
+            dictateKeyboardView.setBackgroundColor(getResources().getColor(R.color.dictate_keyboard_background_dark, getTheme()));
+        }
 
         settingsButton = dictateKeyboardView.findViewById(R.id.settings_btn);
         recordButton = dictateKeyboardView.findViewById(R.id.record_btn);
