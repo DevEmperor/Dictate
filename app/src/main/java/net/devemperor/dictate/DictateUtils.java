@@ -1,9 +1,15 @@
 package net.devemperor.dictate;
 
+import android.content.SharedPreferences;
 import android.media.MediaMetadataRetriever;
 
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+
 import java.io.File;
-import java.util.Objects;
+import java.net.Authenticator;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -133,51 +139,26 @@ public class DictateUtils {
     }
 
     public static boolean isValidProxy(String proxy) {
-        if (proxy == null) return false;
+        if (proxy == null || proxy.isEmpty()) return false;
 
-        if (proxy.startsWith("http://") || proxy.startsWith("https://")) {
-            return false;
-        }
-
-        // Check if the proxy is in the format "IP:Port" or "Domain:Port"
-        String regex = "^(?:" +
-                // Group 1: IP address (four octets separated by dots)
-                "((?:\\d{1,3}\\.){3}\\d{1,3})" +
-                "|" +
-                // Group 2: Domain name (at least two parts separated by dots)
-                "((?:[a-zA-Z0-9][-a-zA-Z0-9]*\\.)+[a-zA-Z]{2,})" +
-                ")" +
-                // Group 3: Port number
-                ":(\\d+)$";
+        // Regex for general format match (http/socks5, optional user:pass, host, port)
+        String regex = "^(?:(socks5|http)://)?(?:(\\w+):(\\w+)@)?([\\w.-]+):(\\d+)$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(proxy);
-        if (!matcher.matches()) {
-            return false;
-        }
 
-        // Check if port is between 1 and 65535
-        int port;
-        try {
-            port = Integer.parseInt(Objects.requireNonNull(matcher.group(3)));
-        } catch (NumberFormatException | NullPointerException e) {
-            return false;
-        }
-        if (port < 1 || port > 65535) {
-            return false;
-        }
+        if (!matcher.matches()) return false;
 
-        // Check if each part of the IP address is between 0 and 255
-        String ipPart = matcher.group(1);
-        if (ipPart != null) {
-            String[] octets = ipPart.split("\\.");
-            for (String octet : octets) {
-                int value;
+        String host = matcher.group(4);
+
+        // If it looks like an IPv4 address (e.g., 192.168.0.1), we check more closely.
+        if (host != null && host.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
+            String[] parts = host.split("\\.");
+            if (parts.length != 4) return false;
+            for (String part : parts) {
                 try {
-                    value = Integer.parseInt(octet);
+                    int num = Integer.parseInt(part);
+                    if (num < 0 || num > 255) return false;
                 } catch (NumberFormatException e) {
-                    return false;
-                }
-                if (value < 0 || value > 255) {
                     return false;
                 }
             }
@@ -186,6 +167,38 @@ public class DictateUtils {
         return true;
     }
 
+    public static void applyProxy(OpenAIOkHttpClient.Builder clientBuilder, SharedPreferences sp) {
+        String proxyInput = sp.getString("net.devemperor.dictate.proxy_host", "");
+        boolean proxyEnabled = sp.getBoolean("net.devemperor.dictate.proxy_enabled", false);
+
+        if (!proxyEnabled || proxyInput.isEmpty()) return;
+
+        Pattern pattern = Pattern.compile("^(?:(socks5|http)://)?(?:(\\w+):(\\w+)@)?([\\w.-]+):(\\d+)$");
+        Matcher matcher = pattern.matcher(proxyInput);
+
+        if (matcher.matches()) {
+            String type = matcher.group(1); // "socks5" or "http" or null
+            String user = matcher.group(2); // optional
+            String pass = matcher.group(3); // optional
+            String host = matcher.group(4);
+            int port = Integer.parseInt(matcher.group(5));
+
+            Proxy.Type proxyType = Proxy.Type.HTTP; // Default
+            if ("socks5".equalsIgnoreCase(type)) proxyType = Proxy.Type.SOCKS;
+
+            Proxy proxy = new Proxy(proxyType, new InetSocketAddress(host, port));
+            clientBuilder.proxy(proxy);
+
+            if (user != null && pass != null) {
+                Authenticator.setDefault(new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(user, pass.toCharArray());
+                    }
+                });
+            }
+        }
+    }
 
     public static String translateLanguageToEmoji(String language) {
         switch (language) {

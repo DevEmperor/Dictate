@@ -788,7 +788,7 @@ public class DictateInputMethodService extends InputMethodService {
                 if (!currentInputLanguageValue.equals("detect")) transcriptionBuilder.language(currentInputLanguageValue);
                 if (!stylePrompt.isEmpty()) transcriptionBuilder.prompt(stylePrompt);
                 if (sp.getBoolean("net.devemperor.dictate.proxy_enabled", false)) {
-                    clientBuilder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.split(":")[0], Integer.parseInt(proxyHost.split(":")[1]))));
+                    if (DictateUtils.isValidProxy(proxyHost)) DictateUtils.applyProxy(clientBuilder, sp);
                 }
 
                 Transcription transcription = clientBuilder.build().audio().transcriptions().create(transcriptionBuilder.build()).asTranscription();

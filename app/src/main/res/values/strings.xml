@@ -199,11 +199,11 @@
     <string name="dictate_settings_github_summary">Visit GitHub project to get code insights and contribute</string>
     <string name="dictate_changelog_20">v2.7.0\n\nThis update brings some cool new features 🤩\n\n- Three buttons for cutting, copying and pasting have been added. In addition, the undo and redo functions are now more reliable. 📋\n\n- As I always get questions about functions that have already been added in the many emails I receive every day, I have created a detailed guide to all Dictate functions in the settings. If you want to get the most out of the app, have a look there. 📜\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_changelog_21">v2.7.1\n\nThis update adds the new transcription models released by OpenAI last week. GPT-4o-transcribe and GPT-4o-mini-transcribe both have a smaller word-error-rate and GPT-4o-mini-transcribe costs just half the price that Whisper has cost. 🙌\nGPT-4o-mini-transcribe is selected by default now, but you can switch between these models at any time in the settings.\n\nFurthermore, I implemented a new library for all connections to OpenAI like transcription and rewording. This will allow more flexibility like adding proxy-settings, which will be added in the upcoming updates. 💪\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
-    <string name="dictate_settings_proxy_enabled_title">Use HTTP-Proxy 🛡️</string>
-    <string name="dictate_settings_proxy_host_title">HTTP-Proxy address</string>
-    <string name="dictate_settings_proxy_hint" translatable="false">123.123.123.123:4567</string>
+    <string name="dictate_settings_proxy_enabled_title">Use Proxy 🛡️</string>
+    <string name="dictate_settings_proxy_host_title">Proxy address</string>
+    <string name="dictate_settings_proxy_hint" translatable="false">[socks5|http]://[user:pass@]host:port</string>
     <string name="dictate_proxy_invalid_title">Invalid proxy address</string>
-    <string name="dictate_proxy_invalid_message">Your proxy address must start with the IP or domain of your proxy server, a \':\', followed by the port. Please check this again.</string>
+    <string name="dictate_proxy_invalid_message">Your proxy address must have the following format: [socks5|http]://[user:pass@]host:port. Please check this again.</string>
     <string name="dictate_changelog_22">v2.7.2\n\nThis is just a small update adding the ability to configure a http proxy in the settings for all connections to OpenAI. 🛡️\nFurthermore, some bugfixes hav been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_settings_api_settings">Change API and model settings 🔑</string>
     <string name="dictate_settings_api_settings_summary">Open settings for changing API providers and models</string>
@@ -225,4 +225,5 @@
     <string name="dictate_usage_model_provider_openai" translatable="false">OpenAI</string>
     <string name="dictate_usage_model_provider_groq" translatable="false">Groq</string>
     <string name="dictate_usage_model_provider_custom">Custom</string>
+    <string name="dictate_changelog_23">v2.8.0\n\nThis update brings some cool new features 🤩\n\n- In addition to OpenAI, you can now choose Groq as a provider for transcription and editing. Groq is generally free and significantly faster at processing audio recordings. To switch, simply scroll down to the settings — there you\'ll find a dedicated page where you can set the provider separately for each function, or even use your own service. 🎉\n\n- The keyboard background now automatically switches to light or dark mode based on your system theme. 💡\n\n- Proxy settings offer more flexibility now. ⚙️\n\n- Dictate has a new app icon and improved Play Store listings. A big thank you to Jan for your work! 🤝\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
 </resources>
