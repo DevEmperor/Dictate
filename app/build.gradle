@@ -14,8 +14,8 @@ android {
         applicationId "net.devemperor.dictate"
         minSdk 26
         targetSdk 35
-        versionCode 22
-        versionName "2.7.2"
+        versionCode 23
+        versionName "2.8.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
