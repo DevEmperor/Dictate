@@ -90,7 +90,7 @@ public class UsageDatabaseHelper extends SQLiteOpenHelper {
 
         double cost = 0;
         if (cursor.moveToFirst()) {
-            cost = DictateUtils.calcModelCost(cursor.getString(0), cursor.getLong(2), cursor.getLong(3), cursor.getLong(4));
+            cost = DictateUtils.calcModelCost(cursor.getString(0), cursor.getLong(1), cursor.getLong(2), cursor.getLong(3));
         }
         cursor.close();
         return cost;
@@ -103,7 +103,7 @@ public class UsageDatabaseHelper extends SQLiteOpenHelper {
         double totalCost = 0;
         if (cursor.moveToFirst()) {
             do {
-                totalCost += DictateUtils.calcModelCost(cursor.getString(0), cursor.getLong(2), cursor.getLong(3), cursor.getLong(4));
+                totalCost += DictateUtils.calcModelCost(cursor.getString(0), cursor.getLong(1), cursor.getLong(2), cursor.getLong(3));
             } while (cursor.moveToNext());
         }
         cursor.close();
