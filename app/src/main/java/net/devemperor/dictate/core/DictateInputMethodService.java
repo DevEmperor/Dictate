@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -101,6 +102,9 @@ public class DictateInputMethodService extends InputMethodService {
     private boolean spaceButtonUserHasSwiped = false;
     private int currentInputLanguagePos;
     private String currentInputLanguageValue;
+
+    // Flag to switch IME after transcription
+    private boolean shouldSwitchImeAfterTranscription = false;
 
     private MediaRecorder recorder;
     private ExecutorService speechApiThread;
@@ -253,8 +257,11 @@ public class DictateInputMethodService extends InputMethodService {
             }
         });
 
+        // Depending on longpressRecordingEnabled, react within the record button long click listener
         recordButton.setOnLongClickListener(v -> {
             vibrate();
+ 
+            boolean longpressRecordingEnabled = sp.getBoolean("net.devemperor.dictate.longpress_record_switch", true);
 
             if (!isRecording) {  // open real settings activity to start file picker
                 Intent intent = new Intent(this, DictateSettingsActivity.class);
@@ -262,6 +269,15 @@ public class DictateInputMethodService extends InputMethodService {
                 intent.putExtra("net.devemperor.dictate.open_file_picker", true);
                 startActivity(intent);
             }
+            else if (longpressRecordingEnabled) 
+            {
+                // if longpress while recording is enabled, stop recording AND return to previous input method
+                stopRecording();
+
+                // Set flag to switch IME after transcription
+                shouldSwitchImeAfterTranscription = true;
+            }
+
             return true;
         });
 
@@ -822,6 +838,14 @@ public class DictateInputMethodService extends InputMethodService {
                             }
                         }
                     }
+
+                    // Switch IME if flag is set
+                    if (shouldSwitchImeAfterTranscription) {
+                        shouldSwitchImeAfterTranscription = false;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            switchToPreviousInputMethod();
+                        }
+                    }
                 } else {
                     // continue with ChatGPT API request
                     instantPrompt = false;
@@ -861,7 +885,6 @@ public class DictateInputMethodService extends InputMethodService {
                     });
                 }
             }
-
 
             mainHandler.post(() -> {
                 recordButton.setText(getDictateButtonText());
@@ -969,6 +992,16 @@ public class DictateInputMethodService extends InputMethodService {
                 promptsRv.setVisibility(View.VISIBLE);
                 runningPromptTv.setVisibility(View.GONE);
                 runningPromptPb.setVisibility(View.GONE);
+
+                if(model.getId() == -1) {
+                    // Switch IME if flag is set
+                    if (shouldSwitchImeAfterTranscription) {
+                        shouldSwitchImeAfterTranscription = false;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            switchToPreviousInputMethod();
+                        }
+                    }
+                }
             });
         });
     }

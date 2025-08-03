@@ -73,6 +73,8 @@
     <string name="dictate_cancel">Cancel</string>
     <string name="dictate_settings_api_key_title">Change OpenAI API key 🔑</string>
     <string name="dictate_settings_vibration_title">Haptic feedback 📳</string>
+    <string name="dictate_settings_longpress_record_switch_title">Long press on Recording button</string>
+    <string name="dictate_settings_longpress_record_switch_summary">If Longpressing the Recording Button while active Recording, it will stop the Record and after successful transcription, will switch back to the previous keyboard, instead of selecting an Inputfile.</string>
     <string name="dictate_settings_instant_output_title">Instant output ⏱️</string>
     <string name="dictate_settings_instant_output_summary">Disable typing animation when the result is ready</string>
     <string name="dictate_settings_vibration_summary">Vibrate on button presses and errors</string>

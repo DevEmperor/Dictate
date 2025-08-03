@@ -87,6 +87,13 @@
             android:defaultValue="true"
             app:iconSpaceReserved="false"/>
 
+        <androidx.preference.SwitchPreference
+            android:key="net.devemperor.dictate.longpress_record_switch"
+            android:title="@string/dictate_settings_longpress_record_switch_title"
+            android:summary="@string/dictate_settings_longpress_record_switch_summary"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false"/>
+
         <androidx.preference.Preference
             android:key="net.devemperor.dictate.usage"
             android:title="@string/dictate_settings_usage"
