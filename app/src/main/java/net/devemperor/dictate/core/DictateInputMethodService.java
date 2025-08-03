@@ -333,7 +333,9 @@ public class DictateInputMethodService extends InputMethodService {
         trashButton.setOnClickListener(v -> {
             vibrate();
             if (recorder != null) {
-                recorder.stop();
+                try {
+                    recorder.stop();
+                } catch (RuntimeException ignored) { }
                 recorder.release();
                 recorder = null;
 
@@ -352,6 +354,11 @@ public class DictateInputMethodService extends InputMethodService {
             pauseButton.setVisibility(View.GONE);
             pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_pause_24));
             trashButton.setVisibility(View.GONE);
+            resendButton.setVisibility(View.GONE);
+            infoCl.setVisibility(View.GONE);
+            // Reset record button color to original blue
+            recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_blue, getTheme()));
+
         });
 
         // space button that changes cursor position if user swipes over it
@@ -404,12 +411,16 @@ public class DictateInputMethodService extends InputMethodService {
                     recordTimeHandler.post(recordTimeRunnable);
                     pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_pause_24));
                     isPaused = false;
+                    // Set record button background to light green (active recording)
+                    recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green, getTheme()));
                 } else {
                     if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
                     recorder.pause();
                     recordTimeHandler.removeCallbacks(recordTimeRunnable);
                     pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_mic_24));
                     isPaused = true;
+                    // Set record button background to a different green (paused)
+                    recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green_paused, getTheme()));
                 }
             }
         });
@@ -711,7 +722,8 @@ public class DictateInputMethodService extends InputMethodService {
         trashButton.setVisibility(View.VISIBLE);
         resendButton.setVisibility(View.GONE);
         isRecording = true;
-
+        // Set record button background to light green
+        recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green, getTheme()));
         elapsedTime = 0;
         recordTimeHandler.post(recordTimeRunnable);
     }
@@ -727,7 +739,8 @@ public class DictateInputMethodService extends InputMethodService {
             if (recordTimeRunnable != null) {
                 recordTimeHandler.removeCallbacks(recordTimeRunnable);
             }
-
+            // Reset record button color to original blue
+            recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_blue, getTheme()));
             startWhisperApiRequest();
         }
     }

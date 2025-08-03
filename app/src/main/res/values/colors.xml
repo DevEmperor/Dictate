@@ -12,6 +12,9 @@
     <color name="dictate_red">#E53935</color>
     <color name="dictate_green">#43A047</color>
 
+    <color name="dictate_recording_green">#88E788</color>
+    <color name="dictate_recording_green_paused">#7CA37C</color>
+
     <color name="dictate_keyboard_background_dark">#1b1b1d</color>
     <color name="dictate_keyboard_background_light">#f1f1f1</color>
 </resources>
