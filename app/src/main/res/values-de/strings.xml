@@ -72,8 +72,8 @@
     <string name="dictate_cancel">Abbrechen</string>
     <string name="dictate_settings_api_key_title">OpenAI API-Schlüssel ändern 🔑</string>
     <string name="dictate_settings_vibration_title">Haptisches Feedback 📳</string>
-    <string name="dictate_settings_longpress_record_switch_title">Lang drücken auf Aufnahmetaste während Aufnahme</string>
-    <string name="dictate_settings_longpress_record_switch_summary">Wenn die Aufnahmetaste während der Aufnahme lange gedrückt wird, wird die Aufnahme gestoppt und nach erfolgreicher Transkription wird zur vorherigen Tastatur gewechselt, anstatt eine Eingabedatei auszuwählen.</string>
+    <string name="dictate_settings_longpress_record_switch_title">Lang drücken auf Aufnahmetaste</string>
+    <string name="dictate_settings_longpress_record_switch_summary">Wenn die Aufnahmetaste während der Aufnahme lange gedrückt wird, wird die Aufnahme gestoppt und nach erfolgreicher Transkription wird zur vorherigen Tastatur gewechselt. Funktioniert nur, wenn die sofortige Ausgabe aktiviert ist.</string>
     <string name="dictate_settings_instant_output_title">Sofortige Ausgabe ⏱️</string>
     <string name="dictate_settings_instant_output_summary">Tippanimation deaktivieren, wenn die Erkennung fertig ist</string>
     <string name="dictate_settings_vibration_summary">Vibration bei Tastendrucken und Fehlern</string>

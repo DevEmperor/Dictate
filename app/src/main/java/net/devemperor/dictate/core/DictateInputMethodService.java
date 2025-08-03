@@ -825,25 +825,27 @@ public class DictateInputMethodService extends InputMethodService {
 
                 usageDb.edit(transcriptionModel, DictateUtils.getAudioDuration(audioFile), 0, 0, transcriptionProvider);
 
-                if (!instantPrompt) {
+                if (!instantPrompt) 
+                {
+                    boolean instantOutputEnabled = sp.getBoolean("net.devemperor.dictate.instant_output", false);
                     InputConnection inputConnection = getCurrentInputConnection();
                     if (inputConnection != null) {
-                        if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
+                        if (instantOutputEnabled) {
                             inputConnection.commitText(resultText, 1);
+
+                            // Switch IME if flag is set
+                            if (shouldSwitchImeAfterTranscription) {
+                                shouldSwitchImeAfterTranscription = false;
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                    switchToPreviousInputMethod();
+                                }
+                            }
                         } else {
                             int speed = sp.getInt("net.devemperor.dictate.output_speed", 5);
                             for (int i = 0; i < resultText.length(); i++) {
                                 char character = resultText.charAt(i);
                                 mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), (long) (i * (20L / (speed / 5f))));
                             }
-                        }
-                    }
-
-                    // Switch IME if flag is set
-                    if (shouldSwitchImeAfterTranscription) {
-                        shouldSwitchImeAfterTranscription = false;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            switchToPreviousInputMethod();
                         }
                     }
                 } else {
@@ -952,9 +954,18 @@ public class DictateInputMethodService extends InputMethodService {
                 }
 
                 InputConnection inputConnection = getCurrentInputConnection();
+                boolean instantOutputEnabled = sp.getBoolean("net.devemperor.dictate.instant_output", false);
                 if (inputConnection != null) {
-                    if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
+                    if (instantOutputEnabled) {
                         inputConnection.commitText(rewordedText, 1);
+
+                        if(model.getId() == -1 && shouldSwitchImeAfterTranscription) {
+                            // Switch IME if flag is set
+                            shouldSwitchImeAfterTranscription = false;
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                switchToPreviousInputMethod();
+                            }                            
+                        }
                     } else {
                         int speed = sp.getInt("net.devemperor.dictate.output_speed", 5);
                         for (int i = 0; i < rewordedText.length(); i++) {
@@ -992,16 +1003,6 @@ public class DictateInputMethodService extends InputMethodService {
                 promptsRv.setVisibility(View.VISIBLE);
                 runningPromptTv.setVisibility(View.GONE);
                 runningPromptPb.setVisibility(View.GONE);
-
-                if(model.getId() == -1) {
-                    // Switch IME if flag is set
-                    if (shouldSwitchImeAfterTranscription) {
-                        shouldSwitchImeAfterTranscription = false;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            switchToPreviousInputMethod();
-                        }
-                    }
-                }
             });
         });
     }
