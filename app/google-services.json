@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1025218422696",
+    "project_id": "dictate-8c414",
+    "storage_bucket": "dictate-8c414.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1025218422696:android:0c8c574d6db7a993f09f9d",
+        "android_client_info": {
+          "package_name": "net.devemperor.dictate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdcnMT9QlwyKbDQu521JNcUUlgUDuTtnM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
