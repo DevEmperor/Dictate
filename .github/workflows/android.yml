@@ -22,5 +22,18 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+      
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew assembleDebug
+
+    - name: Create Release and Upload APK
+      uses: softprops/action-gh-release@v2
+      with:
+        # The name of the release.
+        name: "Debug Build - ${{ github.run_number }}"
+        # A tag for the release, using the run number to ensure uniqueness.
+        tag_name: "debug-build-${{ github.run_number }}"
+        # A list of files to upload as release assets.
+        files: app/build/outputs/apk/debug/app-debug.apk
+        # Indicates that this is not a production-ready release.
+        prerelease: true
