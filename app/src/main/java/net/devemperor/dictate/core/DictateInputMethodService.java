@@ -791,6 +791,16 @@ public class DictateInputMethodService extends InputMethodService {
                     if (DictateUtils.isValidProxy(proxyHost)) DictateUtils.applyProxy(clientBuilder, sp);
                 }
 
+                String customHeaders = sp.getString("net.devemperor.dictate.transcription_custom_headers", "");
+                if (!customHeaders.isEmpty()) {
+                    for (String header : customHeaders.split("\n")) {
+                        String[] parts = header.split(":", 2);
+                        if (parts.length == 2) {
+                            clientBuilder.addHeader(parts[0].trim(), parts[1].trim());
+                        }
+                    }
+                }
+
                 Transcription transcription = clientBuilder.build().audio().transcriptions().create(transcriptionBuilder.build()).asTranscription();
                 String resultText = transcription.text().strip();  // Groq sometimes adds leading whitespace
 
@@ -891,6 +901,16 @@ public class DictateInputMethodService extends InputMethodService {
 
                 if (sp.getBoolean("net.devemperor.dictate.proxy_enabled", false)) {
                     clientBuilder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.split(":")[0], Integer.parseInt(proxyHost.split(":")[1]))));
+                }
+
+                String customHeaders = sp.getString("net.devemperor.dictate.rewording_custom_headers", "");
+                if (!customHeaders.isEmpty()) {
+                    for (String header : customHeaders.split("\n")) {
+                        String[] parts = header.split(":", 2);
+                        if (parts.length == 2) {
+                            clientBuilder.addHeader(parts[0].trim(), parts[1].trim());
+                        }
+                    }
                 }
 
                 String prompt = model.getPrompt();

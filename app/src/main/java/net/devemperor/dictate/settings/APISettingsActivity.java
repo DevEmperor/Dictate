@@ -30,11 +30,13 @@ public class APISettingsActivity extends AppCompatActivity {
     private EditText transcriptionAPIKeyEt;
     private EditText transcriptionCustomHostEt;
     private EditText transcriptionCustomModelEt;
+    private EditText transcriptionCustomHeadersEt;
     private Spinner rewordingProviderSpn;
     private EditText rewordingAPIKeyEt;
     private Spinner rewordingModelSpn;
     private EditText rewordingCustomHostEt;
     private EditText rewordingCustomModelEt;
+    private EditText rewordingCustomHeadersEt;
     private LinearLayout transcriptionCustomFieldsWrapper;
     private LinearLayout rewordingCustomFieldsWrapper;
 
@@ -44,12 +46,14 @@ public class APISettingsActivity extends AppCompatActivity {
     private String transcriptionAPIKey;
     private String transcriptionCustomHost;
     private String transcriptionCustomModel;
+    private String transcriptionCustomHeaders;
     private int rewordingProvider;
     private String rewordingOpenAIModel;
     private String rewordingGroqModel;
     private String rewordingAPIKey;
     private String rewordingCustomHost;
     private String rewordingCustomModel;
+    private String rewordingCustomHeaders;
 
     private ArrayAdapter<CharSequence> transcriptionModelOpenAIAdapter;
     private ArrayAdapter<CharSequence> transcriptionModelGroqAdapter;
@@ -81,11 +85,13 @@ public class APISettingsActivity extends AppCompatActivity {
         transcriptionAPIKeyEt = findViewById(R.id.api_settings_transcription_api_key_et);
         transcriptionCustomHostEt = findViewById(R.id.api_settings_transcription_custom_host_et);
         transcriptionCustomModelEt = findViewById(R.id.api_settings_transcription_custom_model_et);
+        transcriptionCustomHeadersEt = findViewById(R.id.api_settings_transcription_custom_headers_et);
         rewordingProviderSpn = findViewById(R.id.api_settings_rewording_provider_spn);
         rewordingModelSpn = findViewById(R.id.api_settings_rewording_model_spn);
         rewordingAPIKeyEt = findViewById(R.id.api_settings_rewording_api_key_et);
         rewordingCustomHostEt = findViewById(R.id.api_settings_rewording_custom_host_et);
         rewordingCustomModelEt = findViewById(R.id.api_settings_rewording_custom_model_et);
+        rewordingCustomHeadersEt = findViewById(R.id.api_settings_rewording_custom_headers_et);
         transcriptionCustomFieldsWrapper = findViewById(R.id.api_settings_transcription_custom_fields_wrapper);
         rewordingCustomFieldsWrapper = findViewById(R.id.api_settings_rewording_custom_fields_wrapper);
 
@@ -97,6 +103,7 @@ public class APISettingsActivity extends AppCompatActivity {
         transcriptionAPIKey = sp.getString("net.devemperor.dictate.transcription_api_key", sp.getString("net.devemperor.dictate.api_key", ""));  // for upgrading: default is the old rewording API key
         transcriptionCustomHost = sp.getString("net.devemperor.dictate.transcription_custom_host", "");
         transcriptionCustomModel = sp.getString("net.devemperor.dictate.transcription_custom_model", "");
+        transcriptionCustomHeaders = sp.getString("net.devemperor.dictate.transcription_custom_headers", "");
 
         transcriptionModelOpenAIAdapter = ArrayAdapter.createFromResource(this, R.array.dictate_transcription_models_openai, android.R.layout.simple_spinner_item);
         transcriptionModelOpenAIAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -162,6 +169,14 @@ public class APISettingsActivity extends AppCompatActivity {
             }
         });
 
+        transcriptionCustomHeadersEt.setText(transcriptionCustomHeaders);
+        transcriptionCustomHeadersEt.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                sp.edit().putString("net.devemperor.dictate.transcription_custom_headers", editable.toString()).apply();
+            }
+        });
+
 
         // CONFIGURE REWORDING API SETTINGS
         rewordingProvider = sp.getInt("net.devemperor.dictate.rewording_provider", 0);
@@ -170,6 +185,7 @@ public class APISettingsActivity extends AppCompatActivity {
         rewordingAPIKey = sp.getString("net.devemperor.dictate.rewording_api_key", sp.getString("net.devemperor.dictate.api_key", ""));  // for upgrading: default is the old rewording API key
         rewordingCustomHost = sp.getString("net.devemperor.dictate.rewording_custom_host", "");
         rewordingCustomModel = sp.getString("net.devemperor.dictate.rewording_custom_model", "");
+        rewordingCustomHeaders = sp.getString("net.devemperor.dictate.rewording_custom_headers", "");
 
         rewordingModelOpenAIAdapter = ArrayAdapter.createFromResource(this, R.array.dictate_rewording_models_openai, android.R.layout.simple_spinner_item);
         rewordingModelOpenAIAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -232,6 +248,14 @@ public class APISettingsActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 sp.edit().putString("net.devemperor.dictate.rewording_custom_model", editable.toString()).apply();
+            }
+        });
+
+        rewordingCustomHeadersEt.setText(rewordingCustomHeaders);
+        rewordingCustomHeadersEt.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                sp.edit().putString("net.devemperor.dictate.rewording_custom_headers", editable.toString()).apply();
             }
         });
     }

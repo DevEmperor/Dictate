@@ -222,6 +222,9 @@
     <string name="enter_rewording_api_key">Enter rewording API key</string>
     <string name="set_your_custom_rewording_server_host">Set your custom rewording server host</string>
     <string name="set_your_custom_rewording_model">Set your custom rewording model</string>
+    <string name="set_your_custom_transcription_headers">Set your custom transcription headers</string>
+    <string name="set_your_custom_rewording_headers">Set your custom rewording headers</string>
+    <string name="dictate_custom_headers_hint" translatable="false">Header-Name: Header-Value\nAnother-Header: Another-Value</string>
     <string name="dictate_usage_model_provider_openai" translatable="false">OpenAI</string>
     <string name="dictate_usage_model_provider_groq" translatable="false">Groq</string>
     <string name="dictate_usage_model_provider_custom">Custom</string>

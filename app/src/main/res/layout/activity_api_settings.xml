@@ -131,6 +131,30 @@
                     android:inputType="textNoSuggestions"
                     android:hint="@string/dictate_custom_transcription_model_hint"/>
             </LinearLayout>
+
+            <!-- Transcription Custom Headers Group -->
+            <LinearLayout
+                android:id="@+id/transcription_custom_headers_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/api_settings_transcription_custom_headers_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_your_custom_transcription_headers"
+                    android:textColor="@color/dictate_blue" />
+
+                <EditText
+                    android:id="@+id/api_settings_transcription_custom_headers_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textNoSuggestions|textMultiLine"
+                    android:hint="@string/dictate_custom_headers_hint"/>
+            </LinearLayout>
         </LinearLayout>
 
         <!-- Divider -->
@@ -244,8 +268,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="32dp">
+                android:layout_marginTop="16dp">
 
                 <TextView
                     android:id="@+id/api_settings_rewording_custom_model_tv"
@@ -261,6 +284,31 @@
                     android:ems="10"
                     android:inputType="textNoSuggestions"
                     android:hint="@string/dictate_custom_rewording_model_hint" />
+            </LinearLayout>
+
+            <!-- Rewording Custom Headers Group -->
+            <LinearLayout
+                android:id="@+id/rewording_custom_headers_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp">
+
+                <TextView
+                    android:id="@+id/api_settings_rewording_custom_headers_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_your_custom_rewording_headers"
+                    android:textColor="@color/dictate_blue" />
+
+                <EditText
+                    android:id="@+id/api_settings_rewording_custom_headers_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textNoSuggestions|textMultiLine"
+                    android:hint="@string/dictate_custom_headers_hint"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
