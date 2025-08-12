@@ -31,8 +31,10 @@ public class DictateUtils {
             case "o3-mini":  // o3-mini and o1-mini cost the same
             case "o1-mini":
                 return inputTokens * 0.0000011f + outputTokens * 0.0000044f;
-            case "o1":
-                return inputTokens * 0.000015f + outputTokens * 0.00006f;
+            case "gpt-5":
+                return inputTokens * 0.00000125f + outputTokens * 0.00001f;
+            case "gpt-5-mini":
+                return inputTokens * 0.00000025f + outputTokens * 0.000002f;
             case "gpt-4o-mini":
                 return inputTokens * 0.00000015f + outputTokens * 0.0000006f;
             case "gpt-4o":
@@ -82,8 +84,10 @@ public class DictateUtils {
                 return "OpenAI o3 mini";
             case "o1-mini":
                 return "OpenAI o1 mini";
-            case "o1":
-                return "OpenAI o1";
+            case "gpt-5":
+                return "GPT-5";
+            case "gpt-5-mini":
+                return "GPT-5 mini";
             case "gpt-4o-mini":
                 return "GPT-4o mini";
             case "gpt-4o":
