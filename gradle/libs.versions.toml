@@ -1,5 +1,6 @@
 [versions]
 agp = "8.12.0"
+colorpicker = "0.0.15"
 commonsValidator = "1.10.0"
 converterJackson = "3.0.0"
 firebaseBom = "34.1.0"
@@ -14,6 +15,7 @@ openaiJava = "3.0.2"
 preference = "1.2.1"
 
 [libraries]
+colorpicker = { module = "com.github.QuadFlask:colorpicker", version.ref = "colorpicker" }
 commons-validator = { module = "commons-validator:commons-validator", version.ref = "commonsValidator" }
 converter-jackson = { module = "com.squareup.retrofit2:converter-jackson", version.ref = "converterJackson" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }

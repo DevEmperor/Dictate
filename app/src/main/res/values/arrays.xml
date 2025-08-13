@@ -316,4 +316,15 @@
         <item>llama3-70b-8192</item>
         <item>llama3-8b-8192</item>
     </string-array>
+    
+    <string-array name="dictate_theme_entries">
+        <item>System</item>
+        <item>@string/dictate_light</item>
+        <item>@string/dictate_dark</item>
+    </string-array>
+    <string-array name="dictate_theme_values">
+        <item>system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
 </resources>

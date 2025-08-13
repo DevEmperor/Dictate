@@ -226,4 +226,11 @@
     <string name="dictate_usage_model_provider_groq" translatable="false">Groq</string>
     <string name="dictate_usage_model_provider_custom">Custom</string>
     <string name="dictate_changelog_23">v2.8.0\n\nThis update brings some cool new features 🤩\n\n- In addition to OpenAI, you can now choose Groq as a provider for transcription and editing. Groq is generally free and significantly faster at processing audio recordings. To switch, simply scroll down to the settings — there you\'ll find a dedicated page where you can set the provider separately for each function, or even use your own service. 🎉\n\n- The keyboard background now automatically switches to light or dark mode based on your system theme. 💡\n\n- Proxy settings offer more flexibility now. ⚙️\n\n- Dictate has a new app icon and improved Play Store listings. A big thank you to Jan for your work! 🤝\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
+    <string name="dictate_settings_theme_title">Theme settings</string>
+    <string name="dictate_light">Light</string>
+    <string name="dictate_dark">Dark</string>
+    <string name="dictate_settings_theme">Theme ⚫ ⚪</string>
+    <string name="dictate_settings_accent_color">Choose an accent color 🎨</string>
+    <string name="dictate_settings_accent_color_summary">The accent color will appear on buttons on the keyboard</string>
+    <string name="dictate_settings_accent_color_word">accent color</string>
 </resources>

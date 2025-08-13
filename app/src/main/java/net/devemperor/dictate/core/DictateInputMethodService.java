@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
@@ -166,11 +168,6 @@ public class DictateInputMethodService extends InputMethodService {
             v.setPadding(0, 0, 0, insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom);
             return insets;  // fix for overlapping with navigation bar on Android 15+
         });
-
-        // set background of dictateKeyboardView according to device theme (default in layout is already light)
-        if ((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
-            dictateKeyboardView.setBackgroundColor(getResources().getColor(R.color.dictate_keyboard_background_dark, getTheme()));
-        }
 
         settingsButton = dictateKeyboardView.findViewById(R.id.settings_btn);
         recordButton = dictateKeyboardView.findViewById(R.id.record_btn);
@@ -456,7 +453,6 @@ public class DictateInputMethodService extends InputMethodService {
                             if (inputConnection != null) {
                                 inputConnection.commitText(selectedCharacter.getText(), 1);
                             }
-                            selectedCharacter.setBackground(AppCompatResources.getDrawable(this, R.drawable.border_textview));
                             selectedCharacter = null;
                         }
                         overlayCharactersLl.setVisibility(View.GONE);
@@ -513,6 +509,11 @@ public class DictateInputMethodService extends InputMethodService {
         // initialize overlay characters
         for (int i = 0; i < 8; i++) {
             TextView charView = (TextView) LayoutInflater.from(context).inflate(R.layout.item_overlay_characters, overlayCharactersLl, false);
+            GradientDrawable bg = new GradientDrawable();
+            bg.setShape(GradientDrawable.RECTANGLE);
+            bg.setCornerRadius((int) (4 * context.getResources().getDisplayMetrics().density + 0.5f));
+            bg.setStroke((int) (1 * context.getResources().getDisplayMetrics().density + 0.5f), Color.BLACK);
+            charView.setBackground(bg);
             overlayCharactersLl.addView(charView);
         }
 
@@ -572,7 +573,7 @@ public class DictateInputMethodService extends InputMethodService {
                 editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_deselect_24));
             }
 
-            promptsAdapter = new PromptsKeyboardAdapter(data, position -> {
+            promptsAdapter = new PromptsKeyboardAdapter(sp, data, position -> {
                 vibrate();
                 PromptModel model = data.get(position);
 
@@ -606,7 +607,14 @@ public class DictateInputMethodService extends InputMethodService {
             resendButton.setVisibility(View.GONE);
         }
 
+        // get the currently selected input language
+        recordButton.setText(getDictateButtonText());
+
+        // check if user enabled audio focus
+        audioFocusEnabled = sp.getBoolean("net.devemperor.dictate.audio_focus", true);
+
         // fill all overlay characters
+        int accentColor = sp.getInt("net.devemperor.dictate.accent_color", -14700810);
         String charactersString = sp.getString("net.devemperor.dictate.overlay_characters", "()-:!?,.");
         for (int i = 0; i < overlayCharactersLl.getChildCount(); i++) {
             TextView charView = (TextView) overlayCharactersLl.getChildAt(i);
@@ -615,14 +623,27 @@ public class DictateInputMethodService extends InputMethodService {
             } else {
                 charView.setVisibility(View.VISIBLE);
                 charView.setText(charactersString.substring(i, i + 1));
+                GradientDrawable bg = (GradientDrawable) charView.getBackground();
+                bg.setColor(accentColor);
             }
         }
 
-        // get the currently selected input language
-        recordButton.setText(getDictateButtonText());
+        // update theme
+        String theme = sp.getString("net.devemperor.dictate.theme", "system");
+        if ("dark".equals(theme) || ("system".equals(theme) && (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
+            dictateKeyboardView.setBackgroundColor(getResources().getColor(R.color.dictate_keyboard_background_dark, getTheme()));
+        } else {
+            dictateKeyboardView.setBackgroundColor(getResources().getColor(R.color.dictate_keyboard_background_light, getTheme()));
+        }
 
-        // check if user enabled audio focus
-        audioFocusEnabled = sp.getBoolean("net.devemperor.dictate.audio_focus", true);
+        View[] backgroundColorViews = {
+                settingsButton, recordButton, resendButton, backspaceButton, switchButton, trashButton, spaceButton, pauseButton, enterButton,
+                editSelectAllButton, editUndoButton, editRedoButton, editCutButton, editCopyButton, editPasteButton
+        };
+        TextView[] textColorViews = { infoTv, runningPromptTv };
+        for (View v : backgroundColorViews) v.setBackgroundColor(accentColor);
+        for (TextView tv : textColorViews) tv.setTextColor(accentColor);
+        runningPromptPb.getIndeterminateDrawable().setColorFilter(accentColor, android.graphics.PorterDuff.Mode.SRC_IN);
 
         // show infos for updates, ratings or donations
         long totalAudioTime = usageDb.getTotalAudioTime();
@@ -1114,12 +1135,20 @@ public class DictateInputMethodService extends InputMethodService {
     }
 
     private void highlightSelectedCharacter(TextView selectedView) {
+        int accentColor = sp.getInt("net.devemperor.dictate.accent_color", -14700810);
+        int accentColorDark = Color.argb(
+                Color.alpha(accentColor),
+                (int) (Color.red(accentColor) * 0.8f),
+                (int) (Color.green(accentColor) * 0.8f),
+                (int) (Color.blue(accentColor) * 0.8f)
+        );
         for (int i = 0; i < overlayCharactersLl.getChildCount(); i++) {
             TextView charView = (TextView) overlayCharactersLl.getChildAt(i);
+            GradientDrawable bg = (GradientDrawable) charView.getBackground();
             if (charView == selectedView) {
-                charView.setBackground(AppCompatResources.getDrawable(this, R.drawable.border_textview_selected));
+                bg.setColor(accentColorDark);
             } else {
-                charView.setBackground(AppCompatResources.getDrawable(this, R.drawable.border_textview));
+                bg.setColor(accentColor);
             }
         }
     }

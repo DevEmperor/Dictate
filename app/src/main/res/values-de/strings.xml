@@ -210,4 +210,11 @@
     <string name="set_your_custom_rewording_model">Benutzerdefiniertes Überarbeitungs-Modell festlegen</string>
     <string name="dictate_usage_model_provider_custom">Benutzerdefiniert</string>
     <string name="dictate_changelog_23">v2.8.0\n\nDieses Update bringt ein paar coole neue Features 🤩\n\n- Neben OpenAI kannst du nun auch Groq als Anbieter für die Transkription und das Überarbeiten auswählen. Groq ist grundsätzlich kostenlos und um einiges schneller beim Verarbeiten der Audio-Aufnahmen. Gehe zum Wechseln einfach zu den Einstellungen nach unten, dort findest du eine extra Seite, wo du auch für beide Funktionen separat den Anbieter einstellen kannst, oder einen eigenen Service verwenden kannst. 🎉\n\n- Der Hintergrund des Keyboards wechselt automatisch zu einem hellen oder dunklen Design, je nachdem, wie du dein System-Design eingestellt hast. 💡\n\n- Die Proxy-Einstellungen bieten nun mehr Flexibilität. ⚙️\n\n- Dictate hat nun ein neues App-Icon und verbesserte PlayStore-Einträge erhalten. Großes Dankeschön an Jan für deine Arbeit! 🤝\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\nWie immer, zögere nicht, mich mit Fragen und Ideen über GitHub oder den E-Mail-Button unten zu kontaktieren. ☺️\n\n\n</string>
+    <string name="dictate_settings_theme_title">Design Einstellungen</string>
+    <string name="dictate_light">Hell</string>
+    <string name="dictate_dark">Dunkel</string>
+    <string name="dictate_settings_theme">Design ⚫ ⚪</string>
+    <string name="dictate_settings_accent_color">Wähle eine Akzentfarbe aus 🎨</string>
+    <string name="dictate_settings_accent_color_summary">Die Akzentfarbe wird auf den Buttons der Tastatur angezeigt</string>
+    <string name="dictate_settings_accent_color_word">Akzentfarbe</string>
 </resources>

@@ -1,5 +1,6 @@
 package net.devemperor.dictate.rewording;
 
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.List;
 
 public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboardAdapter.RecyclerViewHolder> {
 
+    private final SharedPreferences sp;
     private final List<PromptModel> data;
     private final AdapterCallback callback;
 
@@ -23,7 +25,8 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
         void onItemClicked(Integer position);
     }
 
-    public PromptsKeyboardAdapter(List<PromptModel> data, AdapterCallback callback) {
+    public PromptsKeyboardAdapter(SharedPreferences sp, List<PromptModel> data, AdapterCallback callback) {
+        this.sp = sp;
         this.data = data;
         this.callback = callback;
     }
@@ -58,6 +61,7 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
             holder.promptBtn.setForeground(null);
         }
         holder.promptBtn.setOnClickListener(v -> callback.onItemClicked(position));
+        holder.promptBtn.setBackgroundColor(sp.getInt("net.devemperor.dictate.accent_color", -14700810));
     }
 
     @Override

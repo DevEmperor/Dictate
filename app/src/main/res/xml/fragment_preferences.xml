@@ -96,6 +96,26 @@
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
+        android:title="@string/dictate_settings_theme_title"
+        app:iconSpaceReserved="false">
+
+        <androidx.preference.ListPreference
+            android:key="net.devemperor.dictate.theme"
+            android:title="@string/dictate_settings_theme"
+            android:summary="%s"
+            android:defaultValue="system"
+            app:entries="@array/dictate_theme_entries"
+            app:entryValues="@array/dictate_theme_values"
+            app:iconSpaceReserved="false"/>
+
+        <net.devemperor.dictate.settings.ColorPreference
+            android:key="net.devemperor.dictate.accent_color"
+            android:title="@string/dictate_settings_accent_color"
+            android:defaultValue="-14700810"
+            app:iconSpaceReserved="false"/>
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory
         android:title="@string/dictate_settings_api_title"
         app:iconSpaceReserved="false">
 

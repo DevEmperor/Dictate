@@ -54,6 +54,7 @@ dependencies {
     implementation libs.openai.java
     implementation libs.converter.jackson
     implementation libs.commons.validator
+    implementation libs.colorpicker
 
     // Import the Firebase BoM
     implementation platform(libs.firebase.bom)
