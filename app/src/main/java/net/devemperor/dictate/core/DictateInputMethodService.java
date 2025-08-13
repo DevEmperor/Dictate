@@ -34,6 +34,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -103,6 +104,9 @@ public class DictateInputMethodService extends InputMethodService {
     private boolean spaceButtonUserHasSwiped = false;
     private int currentInputLanguagePos;
     private String currentInputLanguageValue;
+
+    // Flag to switch IME after transcription
+    private boolean shouldSwitchImeAfterTranscription = false;
 
     private MediaRecorder recorder;
     private ExecutorService speechApiThread;
@@ -250,8 +254,11 @@ public class DictateInputMethodService extends InputMethodService {
             }
         });
 
+        // Depending on longpressRecordingEnabled, react within the record button long click listener
         recordButton.setOnLongClickListener(v -> {
             vibrate();
+ 
+            boolean longpressRecordingEnabled = sp.getBoolean("net.devemperor.dictate.longpress_record_switch", true);
 
             if (!isRecording) {  // open real settings activity to start file picker
                 Intent intent = new Intent(this, DictateSettingsActivity.class);
@@ -259,6 +266,15 @@ public class DictateInputMethodService extends InputMethodService {
                 intent.putExtra("net.devemperor.dictate.open_file_picker", true);
                 startActivity(intent);
             }
+            else if (longpressRecordingEnabled) 
+            {
+                // if longpress while recording is enabled, stop recording AND return to previous input method
+                stopRecording();
+
+                // Set flag to switch IME after transcription
+                shouldSwitchImeAfterTranscription = true;
+            }
+
             return true;
         });
 
@@ -330,7 +346,9 @@ public class DictateInputMethodService extends InputMethodService {
         trashButton.setOnClickListener(v -> {
             vibrate();
             if (recorder != null) {
-                recorder.stop();
+                try {
+                    recorder.stop();
+                } catch (RuntimeException ignored) { }
                 recorder.release();
                 recorder = null;
 
@@ -349,6 +367,11 @@ public class DictateInputMethodService extends InputMethodService {
             pauseButton.setVisibility(View.GONE);
             pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_pause_24));
             trashButton.setVisibility(View.GONE);
+            resendButton.setVisibility(View.GONE);
+            infoCl.setVisibility(View.GONE);
+            // Reset record button color to original blue
+            recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_blue, getTheme()));
+
         });
 
         // space button that changes cursor position if user swipes over it
@@ -401,12 +424,16 @@ public class DictateInputMethodService extends InputMethodService {
                     recordTimeHandler.post(recordTimeRunnable);
                     pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_pause_24));
                     isPaused = false;
+                    // Set record button background to light green (active recording)
+                    recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green, getTheme()));
                 } else {
                     if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
                     recorder.pause();
                     recordTimeHandler.removeCallbacks(recordTimeRunnable);
                     pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_mic_24));
                     isPaused = true;
+                    // Set record button background to a different green (paused)
+                    recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green_paused, getTheme()));
                 }
             }
         });
@@ -732,7 +759,8 @@ public class DictateInputMethodService extends InputMethodService {
         trashButton.setVisibility(View.VISIBLE);
         resendButton.setVisibility(View.GONE);
         isRecording = true;
-
+        // Set record button background to light green
+        recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green, getTheme()));
         elapsedTime = 0;
         recordTimeHandler.post(recordTimeRunnable);
     }
@@ -748,7 +776,8 @@ public class DictateInputMethodService extends InputMethodService {
             if (recordTimeRunnable != null) {
                 recordTimeHandler.removeCallbacks(recordTimeRunnable);
             }
-
+            // Reset record button color to original blue
+            recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_blue, getTheme()));
             startWhisperApiRequest();
         }
     }
@@ -817,11 +846,21 @@ public class DictateInputMethodService extends InputMethodService {
 
                 usageDb.edit(transcriptionModel, DictateUtils.getAudioDuration(audioFile), 0, 0, transcriptionProvider);
 
-                if (!instantPrompt) {
+                if (!instantPrompt) 
+                {
+                    boolean instantOutputEnabled = sp.getBoolean("net.devemperor.dictate.instant_output", false);
                     InputConnection inputConnection = getCurrentInputConnection();
                     if (inputConnection != null) {
-                        if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
+                        if (instantOutputEnabled) {
                             inputConnection.commitText(resultText, 1);
+
+                            // Switch IME if flag is set
+                            if (shouldSwitchImeAfterTranscription) {
+                                shouldSwitchImeAfterTranscription = false;
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                    switchToPreviousInputMethod();
+                                }
+                            }
                         } else {
                             int speed = sp.getInt("net.devemperor.dictate.output_speed", 5);
                             for (int i = 0; i < resultText.length(); i++) {
@@ -869,7 +908,6 @@ public class DictateInputMethodService extends InputMethodService {
                     });
                 }
             }
-
 
             mainHandler.post(() -> {
                 recordButton.setText(getDictateButtonText());
@@ -937,9 +975,18 @@ public class DictateInputMethodService extends InputMethodService {
                 }
 
                 InputConnection inputConnection = getCurrentInputConnection();
+                boolean instantOutputEnabled = sp.getBoolean("net.devemperor.dictate.instant_output", false);
                 if (inputConnection != null) {
-                    if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
+                    if (instantOutputEnabled) {
                         inputConnection.commitText(rewordedText, 1);
+
+                        if(model.getId() == -1 && shouldSwitchImeAfterTranscription) {
+                            // Switch IME if flag is set
+                            shouldSwitchImeAfterTranscription = false;
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                switchToPreviousInputMethod();
+                            }                            
+                        }
                     } else {
                         int speed = sp.getInt("net.devemperor.dictate.output_speed", 5);
                         for (int i = 0; i < rewordedText.length(); i++) {
