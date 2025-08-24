@@ -8,14 +8,14 @@ plugins {
 
 android {
     namespace 'net.devemperor.dictate'
-    compileSdk 35
+    compileSdkVersion 36
 
     defaultConfig {
         applicationId "net.devemperor.dictate"
         minSdk 26
         targetSdk 35
-        versionCode 23
-        versionName "2.8.0"
+        versionCode 24
+        versionName "2.9.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
