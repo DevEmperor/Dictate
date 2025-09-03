@@ -17,7 +17,7 @@
       </a>
     </td>
     <td>
-      <a href='https://www.paypal.com/donate/?hosted_button_id=DEINE_ID'>
+      <a href='https://paypal.me/DevEmperor'>
         <img alt='Donate with PayPal' width="200px" src='https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png'/>
       </a>
     </td>
