@@ -1,12 +1,22 @@
-# Dictate Keyboard (Whisper AI transcription)
+# Dictate Keyboard (Whisper AI)
 
-<a href='https://play.google.com/store/apps/details?id=net.devemperor.dictate'><img alt='Get it on Google Play' width="258px" height="100px" src='https://github.com/DevEmperor/Dictate/blob/d99981575350cfde1fa91d4c449d97483eda14d0/img/google-play-badge.png?raw=true'/></a>
+<p>
+  <a href='https://play.google.com/store/apps/details?id=net.devemperor.dictate'>
+    <img alt='App Logo' width="80px" style="border-radius: 20%;" src='https://github.com/DevEmperor/Dictate/blob/3d89448d26a3c54ea6f8ca1d0e13931d26590220/img/Icon_512x512_2.png?raw=true'/>
+  </a>
+  <a href='https://play.google.com/store/apps/details?id=net.devemperor.dictate'>
+    <img alt='Get it on Google Play' width="258px" height="100px" src='https://github.com/DevEmperor/Dictate/blob/d99981575350cfde1fa91d4c449d97483eda14d0/img/google-play-badge.png?raw=true'/>
+  </a>
+  <a href='https://www.paypal.me/DevEmperor'>
+    <img alt='Donate with PayPal' width="180px" src='https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png'/>
+  </a>
+</p>
 
 #### Dictate is an easy-to-use keyboard for transcribing and dictating. The app uses [OpenAI Whisper](https://openai.com/index/whisper/) in the background, which supports extremely accurate results for [many different languages](https://platform.openai.com/docs/guides/speech-to-text/supported-languages) with punctuation and custom AI rewording using GPT-4 Omni. Since a picture is worth a thousand words, here is a showcase video and some screenshots:
 
-| <a href='https://youtube.com/watch?v=F6C1hRi1PSI'><img src='https://github.com/DevEmperor/Dictate/blob/624fde1cbc8e29fdb77f334f3edfa6231d27df82/img/dictate_player.png?raw=true'/></a> | ![dictate_keyboard_notes_recording.png](https://github.com/DevEmperor/Dictate/blob/624fde1cbc8e29fdb77f334f3edfa6231d27df82/img/dictate_keyboard_notes_recording.png?raw=true) | ![dictate_settings.png](https://github.com/DevEmperor/Dictate/blob/624fde1cbc8e29fdb77f334f3edfa6231d27df82/img/dictate_settings.png?raw=true) |
+| <a href='https://youtu.be/tRF3yK0DbF4'><img src='https://github.com/DevEmperor/Dictate/blob/3d89448d26a3c54ea6f8ca1d0e13931d26590220/img/thumbnail_1_player.png?raw=true'/></a> | ![banner_1.jpg](https://github.com/DevEmperor/Dictate/blob/3d89448d26a3c54ea6f8ca1d0e13931d26590220/img/banner_1.jpg?raw=true) | ![banner_2.jpg](https://github.com/DevEmperor/Dictate/blob/3d89448d26a3c54ea6f8ca1d0e13931d26590220/img/banner_2.jpg?raw=true) |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![dictate_settings_2.png](https://github.com/DevEmperor/Dictate/blob/58fd05bad9b33a91efb51a9506f6d9bf6310ad5b/img/dictate_settings_2.png?raw=true) | ![dictate_prompts_overview.png](https://github.com/DevEmperor/Dictate/blob/624fde1cbc8e29fdb77f334f3edfa6231d27df82/img/dictate_prompts_overview.png?raw=true) | ![dictate_prompts_edit.png](https://github.com/DevEmperor/Dictate/blob/624fde1cbc8e29fdb77f334f3edfa6231d27df82/img/dictate_prompts_edit.png?raw=true) |
+| ![banner_3.jpg](https://github.com/DevEmperor/Dictate/blob/3d89448d26a3c54ea6f8ca1d0e13931d26590220/img/banner_3.jpg?raw=true) | ![banner_4.jpg](https://github.com/DevEmperor/Dictate/blob/3d89448d26a3c54ea6f8ca1d0e13931d26590220/img/banner_4.jpg?raw=true) | ![banner_5.2.jpg](https://github.com/DevEmperor/Dictate/blob/3d89448d26a3c54ea6f8ca1d0e13931d26590220/img/banner_5.2.jpg?raw=true) |
 
 
 
