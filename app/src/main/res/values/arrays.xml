@@ -269,12 +269,10 @@
     <string-array name="dictate_transcription_models_groq">
         <item>Whisper Large V3 Turbo (0.04 $ / h)</item>
         <item>Whisper Large V3 (0.111 $ / h)</item>
-        <item>Distil-Whisper English (0.02 $ / h)</item>
     </string-array>
     <string-array name="dictate_transcription_models_groq_values">
         <item>whisper-large-v3-turbo</item>
         <item>whisper-large-v3</item>
-        <item>distil-whisper-large-v3-en</item>
     </string-array>
 
     <string-array name="dictate_rewording_models_openai">
@@ -301,20 +299,18 @@
     </string-array>
 
     <string-array name="dictate_rewording_models_groq">
-        <item>Gemma 2 9B IT</item>
-        <item>Llama 3.3 70B Versatile</item>
-        <item>Llama 3.1 8B Instant</item>
-        <item>Llama Guard 3 8B</item>
-        <item>Llama 3 70B 8192</item>
-        <item>Llama 3 8B 8192</item>
+        <item>LLaMA 3.1 8B Instant</item>
+        <item>LLaMA 3.3 70B Versatile</item>
+        <item>LLaMA Guard 4 12B</item>
+        <item>GPT-OSS 120B</item>
+        <item>GPT-OSS 20B</item>
     </string-array>
     <string-array name="dictate_rewording_models_groq_values">
-        <item>gemma2-9b-it</item>
-        <item>llama-3.3-70b-versatile</item>
         <item>llama-3.1-8b-instant</item>
-        <item>llama-guard-3-8b</item>
-        <item>llama3-70b-8192</item>
-        <item>llama3-8b-8192</item>
+        <item>llama-3.3-70b-versatile</item>
+        <item>meta-llama/llama-guard-4-12b</item>
+        <item>openai/gpt-oss-120b</item>
+        <item>openai/gpt-oss-20b</item>
     </string-array>
     
     <string-array name="dictate_theme_entries">

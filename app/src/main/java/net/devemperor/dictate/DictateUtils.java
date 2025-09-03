@@ -51,19 +51,19 @@ public class DictateUtils {
                 return audioTime * 0.000011;  // rounded up
             case "whisper-large-v3":
                 return audioTime * 0.000031;  // rounded up
-            case "distil-whisper-large-v3-en":
-                return audioTime * 0.000006;  // rounded up
 
             // Groq rewording models
-            case "gemma2-9b-it":  // gemma2-9b-it and llama-guard-3-8b cost the same
-            case "llama-guard-3-8b":
-                return inputTokens * 0.00000020 + outputTokens * 0.00000020;
-            case "llama-3.3-70b-versatile":  // llama-3.3-70b-versatile and llama-3.1-8b-instant cost the same
-            case "llama3-70b-8192":
-                return inputTokens * 0.00000059 + outputTokens * 0.00000079;
-            case "llama-3.1-8b-instant":  // llama-3.1-8b-instant and llama3-8b-8192 cost the same
-            case "llama3-8b-8192":
+            case "llama-3.1-8b-instant":
                 return inputTokens * 0.00000005 + outputTokens * 0.00000008;
+            case "llama-3.3-70b-versatile":
+                return inputTokens * 0.00000059 + outputTokens * 0.00000079;
+            case "meta-llama/llama-guard-4-12b":
+                return inputTokens * 0.00000020 + outputTokens * 0.00000020;
+            case "openai/gpt-oss-120b":
+                return inputTokens * 0.00000015 + outputTokens * 0.00000075;
+            case "openai/gpt-oss-20b":
+                return inputTokens * 0.00000010 + outputTokens * 0.00000050;
+
             default:
                 return 0;
         }
@@ -104,22 +104,18 @@ public class DictateUtils {
                 return "Whisper Large V3 Turbo";
             case "whisper-large-v3":
                 return "Whisper Large V3";
-            case "distil-whisper-large-v3-en":
-                return "Distil-Whisper English";
 
             // Groq rewording models
-            case "gemma2-9b-it":
-                return "Gemma 2 9B IT";
-            case "llama-3.3-70b-versatile":
-                return "Llama 3.3 70B Versatile";
             case "llama-3.1-8b-instant":
-                return "Llama 3.1 8B Instant";
-            case "llama-guard-3-8b":
-                return "Llama Guard 3 8B";
-            case "llama3-70b-8192":
-                return "Llama 3 70B 8192";
-            case "llama3-8b-8192":
-                return "Llama 3 8B 8192";
+                return "LLaMA 3.1 8B Instant";
+            case "llama-3.3-70b-versatile":
+                return "LLaMA 3.3 70B Versatile";
+            case "meta-llama/llama-guard-4-12b":
+                return "LLaMA Guard 4 12B";
+            case "openai/gpt-oss-120b":
+                return "GPT-OSS 120B";
+            case "openai/gpt-oss-20b":
+                return "GPT-OSS 20B";
 
             // For custom models, return the model name as is
             default:
