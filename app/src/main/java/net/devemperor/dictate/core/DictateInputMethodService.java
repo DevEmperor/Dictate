@@ -43,7 +43,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
+//import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.audio.AudioResponseFormat;
 import com.openai.models.audio.transcriptions.Transcription;
@@ -105,6 +105,9 @@ public class DictateInputMethodService extends InputMethodService {
 
     // Flag to switch IME after transcription
     private boolean shouldSwitchImeAfterTranscription = false;
+
+    // Flag, ob IME frisch gebunden wurde
+    private boolean imeJustBound = false;
 
     private MediaRecorder recorder;
     private ExecutorService speechApiThread;
@@ -584,6 +587,7 @@ public class DictateInputMethodService extends InputMethodService {
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting);
+        imeJustBound = true;
 
         if (sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
             promptsCl.setVisibility(View.VISIBLE);
@@ -591,13 +595,22 @@ public class DictateInputMethodService extends InputMethodService {
             // collect all prompts from database
             List<PromptModel> data;
             InputConnection inputConnection = getCurrentInputConnection();
+            boolean noTextSelected = inputConnection != null && inputConnection.getSelectedText(0) == null;
+
+            // Always show all instant prompts even if no text is selected
+            data = promptsDb.getAll(true);
+            editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_select_all_24));
+
+            /*
             if (inputConnection != null && inputConnection.getSelectedText(0) == null) {
-                data = promptsDb.getAll(false);
+                
+                data = promptsDb.getAll(true);
                 editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_select_all_24));
             } else {
                 data = promptsDb.getAll(true);
                 editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_deselect_24));
             }
+            */
 
             promptsAdapter = new PromptsKeyboardAdapter(data, position -> {
                 vibrate();
@@ -617,6 +630,9 @@ public class DictateInputMethodService extends InputMethodService {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
+                    if(noTextSelected) {
+                        inputConnection.performContextMenuAction(android.R.id.selectAll);
+                    }
                     startGPTApiRequest(model);  // another normal prompt clicked
                 }
             });
@@ -655,11 +671,11 @@ public class DictateInputMethodService extends InputMethodService {
         long totalAudioTime = usageDb.getTotalAudioTime();
         if (sp.getInt("net.devemperor.dictate.last_version_code", 0) < BuildConfig.VERSION_CODE) {
             showInfo("update");
-        } else if (totalAudioTime > 180 && totalAudioTime <= 600 && !sp.getBoolean("net.devemperor.dictate.flag_has_rated_in_playstore", false)) {
+        } /*else if (totalAudioTime > 180 && totalAudioTime <= 600 && !sp.getBoolean("net.devemperor.dictate.flag_has_rated_in_playstore", false)) {
             showInfo("rate");  // in case someone had Dictate installed before, he shouldn't get both messages
         } else if (totalAudioTime > 600 && !sp.getBoolean("net.devemperor.dictate.flag_has_donated", false)) {
             showInfo("donate");
-        }
+        }*/
 
         // start audio file transcription if user selected an audio file
         if (!sp.getString("net.devemperor.dictate.transcription_audio_file", "").isEmpty()) {
@@ -669,7 +685,8 @@ public class DictateInputMethodService extends InputMethodService {
             sp.edit().remove("net.devemperor.dictate.transcription_audio_file").apply();
             startWhisperApiRequest();
 
-        } else if (sp.getBoolean("net.devemperor.dictate.instant_recording", false)) {
+        } else if (sp.getBoolean("net.devemperor.dictate.instant_recording", false) && imeJustBound) {
+            imeJustBound = false;
             recordButton.performClick();
         }
     }
@@ -683,13 +700,10 @@ public class DictateInputMethodService extends InputMethodService {
         // refill all prompts
         if (sp != null && sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
             List<PromptModel> data;
-            if (getCurrentInputConnection().getSelectedText(0) == null) {
-                data = promptsDb.getAll(false);
-                editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_select_all_24));
-            } else {
-                data = promptsDb.getAll(true);
-                editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_deselect_24));
-            }
+
+            // Always show all instant prompts even if no text is selected
+            data = promptsDb.getAll(true);
+            editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_select_all_24));
 
             promptsAdapter.getData().clear();
             promptsAdapter.getData().addAll(data);
@@ -1006,10 +1020,10 @@ public class DictateInputMethodService extends InputMethodService {
             });
         });
     }
-
+ 
     private void sendLogToCrashlytics(Exception e) {
         // get all values from SharedPreferences and add them as custom keys to crashlytics
-        FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+        /*FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
         for (String key : sp.getAll().keySet()) {
             Object value = sp.getAll().get(key);
             if (value instanceof Boolean) {
@@ -1026,6 +1040,7 @@ public class DictateInputMethodService extends InputMethodService {
         }
         crashlytics.setUserId(sp.getString("net.devemperor.dictate.user_id", "null"));
         crashlytics.recordException(e);
+        // */
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
         Log.e("DictateInputMethodService", sw.toString());

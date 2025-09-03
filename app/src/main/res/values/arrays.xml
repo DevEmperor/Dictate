@@ -241,7 +241,7 @@
 
     <string-array name="dictate_default_input_languages">
         <item>detect</item>
-        <item>en</item>
+        <item>de</item>
     </string-array>
 
     <string-array name="dictate_api_providers">

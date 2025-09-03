@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
-
+ 
     // Add the Google services Gradle plugin
-    id 'com.google.gms.google-services'
-    id 'com.google.firebase.crashlytics'
+    //id 'com.google.gms.google-services'
+    //id 'com.google.firebase.crashlytics' 
 }
 
 android {
@@ -12,8 +12,8 @@ android {
 
     defaultConfig {
         applicationId "net.devemperor.dictate"
-        minSdk 26
-        targetSdk 35
+        minSdk 34
+        targetSdk 34
         versionCode 23
         versionName "2.8.0"
 
@@ -56,6 +56,6 @@ dependencies {
     implementation libs.commons.validator
 
     // Import the Firebase BoM
-    implementation platform(libs.firebase.bom)
-    implementation libs.firebase.crashlytics
+    //implementation platform(libs.firebase.bom)
+    //implementation libs.firebase.crashlytics
 }
