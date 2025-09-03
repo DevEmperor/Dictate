@@ -225,15 +225,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
-        Preference donatePreference = findPreference("net.devemperor.dictate.donate");
-        if (donatePreference != null) {
-            donatePreference.setOnPreferenceClickListener(preference -> {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://paypal.me/DevEmperor"));
-                startActivity(browserIntent);
-                return true;
-            });
-        }
-
         Preference aboutPreference = findPreference("net.devemperor.dictate.about");
         if (aboutPreference != null) {
             aboutPreference.setTitle(getString(R.string.dictate_about, BuildConfig.VERSION_NAME));
