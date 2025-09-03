@@ -122,6 +122,8 @@ public class DictateInputMethodService extends InputMethodService {
     private ConstraintLayout dictateKeyboardView;
     private MaterialButton settingsButton;
     private MaterialButton recordButton;
+    private MaterialButton stopButton;
+    private MaterialButton stopSwitchButton;
     private MaterialButton resendButton;
     private MaterialButton backspaceButton;
     private MaterialButton switchButton;
@@ -181,6 +183,8 @@ public class DictateInputMethodService extends InputMethodService {
 
         settingsButton = dictateKeyboardView.findViewById(R.id.settings_btn);
         recordButton = dictateKeyboardView.findViewById(R.id.record_btn);
+        stopButton = dictateKeyboardView.findViewById(R.id.stop_btn);
+        stopSwitchButton = dictateKeyboardView.findViewById(R.id.stop_switch_btn);
         resendButton = dictateKeyboardView.findViewById(R.id.resend_btn);
         backspaceButton = dictateKeyboardView.findViewById(R.id.backspace_btn);
         switchButton = dictateKeyboardView.findViewById(R.id.switch_btn);
@@ -219,7 +223,7 @@ public class DictateInputMethodService extends InputMethodService {
             @Override
             public void run() {
                 elapsedTime += 100;
-                recordButton.setText(getString(R.string.dictate_send,
+                stopButton.setText(getString(R.string.dictate_send,
                         String.format(Locale.getDefault(), "%02d:%02d", (int) (elapsedTime / 60000), (int) (elapsedTime / 1000) % 60)));
                 recordTimeHandler.postDelayed(this, 100);
             }
@@ -253,18 +257,13 @@ public class DictateInputMethodService extends InputMethodService {
             infoCl.setVisibility(View.GONE);
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                 openSettingsActivity();
-            } else if (!isRecording) {
-                startRecording();
             } else {
-                stopRecording();
+                startRecording();
             }
         });
 
-        // Depending on longpressRecordingEnabled, react within the record button long click listener
         recordButton.setOnLongClickListener(v -> {
             vibrate();
- 
-            boolean longpressRecordingEnabled = sp.getBoolean("net.devemperor.dictate.longpress_record_switch", true);
 
             if (!isRecording) {  // open real settings activity to start file picker
                 Intent intent = new Intent(this, DictateSettingsActivity.class);
@@ -272,16 +271,18 @@ public class DictateInputMethodService extends InputMethodService {
                 intent.putExtra("net.devemperor.dictate.open_file_picker", true);
                 startActivity(intent);
             }
-            else if (longpressRecordingEnabled) 
-            {
-                // if longpress while recording is enabled, stop recording AND return to previous input method
-                stopRecording();
-
-                // Set flag to switch IME after transcription
-                shouldSwitchImeAfterTranscription = true;
-            }
-
             return true;
+        });
+
+        stopButton.setOnClickListener(v -> {
+            vibrate();
+            stopRecording();
+        });
+
+        stopSwitchButton.setOnClickListener(v -> {
+            vibrate();
+            stopRecording();
+            shouldSwitchImeAfterTranscription = true;
         });
 
         resendButton.setOnClickListener(v -> {
@@ -370,6 +371,9 @@ public class DictateInputMethodService extends InputMethodService {
             recordButton.setText(getDictateButtonText());
             recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
             recordButton.setEnabled(true);
+            stopButton.setVisibility(View.GONE);
+            stopSwitchButton.setVisibility(View.GONE);
+            recordButton.setVisibility(View.VISIBLE);
             pauseButton.setVisibility(View.GONE);
             pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_pause_24));
             trashButton.setVisibility(View.GONE);
@@ -377,6 +381,7 @@ public class DictateInputMethodService extends InputMethodService {
             infoCl.setVisibility(View.GONE);
             // Reset record button color to original blue
             recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_blue, getTheme()));
+            stopSwitchButton.setBackgroundColor(getResources().getColor(R.color.dictate_blue, getTheme()));
 
         });
 
@@ -431,7 +436,8 @@ public class DictateInputMethodService extends InputMethodService {
                     pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_pause_24));
                     isPaused = false;
                     // Set record button background to light green (active recording)
-                    recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green, getTheme()));
+                    stopButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green, getTheme()));
+                    stopSwitchButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green, getTheme()));
                 } else {
                     if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
                     recorder.pause();
@@ -439,7 +445,8 @@ public class DictateInputMethodService extends InputMethodService {
                     pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_mic_24));
                     isPaused = true;
                     // Set record button background to a different green (paused)
-                    recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green_paused, getTheme()));
+                    stopButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green_paused, getTheme()));
+                    stopSwitchButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green_paused, getTheme()));
                 }
             }
         });
@@ -570,6 +577,8 @@ public class DictateInputMethodService extends InputMethodService {
         if (rewordingApiThread != null) rewordingApiThread.shutdownNow();
 
         pauseButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_pause_24));
+        stopButton.setVisibility(View.GONE);
+        stopSwitchButton.setVisibility(View.GONE);
         pauseButton.setVisibility(View.GONE);
         trashButton.setVisibility(View.GONE);
         resendButton.setVisibility(View.GONE);
@@ -746,14 +755,18 @@ public class DictateInputMethodService extends InputMethodService {
             sendLogToCrashlytics(e);
         }
 
-        recordButton.setText(R.string.dictate_send);
-        recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_send_20, 0, 0, 0);
+        recordButton.setVisibility(View.GONE);
+        stopButton.setVisibility(View.VISIBLE);
+        stopSwitchButton.setVisibility(View.VISIBLE);
+        stopButton.setText(R.string.dictate_send);
+        stopButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_send_20, 0, 0, 0);
         pauseButton.setVisibility(View.VISIBLE);
         trashButton.setVisibility(View.VISIBLE);
         resendButton.setVisibility(View.GONE);
         isRecording = true;
-        // Set record button background to light green
-        recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green, getTheme()));
+        // Set stop button background to light green
+        stopButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green, getTheme()));
+        stopSwitchButton.setBackgroundColor(getResources().getColor(R.color.dictate_recording_green, getTheme()));
         elapsedTime = 0;
         recordTimeHandler.post(recordTimeRunnable);
     }
@@ -769,8 +782,12 @@ public class DictateInputMethodService extends InputMethodService {
             if (recordTimeRunnable != null) {
                 recordTimeHandler.removeCallbacks(recordTimeRunnable);
             }
+            stopButton.setVisibility(View.GONE);
+            stopSwitchButton.setVisibility(View.GONE);
+            recordButton.setVisibility(View.VISIBLE);
             // Reset record button color to original blue
             recordButton.setBackgroundColor(getResources().getColor(R.color.dictate_blue, getTheme()));
+            stopSwitchButton.setBackgroundColor(getResources().getColor(R.color.dictate_blue, getTheme()));
             startWhisperApiRequest();
         }
     }
@@ -780,6 +797,8 @@ public class DictateInputMethodService extends InputMethodService {
         recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_send_20, 0, 0, 0);
         recordButton.setEnabled(false);
         pauseButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_pause_24));
+        stopButton.setVisibility(View.GONE);
+        stopSwitchButton.setVisibility(View.GONE);
         pauseButton.setVisibility(View.GONE);
         trashButton.setVisibility(View.GONE);
         resendButton.setVisibility(View.GONE);

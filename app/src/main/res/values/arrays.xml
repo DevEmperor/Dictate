@@ -305,6 +305,11 @@
         <item>Llama Guard 3 8B</item>
         <item>Llama 3 70B 8192</item>
         <item>Llama 3 8B 8192</item>
+        <item>meta-llama/llama-guard-4-12b</item>
+        <item>openai/gpt-oss-120b</item>
+        <item>openai/gpt-oss-20b</item>
+        <item>meta-llama/llama-4-maverick-17b-128e-instruct</item>
+        <item>moonshotai/kimi-k2-instruct</item>
     </string-array>
     <string-array name="dictate_rewording_models_groq_values">
         <item>gemma2-9b-it</item>
@@ -313,5 +318,10 @@
         <item>llama-guard-3-8b</item>
         <item>llama3-70b-8192</item>
         <item>llama3-8b-8192</item>
+        <item>meta-llama/llama-guard-4-12b</item>
+        <item>openai/gpt-oss-120b</item>
+        <item>openai/gpt-oss-20b</item>
+        <item>meta-llama/llama-4-maverick-17b-128e-instruct</item>
+        <item>moonshotai/kimi-k2-instruct</item>
     </string-array>
 </resources>
