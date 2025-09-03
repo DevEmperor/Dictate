@@ -1,16 +1,30 @@
-# Dictate Keyboard (Whisper AI)
+<table>
+  <tr>
+    <td>
+      <img src="https://github.com/DevEmperor/Dictate/blob/main/img/Icon_512x512_2_round.png?raw=true" alt="App Logo" width="70">
+    </td>
+    <td>
+      <h1>Dictate Keyboard (Whisper AI)</h1>
+    </td>
+  </tr>
+</table>
 
-<p>
-  <a href='https://play.google.com/store/apps/details?id=net.devemperor.dictate'>
-    <img alt='App Logo' width="80px" style="border-radius: 20%;" src='https://github.com/DevEmperor/Dictate/blob/3d89448d26a3c54ea6f8ca1d0e13931d26590220/img/Icon_512x512_2.png?raw=true'/>
-  </a>
-  <a href='https://play.google.com/store/apps/details?id=net.devemperor.dictate'>
-    <img alt='Get it on Google Play' width="258px" height="100px" src='https://github.com/DevEmperor/Dictate/blob/d99981575350cfde1fa91d4c449d97483eda14d0/img/google-play-badge.png?raw=true'/>
-  </a>
-  <a href='https://www.paypal.me/DevEmperor'>
-    <img alt='Donate with PayPal' width="180px" src='https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png'/>
-  </a>
-</p>
+<table>
+  <tr>
+    <td>
+      <a href='https://play.google.com/store/apps/details?id=net.devemperor.dictate'>
+        <img alt='Get it on Google Play' width="300px" src='https://github.com/DevEmperor/Dictate/blob/d99981575350cfde1fa91d4c449d97483eda14d0/img/google-play-badge.png?raw=true'/>
+      </a>
+    </td>
+    <td>
+      <a href='https://www.paypal.com/donate/?hosted_button_id=DEINE_ID'>
+        <img alt='Donate with PayPal' width="200px" src='https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png'/>
+      </a>
+    </td>
+  </tr>
+</table>
+
+
 
 #### Dictate is an easy-to-use keyboard for transcribing and dictating. The app uses [OpenAI Whisper](https://openai.com/index/whisper/) in the background, which supports extremely accurate results for [many different languages](https://platform.openai.com/docs/guides/speech-to-text/supported-languages) with punctuation and custom AI rewording using GPT-4 Omni. Since a picture is worth a thousand words, here is a showcase video and some screenshots:
 
