@@ -87,6 +87,24 @@
             android:defaultValue="true"
             app:iconSpaceReserved="false"/>
 
+        <androidx.preference.SwitchPreference
+            android:key="net.devemperor.dictate.keyword_enhancement_enabled"
+            android:title="@string/dictate_settings_keyword_enhancement_title"
+            android:summary="@string/dictate_settings_keyword_enhancement_summary"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.EditTextPreference
+            android:key="net.devemperor.dictate.custom_keywords"
+            android:title="@string/dictate_settings_custom_keywords_title"
+            android:summary="@string/dictate_settings_custom_keywords_summary"
+            android:defaultValue="JavaScript, Python, Android, API, OpenAI, Whisper"
+            app:positiveButtonText="@string/dictate_okay"
+            app:negativeButtonText="@string/dictate_cancel"
+            app:dialogTitle="@string/dictate_settings_custom_keywords_title"
+            app:iconSpaceReserved="false"
+            app:dependency="net.devemperor.dictate.keyword_enhancement_enabled"/>
+
         <androidx.preference.Preference
             android:key="net.devemperor.dictate.usage"
             android:title="@string/dictate_settings_usage"

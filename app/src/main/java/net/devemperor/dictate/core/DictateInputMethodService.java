@@ -811,7 +811,10 @@ public class DictateInputMethodService extends InputMethodService {
                         .responseFormat(AudioResponseFormat.JSON);  // gpt-4o-transcribe only supports json
 
                 if (!currentInputLanguageValue.equals("detect")) transcriptionBuilder.language(currentInputLanguageValue);
-                if (!stylePrompt.isEmpty()) transcriptionBuilder.prompt(stylePrompt);
+                String enhancedPrompt = buildEnhancedPrompt(stylePrompt);
+                if (!enhancedPrompt.equals(stylePrompt)) {
+                    transcriptionBuilder.prompt(enhancedPrompt);
+                }
                 if (sp.getBoolean("net.devemperor.dictate.proxy_enabled", false)) {
                     if (DictateUtils.isValidProxy(proxyHost)) DictateUtils.applyProxy(clientBuilder, sp);
                 }
@@ -1160,6 +1163,23 @@ public class DictateInputMethodService extends InputMethodService {
                 bg.setColor(accentColor);
             }
         }
+    }
+
+    private String buildEnhancedPrompt(String basePrompt) {
+        boolean keywordEnhancementEnabled = sp.getBoolean("net.devemperor.dictate.keyword_enhancement_enabled", true);
+        if (!keywordEnhancementEnabled) {
+            return basePrompt;
+        }
+
+        String customKeywords = sp.getString("net.devemperor.dictate.custom_keywords", "JavaScript, Python, Android, API, OpenAI, Whisper");
+        if (customKeywords.trim().isEmpty()) {
+            return basePrompt;
+        }
+
+        if (basePrompt.isEmpty()) {
+            return "Expected vocabulary: " + customKeywords.trim();
+        }
+        return basePrompt + "\n\nExpected vocabulary: " + customKeywords.trim();
     }
 
 }

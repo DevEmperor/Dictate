@@ -76,6 +76,10 @@
     <string name="dictate_settings_instant_output_title">Instant output ⏱️</string>
     <string name="dictate_settings_instant_output_summary">Disable typing animation when the result is ready</string>
     <string name="dictate_settings_vibration_summary">Vibrate on button presses and errors</string>
+    <string name="dictate_settings_keyword_enhancement_title">Keyword enhancement 🔤</string>
+    <string name="dictate_settings_keyword_enhancement_summary">Improve transcription accuracy with custom vocabulary</string>
+    <string name="dictate_settings_custom_keywords_title">Custom keywords</string>
+    <string name="dictate_settings_custom_keywords_summary">Comma-separated list of words to improve recognition</string>
     <string name="dictate_about" translatable="false">Dictate v%1$s\nMade with ❤️ by DevEmperor\nSoli deo gloria ✝️</string>
     <string name="dictate_settings_usage">View usage 📊</string>
     <string name="dictate_yes">Yes</string>
