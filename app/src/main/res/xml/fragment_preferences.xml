@@ -52,6 +52,13 @@
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.SwitchPreference
+            android:key="net.devemperor.dictate.instant_recording"
+            android:title="@string/dictate_settings_instant_recording_title"
+            android:summary="@string/dictate_settings_instant_recording_summary"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.SwitchPreference
             android:key="net.devemperor.dictate.instant_output"
             android:title="@string/dictate_settings_instant_output_title"
             android:summary="@string/dictate_settings_instant_output_summary"
@@ -64,13 +71,6 @@
             android:defaultValue="5"
             android:max="10"
             app:min="1"
-            app:iconSpaceReserved="false"/>
-
-        <androidx.preference.SwitchPreference
-            android:key="net.devemperor.dictate.instant_recording"
-            android:title="@string/dictate_settings_instant_recording_title"
-            android:summary="@string/dictate_settings_instant_recording_summary"
-            android:defaultValue="false"
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.SwitchPreference
