@@ -233,4 +233,7 @@
     <string name="dictate_settings_accent_color_summary">The accent color will appear on buttons on the keyboard</string>
     <string name="dictate_settings_accent_color_word">accent color</string>
     <string name="dictate_changelog_24">v2.9.0\n\nThis update brings some cool new features 🤩\n\n- You can now change the global theme and the accent color of the keyboard in the settings. So if you don\'t like light blue, this update is for you. 🎉\n\n- OpenAI\'s new GPT-5 models have been added for rewording. 💡\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
+    <string name="dictate_auto_formatting">Auto formatting</string>
+    <string name="dictate_settings_auto_formatting_title">Auto formatting (experimental) ✨</string>
+    <string name="dictate_settings_auto_formatting_summary">Automatically apply formatting instructions in the recorded transcription</string>
 </resources>

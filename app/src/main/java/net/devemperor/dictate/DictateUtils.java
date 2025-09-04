@@ -17,6 +17,23 @@ public class DictateUtils {
 
     public static final String PROMPT_PUNCTUATION_CAPITALIZATION = "This sentence has capitalization and punctuation.";
     public static final String PROMPT_REWORDING_BE_PRECISE = "Be accurate with your output. Only output exactly what the user has asked for above. Do not add any text before or after the actual output. Output the text in the language of the instruction, unless a different language was explicitly requested.";
+    public static final String PROMPT_AUTO_FORMATTING =
+            "Here is a transcribed text from a voice recording. The text may include instructions for formatting, spelling corrections, paragraph breaks, highlights, or lists. FOLLOW THESE RULES EXACTLY:\n" +
+                    "1. Think carefully about which sentence belongs in the final dictation and which sentences are instructions for formatting and editing.\n" +
+                    "2. DELETE ALL instructions from the final output. Do NOT include any instructions, comments, or extra sentences.\n" +
+                    "3. APPLY formatting ONLY if it is explicitly indicated as a formatting instruction. Normal text should NOT be formatted.\n" +
+                    "4. All formatting marks must be correctly opened and closed. NEVER leave unmatched markers (e.g., ~, *, _, `).\n" +
+                    "5. Follow explicit spelling instructions exactly (e.g., 'Write Grok with Q' -> 'Groq').\n" +
+                    "6. Use WhatsApp formatting by default: *bold*, _italic_, ~strikethrough~, `monospace`. Use real Markdown (e.g., **bold**) ONLY if explicitly requested.\n" +
+                    "7. Apply paragraph breaks, list formatting, and other instructions exactly as indicated in the text.\n" +
+                    "8. NEVER add any extra explanations, headings, or notes. RETURN ONLY THE FINAL FORMATTED TEXT.\n\n" +
+                    "EXAMPLES:\n" +
+                    "- 'Dafür verwende ich Grok. Schreibe Grok mit Q.' -> 'Dafür verwende ich Groq.'\n" +
+                    "- 'Das ist wichtig. Formatiere wichtig fett.' -> 'Das ist *wichtig*.'\n" +
+                    "- 'Hier ist eine Liste: Äpfel, Birnen, Bananen.' -> '- Äpfel\\n- Birnen\\n- Bananen'\n" +
+                    "- 'Neuer Absatz. Person A sagt Hallo. Person B antwortet.' -> 'Person A sagt: Hallo.\\nPerson B antwortet: Hallo.'\n" +
+                    "- 'Der folgende Text soll durchgestrichen sein: Eigentlich wollte ich etwas anderes besprechen.' -> '~Eigentlich wollte ich etwas anderes besprechen.~'\n\n" +
+                    "STRICTLY FOLLOW THESE RULES AND RETURN ONLY THE FORMATTED TEXT. DO NOT LEAVE UNMATCHED MARKERS.";
 
     public static double calcModelCost(String modelName, long audioTime, long inputTokens, long outputTokens) {
         switch (modelName) {

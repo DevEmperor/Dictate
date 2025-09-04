@@ -96,7 +96,7 @@ public class DictateInputMethodService extends InputMethodService {
     private int currentDeleteDelay = 50;
     private boolean isRecording = false;
     private boolean isPaused = false;
-    private boolean instantPrompt = false;
+    private boolean livePrompt = false;
     private boolean vibrationEnabled = true;
     private boolean audioFocusEnabled = true;
     private TextView selectedCharacter = null;
@@ -342,7 +342,7 @@ public class DictateInputMethodService extends InputMethodService {
 
             isRecording = false;
             isPaused = false;
-            instantPrompt = false;
+            livePrompt = false;
             recordButton.setText(getDictateButtonText());
             recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
             recordButton.setEnabled(true);
@@ -547,7 +547,7 @@ public class DictateInputMethodService extends InputMethodService {
         infoCl.setVisibility(View.GONE);
         isRecording = false;
         isPaused = false;
-        instantPrompt = false;
+        livePrompt = false;
         if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
         recordButton.setText(R.string.dictate_record);
         recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
@@ -577,8 +577,8 @@ public class DictateInputMethodService extends InputMethodService {
                 vibrate();
                 PromptModel model = data.get(position);
 
-                if (model.getId() == -1) {  // instant prompt clicked
-                    instantPrompt = true;
+                if (model.getId() == -1) {  // live prompt clicked
+                    livePrompt = true;
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                         openSettingsActivity();
                     } else if (!isRecording) {
@@ -591,7 +591,8 @@ public class DictateInputMethodService extends InputMethodService {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
-                    startGPTApiRequest(model);  // another normal prompt clicked
+                    CharSequence selectedText = getCurrentInputConnection().getSelectedText(0);
+                    startGPTApiRequest(selectedText != null ? selectedText.toString() : null, model); // another normal prompt clicked
                 }
             });
             promptsRv.setAdapter(promptsAdapter);
@@ -817,7 +818,9 @@ public class DictateInputMethodService extends InputMethodService {
 
                 usageDb.edit(transcriptionModel, DictateUtils.getAudioDuration(audioFile), 0, 0, transcriptionProvider);
 
-                if (!instantPrompt) {
+                if (sp.getBoolean("net.devemperor.dictate.auto_formatting", false)) {  // auto formatting request (-1 because id is not relevant anymore)
+                    startGPTApiRequest(resultText, new PromptModel(-1, Integer.MIN_VALUE, getString(R.string.dictate_auto_formatting), DictateUtils.PROMPT_AUTO_FORMATTING, true));
+                } else if (!livePrompt) {  // normal rewording request
                     InputConnection inputConnection = getCurrentInputConnection();
                     if (inputConnection != null) {
                         if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
@@ -830,10 +833,10 @@ public class DictateInputMethodService extends InputMethodService {
                             }
                         }
                     }
-                } else {
-                    // continue with ChatGPT API request
-                    instantPrompt = false;
-                    startGPTApiRequest(new PromptModel(-1, Integer.MIN_VALUE, "", resultText, false));
+                } else {  // live prompt request
+                    livePrompt = false;
+                    CharSequence selectedText = getCurrentInputConnection().getSelectedText(0);
+                    startGPTApiRequest(selectedText != null ? selectedText.toString() : null, new PromptModel(-1, Integer.MIN_VALUE, getString(R.string.dictate_live_prompt), resultText, false));
                 }
 
                 if (new File(getCacheDir(), sp.getString("net.devemperor.dictate.last_file_name", "audio.m4a")).exists()
@@ -879,11 +882,11 @@ public class DictateInputMethodService extends InputMethodService {
         });
     }
 
-    private void startGPTApiRequest(PromptModel model) {
+    private void startGPTApiRequest(String selectedText, PromptModel model) {
         mainHandler.post(() -> {
             promptsRv.setVisibility(View.GONE);
             runningPromptTv.setVisibility(View.VISIBLE);
-            runningPromptTv.setText(model.getId() == -1 ? getString(R.string.dictate_live_prompt) : model.getName());
+            runningPromptTv.setText(model.getName());
             runningPromptPb.setVisibility(View.VISIBLE);
             infoCl.setVisibility(View.GONE);
         });
@@ -920,9 +923,7 @@ public class DictateInputMethodService extends InputMethodService {
                     rewordedText = prompt.substring(1, prompt.length() - 1);
                 } else {
                     prompt += "\n\n" + DictateUtils.PROMPT_REWORDING_BE_PRECISE;
-                    if (getCurrentInputConnection().getSelectedText(0) != null) {
-                        prompt += "\n\n" + getCurrentInputConnection().getSelectedText(0).toString();
-                    }
+                    prompt += "\n\n" + (selectedText != null ? selectedText : "");
 
                     ChatCompletionCreateParams chatCompletionCreateParams = ChatCompletionCreateParams.builder()
                             .addUserMessage(prompt)

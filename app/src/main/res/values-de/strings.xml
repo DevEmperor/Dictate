@@ -218,4 +218,7 @@
     <string name="dictate_settings_accent_color_summary">Die Akzentfarbe wird auf den Buttons der Tastatur angezeigt</string>
     <string name="dictate_settings_accent_color_word">Akzentfarbe</string>
     <string name="dictate_changelog_24">v2.9.0\n\nDieses Update bringt ein paar coole neue Features 🤩\n\n- Du kannst jetzt in den Einstellungen das globale Design und die Akzentfarbe der Tastatur ändern. Also wenn dir Hellblau also nicht gefällt, ist dieses Update genau für dich. 🎉\n\n- OpenAIs neue GPT-5-Modelle fürs Überarbeiten sind jetzt verfügbar. 💡\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\nWie immer, zögere nicht, mich mit Fragen und Ideen über GitHub oder den E-Mail-Button unten zu kontaktieren. ☺️\n\n\n</string>
+    <string name="dictate_auto_formatting">Auto Formatierung</string>
+    <string name="dictate_settings_auto_formatting_title">Auto Formatierung (experimentell) ✨</string>
+    <string name="dictate_settings_auto_formatting_summary">Anweisungen zur Formatierung automatisch in der Transkription anwenden</string>
 </resources>

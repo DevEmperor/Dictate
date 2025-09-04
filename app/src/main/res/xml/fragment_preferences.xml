@@ -20,6 +20,13 @@
             app:iconSpaceReserved="false"
             app:dependency="net.devemperor.dictate.rewording_enabled"/>
 
+        <androidx.preference.SwitchPreference
+            android:key="net.devemperor.dictate.auto_formatting"
+            android:title="@string/dictate_settings_auto_formatting_title"
+            android:summary="@string/dictate_settings_auto_formatting_summary"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
+
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
