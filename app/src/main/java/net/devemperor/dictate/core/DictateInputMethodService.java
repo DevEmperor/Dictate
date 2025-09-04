@@ -96,13 +96,14 @@ public class DictateInputMethodService extends InputMethodService {
     private int currentDeleteDelay = 50;
     private boolean isRecording = false;
     private boolean isPaused = false;
-    private boolean instantPrompt = false;
+    private boolean livePrompt = false;
     private boolean vibrationEnabled = true;
     private boolean audioFocusEnabled = true;
     private TextView selectedCharacter = null;
     private boolean spaceButtonUserHasSwiped = false;
     private int currentInputLanguagePos;
     private String currentInputLanguageValue;
+    private boolean autoSwitchKeyboard = false;
 
     private MediaRecorder recorder;
     private ExecutorService speechApiThread;
@@ -258,6 +259,9 @@ public class DictateInputMethodService extends InputMethodService {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("net.devemperor.dictate.open_file_picker", true);
                 startActivity(intent);
+            } else if (!livePrompt && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {  // long press during recording automatically switches keyboard after transcription
+                autoSwitchKeyboard= true;
+                stopRecording();
             }
             return true;
         });
@@ -342,7 +346,7 @@ public class DictateInputMethodService extends InputMethodService {
 
             isRecording = false;
             isPaused = false;
-            instantPrompt = false;
+            livePrompt = false;
             recordButton.setText(getDictateButtonText());
             recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
             recordButton.setEnabled(true);
@@ -547,7 +551,7 @@ public class DictateInputMethodService extends InputMethodService {
         infoCl.setVisibility(View.GONE);
         isRecording = false;
         isPaused = false;
-        instantPrompt = false;
+        livePrompt = false;
         if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
         recordButton.setText(R.string.dictate_record);
         recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
@@ -578,7 +582,7 @@ public class DictateInputMethodService extends InputMethodService {
                 PromptModel model = data.get(position);
 
                 if (model.getId() == -1) {  // instant prompt clicked
-                    instantPrompt = true;
+                    livePrompt = true;
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                         openSettingsActivity();
                     } else if (!isRecording) {
@@ -817,7 +821,7 @@ public class DictateInputMethodService extends InputMethodService {
 
                 usageDb.edit(transcriptionModel, DictateUtils.getAudioDuration(audioFile), 0, 0, transcriptionProvider);
 
-                if (!instantPrompt) {
+                if (!livePrompt) {
                     InputConnection inputConnection = getCurrentInputConnection();
                     if (inputConnection != null) {
                         if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
@@ -832,13 +836,18 @@ public class DictateInputMethodService extends InputMethodService {
                     }
                 } else {
                     // continue with ChatGPT API request
-                    instantPrompt = false;
+                    livePrompt = false;
                     startGPTApiRequest(new PromptModel(-1, Integer.MIN_VALUE, "", resultText, false));
                 }
 
                 if (new File(getCacheDir(), sp.getString("net.devemperor.dictate.last_file_name", "audio.m4a")).exists()
                         && sp.getBoolean("net.devemperor.dictate.resend_button", false)) {
                     mainHandler.post(() -> resendButton.setVisibility(View.VISIBLE));
+                }
+
+                if (autoSwitchKeyboard && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    autoSwitchKeyboard = false;
+                    mainHandler.post(this::switchToPreviousInputMethod);
                 }
 
             } catch (RuntimeException e) {
