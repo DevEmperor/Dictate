@@ -43,7 +43,7 @@ You will find many more options in the settings to customize the Dictate keyboar
 dictate_how_to_settings
 
 View usage
-You can view the consumption of tokens for the rewording and the time recorded so far in the settings. Dictate calculates the estimated costs based on the current prices so that you have a good overview directly in the app.\n\nYou can also reset the statistics there or quickly buy new credit so that you can continue dictating.
+You can view the consumption of tokens for the rewording and the time recorded so far in the settings. Dictate calculates the estimated costs based on the current prices so that you have a good overview directly in the app.\n\nYou can also reset the statistics there. If you want to top up new credit at OpenAI, go to platform.openai.com → Settings → Billing.
 dictate_how_to_usage
 
 Change style prompt for Whisper

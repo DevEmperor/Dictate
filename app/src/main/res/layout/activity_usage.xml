@@ -14,7 +14,7 @@
         android:layout_height="0dp"
         android:scrollbars="vertical"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/usage_buy_credits_btn"
+        app:layout_constraintBottom_toTopOf="@+id/usage_reset_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,18 +35,6 @@
         tools:visibility="visible" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/usage_buy_credits_btn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/dictate_usage_buy_new_credits"
-        app:layout_constraintBottom_toTopOf="@+id/usage_reset_btn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.button.MaterialButton
         android:id="@+id/usage_reset_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -55,7 +43,7 @@
         android:text="@string/dictate_usage_reset"
         app:layout_constraintBottom_toTopOf="@+id/usage_total_cost_tv"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.562"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView

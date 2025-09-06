@@ -1,8 +1,6 @@
 package net.devemperor.dictate.usage;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -60,12 +58,6 @@ public class UsageActivity extends AppCompatActivity {
 
         TextView totalCostTv = findViewById(R.id.usage_total_cost_tv);
         totalCostTv.setText(getString(R.string.dictate_usage_total_cost, db.getTotalCost()));
-
-        MaterialButton buyCreditsBtn = findViewById(R.id.usage_buy_credits_btn);
-        buyCreditsBtn.setOnClickListener(v -> {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://platform.openai.com/settings/organization/billing/overview"));
-            startActivity(browserIntent);
-        });
 
         MaterialButton resetUsageBtn = findViewById(R.id.usage_reset_btn);
         resetUsageBtn.setOnClickListener(v -> new MaterialAlertDialogBuilder(this)

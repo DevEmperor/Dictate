@@ -43,7 +43,7 @@ Du findest in den Einstellungen noch viele weitere Optionen, um die Dictate-Tast
 dictate_how_to_settings
 
 Verbrauch einsehen
-Du kannst in den Einstellungen den Verbrauch von Tokens für die Überarbeitung und die bisher aufgenommene Zeit einsehen. Dictate berechnet nach den aktuellen Preisen die geschätzten Kosten, damit du direkt in der App einen guten Überblick hast.\n\nDort kannst du die Statistik auch zurücksetzen oder schnell neues Guthaben kaufen, um weiter diktieren zu können.
+Du kannst in den Einstellungen den Verbrauch von Tokens für die Überarbeitung und die bisher aufgenommene Zeit einsehen. Dictate berechnet nach den aktuellen Preisen die geschätzten Kosten, damit du direkt in der App einen guten Überblick hast.\n\nDort kannst du die Statistik auch zurücksetzen. Wenn du bei OpenAI neues Guthaben aufladen möchtest, gehe zu platform.openai.com → Settings → Billing.
 dictate_how_to_usage
 
 Stil Anweisung für Whisper ändern
