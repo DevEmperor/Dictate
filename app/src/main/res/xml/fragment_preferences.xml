@@ -62,7 +62,7 @@
             android:key="net.devemperor.dictate.instant_output"
             android:title="@string/dictate_settings_instant_output_title"
             android:summary="@string/dictate_settings_instant_output_summary"
-            android:defaultValue="false"
+            android:defaultValue="true"
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.SeekBarPreference

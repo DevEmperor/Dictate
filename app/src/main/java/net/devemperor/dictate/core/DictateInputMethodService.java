@@ -936,7 +936,7 @@ public class DictateInputMethodService extends InputMethodService {
                 if (!livePrompt) {
                     InputConnection inputConnection = getCurrentInputConnection();
                     if (inputConnection != null) {
-                        if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
+                        if (sp.getBoolean("net.devemperor.dictate.instant_output", true)) {
                             inputConnection.commitText(resultText, 1);
                         } else {
                             int speed = sp.getInt("net.devemperor.dictate.output_speed", 5);
@@ -1059,7 +1059,7 @@ public class DictateInputMethodService extends InputMethodService {
 
                 InputConnection inputConnection = getCurrentInputConnection();
                 if (inputConnection != null) {
-                    if (sp.getBoolean("net.devemperor.dictate.instant_output", false)) {
+                    if (sp.getBoolean("net.devemperor.dictate.instant_output", true)) {
                         inputConnection.commitText(rewordedText, 1);
                     } else {
                         int speed = sp.getInt("net.devemperor.dictate.output_speed", 5);
