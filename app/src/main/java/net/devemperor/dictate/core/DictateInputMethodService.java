@@ -482,6 +482,12 @@ public class DictateInputMethodService extends InputMethodService {
             if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
             if (isBluetoothScoStarted) am.stopBluetoothSco();
 
+            // enable resend button if previous audio file still exists in cache
+            if (new File(getCacheDir(), sp.getString("net.devemperor.dictate.last_file_name", "audio.m4a")).exists()
+                    && sp.getBoolean("net.devemperor.dictate.resend_button", false)) {
+                resendButton.setVisibility(View.VISIBLE);
+            }
+
             isRecording = false;
             isPaused = false;
             livePrompt = false;
