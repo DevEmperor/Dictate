@@ -4,8 +4,10 @@ import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -124,6 +126,8 @@ public class DictateInputMethodService extends InputMethodService {
     private SharedPreferences sp;
     private AudioManager am;
     private AudioFocusRequest audioFocusRequest;
+    private BroadcastReceiver bluetoothScoReceiver;
+    private boolean isBluetoothScoStarted = false;
 
     // define views
     private ConstraintLayout dictateKeyboardView;
@@ -245,6 +249,19 @@ public class DictateInputMethodService extends InputMethodService {
                     }
                 })
                 .build();
+
+        bluetoothScoReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, AudioManager.SCO_AUDIO_STATE_ERROR);
+                if (state == AudioManager.SCO_AUDIO_STATE_CONNECTED) {
+                    isBluetoothScoStarted = true;
+                } else if (state == AudioManager.SCO_AUDIO_STATE_DISCONNECTED) {
+                    isBluetoothScoStarted = false;
+                }
+            }
+        };
+        registerReceiver(bluetoothScoReceiver, new IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED));
 
         settingsButton.setOnClickListener(v -> {
             if (isRecording) trashButton.performClick();
@@ -463,6 +480,7 @@ public class DictateInputMethodService extends InputMethodService {
                 }
             }
             if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
+            if (isBluetoothScoStarted) am.stopBluetoothSco();
 
             isRecording = false;
             isPaused = false;
@@ -667,6 +685,12 @@ public class DictateInputMethodService extends InputMethodService {
         if (speechApiThread != null) speechApiThread.shutdownNow();
         if (rewordingApiThread != null) rewordingApiThread.shutdownNow();
 
+        if (bluetoothScoReceiver != null) {
+            unregisterReceiver(bluetoothScoReceiver);
+            bluetoothScoReceiver = null;
+        }
+        if (isBluetoothScoStarted) am.stopBluetoothSco();
+
         pauseButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_pause_24));
         pauseButton.setVisibility(View.GONE);
         trashButton.setVisibility(View.GONE);
@@ -837,8 +861,10 @@ public class DictateInputMethodService extends InputMethodService {
         audioFile = new File(getCacheDir(), "audio.m4a");
         sp.edit().putString("net.devemperor.dictate.last_file_name", audioFile.getName()).apply();
 
+        if (am.isBluetoothScoAvailableOffCall()) am.startBluetoothSco();
+
         recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setAudioSource(isBluetoothScoStarted ? MediaRecorder.AudioSource.VOICE_COMMUNICATION : MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         recorder.setAudioEncodingBitRate(64000);
@@ -877,6 +903,8 @@ public class DictateInputMethodService extends InputMethodService {
             if (recordTimeRunnable != null) {
                 recordTimeHandler.removeCallbacks(recordTimeRunnable);
             }
+
+            if (isBluetoothScoStarted) am.stopBluetoothSco();
 
             startWhisperApiRequest();
         }
