@@ -1,6 +1,8 @@
 package net.devemperor.dictate.core;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
@@ -55,12 +58,12 @@ import com.openai.models.chat.completions.ChatCompletionCreateParams;
 
 import net.devemperor.dictate.BuildConfig;
 import net.devemperor.dictate.DictateUtils;
+import net.devemperor.dictate.R;
 import net.devemperor.dictate.rewording.PromptModel;
 import net.devemperor.dictate.rewording.PromptsDatabaseHelper;
 import net.devemperor.dictate.rewording.PromptsKeyboardAdapter;
 import net.devemperor.dictate.rewording.PromptsOverviewActivity;
 import net.devemperor.dictate.settings.DictateSettingsActivity;
-import net.devemperor.dictate.R;
 import net.devemperor.dictate.usage.UsageDatabaseHelper;
 
 import java.io.File;
@@ -148,6 +151,10 @@ public class DictateInputMethodService extends InputMethodService {
     private MaterialButton editCopyButton;
     private MaterialButton editPasteButton;
     private LinearLayout overlayCharactersLl;
+
+    // Recording visuals (pulsing)
+    private ObjectAnimator recordPulseX;
+    private ObjectAnimator recordPulseY;
 
     PromptsDatabaseHelper promptsDb;
     PromptsKeyboardAdapter promptsAdapter;
@@ -245,6 +252,7 @@ public class DictateInputMethodService extends InputMethodService {
             openSettingsActivity();
         });
 
+        // initial state: mic left, folder-open right
         recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
         recordButton.setOnClickListener(v -> {
             vibrate();
@@ -460,6 +468,7 @@ public class DictateInputMethodService extends InputMethodService {
             isPaused = false;
             livePrompt = false;
             recordButton.setText(getDictateButtonText());
+            applyRecordingIconState(false);
             recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
             recordButton.setEnabled(true);
             pauseButton.setVisibility(View.GONE);
@@ -633,6 +642,8 @@ public class DictateInputMethodService extends InputMethodService {
             overlayCharactersLl.addView(charView);
         }
 
+        prepareRecordPulseAnimation();  // prepare pulsing animation for record button (used while recording)
+
         return dictateKeyboardView;
     }
 
@@ -666,6 +677,7 @@ public class DictateInputMethodService extends InputMethodService {
         livePrompt = false;
         if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
         recordButton.setText(R.string.dictate_record);
+        applyRecordingIconState(false);
         recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
         recordButton.setEnabled(true);
     }
@@ -843,7 +855,8 @@ public class DictateInputMethodService extends InputMethodService {
         }
 
         recordButton.setText(R.string.dictate_send);
-        recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_send_20, 0, 0, 0);
+        recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_send_20, 0, 0, 0); // original icon behavior
+        applyRecordingIconState(true);  // start pulsing while recording
         pauseButton.setVisibility(View.VISIBLE);
         trashButton.setVisibility(View.VISIBLE);
         resendButton.setVisibility(View.GONE);
@@ -870,8 +883,10 @@ public class DictateInputMethodService extends InputMethodService {
     }
 
     private void startWhisperApiRequest() {
+        applyRecordingIconState(false);  // recording finished -> stop pulsing
+
         recordButton.setText(R.string.dictate_sending);
-        recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_send_20, 0, 0, 0);
+        recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_send_20, 0, 0, 0); // keep send icon while sending
         recordButton.setEnabled(false);
         pauseButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_pause_24));
         pauseButton.setVisibility(View.GONE);
@@ -994,7 +1009,8 @@ public class DictateInputMethodService extends InputMethodService {
 
             mainHandler.post(() -> {
                 recordButton.setText(getDictateButtonText());
-                recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
+                applyRecordingIconState(false);
+                recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0); // back to original icons
                 recordButton.setEnabled(true);
             });
         });
@@ -1303,5 +1319,38 @@ public class DictateInputMethodService extends InputMethodService {
         }
 
         return res;
+    }
+
+    // Recording visuals helpers (pulsing only; icons handled separately)
+    private void prepareRecordPulseAnimation() {
+        if (recordButton == null) return;
+        recordPulseX = ObjectAnimator.ofFloat(recordButton, View.SCALE_X, 1f, 1.12f);
+        recordPulseX.setDuration(600);
+        recordPulseX.setRepeatMode(ValueAnimator.REVERSE);
+        recordPulseX.setRepeatCount(ValueAnimator.INFINITE);
+        recordPulseX.setInterpolator(new LinearInterpolator());
+
+        recordPulseY = ObjectAnimator.ofFloat(recordButton, View.SCALE_Y, 1f, 1.12f);
+        recordPulseY.setDuration(600);
+        recordPulseY.setRepeatMode(ValueAnimator.REVERSE);
+        recordPulseY.setRepeatCount(ValueAnimator.INFINITE);
+        recordPulseY.setInterpolator(new LinearInterpolator());
+    }
+
+    private void applyRecordingIconState(boolean active) {
+        if (recordButton == null) return;
+
+        if (active) {
+            if (recordPulseX == null || recordPulseY == null) {
+                prepareRecordPulseAnimation();
+            }
+            if (recordPulseX != null && !recordPulseX.isRunning()) recordPulseX.start();
+            if (recordPulseY != null && !recordPulseY.isRunning()) recordPulseY.start();
+        } else {
+            if (recordPulseX != null) recordPulseX.cancel();
+            if (recordPulseY != null) recordPulseY.cancel();
+            recordButton.setScaleX(1f);
+            recordButton.setScaleY(1f);
+        }
     }
 }
