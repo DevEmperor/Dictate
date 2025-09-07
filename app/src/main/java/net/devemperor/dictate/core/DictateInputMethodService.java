@@ -26,6 +26,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
@@ -104,6 +105,13 @@ public class DictateInputMethodService extends InputMethodService {
     private int currentInputLanguagePos;
     private String currentInputLanguageValue;
     private boolean autoSwitchKeyboard = false;
+
+    // Swipe-to-select-words state
+    private boolean isSwipeSelectingWords = false;
+    private float backspaceStartX = 0f;
+    private int swipeBaseCursor = -1;
+    private List<Integer> swipeWordBoundaries = null;
+    private int swipeSelectedSteps = 0;
 
     private MediaRecorder recorder;
     private ExecutorService speechApiThread;
@@ -306,12 +314,116 @@ public class DictateInputMethodService extends InputMethodService {
             return true;
         });
 
+        // Enhanced touch handling: swipe left while holding to select words progressively
         backspaceButton.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                isDeleting = false;
-                deleteHandler.removeCallbacks(deleteRunnable);
+            InputConnection ic = getCurrentInputConnection();
+            final float density = getResources().getDisplayMetrics().density;
+            final int stepPx = (int) (24f * density + 0.5f);
+            final int activationPx = Math.max(ViewConfiguration.get(getApplicationContext()).getScaledTouchSlop(),
+                    (int) (8f * density + 0.5f)); // small threshold to enter swipe-select and cancel long-press early
+
+            switch (event.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    // reset states; allow click/long-press detection
+                    isDeleting = false;
+                    if (deleteRunnable != null) deleteHandler.removeCallbacks(deleteRunnable);
+
+                    isSwipeSelectingWords = false;
+                    swipeSelectedSteps = 0;
+                    swipeWordBoundaries = null;
+                    swipeBaseCursor = -1;
+                    backspaceStartX = event.getX();
+                    return false;
+
+                case MotionEvent.ACTION_MOVE: {
+                    float dx = event.getX() - backspaceStartX;
+
+                    // if the user moves left beyond activation threshold, start swipe-select and cancel long-press
+                    if (dx < -activationPx) {
+                        if (!isSwipeSelectingWords) {
+                            isSwipeSelectingWords = true;
+
+                            // cancel system long-press to avoid auto-delete kick-in
+                            v.cancelLongPress();
+                            if (v.getParent() != null) v.getParent().requestDisallowInterceptTouchEvent(true);
+
+                            // stop auto-delete if it was started via long-press (safety)
+                            isDeleting = false;
+                            if (deleteRunnable != null) deleteHandler.removeCallbacks(deleteRunnable);
+
+                            if (ic != null) {
+                                ExtractedText et = ic.getExtractedText(new ExtractedTextRequest(), 0);
+                                if (et != null && et.text != null) {
+                                    swipeBaseCursor = Math.max(et.selectionStart, et.selectionEnd);
+                                    String before = et.text.subSequence(0, swipeBaseCursor).toString();
+                                    swipeWordBoundaries = computeWordBoundaries(before);
+                                }
+                            }
+                            if (swipeWordBoundaries == null) {
+                                swipeWordBoundaries = java.util.Collections.singletonList(0);
+                                swipeBaseCursor = 0;
+                            }
+                        }
+
+                        // step size defines when next word gets added to selection
+                        if (ic != null && swipeWordBoundaries != null && !swipeWordBoundaries.isEmpty()) {
+                            int maxSteps = swipeWordBoundaries.size() - 1;
+                            int steps = Math.min((int) ((-dx) / stepPx), maxSteps);
+                            steps = Math.max(0, steps);
+
+                            if (steps != swipeSelectedSteps) {
+                                swipeSelectedSteps = steps;
+                                int newStart = swipeWordBoundaries.get(steps);
+                                ic.setSelection(newStart, swipeBaseCursor);
+                                vibrate();
+                            }
+                        }
+                        return true; // consume while swipe-selecting
+                    } else if (isSwipeSelectingWords) {
+                        // moving back right reduces selection
+                        if (ic != null && swipeWordBoundaries != null && !swipeWordBoundaries.isEmpty()) {
+                            int steps = Math.max(0, (int) ((-dx) / stepPx));
+                            steps = Math.min(steps, swipeWordBoundaries.size() - 1);
+
+                            if (steps != swipeSelectedSteps) {
+                                swipeSelectedSteps = steps;
+                                int newStart = swipeWordBoundaries.get(steps);
+                                ic.setSelection(newStart, swipeBaseCursor);
+                                vibrate();
+                            }
+                            if (steps == 0) {
+                                ic.setSelection(swipeBaseCursor, swipeBaseCursor);
+                            }
+                        }
+                        return true;
+                    }
+
+                    return false; // not yet swiping -> keep default handling for click/long press
+                }
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    // always stop auto-delete
+                    isDeleting = false;
+                    if (deleteRunnable != null) deleteHandler.removeCallbacks(deleteRunnable);
+
+                    if (isSwipeSelectingWords) {
+                        if (ic != null) {
+                            if (swipeSelectedSteps > 0) {
+                                ic.commitText("", 1);
+                                vibrate();
+                            } else {
+                                ic.setSelection(swipeBaseCursor, swipeBaseCursor);
+                            }
+                        }
+                        isSwipeSelectingWords = false;
+                        return true; // consume
+                    }
+                    return false; // no swipe-select -> allow click/long-press outcomes
+
+                default:
+                    return false;
             }
-            return false;
         });
 
         switchButton.setOnClickListener(v -> {
@@ -1162,4 +1274,34 @@ public class DictateInputMethodService extends InputMethodService {
         }
     }
 
+    // Compute progressive word boundaries to the left of the cursor for swipe selection
+    private List<Integer> computeWordBoundaries(String before) {
+        // returns absolute start indices (0..cursor) for selection:
+        // boundaries[0] = cursor, boundaries[1] = start of previous "word incl. preceding spaces", etc.
+        java.util.ArrayList<Integer> res = new java.util.ArrayList<>();
+        int pos = before.length();
+        res.add(pos);
+
+        while (pos > 0) {
+            int i = pos;
+
+            while (i > 0 && Character.isWhitespace(before.charAt(i - 1))) i--;  // 1) skip whitespace to the left
+
+            while (i > 0) {  // 2) skip non-alnum punctuation to the left
+                char c = before.charAt(i - 1);
+                if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) break;
+                i--;
+            }
+
+            while (i > 0 && Character.isLetterOrDigit(before.charAt(i - 1))) i--;  // 3) skip letters/digits (the word)
+
+            while (i > 0 && Character.isWhitespace(before.charAt(i - 1))) i--;  // 4) also include preceding spaces so each step removes "space + word"
+
+            if (i == pos) i--;
+            pos = i;
+            res.add(pos);
+        }
+
+        return res;
+    }
 }
