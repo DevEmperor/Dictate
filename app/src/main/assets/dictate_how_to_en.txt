@@ -47,7 +47,7 @@ You can view the consumption of tokens for the rewording and the time recorded s
 dictate_how_to_usage
 
 Change style prompt for Whisper
-With a style prompt you can easily influence how Whisper recognizes your recordings. Sometimes it can happen that Whisper does not set any punctuation marks without such an instruction. Therefore, by default, an instruction is always selected that tells Whisper to set punctuation marks. If you want to select a different statement, you can do so in the settings.\n\nFor more detailed information, press the blue question mark there to be redirected to an OpenAI page that gives you more information about the style statements.
+With a style prompt you can easily influence how Whisper recognizes your recordings. Sometimes it can happen that Whisper does not set any punctuation marks without such an instruction. Therefore, by default, an instruction is always selected that tells Whisper to set punctuation marks. If you want to select a different statement, you can do so in the settings.\n\nFor more detailed information, press the blue question mark there to be redirected to an OpenAI page that gives you more information about the style statements.\n\nIt is similar for the rewording instructions, here you can also set a general system prompt.
 dictate_how_to_style
 
 Use your own Whisper API server

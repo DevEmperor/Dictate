@@ -47,7 +47,7 @@ Du kannst in den Einstellungen den Verbrauch von Tokens für die Überarbeitung 
 dictate_how_to_usage
 
 Stil Anweisung für Whisper ändern
-Mit einer Stil Anweisung kannst du leicht beeinflussen, wie Whisper deine Aufnahmen erkennt. Manchmal kann es vorkommen, dass ohne so eine Anweisung Whisper keine Satzzeichen setzt. Daher ist standardmäßig immer eine Anweisung ausgewählt, die Whisper dazu anhält, Satzzeichen zu setzen. Wenn du eine andere Anweisung auswählen möchtest, kannst du dies in den Einstellungen tun.\n\nFür genauere Informationen, drücke dort auf das blaue Fragezeichen, um zu einer Seite von OpenAI weitergeleitet zu werden, die dir mehr Informationen zu den Stil Anweisungen gibt.
+Mit einer Stil Anweisung kannst du leicht beeinflussen, wie Whisper deine Aufnahmen erkennt. Manchmal kann es vorkommen, dass ohne so eine Anweisung Whisper keine Satzzeichen setzt. Daher ist standardmäßig immer eine Anweisung ausgewählt, die Whisper dazu anhält, Satzzeichen zu setzen. Wenn du eine andere Anweisung auswählen möchtest, kannst du dies in den Einstellungen tun.\n\nFür genauere Informationen, drücke dort auf das blaue Fragezeichen, um zu einer Seite von OpenAI weitergeleitet zu werden, die dir mehr Informationen zu den Stil Anweisungen gibt.\n\nÄhnlich sieht es auch für die Überarbeitungsanweisungen aus, auch hier kannst du eine allgemeinen System Anweisung einstellen.
 dictate_how_to_style
 
 Eigenen Whisper API Server verwenden

@@ -241,4 +241,5 @@
     <string name="dictate_rewording_system_prompt_be_precise">Be precise</string>
     <string name="dictate_rewording_system_prompt_custom">Custom rewording system prompt</string>
     <string name="dictate_rewording_system_prompt_custom_hint">Be accurate with your output. Only output exactly what the user has asked for above. Do not add any text before or after the actual output. Output the text in the language of the instruction, unless a different language was explicitly requested.</string>
+    <string name="dictate_changelog_26">v2.10.0\n\nThis update brings some cool new features 🤩\n\n- You can now record using the microphone of your headphones. So if you want to walk around more freely, this will help you a lot. 🎧\n\n- If you tap, hold and swipe to the left on the delete button, you can now select whole words for faster but still precise deletion. 🗑️\n\n- You can now set a custom system prompt for rewording models in the settings. 💡\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
 </resources>
