@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_system_prompts"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".settings.SystemPromptsActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/transcription_style_prompt_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dictate_transcription_style_prompt_title"
+            android:textColor="@color/dictate_blue"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/transcription_style_prompt_rg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/transcription_style_prompt_title_tv">
+
+            <RadioButton
+                android:id="@+id/transcription_style_prompt_nothing_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dictate_transcription_style_prompt_nothing" />
+
+            <RadioButton
+                android:id="@+id/transcription_style_prompt_predefined_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dictate_transcription_style_prompt_punctuation_capitalization" />
+
+            <RadioButton
+                android:id="@+id/transcription_style_prompt_custom_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dictate_transcription_style_prompt_custom" />
+        </RadioGroup>
+
+        <ImageView
+            android:id="@+id/transcription_style_prompt_help_iv"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_baseline_question_mark_24"
+            app:layout_constraintBottom_toBottomOf="@id/transcription_style_prompt_custom_et"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/transcription_style_prompt_custom_et"
+            app:layout_constraintTop_toTopOf="@id/transcription_style_prompt_custom_et" />
+
+        <EditText
+            android:id="@+id/transcription_style_prompt_custom_et"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:enabled="false"
+            android:gravity="top"
+            android:hint="@string/dictate_transcription_style_prompt_custom_hint"
+            android:inputType="text|textLongMessage|textAutoComplete|textCapSentences|textMultiLine"
+            android:maxLength="800"
+            android:minLines="3"
+            app:layout_constraintEnd_toStartOf="@+id/transcription_style_prompt_help_iv"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/transcription_style_prompt_rg" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="36dp"
+            android:background="@color/dictate_blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/transcription_style_prompt_custom_et" />
+
+        <TextView
+            android:id="@+id/rewording_system_prompt_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/dictate_rewording_system_prompt_title"
+            android:textColor="@color/dictate_blue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider" />
+
+        <RadioGroup
+            android:id="@+id/rewording_system_prompt_rg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rewording_system_prompt_title_tv">
+
+            <RadioButton
+                android:id="@+id/rewording_system_prompt_nothing_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dictate_rewording_system_prompt_nothing" />
+
+            <RadioButton
+                android:id="@+id/rewording_system_prompt_predefined_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dictate_rewording_system_prompt_be_precise" />
+
+            <RadioButton
+                android:id="@+id/rewording_system_prompt_custom_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dictate_rewording_system_prompt_custom" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/rewording_system_prompt_custom_et"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:enabled="false"
+            android:gravity="top"
+            android:hint="@string/dictate_rewording_system_prompt_custom_hint"
+            android:inputType="text|textLongMessage|textAutoComplete|textCapSentences|textMultiLine"
+            android:maxLength="800"
+            android:minLines="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rewording_system_prompt_rg"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -1154,6 +1154,18 @@ public class DictateInputMethodService extends InputMethodService {
             infoCl.setVisibility(View.GONE);
         });
 
+        String systemPrompt;
+        switch (sp.getInt("net.devemperor.dictate.system_prompt_selection", 1)) {
+            case 1:
+                systemPrompt = DictateUtils.PROMPT_REWORDING_BE_PRECISE;
+                break;
+            case 2:
+                systemPrompt = sp.getString("net.devemperor.dictate.system_prompt_custom_text", "");
+                break;
+            default:
+                systemPrompt = "";
+        }
+
         rewordingApiThread = Executors.newSingleThreadExecutor();
         rewordingApiThread.execute(() -> {
             try {
@@ -1185,7 +1197,7 @@ public class DictateInputMethodService extends InputMethodService {
                 if (prompt.startsWith("[") && prompt.endsWith("]")) {
                     rewordedText = prompt.substring(1, prompt.length() - 1);
                 } else {
-                    prompt += "\n\n" + DictateUtils.PROMPT_REWORDING_BE_PRECISE;
+                    prompt += "\n\n" + systemPrompt;
                     if (getCurrentInputConnection().getSelectedText(0) != null) {
                         prompt += "\n\n" + getCurrentInputConnection().getSelectedText(0).toString();
                     }

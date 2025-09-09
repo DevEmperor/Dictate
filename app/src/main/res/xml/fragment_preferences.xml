@@ -133,9 +133,9 @@
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.Preference
-            android:key="net.devemperor.dictate.prompt"
-            android:title="@string/dictate_settings_prompt_title"
-            android:summary="@string/dictate_settings_prompt_summary"
+            android:key="net.devemperor.dictate.prompts"
+            android:title="@string/dictate_settings_prompts_title"
+            android:summary="@string/dictate_settings_prompts_summary"
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.SwitchPreference

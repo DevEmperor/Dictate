@@ -128,10 +128,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
-        Preference promptPreference = findPreference("net.devemperor.dictate.prompt");
+        Preference promptPreference = findPreference("net.devemperor.dictate.prompts");
         if (promptPreference != null) {
             promptPreference.setOnPreferenceClickListener(preference -> {
-                Intent intent = new Intent(requireContext(), StylePromptActivity.class);
+                Intent intent = new Intent(requireContext(), SystemPromptsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 return true;

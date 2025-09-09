@@ -106,9 +106,8 @@
     <string name="dictate_update_installed_msg">Dictate has been updated. See changes?</string>
     <string name="dictate_whats_new">What\'s new</string>
     <string name="dictate_changelog_5">v1.4\n\n- You can now pause and resume while recording your voice. ⏯️\n\n- During recording, other media are now paused and then continued. 💡\n\n- Long-click on the keyboard-switch-button opens input method picker ⌨️\n\n- The translation function works more reliable now. 💪\n\n- Added German app translation 🇩🇪\n\n\n</string>
-    <string name="dictate_settings_donate">Donate 🤝</string>
     <string name="dictate_settings_feedback_address" translatable="false">contact@devemperor.net</string>
-    <string name="dictate_settings_prompt_title">Change style prompt 💬</string>
+    <string name="dictate_settings_prompts_title">Change system/style prompts 💬</string>
     <string name="dictate_changelog_donate">If you like Dictate, I would be very happy about a small donation to support this project. 🥰\n\n</string>
     <string name="dictate_changelog_6">v1.5\n\n- In the settings, you can now store a system prompt for Whisper to guide speech recognition in a certain direction (e.g. specify special words in advance or influence the punctuation and filler words). ✏️\n\n- After a failed transcription, you can now resend the last recording. 🔄\n\n- Holding down the delete button for longer now speeds up the deletion process. 🚀\n\n- A donate button has been added in the settings. 🤝\n\n- Some design changes and bug fixes have been made. ✨\n\n\n</string>
     <string name="dictate_settings_rewording_title">Rewording Settings</string>
@@ -155,12 +154,7 @@
     <string name="dictate_usage_audio_time_description">Total recording time</string>
     <string name="dictate_usage_model_cost_description">Estimated cost for this model</string>
     <string name="dictate_changelog_8">v2.1\n\nThis is just a small update with some new features requested by you:\n\n- In the settings, you can now change the OpenAI model used for rewording in the background. Newer models released by OpenAI will always be added in the future. 💪\n\n- I added a detailed usage page in the settings, where you can track the usage and the cost of Dictate at any time. 📊\n\n- You will find a button in the rewording section of the keyboard to quickly add new prompts. ✏️\n\n- Errors and logs will automatically sent to me, so that I can easier investigate them to fix bugs and improve the app. 🐛\n\n- Some design changes and bug fixes have been made. ✨\n\n\nPreview of the next update 🤩\n\nThe next update will be released soon, containing a feature to record a rewording prompt spontaneously without adding it as a predefined prompt first.\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
-    <string name="dictate_style_prompt_custom">Custom style prompt</string>
-    <string name="dictate_settings_prompt_summary">Change the style how Whisper transcribes</string>
-    <string name="dictate_style_prompt">Style prompt</string>
-    <string name="dictate_style_prompt_custom_hint">Umm, let me think like, hmm… Okay, here\'s what I\'m, like, thinking.</string>
-    <string name="dictate_style_prompt_punctuation_capitalization">Use punctuation and capitalization</string>
-    <string name="dictate_style_prompt_nothing">No style prompt</string>
+    <string name="dictate_settings_prompts_summary">Change the system prompts for transcription and rewording</string>
     <string name="dictate_content_size_limit_msg">Your audio file is too large (>25 MB) or too long (>25 minutes).</string>
     <string name="dictate_choose_audio_file">Choose an audio file</string>
     <string name="dictate_file_too_large_title">Media file too large</string>
@@ -236,4 +230,15 @@
     <string name="dictate_changelog_25">v2.9.1\n\nThis is just a small update adding the ability to automatically switch back to the previous keyboard after the transcription has finished. Simply do a long press on the recording button while recording. 🎉\n\nFurthermore, I had to remove my PayPal reference from the settings to my GitHub page because of some Google restrictions. 🥲\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_settings_use_bluetooth_mic_title">Use Bluetooth microphone 🎧</string>
     <string name="dictate_settings_use_bluetooth_mic_summary">Prefer Bluetooth microphone when available (headsets or car systems)</string>
+    <string name="dictate_system_prompts">System Prompts</string>
+    <string name="dictate_transcription_style_prompt_title">Transcription style prompt</string>
+    <string name="dictate_transcription_style_prompt_nothing">No transcription style prompt</string>
+    <string name="dictate_transcription_style_prompt_punctuation_capitalization">Use punctuation and capitalization</string>
+    <string name="dictate_transcription_style_prompt_custom">Custom transcription style prompt</string>
+    <string name="dictate_transcription_style_prompt_custom_hint">This sentence has capitalization and punctuation.</string>
+    <string name="dictate_rewording_system_prompt_title">Rewording system prompt</string>
+    <string name="dictate_rewording_system_prompt_nothing">No rewording system prompt</string>
+    <string name="dictate_rewording_system_prompt_be_precise">Be precise</string>
+    <string name="dictate_rewording_system_prompt_custom">Custom rewording system prompt</string>
+    <string name="dictate_rewording_system_prompt_custom_hint">Be accurate with your output. Only output exactly what the user has asked for above. Do not add any text before or after the actual output. Output the text in the language of the instruction, unless a different language was explicitly requested.</string>
 </resources>
