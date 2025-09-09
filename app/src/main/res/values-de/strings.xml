@@ -71,7 +71,7 @@
     <string name="dictate_okay">Okay</string>
     <string name="dictate_cancel">Abbrechen</string>
     <string name="dictate_settings_api_key_title">OpenAI API-Schlüssel ändern 🔑</string>
-    <string name="dictate_settings_vibration_title">Haptisches Feedback 📳</string>
+    <string name="dictate_settings_vibration_title">Haptisches Feedback aktivieren 📳</string>
     <string name="dictate_settings_instant_output_title">Sofortige Ausgabe ⏱️</string>
     <string name="dictate_settings_instant_output_summary">Tippanimation deaktivieren, wenn die Erkennung fertig ist</string>
     <string name="dictate_settings_vibration_summary">Vibration bei Tastendrucken und Fehlern</string>
@@ -219,4 +219,6 @@
     <string name="dictate_settings_accent_color_word">Akzentfarbe</string>
     <string name="dictate_changelog_24">v2.9.0\n\nDieses Update bringt ein paar coole neue Features 🤩\n\n- Du kannst jetzt in den Einstellungen das globale Design und die Akzentfarbe der Tastatur ändern. Also wenn dir Hellblau also nicht gefällt, ist dieses Update genau für dich. 🎉\n\n- OpenAIs neue GPT-5-Modelle fürs Überarbeiten sind jetzt verfügbar. 💡\n\n- Einige Design Änderungen und Fehlerbehebungen wurden vorgenommen. ✨\n\nWie immer, zögere nicht, mich mit Fragen und Ideen über GitHub oder den E-Mail-Button unten zu kontaktieren. ☺️\n\n\n</string>
     <string name="dictate_changelog_25">v2.9.1\n\nDies ist nur ein kleines Update, das die Möglichkeit hinzufügt, nach der Transkription automatisch wieder zur vorherigen Tastatur zurückzukehren. Halte dazu einfach den Aufnahme-Button während der Aufnahme lange gedrückt. 🎉\n\nAußerdem musste ich meinen PayPal-Link von den Einstellungen auf meine GitHub-Seite ändern, wegen einiger Google-Einschränkungen. 🥲\n\nWie immer, zögere nicht, mich mit Fragen und Ideen über GitHub oder den E-Mail-Button unten zu kontaktieren. ☺️\n\n\n</string>
+    <string name="dictate_settings_use_bluetooth_mic_title">Bluetooth Mikrofon verwenden 🎧</string>
+    <string name="dictate_settings_use_bluetooth_mic_summary">Bluetooth Mikrofon bevorzugen, wenn verfügbar (Headsets oder Fahrzeugsysteme)</string>
 </resources>

@@ -72,7 +72,7 @@
     <string name="dictate_okay">Okay</string>
     <string name="dictate_cancel">Cancel</string>
     <string name="dictate_settings_api_key_title">Change OpenAI API key 🔑</string>
-    <string name="dictate_settings_vibration_title">Haptic feedback 📳</string>
+    <string name="dictate_settings_vibration_title">Enable Haptic feedback 📳</string>
     <string name="dictate_settings_instant_output_title">Instant output ⏱️</string>
     <string name="dictate_settings_instant_output_summary">Disable typing animation when the result is ready</string>
     <string name="dictate_settings_vibration_summary">Vibrate on button presses and errors</string>
@@ -234,4 +234,6 @@
     <string name="dictate_settings_accent_color_word">accent color</string>
     <string name="dictate_changelog_24">v2.9.0\n\nThis update brings some cool new features 🤩\n\n- You can now change the global theme and the accent color of the keyboard in the settings. So if you don\'t like light blue, this update is for you. 🎉\n\n- OpenAI\'s new GPT-5 models have been added for rewording. 💡\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_changelog_25">v2.9.1\n\nThis is just a small update adding the ability to automatically switch back to the previous keyboard after the transcription has finished. Simply do a long press on the recording button while recording. 🎉\n\nFurthermore, I had to remove my PayPal reference from the settings to my GitHub page because of some Google restrictions. 🥲\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
+    <string name="dictate_settings_use_bluetooth_mic_title">Use Bluetooth microphone 🎧</string>
+    <string name="dictate_settings_use_bluetooth_mic_summary">Prefer Bluetooth microphone when available (headsets or car systems)</string>
 </resources>
