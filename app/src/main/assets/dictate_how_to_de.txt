@@ -19,7 +19,7 @@ Wenn du bereits eine Audio-Datei aufgenommen hast, kannst du den "Aufnehmen"-But
 dictate_how_to_file_transcription
 
 Texte bearbeiten
-Du findest auf der Dictate-Tastatur rechts einen Löschen-Button, um Wörter zu löschen. Je länger du diesen Button gedrückt hältst, desto schneller wird gelöscht.\n\nDarunter ist ein "Enter"-Button und in der Mitte findest du einen Button für Leerzeichen. Wenn du diesen Button gedrückt hältst, kannst du durch Wischen den Cursor im aktuellen Textfeld bewegen.
+Du findest auf der Dictate-Tastatur rechts einen Löschen-Button, um Wörter zu löschen. Je länger du diesen Button gedrückt hältst, desto schneller wird gelöscht. Wenn du gedrückt hälst und nach links wischst, kannst du Wort für Wort noch schneller löschen.\n\nDarunter ist ein "Enter"-Button und in der Mitte findest du einen Button für Leerzeichen. Wenn du diesen Button gedrückt hältst, kannst du durch Wischen den Cursor im aktuellen Textfeld bewegen.
 dictate_how_to_delete_enter_space
 
 Kopieren, Einfügen und Verlauf

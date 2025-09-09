@@ -19,7 +19,7 @@ If you have already recorded an audio file, you can press and hold the "Record" 
 dictate_how_to_file_transcription
 
 Editing texts
-You will find a delete button on the right-hand side of the Dictate keyboard to delete words. The longer you hold this button down, the faster the deletion.\n\nBelow it is an "Enter" button and in the middle you will find a button for spaces. If you hold down this button, you can move the cursor in the current text field by swiping.
+You will find a delete button on the right-hand side of the Dictate keyboard to delete words. The longer you hold this button down, the faster the deletion. If you keep pressing and swipe left, you can delete word by word even faster.\n\nBelow it is an "Enter" button and in the middle you will find a button for spaces. If you hold down this button, you can move the cursor in the current text field by swiping.
 dictate_how_to_delete_enter_space
 
 Copy, paste and history
