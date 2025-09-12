@@ -145,6 +145,8 @@ public class DictateSettingsActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.dictate_okay, (di, i) -> sp.edit().putInt("net.devemperor.dictate.last_version_code", BuildConfig.VERSION_CODE).apply())
                     .show();
 
+            if (lastVersionCode <= 26) sp.edit().putBoolean("net.devemperor.dictate.use_bluetooth_mic", false).apply();  // reset bluetooth mic setting to false due to issues in 2.10.0
+
         } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{ Manifest.permission.RECORD_AUDIO }, 1337);
 

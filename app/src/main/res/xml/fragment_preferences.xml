@@ -84,7 +84,7 @@
             android:key="net.devemperor.dictate.use_bluetooth_mic"
             android:title="@string/dictate_settings_use_bluetooth_mic_title"
             android:summary="@string/dictate_settings_use_bluetooth_mic_summary"
-            android:defaultValue="true"
+            android:defaultValue="false"
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.SwitchPreference
