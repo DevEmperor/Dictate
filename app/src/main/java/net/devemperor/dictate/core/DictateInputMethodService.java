@@ -1479,7 +1479,7 @@ public class DictateInputMethodService extends InputMethodService {
     }
 
     private void applyRecordingIconState(boolean active) {
-        if (recordButton == null) return;
+        if (recordButton == null || !sp.getBoolean("net.devemperor.dictate.animations", true)) return;
 
         if (active) {
             if (recordPulseX == null || recordPulseY == null) {
