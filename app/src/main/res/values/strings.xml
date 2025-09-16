@@ -244,4 +244,5 @@
     <string name="dictate_changelog_26">v2.10.0\n\nThis update brings some cool new features 🤩\n\n- You can now record using the microphone of your headphones. So if you want to walk around more freely, this will help you a lot. 🎧\n\n- If you tap, hold and swipe to the left on the delete button, you can now select whole words for faster but still precise deletion. 🗑️\n\n- You can now set a custom system prompt for rewording models in the settings. 💡\n\n- Some design changes and bug fixes have been made. ✨\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
     <string name="dictate_settings_animations_title">Show animations ✨</string>
     <string name="dictate_settings_animations_summary">Show animations like the pulsating button</string>
+    <string name="dictate_changelog_27">v2.10.1\n\nThis is just a small update adding the ability to disable animations in the settings. Furthermore, Bluetooth support is disabled by default.\n\nAs always, feel free to contact me with questions and ideas via GitHub or the email button below. ☺️\n\n\n</string>
 </resources>
