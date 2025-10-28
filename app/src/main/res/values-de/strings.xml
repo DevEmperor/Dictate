@@ -124,6 +124,7 @@
     <string name="dictate_donate_msg">Wenn dir Dictate gefällt, würde ich mich sehr über eine kleine Spende freuen. 🥰</string>
     <string name="dictate_settings_overlay_characters_title">Eigene Zeichen bearbeiten (halte die ⏎ Taste)</string>
     <string name="dictate_overlay_characters_empty">Du musst mindestens ein Zeichen festlegen.</string>
+    <string name="dictate_emoji_picker_title">Emoji auswählen</string>
     <string name="dictate_example_prompt_one_name">Französisch Übersetzer</string>
     <string name="dictate_example_prompt_one_prompt">Ich möchte, dass du als französischer Übersetzer agierst. Ich werde in einer beliebigen Sprache mit dir sprechen und du wirst die Sprache erkennen, sie übersetzen und die französische Version meines Textes antworten. Antworte nur mit der Korrektur und den Verbesserungen, ohne Erklärungen oder Anführungszeichen am Anfang und Ende.</string>
     <string name="dictate_example_prompt_two_name">Zusammenfassen</string>

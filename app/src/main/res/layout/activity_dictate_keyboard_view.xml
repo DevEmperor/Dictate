@@ -259,10 +259,20 @@
             android:layout_height="match_parent"
             android:foreground="@drawable/ic_baseline_content_paste_24"
             android:foregroundGravity="center"
+            android:layout_marginHorizontal="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/edit_emoji_btn"
+            app:layout_constraintStart_toEndOf="@id/edit_copy_btn"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_emoji_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:foreground="@drawable/ic_baseline_emoji_emotions_24"
+            android:foregroundGravity="center"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/edit_copy_btn"/>
+            app:layout_constraintStart_toEndOf="@id/edit_paste_btn"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -323,6 +333,53 @@
                 tools:visibility="visible" />
 
         </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/emoji_picker_cl"
+        android:layout_width="0dp"
+        android:layout_height="480dp"
+        android:background="@color/dictate_keyboard_background_light"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="gone">
+
+        <TextView
+            android:id="@+id/emoji_picker_title_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/dictate_emoji_picker_title"
+            android:textColor="@color/dictate_blue"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/emoji_picker_close_btn"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_picker_close_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/emoji_picker_close_btn" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/emoji_picker_close_btn"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:foreground="@drawable/ic_baseline_close_24"
+            android:foregroundGravity="center"
+            android:minWidth="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.emoji2.emojipicker.EmojiPickerView
+            android:id="@+id/emoji_picker_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/emoji_picker_close_btn" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout

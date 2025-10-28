@@ -14,6 +14,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.inputmethodservice.InputMethodService;
+import android.icu.text.BreakIterator;
 import android.media.AudioAttributes;
 import android.media.AudioDeviceInfo;
 import android.media.AudioFocusRequest;
@@ -47,6 +48,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.emoji2.emojipicker.EmojiPickerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -90,6 +92,8 @@ import java.util.concurrent.Executors;
 public class DictateInputMethodService extends InputMethodService {
 
     // define handlers and runnables for background tasks
+    private static final int DELETE_LOOKBACK_CHARACTERS = 64;
+
     private Handler mainHandler;
     private Handler deleteHandler;
     private Handler recordTimeHandler;
@@ -163,6 +167,11 @@ public class DictateInputMethodService extends InputMethodService {
     private MaterialButton editCutButton;
     private MaterialButton editCopyButton;
     private MaterialButton editPasteButton;
+    private MaterialButton editEmojiButton;
+    private ConstraintLayout emojiPickerCl;
+    private TextView emojiPickerTitleTv;
+    private MaterialButton emojiPickerCloseButton;
+    private EmojiPickerView emojiPickerView;
     private LinearLayout overlayCharactersLl;
 
     // Recording visuals (pulsing)
@@ -225,6 +234,11 @@ public class DictateInputMethodService extends InputMethodService {
         editCutButton = dictateKeyboardView.findViewById(R.id.edit_cut_btn);
         editCopyButton = dictateKeyboardView.findViewById(R.id.edit_copy_btn);
         editPasteButton = dictateKeyboardView.findViewById(R.id.edit_paste_btn);
+        editEmojiButton = dictateKeyboardView.findViewById(R.id.edit_emoji_btn);
+        emojiPickerCl = dictateKeyboardView.findViewById(R.id.emoji_picker_cl);
+        emojiPickerTitleTv = dictateKeyboardView.findViewById(R.id.emoji_picker_title_tv);
+        emojiPickerCloseButton = dictateKeyboardView.findViewById(R.id.emoji_picker_close_btn);
+        emojiPickerView = dictateKeyboardView.findViewById(R.id.emoji_picker_view);
 
         overlayCharactersLl = dictateKeyboardView.findViewById(R.id.overlay_characters_ll);
 
@@ -695,6 +709,24 @@ public class DictateInputMethodService extends InputMethodService {
             });
         }
 
+        editEmojiButton.setOnClickListener(v -> {
+            vibrate();
+            toggleEmojiPicker();
+        });
+
+        emojiPickerCloseButton.setOnClickListener(v -> {
+            vibrate();
+            hideEmojiPicker();
+        });
+
+        emojiPickerView.setOnEmojiPickedListener(emoji -> {
+            vibrate();
+            InputConnection inputConnection = getCurrentInputConnection();
+            if (inputConnection != null && emoji != null) {
+                inputConnection.commitText(emoji.getEmoji(), 1);
+            }
+        });
+
         // initialize overlay characters
         for (int i = 0; i < 8; i++) {
             TextView charView = (TextView) LayoutInflater.from(context).inflate(R.layout.item_overlay_characters, overlayCharactersLl, false);
@@ -744,6 +776,7 @@ public class DictateInputMethodService extends InputMethodService {
         trashButton.setVisibility(View.GONE);
         resendButton.setVisibility(View.GONE);
         infoCl.setVisibility(View.GONE);
+        emojiPickerCl.setVisibility(View.GONE);
         isRecording = false;
         isPaused = false;
         livePrompt = false;
@@ -831,17 +864,20 @@ public class DictateInputMethodService extends InputMethodService {
 
         // update theme
         String theme = sp.getString("net.devemperor.dictate.theme", "system");
+        int keyboardBackgroundColor;
         if ("dark".equals(theme) || ("system".equals(theme) && (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
-            dictateKeyboardView.setBackgroundColor(getResources().getColor(R.color.dictate_keyboard_background_dark, getTheme()));
+            keyboardBackgroundColor = getResources().getColor(R.color.dictate_keyboard_background_dark, getTheme());
         } else {
-            dictateKeyboardView.setBackgroundColor(getResources().getColor(R.color.dictate_keyboard_background_light, getTheme()));
+            keyboardBackgroundColor = getResources().getColor(R.color.dictate_keyboard_background_light, getTheme());
         }
+        dictateKeyboardView.setBackgroundColor(keyboardBackgroundColor);
+        emojiPickerCl.setBackgroundColor(keyboardBackgroundColor);
 
         View[] backgroundColorViews = {
                 settingsButton, recordButton, resendButton, backspaceButton, switchButton, trashButton, spaceButton, pauseButton, enterButton,
-                editSelectAllButton, editUndoButton, editRedoButton, editCutButton, editCopyButton, editPasteButton
+                editSelectAllButton, editUndoButton, editRedoButton, editCutButton, editCopyButton, editPasteButton, editEmojiButton, emojiPickerCloseButton
         };
-        TextView[] textColorViews = { infoTv, runningPromptTv };
+        TextView[] textColorViews = { infoTv, runningPromptTv, emojiPickerTitleTv };
         for (View v : backgroundColorViews) v.setBackgroundColor(accentColor);
         for (TextView tv : textColorViews) tv.setTextColor(accentColor);
         runningPromptPb.getIndeterminateDrawable().setColorFilter(accentColor, android.graphics.PorterDuff.Mode.SRC_IN);
@@ -898,6 +934,25 @@ public class DictateInputMethodService extends InputMethodService {
         } else {
             vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
         }
+    }
+
+    private void toggleEmojiPicker() {
+        if (emojiPickerCl.getVisibility() == View.VISIBLE) {
+            hideEmojiPicker();
+        } else {
+            showEmojiPicker();
+        }
+    }
+
+    private void showEmojiPicker() {
+        overlayCharactersLl.setVisibility(View.GONE);
+        infoCl.setVisibility(View.GONE);
+        emojiPickerCl.setVisibility(View.VISIBLE);
+        emojiPickerCl.bringToFront();
+    }
+
+    private void hideEmojiPicker() {
+        emojiPickerCl.setVisibility(View.GONE);
     }
 
     private void openSettingsActivity() {
@@ -1394,15 +1449,36 @@ public class DictateInputMethodService extends InputMethodService {
 
     private void deleteOneCharacter() {
         InputConnection inputConnection = getCurrentInputConnection();
-        if (inputConnection != null) {
-            CharSequence selectedText = inputConnection.getSelectedText(0);
+        if (inputConnection == null) return;
 
-            if (selectedText != null) {
-                inputConnection.commitText("", 1);
-            } else {
-                inputConnection.deleteSurroundingText(1, 0);
+        CharSequence selectedText = inputConnection.getSelectedText(0);
+        if (selectedText != null && selectedText.length() > 0) {
+            inputConnection.commitText("", 1);
+            return;
+        }
+
+        CharSequence textBeforeCursor = inputConnection.getTextBeforeCursor(DELETE_LOOKBACK_CHARACTERS, 0);
+        if (textBeforeCursor == null || textBeforeCursor.length() == 0) {
+            inputConnection.deleteSurroundingText(1, 0);
+            return;
+        }
+
+        String before = textBeforeCursor.toString();
+        BreakIterator breakIterator = BreakIterator.getCharacterInstance(Locale.getDefault());
+        breakIterator.setText(before);
+
+        int end = before.length();
+        int start = breakIterator.preceding(end);
+        if (start == BreakIterator.DONE) {
+            try {
+                start = before.offsetByCodePoints(end, -1);
+            } catch (IndexOutOfBoundsException ignored) {
+                start = Math.max(0, end - 1);
             }
         }
+
+        int charsToDelete = Math.max(1, end - start);
+        inputConnection.deleteSurroundingText(charsToDelete, 0);
     }
 
     // checks whether a point is inside a view based on its horizontal position

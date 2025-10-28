@@ -131,6 +131,7 @@
     <string name="dictate_default_overlay_characters" translatable="false">()-:!?,.</string>
     <string name="dictate_settings_overlay_characters_title">Edit custom characters (hold ⏎ button)</string>
     <string name="dictate_overlay_characters_empty">You have to set at least one character.</string>
+    <string name="dictate_emoji_picker_title">Pick an emoji</string>
     <string name="dictate_example_prompt_one_name">French Translator</string>
     <string name="dictate_example_prompt_one_prompt">I want you to act as a French translator. I will speak to you in any language and you will detect the language, translate it and answer in the French version of my text. I want you to only reply the correction, the improvements and nothing else, do not write explanations and don\'t write quotation marks at start and end.</string>
     <string name="dictate_example_prompt_two_name">Summarise</string>
