@@ -4,6 +4,7 @@ import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +34,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
@@ -178,6 +181,9 @@ public class DictateInputMethodService extends InputMethodService {
     private ObjectAnimator recordPulseX;
     private ObjectAnimator recordPulseY;
 
+    // Keep screen awake while recording
+    private boolean keepScreenAwakeApplied = false;
+
     PromptsDatabaseHelper promptsDb;
     PromptsKeyboardAdapter promptsAdapter;
 
@@ -203,6 +209,8 @@ public class DictateInputMethodService extends InputMethodService {
         currentInputLanguagePos = sp.getInt("net.devemperor.dictate.input_language_pos", 0);
 
         dictateKeyboardView = (ConstraintLayout) LayoutInflater.from(context).inflate(R.layout.activity_dictate_keyboard_view, null);
+        dictateKeyboardView.setKeepScreenOn(false);
+        keepScreenAwakeApplied = false;
         ViewCompat.setOnApplyWindowInsetsListener(dictateKeyboardView, (v, insets) -> {
             v.setPadding(0, 0, 0, insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom);
             return insets;  // fix for overlapping with navigation bar on Android 15+
@@ -548,6 +556,7 @@ public class DictateInputMethodService extends InputMethodService {
             pauseButton.setVisibility(View.GONE);
             pauseButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_pause_24));
             trashButton.setVisibility(View.GONE);
+            updateKeepScreenAwake(false);
         });
 
         // space button that changes cursor position if user swipes over it
@@ -786,6 +795,7 @@ public class DictateInputMethodService extends InputMethodService {
         applyRecordingIconState(false);
         recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
         recordButton.setEnabled(true);
+        updateKeepScreenAwake(false);
     }
 
     // method is called if the keyboard appears again
@@ -1037,6 +1047,7 @@ public class DictateInputMethodService extends InputMethodService {
             recordButton.setText(R.string.dictate_send);
             applyRecordingIconState(true);
             updateRecordButtonIconWhileRecording();
+            updateKeepScreenAwake(true);
             pauseButton.setVisibility(View.VISIBLE);
             trashButton.setVisibility(View.VISIBLE);
             resendButton.setVisibility(View.GONE);
@@ -1058,11 +1069,47 @@ public class DictateInputMethodService extends InputMethodService {
             if (recordTimeRunnable != null) {
                 recordTimeHandler.removeCallbacks(recordTimeRunnable);
             }
-
-            if (isBluetoothScoStarted) am.stopBluetoothSco();
-
-            startWhisperApiRequest();
         }
+
+        updateKeepScreenAwake(false);
+
+        if (isBluetoothScoStarted) am.stopBluetoothSco();
+
+        startWhisperApiRequest();
+    }
+
+    private void updateKeepScreenAwake(boolean keepAwake) {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            if (mainHandler != null) {
+                mainHandler.post(() -> updateKeepScreenAwake(keepAwake));
+            }
+            return;
+        }
+
+        if (dictateKeyboardView != null) {
+            dictateKeyboardView.setKeepScreenOn(keepAwake);
+        }
+
+        if (keepScreenAwakeApplied == keepAwake) return;
+
+        Dialog windowDialog = getWindow();
+        if (windowDialog == null) {
+            if (!keepAwake) keepScreenAwakeApplied = false;
+            return;
+        }
+
+        Window window = windowDialog.getWindow();
+        if (window == null) {
+            if (!keepAwake) keepScreenAwakeApplied = false;
+            return;
+        }
+
+        if (keepAwake) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+        keepScreenAwakeApplied = keepAwake;
     }
 
     private void startWhisperApiRequest() {
