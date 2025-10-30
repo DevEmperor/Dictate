@@ -118,7 +118,7 @@
     <string name="dictate_prompts_overview_no_prompts">You have no prompts created.\nClick the button below to add one.</string>
     <string name="dictate_delete_prompt">Delete prompt?</string>
     <string name="dictate_delete_prompt_message">Are you sure to delete this prompt?</string>
-    <string name="dictate_requires_selection">Requires text selection</string>
+    <string name="dictate_requires_selection">Send selected text for rewriting</string>
     <string name="dictate_save">Save</string>
     <string name="dictate_edit_prompt_name_hint">Enter a name for this prompt</string>
     <string name="dictate_edit_prompt_prompt_hint">Enter an instruction here as to what the GPT model should do with your text.\n\nIf you have selected \"requires text selection\", Dictate will send your selected text automatically. If no text is selected, Dictate selects the whole field before sending it.\n\nTo output exactly a certain text, add [ and ] to the beginning and end of the prompt and exactly the text in the brackets will be printed.</string>
