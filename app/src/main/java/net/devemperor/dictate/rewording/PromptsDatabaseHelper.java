@@ -119,9 +119,9 @@ public class PromptsDatabaseHelper extends SQLiteOpenHelper {
         return models;
     }
 
-    public List<PromptModel> getAll(boolean requiresSelection) {
+    public List<PromptModel> getAllForKeyboard() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM PROMPTS WHERE REQUIRES_SELECTION = " + (requiresSelection ? 1 : 0) + " ORDER BY POS ASC", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM PROMPTS ORDER BY POS ASC", null);
 
         List<PromptModel> models = new ArrayList<>();
         models.add(new PromptModel(-1, Integer.MIN_VALUE, null, null, false));  // Add empty model for instant prompt

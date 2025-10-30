@@ -807,15 +807,11 @@ public class DictateInputMethodService extends InputMethodService {
             promptsCl.setVisibility(View.VISIBLE);
 
             // collect all prompts from database
-            List<PromptModel> data;
+            final List<PromptModel> data = promptsDb.getAllForKeyboard();
             InputConnection inputConnection = getCurrentInputConnection();
-            if (inputConnection != null && inputConnection.getSelectedText(0) == null) {
-                data = promptsDb.getAll(false);
-                editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_select_all_24));
-            } else {
-                data = promptsDb.getAll(true);
-                editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_deselect_24));
-            }
+            boolean hasSelection = inputConnection != null && inputConnection.getSelectedText(0) != null;
+            editSelectAllButton.setForeground(AppCompatResources.getDrawable(this,
+                    hasSelection ? R.drawable.ic_baseline_deselect_24 : R.drawable.ic_baseline_select_all_24));
 
             promptsAdapter = new PromptsKeyboardAdapter(sp, data, position -> {
                 vibrate();
@@ -835,6 +831,24 @@ public class DictateInputMethodService extends InputMethodService {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
+                    InputConnection currentConnection = getCurrentInputConnection();
+                    if (model.requiresSelection()) {
+                        if (currentConnection == null) {
+                            return;
+                        }
+                        ExtractedText extractedText = currentConnection.getExtractedText(new ExtractedTextRequest(), 0);
+                        if (extractedText == null || extractedText.text == null || extractedText.text.length() == 0) {
+                            return;  // nothing to edit
+                        }
+                        CharSequence selectedText = currentConnection.getSelectedText(0);
+                        if (selectedText == null || selectedText.length() == 0) {
+                            currentConnection.performContextMenuAction(android.R.id.selectAll);
+                            selectedText = currentConnection.getSelectedText(0);
+                            if (selectedText == null || selectedText.length() == 0) {
+                                return;
+                            }
+                        }
+                    }
                     startGPTApiRequest(model);  // another normal prompt clicked
                 }
             });
@@ -916,25 +930,16 @@ public class DictateInputMethodService extends InputMethodService {
     }
 
     // method is called if user changed text selection
-    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onUpdateSelection (int oldSelStart, int oldSelEnd, int newSelStart, int newSelEnd, int candidatesStart, int candidatesEnd) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd);
 
         // refill all prompts
         if (sp != null && sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
-            List<PromptModel> data;
-            if (getCurrentInputConnection().getSelectedText(0) == null) {
-                data = promptsDb.getAll(false);
-                editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_select_all_24));
-            } else {
-                data = promptsDb.getAll(true);
-                editSelectAllButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_deselect_24));
-            }
-
-            promptsAdapter.getData().clear();
-            promptsAdapter.getData().addAll(data);
-            promptsAdapter.notifyDataSetChanged();
+            InputConnection inputConnection = getCurrentInputConnection();
+            boolean hasSelection = inputConnection != null && inputConnection.getSelectedText(0) != null;
+            editSelectAllButton.setForeground(AppCompatResources.getDrawable(this,
+                    hasSelection ? R.drawable.ic_baseline_deselect_24 : R.drawable.ic_baseline_select_all_24));
         }
     }
 
@@ -1299,9 +1304,16 @@ public class DictateInputMethodService extends InputMethodService {
                 if (prompt.startsWith("[") && prompt.endsWith("]")) {
                     rewordedText = prompt.substring(1, prompt.length() - 1);
                 } else {
+                    CharSequence selectedText = null;
+                    if (model.requiresSelection()) {
+                        InputConnection selectedTextConnection = getCurrentInputConnection();
+                        if (selectedTextConnection != null) {
+                            selectedText = selectedTextConnection.getSelectedText(0);
+                        }
+                    }
                     prompt += "\n\n" + systemPrompt;
-                    if (getCurrentInputConnection().getSelectedText(0) != null) {
-                        prompt += "\n\n" + getCurrentInputConnection().getSelectedText(0).toString();
+                    if (selectedText != null) {
+                        prompt += "\n\n" + selectedText;
                     }
 
                     ChatCompletionCreateParams chatCompletionCreateParams = ChatCompletionCreateParams.builder()
