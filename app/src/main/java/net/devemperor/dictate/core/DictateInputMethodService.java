@@ -67,6 +67,7 @@ import com.openai.models.chat.completions.ChatCompletionCreateParams;
 import net.devemperor.dictate.BuildConfig;
 import net.devemperor.dictate.DictateUtils;
 import net.devemperor.dictate.R;
+import net.devemperor.dictate.rewording.PromptEditActivity;
 import net.devemperor.dictate.rewording.PromptModel;
 import net.devemperor.dictate.rewording.PromptsDatabaseHelper;
 import net.devemperor.dictate.rewording.PromptsKeyboardAdapter;
@@ -82,7 +83,9 @@ import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -186,8 +189,15 @@ public class DictateInputMethodService extends InputMethodService {
 
     PromptsDatabaseHelper promptsDb;
     PromptsKeyboardAdapter promptsAdapter;
+    private final List<Integer> queuedPromptIds = new ArrayList<>();
+    private boolean disableNonSelectionPrompts = false;
 
     UsageDatabaseHelper usageDb;
+
+    private interface PromptResultCallback {
+        void onSuccess(String text);
+        void onFailure();
+    }
 
     // start method that is called when user opens the keyboard
     @SuppressLint("ClickableViewAccessibility")
@@ -439,7 +449,7 @@ public class DictateInputMethodService extends InputMethodService {
                                 }
                             }
                             if (swipeWordBoundaries == null) {
-                                swipeWordBoundaries = java.util.Collections.singletonList(0);
+                                swipeWordBoundaries = Collections.singletonList(0);
                                 swipeBaseCursor = 0;
                             }
                         }
@@ -548,7 +558,9 @@ public class DictateInputMethodService extends InputMethodService {
             isRecording = false;
             isPaused = false;
             livePrompt = false;
+            clearQueuedPrompts();
             recordingUsesBluetooth = false;
+            updatePromptButtonsEnabledState();
             recordButton.setText(getDictateButtonText());
             applyRecordingIconState(false);
             recordButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_mic_20, 0, R.drawable.ic_baseline_folder_open_20, 0);
@@ -789,7 +801,9 @@ public class DictateInputMethodService extends InputMethodService {
         isRecording = false;
         isPaused = false;
         livePrompt = false;
+        clearQueuedPrompts();
         recordingUsesBluetooth = false;
+        updatePromptButtonsEnabledState();
         if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
         recordButton.setText(R.string.dictate_record);
         applyRecordingIconState(false);
@@ -813,46 +827,67 @@ public class DictateInputMethodService extends InputMethodService {
             editSelectAllButton.setForeground(AppCompatResources.getDrawable(this,
                     hasSelection ? R.drawable.ic_baseline_deselect_24 : R.drawable.ic_baseline_select_all_24));
 
-            promptsAdapter = new PromptsKeyboardAdapter(sp, data, position -> {
-                vibrate();
-                PromptModel model = data.get(position);
+            promptsAdapter = new PromptsKeyboardAdapter(sp, data, new PromptsKeyboardAdapter.AdapterCallback() {
+                @Override
+                public void onItemClicked(Integer position) {
+                    vibrate();
+                    PromptModel model = data.get(position);
 
-                if (model.getId() == -1) {  // instant prompt clicked
-                    livePrompt = true;
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                        openSettingsActivity();
-                    } else if (!isRecording && !isPreparingRecording) {
-                        startRecording();
-                    } else if (isRecording) {
-                        stopRecording();
-                    }
-                } else if (model.getId() == -2) {  // add prompt clicked
-                    Intent intent = new Intent(this, PromptsOverviewActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                } else {
-                    InputConnection currentConnection = getCurrentInputConnection();
-                    if (model.requiresSelection()) {
-                        if (currentConnection == null) {
+                    if (model.getId() == -1) {  // instant prompt clicked
+                        livePrompt = true;
+                        if (ContextCompat.checkSelfPermission(DictateInputMethodService.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                            openSettingsActivity();
+                        } else if (!isRecording && !isPreparingRecording) {
+                            startRecording();
+                        } else if (isRecording) {
+                            stopRecording();
+                        }
+                    } else if (model.getId() == -2) {  // add prompt clicked
+                        Intent intent = new Intent(DictateInputMethodService.this, PromptsOverviewActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    } else {
+                        if ((isRecording || isPreparingRecording) && !livePrompt) {
+                            toggleQueuedPrompt(model);
                             return;
                         }
-                        ExtractedText extractedText = currentConnection.getExtractedText(new ExtractedTextRequest(), 0);
-                        if (extractedText == null || extractedText.text == null || extractedText.text.length() == 0) {
-                            return;  // nothing to edit
-                        }
-                        CharSequence selectedText = currentConnection.getSelectedText(0);
-                        if (selectedText == null || selectedText.length() == 0) {
-                            currentConnection.performContextMenuAction(android.R.id.selectAll);
-                            selectedText = currentConnection.getSelectedText(0);
-                            if (selectedText == null || selectedText.length() == 0) {
+                        InputConnection currentConnection = getCurrentInputConnection();
+                        if (model.requiresSelection()) {
+                            if (currentConnection == null) {
                                 return;
                             }
+                            ExtractedText extractedText = currentConnection.getExtractedText(new ExtractedTextRequest(), 0);
+                            if (extractedText == null || extractedText.text == null || extractedText.text.length() == 0) {
+                                return;  // nothing to edit
+                            }
+                            CharSequence selectedText = currentConnection.getSelectedText(0);
+                            if (selectedText == null || selectedText.length() == 0) {
+                                currentConnection.performContextMenuAction(android.R.id.selectAll);
+                                selectedText = currentConnection.getSelectedText(0);
+                                if (selectedText == null || selectedText.length() == 0) {
+                                    return;
+                                }
+                            }
                         }
+                        startGPTApiRequest(model);  // another normal prompt clicked
                     }
-                    startGPTApiRequest(model);  // another normal prompt clicked
+                }
+
+                @Override
+                public void onItemLongClicked(Integer position) {
+                    PromptModel model = data.get(position);
+                    if (model.getId() >= 0) {
+                        vibrate();
+                        Intent intent = new Intent(DictateInputMethodService.this, PromptEditActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("net.devemperor.dictate.prompt_edit_activity_id", model.getId());
+                        startActivity(intent);
+                    }
                 }
             });
             promptsRv.setAdapter(promptsAdapter);
+            promptsAdapter.setDisableNonSelectionPrompts(disableNonSelectionPrompts);
+            updateQueuedPromptsUi();
         } else {
             promptsCl.setVisibility(View.GONE);
         }
@@ -990,6 +1025,7 @@ public class DictateInputMethodService extends InputMethodService {
             isPreparingRecording = true;
             recordingPending = true;
             waitingForSco = true;
+            updatePromptButtonsEnabledState();
             mainHandler.post(() -> recordButton.setEnabled(false));
 
             am.startBluetoothSco();  // initiate SCO connection
@@ -1030,6 +1066,7 @@ public class DictateInputMethodService extends InputMethodService {
             recordingPending = false;
             waitingForSco = false;
             recordingUsesBluetooth = false;
+            updatePromptButtonsEnabledState();
             if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
             mainHandler.post(() -> {
                 recordButton.setText(getDictateButtonText());
@@ -1046,6 +1083,7 @@ public class DictateInputMethodService extends InputMethodService {
         recordingPending = false;
         waitingForSco = false;
         recordingUsesBluetooth = useBtForThisRecording;
+        updatePromptButtonsEnabledState();
 
         mainHandler.post(() -> {
             recordButton.setEnabled(true);
@@ -1131,6 +1169,7 @@ public class DictateInputMethodService extends InputMethodService {
         isRecording = false;
         isPaused = false;
         recordingUsesBluetooth = false;
+        updatePromptButtonsEnabledState();
 
         if (audioFocusEnabled) am.abandonAudioFocusRequest(audioFocusRequest);
 
@@ -1184,20 +1223,22 @@ public class DictateInputMethodService extends InputMethodService {
 
                 usageDb.edit(transcriptionModel, DictateUtils.getAudioDuration(audioFile), 0, 0, transcriptionProvider);
 
-                if (!livePrompt) {
-                    InputConnection inputConnection = getCurrentInputConnection();
-                    if (inputConnection != null) {
-                        if (sp.getBoolean("net.devemperor.dictate.instant_output", true)) {
-                            inputConnection.commitText(resultText, 1);
-                        } else {
-                            int speed = sp.getInt("net.devemperor.dictate.output_speed", 5);
-                            for (int i = 0; i < resultText.length(); i++) {
-                                char character = resultText.charAt(i);
-                                mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), (long) (i * (20L / (speed / 5f))));
-                            }
-                        }
+                boolean processedByQueuedPrompts = false;
+                List<Integer> promptsToApply;
+                synchronized (queuedPromptIds) {
+                    promptsToApply = new ArrayList<>(queuedPromptIds);
+                }
+                if (!promptsToApply.isEmpty()) {
+                    clearQueuedPrompts();
+                    if (!livePrompt) {
+                        processQueuedPrompts(resultText, promptsToApply);
+                        processedByQueuedPrompts = true;
                     }
-                } else {
+                }
+
+                if (!processedByQueuedPrompts && !livePrompt) {
+                    commitTextToInputConnection(resultText);
+                } else if (livePrompt) {
                     // continue with ChatGPT API request
                     livePrompt = false;
                     startGPTApiRequest(new PromptModel(-1, Integer.MIN_VALUE, "", resultText, false));
@@ -1253,6 +1294,10 @@ public class DictateInputMethodService extends InputMethodService {
     }
 
     private void startGPTApiRequest(PromptModel model) {
+        startGPTApiRequest(model, null, null, true);
+    }
+
+    private void startGPTApiRequest(PromptModel model, String overrideSelection, PromptResultCallback callback, boolean restorePromptsOnFinish) {
         mainHandler.post(() -> {
             promptsRv.setVisibility(View.GONE);
             runningPromptTv.setVisibility(View.VISIBLE);
@@ -1285,9 +1330,15 @@ public class DictateInputMethodService extends InputMethodService {
 
                 String rewordingModel = "";
                 switch (rewordingProvider) {
-                    case 0: rewordingModel = sp.getString("net.devemperor.dictate.rewording_openai_model", sp.getString("net.devemperor.dictate.rewording_model", "gpt-4o-mini")); break;
-                    case 1: rewordingModel = sp.getString("net.devemperor.dictate.rewording_groq_model", "llama-3.3-70b-versatile"); break;
-                    case 2: rewordingModel = sp.getString("net.devemperor.dictate.rewording_custom_model", getString(R.string.dictate_custom_rewording_model_hint));
+                    case 0:
+                        rewordingModel = sp.getString("net.devemperor.dictate.rewording_openai_model", sp.getString("net.devemperor.dictate.rewording_model", "gpt-4o-mini"));
+                        break;
+                    case 1:
+                        rewordingModel = sp.getString("net.devemperor.dictate.rewording_groq_model", "llama-3.3-70b-versatile");
+                        break;
+                    case 2:
+                        rewordingModel = sp.getString("net.devemperor.dictate.rewording_custom_model", getString(R.string.dictate_custom_rewording_model_hint));
+                        break;
                 }
 
                 OpenAIOkHttpClient.Builder clientBuilder = OpenAIOkHttpClient.builder()
@@ -1305,14 +1356,16 @@ public class DictateInputMethodService extends InputMethodService {
                     rewordedText = prompt.substring(1, prompt.length() - 1);
                 } else {
                     CharSequence selectedText = null;
-                    if (model.requiresSelection()) {
+                    if (overrideSelection != null) {
+                        selectedText = overrideSelection;
+                    } else if (model.requiresSelection()) {
                         InputConnection selectedTextConnection = getCurrentInputConnection();
                         if (selectedTextConnection != null) {
                             selectedText = selectedTextConnection.getSelectedText(0);
                         }
                     }
                     prompt += "\n\n" + systemPrompt;
-                    if (selectedText != null) {
+                    if (selectedText != null && selectedText.length() > 0) {
                         prompt += "\n\n" + selectedText;
                     }
 
@@ -1328,17 +1381,10 @@ public class DictateInputMethodService extends InputMethodService {
                     }
                 }
 
-                InputConnection inputConnection = getCurrentInputConnection();
-                if (inputConnection != null) {
-                    if (sp.getBoolean("net.devemperor.dictate.instant_output", true)) {
-                        inputConnection.commitText(rewordedText, 1);
-                    } else {
-                        int speed = sp.getInt("net.devemperor.dictate.output_speed", 5);
-                        for (int i = 0; i < rewordedText.length(); i++) {
-                            char character = rewordedText.charAt(i);
-                            mainHandler.postDelayed(() -> inputConnection.commitText(String.valueOf(character), 1), (long) (i * (20L / (speed / 5f))));
-                        }
-                    }
+                if (callback != null) {
+                    callback.onSuccess(rewordedText);
+                } else {
+                    commitTextToInputConnection(rewordedText);
                 }
             } catch (RuntimeException e) {
                 if (!(e.getCause() instanceof InterruptedIOException)) {
@@ -1363,13 +1409,133 @@ public class DictateInputMethodService extends InputMethodService {
                         showInfo("timeout");
                     });
                 }
+
+                if (callback != null) {
+                    callback.onFailure();
+                }
+                if (!restorePromptsOnFinish) {
+                    restorePromptUi();
+                }
             }
 
-            mainHandler.post(() -> {
-                promptsRv.setVisibility(View.VISIBLE);
-                runningPromptTv.setVisibility(View.GONE);
-                runningPromptPb.setVisibility(View.GONE);
-            });
+            if (restorePromptsOnFinish || callback == null) {
+                restorePromptUi();
+            }
+        });
+    }
+
+    private void commitTextToInputConnection(String text) {
+        InputConnection inputConnection = getCurrentInputConnection();
+        if (inputConnection == null) return;
+
+        String output = text == null ? "" : text;
+        if (sp.getBoolean("net.devemperor.dictate.instant_output", true)) {
+            inputConnection.commitText(output, 1);
+        } else if (mainHandler != null) {
+            int speed = sp.getInt("net.devemperor.dictate.output_speed", 5);
+            for (int i = 0; i < output.length(); i++) {
+                char character = output.charAt(i);
+                String characterString = String.valueOf(character);
+                long delay = (long) (i * (20L / (speed / 5f)));
+                mainHandler.postDelayed(() -> {
+                    InputConnection ic = getCurrentInputConnection();
+                    if (ic != null) {
+                        ic.commitText(characterString, 1);
+                    }
+                }, delay);
+            }
+        } else {
+            inputConnection.commitText(output, 1);
+        }
+    }
+
+    private void processQueuedPrompts(String initialText, List<Integer> promptIds) {
+        if (promptIds == null || promptIds.isEmpty()) {
+            commitTextToInputConnection(initialText);
+            return;
+        }
+        applyQueuedPromptAtIndex(initialText, promptIds, 0);
+    }
+
+    private void applyQueuedPromptAtIndex(String currentText, List<Integer> promptIds, int index) {
+        if (index >= promptIds.size()) {
+            commitTextToInputConnection(currentText);
+            return;
+        }
+
+        PromptModel prompt = promptsDb.get(promptIds.get(index));
+        if (prompt == null) {
+            applyQueuedPromptAtIndex(currentText, promptIds, index + 1);
+            return;
+        }
+
+        if (prompt.requiresSelection() && (currentText == null || currentText.isEmpty())) {
+            applyQueuedPromptAtIndex(currentText, promptIds, index + 1);
+            return;
+        }
+
+        String inputForPrompt = prompt.requiresSelection() ? currentText : null;
+        boolean restoreUiAfter = index == promptIds.size() - 1;
+
+        startGPTApiRequest(prompt, inputForPrompt, new PromptResultCallback() {
+            @Override
+            public void onSuccess(String text) {
+                applyQueuedPromptAtIndex(text, promptIds, index + 1);
+            }
+
+            @Override
+            public void onFailure() {
+                commitTextToInputConnection(currentText == null ? "" : currentText);
+            }
+        }, restoreUiAfter);
+    }
+
+    private void toggleQueuedPrompt(PromptModel model) {
+        if (model.getId() < 0) return;
+
+        synchronized (queuedPromptIds) {
+            Integer promptId = model.getId();
+            if (queuedPromptIds.contains(promptId)) {
+                queuedPromptIds.remove(promptId);
+            } else {
+                queuedPromptIds.add(promptId);
+            }
+        }
+        updateQueuedPromptsUi();
+    }
+
+    private void updateQueuedPromptsUi() {
+        if (promptsAdapter == null || mainHandler == null) return;
+        List<Integer> snapshot;
+        synchronized (queuedPromptIds) {
+            snapshot = new ArrayList<>(queuedPromptIds);
+        }
+        mainHandler.post(() -> promptsAdapter.setQueuedPromptOrder(snapshot));
+    }
+
+    private void clearQueuedPrompts() {
+        synchronized (queuedPromptIds) {
+            queuedPromptIds.clear();
+        }
+        updateQueuedPromptsUi();
+    }
+
+    private void updatePromptButtonsEnabledState() {
+        disableNonSelectionPrompts = isRecording || isPreparingRecording;
+        if (promptsAdapter == null) return;
+        if (mainHandler != null) {
+            mainHandler.post(() -> promptsAdapter.setDisableNonSelectionPrompts(disableNonSelectionPrompts));
+        } else {
+            promptsAdapter.setDisableNonSelectionPrompts(disableNonSelectionPrompts);
+        }
+    }
+
+    private void restorePromptUi() {
+        if (mainHandler == null) return;
+        mainHandler.post(() -> {
+            if (promptsRv != null) promptsRv.setVisibility(View.VISIBLE);
+            if (runningPromptTv != null) runningPromptTv.setVisibility(View.GONE);
+            if (runningPromptPb != null) runningPromptPb.setVisibility(View.GONE);
         });
     }
 
@@ -1660,5 +1826,6 @@ public class DictateInputMethodService extends InputMethodService {
         if (bluetoothHandler != null && scoTimeoutRunnable != null) {
             bluetoothHandler.removeCallbacks(scoTimeoutRunnable);
         }
+        updatePromptButtonsEnabledState();
     }
 }
