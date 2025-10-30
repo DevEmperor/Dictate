@@ -113,7 +113,10 @@
     <string name="dictate_delete_prompt">Anweisung löschen?</string>
     <string name="dictate_delete_prompt_message">Bist du sicher, dass du diese Anweisung löschen möchtest?</string>
     <string name="dictate_requires_selection">Ausgewählten Text zur Überarbeitung senden</string>
-    <string name="dictate_auto_apply">Automatisch anwenden</string>
+    <string name="dictate_auto_apply">Nach der Transkription automatisch anwenden</string>
+    <string name="dictate_unsaved_changes_title">Änderungen verwerfen?</string>
+    <string name="dictate_unsaved_changes_message">Du hast nicht gespeicherte Änderungen. Möchtest du sie speichern oder verwerfen?</string>
+    <string name="dictate_discard_changes">Verwerfen</string>
     <string name="dictate_save">Speichern</string>
     <string name="dictate_edit_prompt_name_hint">Gib einen Namen für diese Anweisung ein</string>
     <string name="dictate_edit_prompt_prompt_hint">Gib hier eine Anweisung ein, was das GPT-Modell mit deinem Text machen soll.\n\nWenn du \"Erfordert Textauswahl\" ausgewählt hast, sendet Dictate deinen markierten Text automatisch mit. Ist kein Text markiert, wählt Dictate das komplette Feld aus und sendet es.\n\nUm genau einen bestimmten Text auszugeben, füge [ und ] an den Anfang und das Ende des Prompts, und es wird genau der Text in den Klammern ausgegeben.</string>
