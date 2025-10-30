@@ -24,49 +24,82 @@
         android:id="@+id/prompt_edit_prompt_et"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginVertical="16dp"
         android:gravity="top"
         android:hint="@string/dictate_edit_prompt_prompt_hint"
         android:inputType="text|textLongMessage|textAutoCorrect|textCapSentences|textMultiLine"
         android:singleLine="false"
-        app:layout_constraintBottom_toTopOf="@+id/prompt_edit_requires_selection_switch"
+        app:layout_constraintBottom_toTopOf="@+id/prompt_edit_requires_selection_container"
         app:layout_constraintTop_toBottomOf="@+id/prompt_edit_name_et" />
 
-    <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/prompt_edit_requires_selection_switch"
+    <LinearLayout
+        android:id="@+id/prompt_edit_requires_selection_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginHorizontal="8dp"
-        android:text="@string/dictate_requires_selection"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/prompt_edit_auto_apply_container"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/prompt_edit_prompt_et" />
+        app:layout_constraintStart_toStartOf="parent">
 
-    <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/prompt_edit_auto_apply_switch"
+        <ImageView
+            android:id="@+id/prompt_edit_requires_selection_icon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_baseline_select_all_24"
+            app:tint="@color/dictate_blue" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/prompt_edit_requires_selection_switch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="@string/dictate_requires_selection" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/prompt_edit_auto_apply_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginHorizontal="8dp"
-        android:text="@string/dictate_auto_apply"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/prompt_edit_save_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/prompt_edit_requires_selection_switch" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/prompt_edit_auto_apply_icon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_baseline_autorenew_24"
+            app:tint="@color/dictate_blue" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/prompt_edit_auto_apply_switch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/dictate_auto_apply" />
+    </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/prompt_edit_save_btn"
         android:layout_width="128dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:enabled="false"
         android:text="@string/dictate_save"
         app:icon="@drawable/ic_baseline_check_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/prompt_edit_auto_apply_switch" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

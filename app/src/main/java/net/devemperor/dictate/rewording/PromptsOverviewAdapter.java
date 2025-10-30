@@ -1,12 +1,15 @@
 package net.devemperor.dictate.rewording;
 
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
@@ -44,6 +47,9 @@ public class PromptsOverviewAdapter extends RecyclerView.Adapter<PromptsOverview
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
         final TextView itemNameTv;
         final TextView itemPromptTv;
+        final ImageView requiresSelectionIv;
+        final ImageView autoApplyIv;
+        final View nameContainer;
         final MaterialButton moveUpBtn;
         final MaterialButton moveDownBtn;
         final MaterialButton deleteBtn;
@@ -52,6 +58,9 @@ public class PromptsOverviewAdapter extends RecyclerView.Adapter<PromptsOverview
             super(itemView);
             itemNameTv = itemView.findViewById(R.id.item_prompts_overview_name_tv);
             itemPromptTv = itemView.findViewById(R.id.item_prompts_overview_prompt_tv);
+            requiresSelectionIv = itemView.findViewById(R.id.item_prompts_overview_requires_selection_iv);
+            autoApplyIv = itemView.findViewById(R.id.item_prompts_overview_auto_apply_iv);
+            nameContainer = itemView.findViewById(R.id.item_prompts_overview_name_container);
             moveUpBtn = itemView.findViewById(R.id.item_prompts_overview_move_up_btn);
             moveDownBtn = itemView.findViewById(R.id.item_prompts_overview_move_down_btn);
             deleteBtn = itemView.findViewById(R.id.item_prompts_overview_delete_btn);
@@ -68,6 +77,14 @@ public class PromptsOverviewAdapter extends RecyclerView.Adapter<PromptsOverview
         holder.itemNameTv.setOnClickListener(v -> callback.onItemClicked(currentPosition));
         holder.itemPromptTv.setText(model.getPrompt());
         holder.itemPromptTv.setOnClickListener(v -> callback.onItemClicked(currentPosition));
+        holder.nameContainer.setOnClickListener(v -> callback.onItemClicked(currentPosition));
+
+        int enabledColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.dictate_blue);
+        int disabledColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.dictate_grey);
+        holder.requiresSelectionIv.setImageTintList(ColorStateList.valueOf(
+                model.requiresSelection() ? enabledColor : disabledColor));
+        holder.autoApplyIv.setImageTintList(ColorStateList.valueOf(
+                model.isAutoApply() ? enabledColor : disabledColor));
 
         holder.moveUpBtn.setVisibility(currentPosition == 0 ? View.GONE : View.VISIBLE);
         holder.moveDownBtn.setVisibility(currentPosition == data.size() - 1 ? View.GONE : View.VISIBLE);
