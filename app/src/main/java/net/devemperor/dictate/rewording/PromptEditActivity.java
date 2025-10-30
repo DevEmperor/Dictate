@@ -43,6 +43,7 @@ public class PromptEditActivity extends AppCompatActivity {
         EditText promptNameEt = findViewById(R.id.prompt_edit_name_et);
         EditText promptPromptEt = findViewById(R.id.prompt_edit_prompt_et);
         MaterialSwitch promptRequiresSelectionSwitch = findViewById(R.id.prompt_edit_requires_selection_switch);
+        MaterialSwitch promptAutoApplySwitch = findViewById(R.id.prompt_edit_auto_apply_switch);
         MaterialButton savePromptBtn = findViewById(R.id.prompt_edit_save_btn);
 
         db = new PromptsDatabaseHelper(this);
@@ -53,6 +54,7 @@ public class PromptEditActivity extends AppCompatActivity {
             promptNameEt.setText(model.getName());
             promptPromptEt.setText(model.getPrompt());
             promptRequiresSelectionSwitch.setChecked(model.requiresSelection());
+            promptAutoApplySwitch.setChecked(model.isAutoApply());
             savePromptBtn.setEnabled(true);
         }
 
@@ -69,16 +71,18 @@ public class PromptEditActivity extends AppCompatActivity {
             String name = promptNameEt.getText().toString();
             String prompt = promptPromptEt.getText().toString();
             boolean requiresSelection = promptRequiresSelectionSwitch.isChecked();
+            boolean autoApply = promptAutoApplySwitch.isChecked();
 
             Intent result = new Intent();
             if (id == -1) {
-                int addId = db.add(new PromptModel(0, db.count(), name, prompt, requiresSelection));
+                int addId = db.add(new PromptModel(0, db.count(), name, prompt, requiresSelection, autoApply));
                 result.putExtra("added_id", addId);
             } else {
                 PromptModel model = db.get(id);
                 model.setName(name);
                 model.setPrompt(prompt);
                 model.setRequiresSelection(requiresSelection);
+                model.setAutoApply(autoApply);
                 db.update(model);
                 result.putExtra("updated_id", id);
             }

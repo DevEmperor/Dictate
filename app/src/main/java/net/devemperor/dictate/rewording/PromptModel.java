@@ -6,13 +6,15 @@ public class PromptModel {
     String name;
     String prompt;
     boolean requiresSelection;
+    boolean autoApply;
 
-    public PromptModel(int id, int pos, String name, String prompt, boolean requiresSelection) {
+    public PromptModel(int id, int pos, String name, String prompt, boolean requiresSelection, boolean autoApply) {
         this.id = id;
         this.pos = pos;
         this.name = name;
         this.prompt = prompt;
         this.requiresSelection = requiresSelection;
+        this.autoApply = autoApply;
     }
 
     public int getId() {
@@ -53,5 +55,13 @@ public class PromptModel {
 
     public void setRequiresSelection(boolean requiresSelection) {
         this.requiresSelection = requiresSelection;
+    }
+
+    public boolean isAutoApply() {
+        return autoApply;
+    }
+
+    public void setAutoApply(boolean autoApply) {
+        this.autoApply = autoApply;
     }
 }

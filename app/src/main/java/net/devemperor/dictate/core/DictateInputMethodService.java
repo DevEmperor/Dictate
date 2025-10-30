@@ -1014,6 +1014,8 @@ public class DictateInputMethodService extends InputMethodService {
     private void startRecording() {
         if (isRecording || isPreparingRecording) return;  // prevent re-entrance
 
+        prepareAutoApplyQueue();
+
         audioFile = new File(getCacheDir(), "audio.m4a");
         sp.edit().putString("net.devemperor.dictate.last_file_name", audioFile.getName()).apply();
 
@@ -1241,7 +1243,7 @@ public class DictateInputMethodService extends InputMethodService {
                 } else if (livePrompt) {
                     // continue with ChatGPT API request
                     livePrompt = false;
-                    startGPTApiRequest(new PromptModel(-1, Integer.MIN_VALUE, "", resultText, false));
+                    startGPTApiRequest(new PromptModel(-1, Integer.MIN_VALUE, "", resultText, false, false));
                 }
 
                 if (new File(getCacheDir(), sp.getString("net.devemperor.dictate.last_file_name", "audio.m4a")).exists()
@@ -1516,6 +1518,23 @@ public class DictateInputMethodService extends InputMethodService {
     private void clearQueuedPrompts() {
         synchronized (queuedPromptIds) {
             queuedPromptIds.clear();
+        }
+        updateQueuedPromptsUi();
+    }
+
+    private void prepareAutoApplyQueue() {
+        if (promptsDb == null || sp == null || !sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) return;
+        List<Integer> autoApplyIds = promptsDb.getAutoApplyIds();
+        synchronized (queuedPromptIds) {
+            List<Integer> manualQueue = new ArrayList<>();
+            for (Integer id : queuedPromptIds) {
+                if (!autoApplyIds.contains(id)) {
+                    manualQueue.add(id);
+                }
+            }
+            queuedPromptIds.clear();
+            queuedPromptIds.addAll(autoApplyIds);
+            queuedPromptIds.addAll(manualQueue);
         }
         updateQueuedPromptsUi();
     }
