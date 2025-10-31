@@ -128,6 +128,19 @@
     <string name="dictate_edit_prompt_prompt_hint">Enter an instruction here as to what the GPT model should do with your text.\n\nIf you have selected \"requires text selection\", Dictate will send your selected text automatically. If no text is selected, Dictate selects the whole field before sending it.\n\nTo output exactly a certain text, add [ and ] to the beginning and end of the prompt and exactly the text in the brackets will be printed.</string>
     <string name="dictate_edit_prompt">Edit prompt</string>
     <string name="dictate_prompts">Prompts</string>
+    <string name="dictate_prompts_export_json">Export</string>
+    <string name="dictate_prompts_import_json">Import</string>
+    <string name="dictate_prompts_add_prompt">Add</string>
+    <string name="dictate_prompts_import_mode_title">Import prompts</string>
+    <string name="dictate_prompts_import_mode_message">Should the imported prompts be added to your existing list or replace it entirely?</string>
+    <string name="dictate_prompts_import_mode_add">Add</string>
+    <string name="dictate_prompts_import_mode_replace">Replace</string>
+    <string name="dictate_prompts_import_success">Prompts imported.</string>
+    <string name="dictate_prompts_import_no_prompts">The selected file does not contain any prompts.</string>
+    <string name="dictate_prompts_import_failed">Could not import prompts.</string>
+    <string name="dictate_prompts_export_success">Prompts exported.</string>
+    <string name="dictate_prompts_export_failed">Could not export prompts.</string>
+    <string name="dictate_prompts_export_filename" translatable="false">dictate_prompts.json</string>
     <string name="dictate_rate_app_msg">Do you like Dictate? I would be happy to receive a rating in the PlayStore. 😇</string>
     <string name="dictate_enable_keyboard_title">Enable Dictate keyboard?</string>
     <string name="dictate_enable_keyboard_message">The Dictate keyboard isn\'t enabled in the system settings anymore. Do you want to open the system keyboard settings to correct this?</string>

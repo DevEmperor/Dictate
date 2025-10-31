@@ -31,7 +31,7 @@ public class PromptEditActivity extends AppCompatActivity {
 
     private String initialName = "";
     private String initialPrompt = "";
-    private boolean initialRequiresSelection = false;
+    private boolean initialRequiresSelection = true;
     private boolean initialAutoApply = false;
 
     @Override
@@ -79,7 +79,7 @@ public class PromptEditActivity extends AppCompatActivity {
         if (promptId == -1) {
             initialName = "";
             initialPrompt = "";
-            initialRequiresSelection = false;
+            initialRequiresSelection = true;
             initialAutoApply = false;
         }
 
@@ -131,6 +131,14 @@ public class PromptEditActivity extends AppCompatActivity {
         String currentPrompt = promptPromptEt.getText().toString();
         boolean currentRequiresSelection = promptRequiresSelectionSwitch.isChecked();
         boolean currentAutoApply = promptAutoApplySwitch.isChecked();
+
+        if (promptId == -1
+                && currentName.isEmpty()
+                && currentPrompt.isEmpty()
+                && currentRequiresSelection
+                && !currentAutoApply) {
+            return false;
+        }
 
         return !currentName.equals(initialName)
                 || !currentPrompt.equals(initialPrompt)

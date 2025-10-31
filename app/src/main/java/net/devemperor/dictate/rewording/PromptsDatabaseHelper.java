@@ -88,6 +88,50 @@ public class PromptsDatabaseHelper extends SQLiteOpenHelper {
         return (int) db.insert("PROMPTS", null, cv);
     }
 
+    public void addAll(List<PromptModel> models) {
+        if (models == null || models.isEmpty()) return;
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (PromptModel model : models) {
+                ContentValues cv = new ContentValues();
+                cv.put("POS", model.getPos());
+                cv.put("NAME", model.getName());
+                cv.put("PROMPT", model.getPrompt());
+                cv.put("REQUIRES_SELECTION", model.requiresSelection());
+                cv.put("AUTO_APPLY", model.isAutoApply());
+                db.insert("PROMPTS", null, cv);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public void replaceAll(List<PromptModel> models) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            db.delete("PROMPTS", null, null);
+            if (models != null) {
+                for (PromptModel model : models) {
+                    ContentValues cv = new ContentValues();
+                    cv.put("POS", model.getPos());
+                    cv.put("NAME", model.getName());
+                    cv.put("PROMPT", model.getPrompt());
+                    cv.put("REQUIRES_SELECTION", model.requiresSelection());
+                    cv.put("AUTO_APPLY", model.isAutoApply());
+                    db.insert("PROMPTS", null, cv);
+                }
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
     public void update(PromptModel model) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();

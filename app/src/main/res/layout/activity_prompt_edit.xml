@@ -92,11 +92,13 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/prompt_edit_save_btn"
-        android:layout_width="128dp"
+        android:layout_width="164dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:enabled="false"
         android:text="@string/dictate_save"
+        app:iconGravity="textStart"
+        app:iconPadding="16dp"
         app:icon="@drawable/ic_baseline_check_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
