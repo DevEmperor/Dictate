@@ -86,7 +86,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -1679,16 +1679,31 @@ public class DictateInputMethodService extends InputMethodService {
     }
 
     private String getDictateButtonText() {
-        Set<String> currentInputLanguagesValues = new HashSet<>(Arrays.asList(getResources().getStringArray(R.array.dictate_default_input_languages)));
-        currentInputLanguagesValues = sp.getStringSet("net.devemperor.dictate.input_languages", currentInputLanguagesValues);
         List<String> allLanguagesValues = Arrays.asList(getResources().getStringArray(R.array.dictate_input_languages_values));
         List<String> recordDifferentLanguages = Arrays.asList(getResources().getStringArray(R.array.dictate_record_different_languages));
 
-        if (currentInputLanguagePos >= currentInputLanguagesValues.size()) currentInputLanguagePos = 0;
+        LinkedHashSet<String> defaultLanguages = new LinkedHashSet<>(Arrays.asList(getResources().getStringArray(R.array.dictate_default_input_languages)));
+        Set<String> storedLanguages = sp.getStringSet("net.devemperor.dictate.input_languages", defaultLanguages);
+        LinkedHashSet<String> sanitizedLanguages = new LinkedHashSet<>();
+        for (String language : storedLanguages) {
+            if (allLanguagesValues.contains(language)) sanitizedLanguages.add(language);
+        }
+        if (sanitizedLanguages.isEmpty()) sanitizedLanguages.addAll(defaultLanguages);
+        if (!sanitizedLanguages.equals(storedLanguages)) {
+            sp.edit().putStringSet("net.devemperor.dictate.input_languages", sanitizedLanguages).apply();
+        }
+
+        List<String> languagesList = new ArrayList<>(sanitizedLanguages);
+        if (currentInputLanguagePos >= languagesList.size()) currentInputLanguagePos = 0;
         sp.edit().putInt("net.devemperor.dictate.input_language_pos", currentInputLanguagePos).apply();
 
-        currentInputLanguageValue = currentInputLanguagesValues.toArray()[currentInputLanguagePos].toString();
-        return recordDifferentLanguages.get(allLanguagesValues.indexOf(currentInputLanguagesValues.toArray()[currentInputLanguagePos].toString()));
+        currentInputLanguageValue = languagesList.get(currentInputLanguagePos);
+        int languageIndex = allLanguagesValues.indexOf(currentInputLanguageValue);
+        if (languageIndex < 0) {
+            currentInputLanguageValue = allLanguagesValues.get(0);
+            languageIndex = 0;
+        }
+        return recordDifferentLanguages.get(languageIndex);
     }
 
     private void deleteOneCharacter() {

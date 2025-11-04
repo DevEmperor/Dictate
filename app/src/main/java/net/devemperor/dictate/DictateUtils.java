@@ -206,24 +206,28 @@ public class DictateUtils {
                 return "✨";
             case "af":
                 return "\uD83C\uDDFF\uD83C\uDDE6";
+            case "sq":
+                return "\uD83C\uDDE6\uD83C\uDDF1";
             case "ar":
                 return "\uD83C\uDDF8\uD83C\uDDE6";
             case "hy":
                 return "\uD83C\uDDE6\uD83C\uDDF2";
             case "az":
                 return "\uD83C\uDDE6\uD83C\uDDFF";
+            case "eu":
+                return "\uD83C\uDDEA\uD83C\uDDF8";
             case "be":
                 return "\uD83C\uDDE7\uD83C\uDDFE";
-            case "bs":
-                return "\uD83C\uDDE7\uD83C\uDDE6";
+            case "bn":
+                return "\uD83C\uDDE7\uD83C\uDDE9";
             case "bg":
                 return "\uD83C\uDDE7\uD83C\uDDEC";
+            case "yue-CN":
+                return "\uD83C\uDDE8\uD83C\uDDF3";
+            case "yue-HK":
+                return "\uD83C\uDDED\uD83C\uDDF0";
             case "ca":
                 return "\uD83C\uDDE6\uD83C\uDDE9";
-            case "zh":
-                return "\uD83C\uDDE8\uD83C\uDDF3";
-            case "hr":
-                return "\uD83C\uDDED\uD83C\uDDF7";
             case "cs":
                 return "\uD83C\uDDE8\uD83C\uDDFF";
             case "da":
@@ -250,16 +254,12 @@ public class DictateUtils {
                 return "\uD83C\uDDEE\uD83C\uDDF3";
             case "hu":
                 return "\uD83C\uDDED\uD83C\uDDFA";
-            case "is":
-                return "\uD83C\uDDEE\uD83C\uDDF8";
             case "id":
                 return "\uD83C\uDDEE\uD83C\uDDE9";
             case "it":
                 return "\uD83C\uDDEE\uD83C\uDDF9";
             case "ja":
                 return "\uD83C\uDDEF\uD83C\uDDF5";
-            case "kn":
-                return "\uD83C\uDDE8\uD83C\uDDE6";
             case "kk":
                 return "\uD83C\uDDF0\uD83C\uDDFF";
             case "ko":
@@ -270,15 +270,15 @@ public class DictateUtils {
                 return "\uD83C\uDDF1\uD83C\uDDF9";
             case "mk":
                 return "\uD83C\uDDF2\uD83C\uDDF0";
-            case "ms":
-                return "\uD83C\uDDF2\uD83C\uDDFE";
+            case "zh-CN":
+                return "\uD83C\uDDE8\uD83C\uDDF3";
+            case "zh-TW":
+                return "\uD83C\uDDF9\uD83C\uDDFC";
             case "mr":
                 return "\uD83C\uDDEE\uD83C\uDDF3";
-            case "mi":
-                return "\uD83C\uDDF3\uD83C\uDDFF";
             case "ne":
                 return "\uD83C\uDDF3\uD83C\uDDF5";
-            case "no":
+            case "nn":
                 return "\uD83C\uDDF3\uD83C\uDDF4";
             case "fa":
                 return "\uD83C\uDDEE\uD83C\uDDF7";
@@ -286,6 +286,8 @@ public class DictateUtils {
                 return "\uD83C\uDDF5\uD83C\uDDF1";
             case "pt":
                 return "\uD83C\uDDF5\uD83C\uDDF9";
+            case "pa":
+                return "\uD83C\uDDEE\uD83C\uDDF3";
             case "ro":
                 return "\uD83C\uDDF7\uD83C\uDDF4";
             case "ru":
@@ -302,8 +304,6 @@ public class DictateUtils {
                 return "\uD83C\uDDF9\uD83C\uDDFF";
             case "sv":
                 return "\uD83C\uDDF8\uD83C\uDDEA";
-            case "tl":
-                return "\uD83C\uDDF5\uD83C\uDDED";
             case "ta":
                 return "\uD83C\uDDF1\uD83C\uDDF0";
             case "th":

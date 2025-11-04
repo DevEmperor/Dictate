@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="dictate_lang_afrikaans">Afrikaans</string>
+    <string name="dictate_lang_albanian">Albanisch</string>
     <string name="dictate_lang_arabic">Arabisch</string>
     <string name="dictate_lang_armenian">Armenisch</string>
     <string name="dictate_lang_azerbaijani">Aserbaidschanisch</string>
+    <string name="dictate_lang_basque">Baskisch</string>
     <string name="dictate_lang_belarusian">Weißrussisch</string>
-    <string name="dictate_lang_bosnian">Bosnisch</string>
+    <string name="dictate_lang_bengali">Bengalisch</string>
     <string name="dictate_lang_bulgarian">Bulgarisch</string>
+    <string name="dictate_lang_cantonese_cn">Kantonesisch (CN)</string>
+    <string name="dictate_lang_cantonese_hk">Kantonesisch (HK)</string>
     <string name="dictate_lang_catalan">Katalanisch</string>
-    <string name="dictate_lang_chinese">Chinesisch</string>
-    <string name="dictate_lang_croatian">Kroatisch</string>
     <string name="dictate_lang_czech">Tschechisch</string>
     <string name="dictate_lang_danish">Dänisch</string>
     <string name="dictate_lang_dutch">Niederländisch</string>
@@ -23,24 +25,23 @@
     <string name="dictate_lang_hebrew">Hebräisch</string>
     <string name="dictate_lang_hindi">Hindi</string>
     <string name="dictate_lang_hungarian">Ungarisch</string>
-    <string name="dictate_lang_icelandic">Isländisch</string>
     <string name="dictate_lang_indonesian">Indonesisch</string>
     <string name="dictate_lang_italian">Italienisch</string>
     <string name="dictate_lang_japanese">Japanisch</string>
-    <string name="dictate_lang_kannada">Kannada</string>
     <string name="dictate_lang_kazakh">Kasachisch</string>
     <string name="dictate_lang_korean">Koreanisch</string>
     <string name="dictate_lang_latvian">Lettisch</string>
     <string name="dictate_lang_lithuanian">Litauisch</string>
     <string name="dictate_lang_macedonian">Mazedonisch</string>
-    <string name="dictate_lang_malay">Malaiisch</string>
+    <string name="dictate_lang_mandarin_cn">Mandarin (CN)</string>
+    <string name="dictate_lang_mandarin_tw">Mandarin (TW)</string>
     <string name="dictate_lang_marathi">Marathi</string>
-    <string name="dictate_lang_maori">Maorisch</string>
     <string name="dictate_lang_nepali">Nepalesisch</string>
-    <string name="dictate_lang_norwegian">Norwegisch</string>
+    <string name="dictate_lang_nynorsk">Nynorsk</string>
     <string name="dictate_lang_persian">Persisch</string>
     <string name="dictate_lang_polish">Polnisch</string>
     <string name="dictate_lang_portuguese">Portugiesisch</string>
+    <string name="dictate_lang_punjabi">Punjabi</string>
     <string name="dictate_lang_romanian">Rumänisch</string>
     <string name="dictate_lang_russian">Russisch</string>
     <string name="dictate_lang_serbian">Serbisch</string>
@@ -49,7 +50,6 @@
     <string name="dictate_lang_spanish">Spanisch</string>
     <string name="dictate_lang_swahili">Swahili</string>
     <string name="dictate_lang_swedish">Schwedisch</string>
-    <string name="dictate_lang_tagalog">Tagalog</string>
     <string name="dictate_lang_tamil">Tamil</string>
     <string name="dictate_lang_thai">Thailändisch</string>
     <string name="dictate_lang_turkish">Türkisch</string>
@@ -97,7 +97,7 @@
     <string name="dictate_settings_about_title">Über</string>
     <string name="dictate_settings_usage">Verbrauch einsehen 📊</string>
     <string name="dictate_onboarding_welcome">Willkommen bei\nDictate\n→</string>
-    <string name="dictate_detect_automatically">Automatisch erkennen</string>
+    <string name="dictate_detect_automatically">Automatisch</string>
     <string name="dictate_update_installed_msg">Dictate wurde aktualisiert. Änderungen ansehen?</string>
     <string name="dictate_whats_new">Was ist neu?</string>
     <string name="dictate_changelog_5">v1.4\n\n- Du kannst jetzt die Aufnahme deiner Stimme pausieren und fortsetzen. ⏯️\n\n- Während der Aufnahme werden andere Medien nun pausiert und anschließend fortgesetzt. 💡\n\n- Ein langer Klick auf den Tastatur-Umschaltknopf öffnet die Eingabemethoden-Auswahl. ⌨️\n\n- Die Übersetzungsfunktion funktioniert jetzt zuverlässiger. 💪\n\n- Deutsche App-Übersetzung hinzugefügt 🇩🇪\n\n\n</string>

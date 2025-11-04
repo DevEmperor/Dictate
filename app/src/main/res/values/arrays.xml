@@ -3,15 +3,17 @@
     <string-array name="dictate_input_languages">
         <item>@string/dictate_detect_automatically</item>
         <item>@string/dictate_lang_afrikaans</item>
+        <item>@string/dictate_lang_albanian</item>
         <item>@string/dictate_lang_arabic</item>
         <item>@string/dictate_lang_armenian</item>
         <item>@string/dictate_lang_azerbaijani</item>
+        <item>@string/dictate_lang_basque</item>
         <item>@string/dictate_lang_belarusian</item>
-        <item>@string/dictate_lang_bosnian</item>
+        <item>@string/dictate_lang_bengali</item>
         <item>@string/dictate_lang_bulgarian</item>
+        <item>@string/dictate_lang_cantonese_cn</item>
+        <item>@string/dictate_lang_cantonese_hk</item>
         <item>@string/dictate_lang_catalan</item>
-        <item>@string/dictate_lang_chinese</item>
-        <item>@string/dictate_lang_croatian</item>
         <item>@string/dictate_lang_czech</item>
         <item>@string/dictate_lang_danish</item>
         <item>@string/dictate_lang_dutch</item>
@@ -25,24 +27,23 @@
         <item>@string/dictate_lang_hebrew</item>
         <item>@string/dictate_lang_hindi</item>
         <item>@string/dictate_lang_hungarian</item>
-        <item>@string/dictate_lang_icelandic</item>
         <item>@string/dictate_lang_indonesian</item>
         <item>@string/dictate_lang_italian</item>
         <item>@string/dictate_lang_japanese</item>
-        <item>@string/dictate_lang_kannada</item>
         <item>@string/dictate_lang_kazakh</item>
         <item>@string/dictate_lang_korean</item>
         <item>@string/dictate_lang_latvian</item>
         <item>@string/dictate_lang_lithuanian</item>
         <item>@string/dictate_lang_macedonian</item>
-        <item>@string/dictate_lang_malay</item>
+        <item>@string/dictate_lang_mandarin_cn</item>
+        <item>@string/dictate_lang_mandarin_tw</item>
         <item>@string/dictate_lang_marathi</item>
-        <item>@string/dictate_lang_maori</item>
         <item>@string/dictate_lang_nepali</item>
-        <item>@string/dictate_lang_norwegian</item>
+        <item>@string/dictate_lang_nynorsk</item>
         <item>@string/dictate_lang_persian</item>
         <item>@string/dictate_lang_polish</item>
         <item>@string/dictate_lang_portuguese</item>
+        <item>@string/dictate_lang_punjabi</item>
         <item>@string/dictate_lang_romanian</item>
         <item>@string/dictate_lang_russian</item>
         <item>@string/dictate_lang_serbian</item>
@@ -51,7 +52,6 @@
         <item>@string/dictate_lang_spanish</item>
         <item>@string/dictate_lang_swahili</item>
         <item>@string/dictate_lang_swedish</item>
-        <item>@string/dictate_lang_tagalog</item>
         <item>@string/dictate_lang_tamil</item>
         <item>@string/dictate_lang_thai</item>
         <item>@string/dictate_lang_turkish</item>
@@ -63,15 +63,17 @@
     <string-array name="dictate_input_languages_values">
         <item>detect</item>
         <item>af</item>
+        <item>sq</item>
         <item>ar</item>
         <item>hy</item>
         <item>az</item>
+        <item>eu</item>
         <item>be</item>
-        <item>bs</item>
+        <item>bn</item>
         <item>bg</item>
+        <item>yue-CN</item>
+        <item>yue-HK</item>
         <item>ca</item>
-        <item>zh</item>
-        <item>hr</item>
         <item>cs</item>
         <item>da</item>
         <item>nl</item>
@@ -85,24 +87,23 @@
         <item>he</item>
         <item>hi</item>
         <item>hu</item>
-        <item>is</item>
         <item>id</item>
         <item>it</item>
         <item>ja</item>
-        <item>kn</item>
         <item>kk</item>
         <item>ko</item>
         <item>lv</item>
         <item>lt</item>
         <item>mk</item>
-        <item>ms</item>
+        <item>zh-CN</item>
+        <item>zh-TW</item>
         <item>mr</item>
-        <item>mi</item>
         <item>ne</item>
-        <item>no</item>
+        <item>nn</item>
         <item>fa</item>
         <item>pl</item>
         <item>pt</item>
+        <item>pa</item>
         <item>ro</item>
         <item>ru</item>
         <item>sr</item>
@@ -111,7 +112,6 @@
         <item>es</item>
         <item>sw</item>
         <item>sv</item>
-        <item>tl</item>
         <item>ta</item>
         <item>th</item>
         <item>tr</item>
@@ -125,60 +125,60 @@
         <item>@string/dictate_detect_automatically</item>
         <!-- 2. Afrikaans -->
         <item>Neem op</item>
-        <!-- 3. Arabic -->
+        <!-- 3. Albanian -->
+        <item>Regjistro</item>
+        <!-- 4. Arabic -->
         <item>تسجيل</item>
-        <!-- 4. Armenian -->
+        <!-- 5. Armenian -->
         <item>Գրանցել</item>
-        <!-- 5. Azerbaijani -->
+        <!-- 6. Azerbaijani -->
         <item>Qeyd et</item>
-        <!-- 6. Belarusian -->
+        <!-- 7. Basque -->
+        <item>Grabatu</item>
+        <!-- 8. Belarusian -->
         <item>Запісаць</item>
-        <!-- 7. Bosnian -->
-        <item>Snimi</item>
-        <!-- 8. Bulgarian -->
+        <!-- 9. Bengali -->
+        <item>রেকর্ড করুন</item>
+        <!-- 10. Bulgarian -->
         <item>Запиши</item>
-        <!-- 9. Catalan -->
+        <!-- 11. Cantonese (CN) -->
+        <item>錄音</item>
+        <!-- 12. Cantonese (HK) -->
+        <item>錄音</item>
+        <!-- 13. Catalan -->
         <item>Gravar</item>
-        <!-- 10. Chinese -->
-        <item>录音</item>
-        <!-- 11. Croatian -->
-        <item>Snimi</item>
-        <!-- 12. Czech -->
+        <!-- 14. Czech -->
         <item>Nahrát</item>
-        <!-- 13. Danish -->
+        <!-- 15. Danish -->
         <item>Optag</item>
-        <!-- 14. Dutch -->
+        <!-- 16. Dutch -->
         <item>Opnemen</item>
-        <!-- 15. English -->
+        <!-- 17. English -->
         <item>Record</item>
-        <!-- 16. Estonian -->
+        <!-- 18. Estonian -->
         <item>Salvesta</item>
-        <!-- 17. Finnish -->
+        <!-- 19. Finnish -->
         <item>Nauhoita</item>
-        <!-- 18. French -->
+        <!-- 20. French -->
         <item>Enregistrer</item>
-        <!-- 19. Galician -->
+        <!-- 21. Galician -->
         <item>Gravar</item>
-        <!-- 20. German -->
+        <!-- 22. German -->
         <item>Aufnehmen</item>
-        <!-- 21. Greek -->
+        <!-- 23. Greek -->
         <item>Ηχογράφησε</item>
-        <!-- 22. Hebrew -->
+        <!-- 24. Hebrew -->
         <item>הקלט</item>
-        <!-- 23. Hindi -->
+        <!-- 25. Hindi -->
         <item>रिकॉर्ड</item>
-        <!-- 24. Hungarian -->
+        <!-- 26. Hungarian -->
         <item>Felvétel</item>
-        <!-- 25. Icelandic -->
-        <item>Taka upp</item>
-        <!-- 26. Indonesian -->
+        <!-- 27. Indonesian -->
         <item>Rekam</item>
-        <!-- 27. Italian -->
+        <!-- 28. Italian -->
         <item>Registra</item>
-        <!-- 28. Japanese -->
+        <!-- 29. Japanese -->
         <item>録音</item>
-        <!-- 29. Kannada -->
-        <item>ರೆಕಾರ್ಡ್</item>
         <!-- 30. Kazakh -->
         <item>Жазу</item>
         <!-- 31. Korean -->
@@ -189,15 +189,15 @@
         <item>Įrašyti</item>
         <!-- 34. Macedonian -->
         <item>Сними</item>
-        <!-- 35. Malay -->
-        <item>Rakam</item>
-        <!-- 36. Marathi -->
+        <!-- 35. Mandarin (CN) -->
+        <item>录音</item>
+        <!-- 36. Mandarin (TW) -->
+        <item>錄音</item>
+        <!-- 37. Marathi -->
         <item>रेकॉर्ड करा</item>
-        <!-- 37. Maori -->
-        <item>Rekota</item>
         <!-- 38. Nepali -->
         <item>रेकर्ड गर्नुहोस्</item>
-        <!-- 39. Norwegian -->
+        <!-- 39. Nynorsk -->
         <item>Ta opp</item>
         <!-- 40. Persian -->
         <item>ضبط</item>
@@ -205,24 +205,24 @@
         <item>Nagraj</item>
         <!-- 42. Portuguese -->
         <item>Gravar</item>
-        <!-- 43. Romanian -->
+        <!-- 43. Punjabi -->
+        <item>ਰਿਕਾਰਡ ਕਰੋ</item>
+        <!-- 44. Romanian -->
         <item>Înregistrează</item>
-        <!-- 44. Russian -->
+        <!-- 45. Russian -->
         <item>Записать</item>
-        <!-- 45. Serbian -->
+        <!-- 46. Serbian -->
         <item>Snimi</item>
-        <!-- 46. Slovak -->
+        <!-- 47. Slovak -->
         <item>Nahrať</item>
-        <!-- 47. Slovenian -->
+        <!-- 48. Slovenian -->
         <item>Posnemi</item>
-        <!-- 48. Spanish -->
+        <!-- 49. Spanish -->
         <item>Grabar</item>
-        <!-- 49. Swahili -->
+        <!-- 50. Swahili -->
         <item>Rekodi</item>
-        <!-- 50. Swedish -->
+        <!-- 51. Swedish -->
         <item>Spela in</item>
-        <!-- 51. Tagalog -->
-        <item>I-record</item>
         <!-- 52. Tamil -->
         <item>பதிவு</item>
         <!-- 53. Thai -->
@@ -232,7 +232,7 @@
         <!-- 55. Ukrainian -->
         <item>Записати</item>
         <!-- 56. Urdu -->
-        <item>ریکارڈ کریں</item>
+        <item>ریکار্ড کریں</item>
         <!-- 57. Vietnamese -->
         <item>Ghi âm</item>
         <!-- 58. Welsh -->
