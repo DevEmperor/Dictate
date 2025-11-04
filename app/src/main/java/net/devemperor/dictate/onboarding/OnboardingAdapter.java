@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import net.devemperor.dictate.DictateUtils;
 import net.devemperor.dictate.R;
 import net.devemperor.dictate.settings.DictateSettingsActivity;
 
@@ -30,7 +31,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Locale;
 
 
 public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.ViewHolder> {
@@ -81,17 +81,30 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.Vi
             Button finishBtn = holder.itemView.findViewById(R.id.onboarding_api_key_finish_btn);
 
             StringBuilder stringBuilder = new StringBuilder();
+            BufferedReader reader = null;
             try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(
-                        activity.getAssets().open("dictate_api_key_info_" + (Locale.getDefault().getLanguage().equals("de") ? "de" : "en") + ".html")));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line);
-                    stringBuilder.append("\n");
-                }
-                reader.close();
+                String suffix = DictateUtils.getAssetLanguageSuffix();
+                reader = new BufferedReader(new InputStreamReader(
+                        activity.getAssets().open("dictate_api_key_info_" + suffix + ".html")));
             } catch (IOException e) {
-                e.printStackTrace();
+                try {
+                    reader = new BufferedReader(new InputStreamReader(
+                            activity.getAssets().open("dictate_api_key_info_en.html")));
+                } catch (IOException fallbackException) {
+                    e.printStackTrace();
+                }
+            }
+            if (reader != null) {
+                try {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        stringBuilder.append(line);
+                        stringBuilder.append("\n");
+                    }
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             requestApiKeyTv.setMovementMethod(LinkMovementMethod.getInstance());
             requestApiKeyTv.setText(Html.fromHtml(stringBuilder.toString(), Html.FROM_HTML_MODE_LEGACY));

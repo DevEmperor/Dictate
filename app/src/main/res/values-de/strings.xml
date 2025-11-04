@@ -185,6 +185,12 @@
     <string name="dictate_changelog_13">v2.4.1\n\Das ist nur ein kleines Update, welches das GPT-4 Omni Modell und seine Preise aktualisiert, da GPT-4 Omni jetzt deutlich günstiger ist. 🤩\n\n\n</string>
     <string name="dictate_changelog_14">v2.4.2\n\nDas ist nur ein kleines Update, das die GPT-Modelle anweist, bei der Überarbeitung genauer zu sein und nur den wirklichen Text auszugeben. Wenn du zum Beispiel nach einem Emoji fragst, wird die Tastatur jetzt nur dieses Emoji ausgeben, ohne lästige Einleitungssätze. 🤩\n\n\</string>
     <string name="dictate_settings_input_languages_title">Aufnahme-Sprachen 🌎</string>
+    <string name="dictate_settings_app_language_title">App-Sprache 🌎</string>
+    <string name="dictate_language_system">Systemstandard</string>
+    <string name="dictate_language_english">Englisch</string>
+    <string name="dictate_language_german">Deutsch</string>
+    <string name="dictate_language_spanish">Spanisch</string>
+    <string name="dictate_language_portuguese">Portugiesisch</string>
     <string name="dictate_input_languages_empty">Du musst mindestens eine Aufnahme-Sprache auswählen.</string>
     <string name="dictate_changelog_15">v2.4.3\n\Das ist nur ein kleines Update. In den Einstellungen kannst du jetzt mehrere Aufnahme-Sprachen auswählen. Wenn du dann die Switch-Taste gedrückt hältst, während du Dictate benutzt, kannst du schneller zu einer dieser Eingabesprachen wechseln. 💪\n\n\n</string>
     <string name="dictate_changelog_16">v2.4.4\n\nDas ist nur ein kleines Update mit ein paar Verbesserungen.\n\n- Der Bildschirm bleibt jetzt während der Aufnahme an, damit längere Aufnahmen angenehmer sind.\n\n- Wenn du Backups über Google Drive aktiviert hast, werden die Einstellungen von Zeit zu Zeit gesichert, damit du direkt auf einem neuen Gerät weitermachen kannst.\n\n- Bugfix: Der Enter-Button sendet jetzt Text in URL-Leisten in Browsern.\n\n\n</string>

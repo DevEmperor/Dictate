@@ -60,6 +60,20 @@
         <item>@string/dictate_lang_vietnamese</item>
         <item>@string/dictate_lang_welsh</item>
     </string-array>
+    <string-array name="dictate_app_languages">
+        <item>@string/dictate_language_system</item>
+        <item>@string/dictate_language_english</item>
+        <item>@string/dictate_language_german</item>
+        <item>@string/dictate_language_spanish</item>
+        <item>@string/dictate_language_portuguese</item>
+    </string-array>
+    <string-array name="dictate_app_languages_values">
+        <item>system</item>
+        <item>en</item>
+        <item>de</item>
+        <item>es</item>
+        <item>pt</item>
+    </string-array>
     <string-array name="dictate_input_languages_values">
         <item>detect</item>
         <item>af</item>

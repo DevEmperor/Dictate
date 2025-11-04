@@ -1,7 +1,11 @@
 package net.devemperor.dictate;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.MediaMetadataRetriever;
+
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 
@@ -10,6 +14,7 @@ import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +22,45 @@ public class DictateUtils {
 
     public static final String PROMPT_PUNCTUATION_CAPITALIZATION = "This sentence has capitalization and punctuation.";
     public static final String PROMPT_REWORDING_BE_PRECISE = "Be accurate with your output. Only output exactly what the user has asked for above. Do not add any text before or after the actual output. Output the text in the language of the instruction, unless a different language was explicitly requested.";
+
+    public static String getAssetLanguageSuffix() {
+        Locale overrideLocale = null;
+        LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
+        if (!appLocales.isEmpty()) {
+            overrideLocale = appLocales.get(0);
+        }
+        String language = overrideLocale != null ? overrideLocale.getLanguage() : Locale.getDefault().getLanguage();
+        switch (language) {
+            case "de":
+                return "de";
+            case "es":
+                return "es";
+            case "pt":
+                return "pt";
+            default:
+                return "en";
+        }
+    }
+
+    public static void applyApplicationLocale(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("net.devemperor.dictate", Context.MODE_PRIVATE);
+        String language = sp.getString("net.devemperor.dictate.app_language", "system");
+        applyApplicationLocale(language);
+    }
+
+    public static void applyApplicationLocale(String language) {
+        LocaleListCompat locales;
+        if (language == null || language.equals("system")) {
+            locales = LocaleListCompat.getEmptyLocaleList();
+        } else {
+            locales = LocaleListCompat.create(new Locale(language));
+        }
+        LocaleListCompat current = AppCompatDelegate.getApplicationLocales();
+        if (current.equals(locales)) {
+            return;
+        }
+        AppCompatDelegate.setApplicationLocales(locales);
+    }
 
     public static double calcModelCost(String modelName, long audioTime, long inputTokens, long outputTokens) {
         switch (modelName) {

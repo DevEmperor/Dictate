@@ -1,0 +1,59 @@
+Gravar e transcrever textos
+A função de ditado é o coração do teclado Dictate. Assim que abrir o teclado, você pode tocar no botão "Gravar" para começar. Basta falar com naturalidade e o WhisperAI trabalhará em segundo plano para garantir que suas ideias, com pontuação, sejam convertidas corretamente em texto.\n\nVocê também verá uma mensagem indicando há quanto tempo está gravando e poderá tocar em "Enviar" a qualquer momento para iniciar o reconhecimento. Depois de alguns instantes, o texto é inserido no campo atual.\n\nSe você mantiver o botão pressionado enquanto grava, o teclado volta automaticamente ao teclado usado anteriormente após a transcrição.\n\nSe estiver com fones que tenham microfone, o Dictate usará o microfone dos fones por padrão. Você pode alterar isso nas configurações caso prefira usar o microfone interno do dispositivo.
+dictate_how_to_main
+
+Pausar ou excluir gravações
+Durante a gravação, você pode tocar no botão "Pausar" a qualquer momento para interromper temporariamente. A gravação será retomada quando tocar nele novamente. Se quiser finalizar, toque em "Enviar". Para cancelar, toque no botão com o ícone da lixeira.
+dictate_how_to_pause_delete
+
+Reescrita com IA
+Além do ditado, a reescrita é outro destaque do teclado Dictate. Nas configurações você pode salvar suas próprias instruções de reescrita para o ChatGPT. Por exemplo, se quiser traduzir um texto ditado para o francês, pode usar a instrução de exemplo "Tradutor francês".\n\nToque em "Selecionar tudo" e depois em uma das suas instruções para enviar o texto selecionado ao ChatGPT junto com a instrução. Depois de um instante, o texto editado é inserido no campo atual. Você também pode tocar em uma instrução sem selecionar texto para gerar conteúdo com o ChatGPT independentemente do ditado. Dependendo do tipo de instrução, ative ou desative o interruptor "Requer seleção de texto" ao criar um novo prompt.
+dictate_how_to_rewording
+
+Reescrita ao vivo e saída exata
+Se quiser reescrever o texto na hora, toque no botão com três estrelas para inserir suas instruções sobre o texto selecionado. Depois de tocar em "Enviar" e mandar a instrução para o ChatGPT, o texto revisado é inserido no campo atual.\n\nSe você costuma inserir um texto ou emoji específico, pode salvar essa instrução e colocá-la entre [colchetes]. Ao tocar no botão dessa instrução, apenas esse texto exato será exibido.
+dictate_how_to_live_rewording
+
+Transcrever arquivos de áudio
+Se você já tiver gravado um arquivo de áudio, mantenha o botão "Gravar" pressionado. Um seletor será exibido para escolher o arquivo desejado. Depois de selecionar e voltar ao app anterior, a transcrição começa e o texto é inserido no campo atual.
+dictate_how_to_file_transcription
+
+Editar textos
+No lado direito do teclado Dictate há um botão de apagar para remover palavras. Quanto mais tempo você o mantiver pressionado, mais rápido o texto é apagado. Se pressionar e deslizar para a esquerda, pode apagar palavra por palavra ainda mais rápido.\n\nAbaixo fica o botão "Enter" e, no centro, o botão de espaço. Mantendo o botão de espaço pressionado, você move o cursor no campo atual deslizando o dedo.
+dictate_how_to_delete_enter_space
+
+Copiar, colar e histórico
+Depois de selecionar o texto, você pode cortá-lo, copiá-lo ou colá-lo a partir da área de transferência. Também é possível usar as setas para desfazer ou refazer as últimas alterações no campo focado.
+dictate_how_to_copy_paste_undo_redo
+
+Inserir caracteres adicionais
+Para evitar trocar para um teclado comum sempre que precisar fazer um ajuste rápido, mantenha o botão "Enter" pressionado. Até 8 caracteres extras aparecerão e você pode personalizá-los nas configurações. Basta deslizar o dedo para a esquerda ou direita para escolher o caractere desejado.
+dictate_how_to_special_characters
+
+Alterar o idioma e o teclado
+Ao tocar no botão com o ícone de teclado no canto inferior esquerdo, você alterna rapidamente para o teclado usado anteriormente. Se mantiver esse botão pressionado, pode alterar o idioma de gravação do Dictate. Nas configurações é possível selecionar vários idiomas e alternar entre eles. O texto do botão "Gravar" indica qual idioma de entrada está ativo.
+dictate_how_to_switch
+
+Configurações de reescrita
+Nas configurações superiores você pode gerenciar suas instruções de reescrita, mudar o modelo de IA usado ou desativar totalmente a função se não precisar dela.
+dictate_how_to_rewording_settings
+
+Mais configurações
+Nas configurações existem muitas outras opções para personalizar o teclado Dictate do seu jeito.
+dictate_how_to_settings
+
+Ver uso
+Nas configurações você pode acompanhar o consumo de tokens para reescrita e o tempo gravado até agora. O Dictate calcula os custos estimados com base nos preços atuais para que você tenha tudo sob controle direto no app.\n\nTambém é possível zerar as estatísticas ali. Se quiser adicionar saldo na OpenAI, acesse platform.openai.com → Settings → Billing.
+dictate_how_to_usage
+
+Alterar o prompt de estilo do Whisper
+Com um prompt de estilo você pode influenciar facilmente como o Whisper reconhece suas gravações. Às vezes, sem esse tipo de instrução, o Whisper pode não colocar pontuação. Por isso, por padrão, sempre é selecionada uma instrução que pede para o Whisper aplicar pontuação. Se quiser usar outra instrução, basta escolhê-la nas configurações.\n\nPara mais detalhes, toque no ponto de interrogação azul ali para abrir uma página da OpenAI com informações adicionais sobre prompts de estilo.\n\nDe forma semelhante, nas instruções de reescrita você também pode definir um prompt de sistema geral.
+dictate_how_to_style
+
+Usar seu próprio servidor Whisper API
+Se você opera um servidor Whisper API compatível com a API da OpenAI, pode configurá-lo nas configurações. Assim, suas gravações são transcritas pelo seu próprio servidor. Lembre-se de também alterar a chave de API cadastrada.
+dictate_how_to_own_server
+
+Feedback e suporte
+Se tiver dúvidas ou problemas, toque em "Enviar feedback" nas configurações para mandar um e-mail ao desenvolvedor. Fico sempre feliz em receber opiniões e sugestões. Lá você também encontra um botão para doar via PayPal caso goste do app.
+dictate_how_to_feedback_support

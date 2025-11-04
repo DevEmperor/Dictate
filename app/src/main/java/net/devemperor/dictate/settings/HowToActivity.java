@@ -10,6 +10,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import net.devemperor.dictate.DictateUtils;
 import net.devemperor.dictate.R;
 
 import java.io.BufferedReader;
@@ -18,7 +19,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 public class HowToActivity extends AppCompatActivity {
 
@@ -54,9 +54,25 @@ public class HowToActivity extends AppCompatActivity {
         listChildData = new HashMap<>();
 
         List<String> content = new ArrayList<>();
+        BufferedReader reader = null;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    getAssets().open("dictate_how_to_" + (Locale.getDefault().getLanguage().equals("de") ? "de" : "en") + ".txt")));
+            String suffix = DictateUtils.getAssetLanguageSuffix();
+            reader = new BufferedReader(new InputStreamReader(
+                    getAssets().open("dictate_how_to_" + suffix + ".txt")));
+        } catch (IOException e) {
+            try {
+                reader = new BufferedReader(new InputStreamReader(
+                        getAssets().open("dictate_how_to_en.txt")));
+            } catch (IOException fallbackException) {
+                e.printStackTrace();
+            }
+        }
+
+        if (reader == null) {
+            return;
+        }
+
+        try {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("#") || line.isEmpty()) continue;

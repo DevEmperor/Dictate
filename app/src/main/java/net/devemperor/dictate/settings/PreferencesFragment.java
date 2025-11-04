@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -64,6 +65,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     return false;
                 }
                 sp.edit().putInt("net.devemperor.dictate.input_language_pos", 0).apply();
+                return true;
+            });
+        }
+
+        ListPreference appLanguagePreference = findPreference("net.devemperor.dictate.app_language");
+        if (appLanguagePreference != null) {
+            appLanguagePreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                DictateUtils.applyApplicationLocale((String) newValue);
+                requireActivity().recreate();
                 return true;
             });
         }
