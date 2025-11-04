@@ -181,16 +181,18 @@ public class PromptsDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM PROMPTS ORDER BY POS ASC", null);
 
-        List<PromptModel> models = new ArrayList<>();
-        models.add(new PromptModel(-1, Integer.MIN_VALUE, null, null, false, false));  // Add empty model for instant prompt
+        List<PromptModel> promptModels = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
-                models.add(new PromptModel(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor.getString(3), cursor.getInt(4) == 1, cursor.getInt(5) == 1));
+                promptModels.add(new PromptModel(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor.getString(3), cursor.getInt(4) == 1, cursor.getInt(5) == 1));
             } while (cursor.moveToNext());
         }
-        models.add(new PromptModel(-2, Integer.MAX_VALUE, null, null, false, false));  // Add empty model for add button
         cursor.close();
         db.close();
+        List<PromptModel> models = new ArrayList<>(promptModels.size() + 2);
+        models.add(new PromptModel(-1, Integer.MIN_VALUE, null, null, false, false));  // Add empty model for instant prompt
+        models.add(new PromptModel(-2, Integer.MAX_VALUE, null, null, false, false));  // Add empty model for add button
+        models.addAll(promptModels);
         return models;
     }
 

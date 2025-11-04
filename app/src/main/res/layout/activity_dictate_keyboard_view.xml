@@ -278,7 +278,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/prompts_keyboard_cl"
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="72dp"
         android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -289,7 +289,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/prompts_keyboard_rv"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginHorizontal="12dp"
             android:scrollbars="horizontal"
             android:scrollbarSize="1dp"

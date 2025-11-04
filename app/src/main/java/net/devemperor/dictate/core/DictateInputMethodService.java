@@ -52,8 +52,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.emoji2.emojipicker.EmojiPickerView;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -260,7 +260,10 @@ public class DictateInputMethodService extends InputMethodService {
 
         overlayCharactersLl = dictateKeyboardView.findViewById(R.id.overlay_characters_ll);
 
-        promptsRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        StaggeredGridLayoutManager promptsLayoutManager =
+                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
+        promptsLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+        promptsRv.setLayoutManager(promptsLayoutManager);
 
         // if user id is not set, set a random number as user id
         if (sp.getString("net.devemperor.dictate.user_id", "null").equals("null")) {
