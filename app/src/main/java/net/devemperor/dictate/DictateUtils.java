@@ -14,7 +14,10 @@ import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +25,87 @@ public class DictateUtils {
 
     public static final String PROMPT_PUNCTUATION_CAPITALIZATION = "This sentence has capitalization and punctuation.";
     public static final String PROMPT_REWORDING_BE_PRECISE = "Be accurate with your output. Only output exactly what the user has asked for above. Do not add any text before or after the actual output. Output the text in the language of the instruction, unless a different language was explicitly requested.";
+    private static final Map<String, String> PROMPT_PUNCTUATION_CAPITALIZATION_BY_LANGUAGE;
+
+    static {
+        Map<String, String> prompts = new HashMap<>();
+        prompts.put("af", "Hierdie sin het hoofletters en punktuasie.");
+        prompts.put("sq", "Kjo fjali ka shkronja të mëdha dhe pikësim.");
+        prompts.put("ar", "هذه الجملة تحتوي على أحرف كبيرة وعلامات ترقيم.");
+        prompts.put("hy", "Այս նախադասությունը ունի մեծատառեր և կետադրություն։");
+        prompts.put("az", "Bu cümlədə böyük hərflər və durğu işarələri var.");
+        prompts.put("eu", "Esaldi honek letra larriak eta puntuazioa ditu.");
+        prompts.put("be", "Гэты сказ мае вялікія літары і знакі прыпынку.");
+        prompts.put("bn", "এই বাক্যে বড় হাতের অক্ষর এবং যতিচিহ্ন রয়েছে।");
+        prompts.put("bg", "Това изречение има главни букви и пунктуация.");
+        prompts.put("yue-cn", "呢句句子有大寫字母同標點符號。");
+        prompts.put("yue-hk", "呢句句子有大寫字母同標點符號。");
+        prompts.put("ca", "Aquesta frase té majúscules i puntuació.");
+        prompts.put("cs", "Tato věta má velká písmena a interpunkci.");
+        prompts.put("da", "Denne sætning har store bogstaver og tegnsætning.");
+        prompts.put("nl", "Deze zin heeft hoofdletters en interpunctie.");
+        prompts.put("en", PROMPT_PUNCTUATION_CAPITALIZATION);
+        prompts.put("et", "Selles lauses on suurtähed ja kirjavahemärgid.");
+        prompts.put("fi", "Tässä lauseessa on isot kirjaimet ja välimerkit.");
+        prompts.put("fr", "Cette phrase contient des majuscules et de la ponctuation.");
+        prompts.put("gl", "Esta frase ten maiúsculas e puntuación.");
+        prompts.put("de", "Dieser Satz hat Großbuchstaben und Zeichensetzung.");
+        prompts.put("el", "Αυτή η πρόταση έχει κεφαλαία γράμματα και στίξη.");
+        prompts.put("he", "במשפט הזה יש אותיות גדולות וסימני פיסוק.");
+        prompts.put("hi", "इस वाक्य में बड़े अक्षर और विराम चिह्न हैं।");
+        prompts.put("hu", "Ez a mondat nagybetűket és írásjeleket tartalmaz.");
+        prompts.put("id", "Kalimat ini memiliki huruf kapital dan tanda baca.");
+        prompts.put("it", "Questa frase ha lettere maiuscole e punteggiatura.");
+        prompts.put("ja", "この文には大文字と句読点があります。");
+        prompts.put("kk", "Бұл сөйлемде бас әріптер мен тыныс белгілері бар.");
+        prompts.put("ko", "이 문장에는 대문자와 구두점이 있습니다.");
+        prompts.put("lv", "Šim teikumam ir lielie burti un pieturzīmes.");
+        prompts.put("lt", "Šiame sakinyje yra didžiosios raidės ir skyrybos ženklai.");
+        prompts.put("mk", "Оваа реченица има големи букви и интерпункција.");
+        prompts.put("zh-cn", "这句话有大写字母和标点符号。");
+        prompts.put("zh-tw", "這句話有大寫字母和標點符號。");
+        prompts.put("mr", "या वाक्यात मोठी अक्षरे आणि विरामचिन्हे आहेत.");
+        prompts.put("ne", "यो वाक्यमा ठूला अक्षर र विराम चिन्हहरू छन्।");
+        prompts.put("nn", "Denne setninga har store bokstavar og teiknsetting.");
+        prompts.put("fa", "این جمله دارای حروف بزرگ و علائم نگارشی است.");
+        prompts.put("pl", "To zdanie ma wielkie litery i znaki interpunkcyjne.");
+        prompts.put("pt", "Esta frase tem letras maiúsculas e pontuação.");
+        prompts.put("pa", "ਇਸ ਵਾਕ ਵਿੱਚ ਵੱਡੇ ਅੱਖਰ ਅਤੇ ਵਿਸ਼ਰਾਮ ਚਿੰਨ੍ਹ ਹਨ।");
+        prompts.put("ro", "Această propoziție are litere mari și punctuație.");
+        prompts.put("ru", "В этом предложении есть заглавные буквы и знаки препинания.");
+        prompts.put("sr", "Ова реченица има велика слова и интерпункцију.");
+        prompts.put("sk", "Táto veta má veľké písmená a interpunkciu.");
+        prompts.put("sl", "Ta poved ima velike črke in ločila.");
+        prompts.put("es", "Esta frase tiene mayúsculas y puntuación.");
+        prompts.put("sw", "Sentensi hii ina herufi kubwa na alama za uakifishaji.");
+        prompts.put("sv", "Denna mening har stora bokstäver och skiljetecken.");
+        prompts.put("ta", "இந்த வாக்கியத்தில் பெரிய எழுத்துக்கள் மற்றும் குறியீடுகள் உள்ளன.");
+        prompts.put("th", "ประโยคนี้มีตัวพิมพ์ใหญ่และเครื่องหมายวรรคตอน.");
+        prompts.put("tr", "Bu cümlede büyük harfler ve noktalama işaretleri var.");
+        prompts.put("uk", "У цьому реченні є великі літери та розділові знаки.");
+        prompts.put("ur", "اس جملے میں بڑے حروف اور اوقاف موجود ہیں۔");
+        prompts.put("vi", "Câu này có chữ hoa và dấu câu.");
+        prompts.put("cy", "Mae gan y frawddeg hon lythrennau mawr ac atalnodi.");
+        PROMPT_PUNCTUATION_CAPITALIZATION_BY_LANGUAGE = Collections.unmodifiableMap(prompts);
+    }
+
+    public static String getPunctuationPromptForLanguage(String languageCode) {
+        if (languageCode == null || languageCode.isEmpty() || languageCode.equals("detect")) {
+            return PROMPT_PUNCTUATION_CAPITALIZATION;
+        }
+        String normalized = languageCode.toLowerCase(Locale.ROOT);
+        String prompt = PROMPT_PUNCTUATION_CAPITALIZATION_BY_LANGUAGE.get(normalized);
+        if (prompt != null) return prompt;
+
+        int separatorIndex = normalized.indexOf('-');
+        if (separatorIndex > 0) {
+            String baseLanguage = normalized.substring(0, separatorIndex);
+            prompt = PROMPT_PUNCTUATION_CAPITALIZATION_BY_LANGUAGE.get(baseLanguage);
+            if (prompt != null) return prompt;
+        }
+
+        return PROMPT_PUNCTUATION_CAPITALIZATION;
+    }
 
     public static String getAssetLanguageSuffix() {
         Locale overrideLocale = null;

@@ -1181,7 +1181,7 @@ public class DictateInputMethodService extends InputMethodService {
         String stylePrompt;
         switch (sp.getInt("net.devemperor.dictate.style_prompt_selection", 1)) {
             case 1:
-                stylePrompt = DictateUtils.PROMPT_PUNCTUATION_CAPITALIZATION;
+                stylePrompt = DictateUtils.getPunctuationPromptForLanguage(currentInputLanguageValue);
                 break;
             case 2:
                 stylePrompt = sp.getString("net.devemperor.dictate.style_prompt_custom_text", "");
@@ -1222,6 +1222,7 @@ public class DictateInputMethodService extends InputMethodService {
                 if (sp.getBoolean("net.devemperor.dictate.proxy_enabled", false)) {
                     if (DictateUtils.isValidProxy(proxyHost)) DictateUtils.applyProxy(clientBuilder, sp);
                 }
+                Log.d("DictateKeyboardSerice", "Style-Prompt: " + stylePrompt);
 
                 Transcription transcription = clientBuilder.build().audio().transcriptions().create(transcriptionBuilder.build()).asTranscription();
                 String resultText = transcription.text().strip();  // Groq sometimes adds leading whitespace
