@@ -24,6 +24,8 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
     private final AdapterCallback callback;
     private final List<Integer> queuedPromptOrder = new ArrayList<>();
     private boolean disableNonSelectionPrompts = false;
+    private MaterialButton selectAllButton;
+    private boolean selectAllActive = false;
 
     public interface AdapterCallback {
         void onItemClicked(Integer position);
@@ -48,6 +50,14 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
         notifyDataSetChanged();
     }
 
+    public void setSelectAllActive(boolean active) {
+        if (selectAllActive == active) return;
+        selectAllActive = active;
+        if (selectAllButton != null) {
+            updateSelectAllButtonIcon();
+        }
+    }
+
     @NonNull
     @Override
     public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -67,12 +77,25 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, final int position) {
         PromptModel model = data.get(position);
+        if (holder.promptBtn == selectAllButton && model.getId() != -3) {
+            selectAllButton = null;
+        }
         if (model.getId() == -1) {
             holder.promptBtn.setText("");
             holder.promptBtn.setForeground(AppCompatResources.getDrawable(holder.promptBtn.getContext(), R.drawable.ic_baseline_auto_awesome_18));
+            holder.promptBtn.setIcon(null);
+            holder.promptBtn.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_START);
+        } else if (model.getId() == -3) {
+            holder.promptBtn.setText("");
+            holder.promptBtn.setIcon(null);
+            holder.promptBtn.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_START);
+            selectAllButton = holder.promptBtn;
+            updateSelectAllButtonIcon();
         } else if (model.getId() == -2) {
             holder.promptBtn.setText("");
             holder.promptBtn.setForeground(AppCompatResources.getDrawable(holder.promptBtn.getContext(), R.drawable.ic_baseline_add_24));
+            holder.promptBtn.setIcon(null);
+            holder.promptBtn.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_START);
         } else {
             int queueIndex = queuedPromptOrder.indexOf(model.getId());
             if (queueIndex >= 0) {
@@ -104,6 +127,13 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    private void updateSelectAllButtonIcon() {
+        if (selectAllButton == null) return;
+        selectAllButton.setForeground(AppCompatResources.getDrawable(
+                selectAllButton.getContext(),
+                selectAllActive ? R.drawable.ic_baseline_deselect_24 : R.drawable.ic_baseline_select_all_24));
     }
 
 }

@@ -189,10 +189,11 @@ public class PromptsDatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         db.close();
-        List<PromptModel> models = new ArrayList<>(promptModels.size() + 2);
+        List<PromptModel> models = new ArrayList<>(promptModels.size() + 3);
         models.add(new PromptModel(-1, Integer.MIN_VALUE, null, null, false, false));  // Add empty model for instant prompt
-        models.add(new PromptModel(-2, Integer.MAX_VALUE, null, null, false, false));  // Add empty model for add button
+        models.add(new PromptModel(-3, Integer.MIN_VALUE + 1, null, null, false, false));  // Select all button
         models.addAll(promptModels);
+        models.add(new PromptModel(-2, Integer.MAX_VALUE, null, null, false, false));  // Add empty model for add button
         return models;
     }
 

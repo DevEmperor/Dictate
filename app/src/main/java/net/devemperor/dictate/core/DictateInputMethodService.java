@@ -27,6 +27,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.InputType;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
@@ -34,6 +35,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
@@ -167,7 +169,6 @@ public class DictateInputMethodService extends InputMethodService {
     private RecyclerView promptsRv;
     private TextView runningPromptTv;
     private ProgressBar runningPromptPb;
-    private MaterialButton editSelectAllButton;
     private MaterialButton editUndoButton;
     private MaterialButton editRedoButton;
     private MaterialButton editCutButton;
@@ -178,6 +179,11 @@ public class DictateInputMethodService extends InputMethodService {
     private TextView emojiPickerTitleTv;
     private MaterialButton emojiPickerCloseButton;
     private EmojiPickerView emojiPickerView;
+    private MaterialButton editNumbersButton;
+    private ConstraintLayout numbersPanelCl;
+    private TextView numbersPanelTitleTv;
+    private MaterialButton numbersPanelCloseButton;
+    private final List<MaterialButton> numberPanelButtons = new ArrayList<>();
     private LinearLayout overlayCharactersLl;
 
     // Recording visuals (pulsing)
@@ -246,17 +252,23 @@ public class DictateInputMethodService extends InputMethodService {
         runningPromptPb = dictateKeyboardView.findViewById(R.id.prompts_keyboard_running_pb);
         runningPromptTv = dictateKeyboardView.findViewById(R.id.prompts_keyboard_running_prompt_tv);
 
-        editSelectAllButton = dictateKeyboardView.findViewById(R.id.edit_select_all_btn);
         editUndoButton = dictateKeyboardView.findViewById(R.id.edit_undo_btn);
         editRedoButton = dictateKeyboardView.findViewById(R.id.edit_redo_btn);
         editCutButton = dictateKeyboardView.findViewById(R.id.edit_cut_btn);
         editCopyButton = dictateKeyboardView.findViewById(R.id.edit_copy_btn);
         editPasteButton = dictateKeyboardView.findViewById(R.id.edit_paste_btn);
         editEmojiButton = dictateKeyboardView.findViewById(R.id.edit_emoji_btn);
+        editNumbersButton = dictateKeyboardView.findViewById(R.id.edit_numbers_btn);
         emojiPickerCl = dictateKeyboardView.findViewById(R.id.emoji_picker_cl);
         emojiPickerTitleTv = dictateKeyboardView.findViewById(R.id.emoji_picker_title_tv);
         emojiPickerCloseButton = dictateKeyboardView.findViewById(R.id.emoji_picker_close_btn);
         emojiPickerView = dictateKeyboardView.findViewById(R.id.emoji_picker_view);
+        numbersPanelCl = dictateKeyboardView.findViewById(R.id.numbers_panel_cl);
+        numbersPanelTitleTv = dictateKeyboardView.findViewById(R.id.numbers_panel_title_tv);
+        numbersPanelCloseButton = dictateKeyboardView.findViewById(R.id.numbers_panel_close_btn);
+        LinearLayout numbersPanelKeysContainer = dictateKeyboardView.findViewById(R.id.numbers_panel_keys_container);
+        numberPanelButtons.clear();
+        collectNumberPanelButtons(numbersPanelKeysContainer);
 
         overlayCharactersLl = dictateKeyboardView.findViewById(R.id.overlay_characters_ll);
 
@@ -640,17 +652,7 @@ public class DictateInputMethodService extends InputMethodService {
 
         enterButton.setOnClickListener(v -> {
             vibrate();
-
-            InputConnection inputConnection = getCurrentInputConnection();
-            if (inputConnection != null) {
-                EditorInfo editorInfo = getCurrentInputEditorInfo();
-                if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
-                    inputConnection.commitText("\n", 1);
-                } else {
-                    inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
-                    inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
-                }
-            }
+            performEnterAction();
         });
 
         enterButton.setOnLongClickListener(v -> {
@@ -692,28 +694,6 @@ public class DictateInputMethodService extends InputMethodService {
             return false;
         });
 
-        editSelectAllButton.setOnClickListener(v -> {
-            vibrate();
-
-            InputConnection inputConnection = getCurrentInputConnection();
-            if (inputConnection != null) {
-                ExtractedText extractedText = inputConnection.getExtractedText(new ExtractedTextRequest(), 0);
-
-                if (inputConnection.getSelectedText(0) == null && extractedText.text.length() > 0) {
-                    inputConnection.performContextMenuAction(android.R.id.selectAll);
-                    editSelectAllButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_deselect_24));
-                } else {
-                    inputConnection.clearMetaKeyStates(0);
-                    if (extractedText == null || extractedText.text == null) {
-                        inputConnection.setSelection(0, 0);
-                    } else {
-                        inputConnection.setSelection(extractedText.text.length(), extractedText.text.length());
-                    }
-                    editSelectAllButton.setForeground(AppCompatResources.getDrawable(context, R.drawable.ic_baseline_select_all_24));
-                }
-            }
-        });
-
         // initialize all edit buttons
         Object[][] buttonsActions = {
                 { editUndoButton, android.R.id.undo },
@@ -738,9 +718,19 @@ public class DictateInputMethodService extends InputMethodService {
             toggleEmojiPicker();
         });
 
+        editNumbersButton.setOnClickListener(v -> {
+            vibrate();
+            toggleNumberPanel();
+        });
+
         emojiPickerCloseButton.setOnClickListener(v -> {
             vibrate();
             hideEmojiPicker();
+        });
+
+        numbersPanelCloseButton.setOnClickListener(v -> {
+            vibrate();
+            hideNumberPanel();
         });
 
         emojiPickerView.setOnEmojiPickedListener(emoji -> {
@@ -801,6 +791,7 @@ public class DictateInputMethodService extends InputMethodService {
         resendButton.setVisibility(View.GONE);
         infoCl.setVisibility(View.GONE);
         emojiPickerCl.setVisibility(View.GONE);
+        numbersPanelCl.setVisibility(View.GONE);
         isRecording = false;
         isPaused = false;
         livePrompt = false;
@@ -827,8 +818,6 @@ public class DictateInputMethodService extends InputMethodService {
             final List<PromptModel> data = promptsDb.getAllForKeyboard();
             InputConnection inputConnection = getCurrentInputConnection();
             boolean hasSelection = inputConnection != null && inputConnection.getSelectedText(0) != null;
-            editSelectAllButton.setForeground(AppCompatResources.getDrawable(this,
-                    hasSelection ? R.drawable.ic_baseline_deselect_24 : R.drawable.ic_baseline_select_all_24));
 
             promptsAdapter = new PromptsKeyboardAdapter(sp, data, new PromptsKeyboardAdapter.AdapterCallback() {
                 @Override
@@ -845,6 +834,8 @@ public class DictateInputMethodService extends InputMethodService {
                         } else if (isRecording) {
                             stopRecording();
                         }
+                    } else if (model.getId() == -3) {  // select all clicked
+                        handleSelectAllToggle();
                     } else if (model.getId() == -2) {  // add prompt clicked
                         Intent intent = new Intent(DictateInputMethodService.this, PromptsOverviewActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -890,9 +881,17 @@ public class DictateInputMethodService extends InputMethodService {
             });
             promptsRv.setAdapter(promptsAdapter);
             promptsAdapter.setDisableNonSelectionPrompts(disableNonSelectionPrompts);
+            promptsAdapter.setSelectAllActive(hasSelection);
             updateQueuedPromptsUi();
+            updateSelectAllPromptState();
         } else {
             promptsCl.setVisibility(View.GONE);
+        }
+
+        if (shouldAutomaticallyShowNumberPanel(info)) {
+            showNumberPanel();
+        } else {
+            hideNumberPanel();
         }
 
         // enable resend button if previous audio file still exists in cache
@@ -934,14 +933,19 @@ public class DictateInputMethodService extends InputMethodService {
         }
         dictateKeyboardView.setBackgroundColor(keyboardBackgroundColor);
         emojiPickerCl.setBackgroundColor(keyboardBackgroundColor);
+        numbersPanelCl.setBackgroundColor(keyboardBackgroundColor);
 
         View[] backgroundColorViews = {
                 settingsButton, recordButton, resendButton, backspaceButton, switchButton, trashButton, spaceButton, pauseButton, enterButton,
-                editSelectAllButton, editUndoButton, editRedoButton, editCutButton, editCopyButton, editPasteButton, editEmojiButton, emojiPickerCloseButton
+                editUndoButton, editRedoButton, editCutButton, editCopyButton, editPasteButton, editEmojiButton, editNumbersButton,
+                emojiPickerCloseButton, numbersPanelCloseButton
         };
-        TextView[] textColorViews = { infoTv, runningPromptTv, emojiPickerTitleTv };
+        TextView[] textColorViews = { infoTv, runningPromptTv, emojiPickerTitleTv, numbersPanelTitleTv };
         for (View v : backgroundColorViews) v.setBackgroundColor(accentColor);
         for (TextView tv : textColorViews) tv.setTextColor(accentColor);
+        for (MaterialButton button : numberPanelButtons) {
+            button.setBackgroundColor(accentColor);
+        }
         runningPromptPb.getIndeterminateDrawable().setColorFilter(accentColor, android.graphics.PorterDuff.Mode.SRC_IN);
 
         // show infos for updates, ratings or donations
@@ -974,10 +978,7 @@ public class DictateInputMethodService extends InputMethodService {
 
         // refill all prompts
         if (sp != null && sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
-            InputConnection inputConnection = getCurrentInputConnection();
-            boolean hasSelection = inputConnection != null && inputConnection.getSelectedText(0) != null;
-            editSelectAllButton.setForeground(AppCompatResources.getDrawable(this,
-                    hasSelection ? R.drawable.ic_baseline_deselect_24 : R.drawable.ic_baseline_select_all_24));
+            updateSelectAllPromptState();
         }
     }
 
@@ -998,6 +999,7 @@ public class DictateInputMethodService extends InputMethodService {
     }
 
     private void showEmojiPicker() {
+        hideNumberPanel();
         overlayCharactersLl.setVisibility(View.GONE);
         infoCl.setVisibility(View.GONE);
         emojiPickerCl.setVisibility(View.VISIBLE);
@@ -1006,6 +1008,121 @@ public class DictateInputMethodService extends InputMethodService {
 
     private void hideEmojiPicker() {
         emojiPickerCl.setVisibility(View.GONE);
+    }
+
+    private void handleSelectAllToggle() {
+        InputConnection inputConnection = getCurrentInputConnection();
+        if (inputConnection == null) return;
+
+        ExtractedText extractedText = inputConnection.getExtractedText(new ExtractedTextRequest(), 0);
+        CharSequence selectedText = inputConnection.getSelectedText(0);
+
+        if ((selectedText == null || selectedText.length() == 0)
+                && extractedText != null && extractedText.text != null && extractedText.text.length() > 0) {
+            inputConnection.performContextMenuAction(android.R.id.selectAll);
+        } else {
+            inputConnection.clearMetaKeyStates(0);
+            if (extractedText == null || extractedText.text == null) {
+                inputConnection.setSelection(0, 0);
+            } else {
+                int length = extractedText.text.length();
+                inputConnection.setSelection(length, length);
+            }
+        }
+
+        updateSelectAllPromptState();
+    }
+
+    private void updateSelectAllPromptState() {
+        if (promptsAdapter == null) return;
+        InputConnection inputConnection = getCurrentInputConnection();
+        boolean hasSelection = inputConnection != null && inputConnection.getSelectedText(0) != null;
+        promptsAdapter.setSelectAllActive(hasSelection);
+    }
+
+    private void toggleNumberPanel() {
+        if (numbersPanelCl == null) return;
+        if (numbersPanelCl.getVisibility() == View.VISIBLE) {
+            hideNumberPanel();
+        } else {
+            showNumberPanel();
+        }
+    }
+
+    private void showNumberPanel() {
+        if (numbersPanelCl == null) return;
+        hideEmojiPicker();
+        overlayCharactersLl.setVisibility(View.GONE);
+        infoCl.setVisibility(View.GONE);
+        numbersPanelCl.setVisibility(View.VISIBLE);
+        numbersPanelCl.bringToFront();
+    }
+
+    private void hideNumberPanel() {
+        if (numbersPanelCl == null) return;
+        numbersPanelCl.setVisibility(View.GONE);
+    }
+
+    private void collectNumberPanelButtons(ViewGroup parent) {
+        if (parent == null) return;
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            View child = parent.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                collectNumberPanelButtons((ViewGroup) child);
+            } else if (child instanceof MaterialButton) {
+                MaterialButton button = (MaterialButton) child;
+                Object tag = button.getTag();
+                final String value;
+                if (tag != null) {
+                    value = tag.toString();
+                } else if (button.getText() != null) {
+                    value = button.getText().toString();
+                } else {
+                    value = "";
+                }
+                button.setOnClickListener(v -> {
+                    vibrate();
+                    if ("BACKSPACE".equalsIgnoreCase(value)) {
+                        deleteOneCharacter();
+                    } else if ("ENTER".equalsIgnoreCase(value)) {
+                        performEnterAction();
+                    } else {
+                        commitNumberPanelValue(value);
+                    }
+                });
+                numberPanelButtons.add(button);
+            }
+        }
+    }
+
+    private void commitNumberPanelValue(String value) {
+        if (value == null || value.isEmpty()) return;
+        InputConnection inputConnection = getCurrentInputConnection();
+        if (inputConnection != null) {
+            inputConnection.commitText(value, 1);
+        }
+    }
+
+    private boolean shouldAutomaticallyShowNumberPanel(EditorInfo info) {
+        if (info == null) return false;
+        int inputType = info.inputType;
+        int inputClass = inputType & InputType.TYPE_MASK_CLASS;
+        if (inputClass == InputType.TYPE_CLASS_NUMBER || inputClass == InputType.TYPE_CLASS_PHONE) {
+            return true;
+        }
+        return inputClass == InputType.TYPE_CLASS_DATETIME;
+    }
+
+    private void performEnterAction() {
+        InputConnection inputConnection = getCurrentInputConnection();
+        if (inputConnection == null) return;
+        EditorInfo editorInfo = getCurrentInputEditorInfo();
+        if (editorInfo != null && (editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
+            inputConnection.commitText("\n", 1);
+        } else {
+            inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+            inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
+        }
     }
 
     private void openSettingsActivity() {
@@ -1547,9 +1664,13 @@ public class DictateInputMethodService extends InputMethodService {
         disableNonSelectionPrompts = isRecording || isPreparingRecording;
         if (promptsAdapter == null) return;
         if (mainHandler != null) {
-            mainHandler.post(() -> promptsAdapter.setDisableNonSelectionPrompts(disableNonSelectionPrompts));
+            mainHandler.post(() -> {
+                promptsAdapter.setDisableNonSelectionPrompts(disableNonSelectionPrompts);
+                updateSelectAllPromptState();
+            });
         } else {
             promptsAdapter.setDisableNonSelectionPrompts(disableNonSelectionPrompts);
+            updateSelectAllPromptState();
         }
     }
 

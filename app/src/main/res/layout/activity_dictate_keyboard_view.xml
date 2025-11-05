@@ -202,76 +202,91 @@
         app:layout_constraintTop_toBottomOf="@id/prompts_keyboard_cl">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/edit_select_all_btn"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:foreground="@drawable/ic_baseline_select_all_24"
-            android:foregroundGravity="center"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="4dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/edit_undo_btn"/>
-
-        <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_undo_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="4dp"
             android:foreground="@drawable/ic_baseline_undo_24"
             android:foregroundGravity="center"
-            android:layout_marginHorizontal="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/edit_redo_btn"
-            app:layout_constraintStart_toEndOf="@+id/edit_select_all_btn" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_redo_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="4dp"
             android:foreground="@drawable/ic_baseline_redo_24"
             android:foregroundGravity="center"
-            android:layout_marginHorizontal="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/edit_cut_btn"
-            app:layout_constraintStart_toEndOf="@+id/edit_undo_btn" />
+            app:layout_constraintStart_toEndOf="@+id/edit_undo_btn"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_cut_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="4dp"
             android:foreground="@drawable/ic_baseline_content_cut_24"
             android:foregroundGravity="center"
-            android:layout_marginHorizontal="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/edit_copy_btn"
-            app:layout_constraintStart_toEndOf="@+id/edit_redo_btn" />
+            app:layout_constraintStart_toEndOf="@+id/edit_redo_btn"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_copy_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="4dp"
             android:foreground="@drawable/ic_baseline_content_copy_24"
             android:foregroundGravity="center"
-            android:layout_marginHorizontal="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/edit_paste_btn"
-            app:layout_constraintStart_toEndOf="@+id/edit_cut_btn" />
+            app:layout_constraintStart_toEndOf="@+id/edit_cut_btn"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_paste_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="4dp"
             android:foreground="@drawable/ic_baseline_content_paste_24"
             android:foregroundGravity="center"
-            android:layout_marginHorizontal="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/edit_emoji_btn"
-            app:layout_constraintStart_toEndOf="@id/edit_copy_btn"/>
+            app:layout_constraintStart_toEndOf="@+id/edit_copy_btn"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_emoji_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:foreground="@drawable/ic_baseline_emoji_emotions_24"
             android:foregroundGravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/edit_numbers_btn"
+            app:layout_constraintStart_toEndOf="@+id/edit_paste_btn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_numbers_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="16dp"
+            android:foreground="@drawable/ic_baseline_numbers_24"
+            android:foregroundGravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/edit_paste_btn"/>
+            app:layout_constraintStart_toEndOf="@+id/edit_emoji_btn"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -337,7 +352,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/emoji_picker_cl"
         android:layout_width="0dp"
-        android:layout_height="480dp"
+        android:layout_height="400dp"
         android:background="@color/dictate_keyboard_background_light"
         android:padding="16dp"
         android:visibility="gone"
@@ -378,6 +393,272 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/emoji_picker_close_btn" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/numbers_panel_cl"
+        android:layout_width="0dp"
+        android:layout_height="320dp"
+        android:background="@color/dictate_keyboard_background_light"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone">
+
+        <TextView
+            android:id="@+id/numbers_panel_title_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/dictate_number_pad_title"
+            android:textColor="@color/dictate_blue"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/numbers_panel_close_btn"
+            app:layout_constraintEnd_toStartOf="@+id/numbers_panel_close_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/numbers_panel_close_btn" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/numbers_panel_close_btn"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:foreground="@drawable/ic_baseline_close_24"
+            android:foregroundGravity="center"
+            android:minWidth="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/numbers_panel_keys_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/numbers_panel_close_btn">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:text="1"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:text="2"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:text="3"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_minus"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:text="-"
+                    android:textSize="24sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_4"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:text="4"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_5"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:text="5"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_6"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:text="6"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_space"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:foreground="@drawable/ic_baseline_space_bar_24"
+                    android:foregroundGravity="center"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:tag=" " />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_7"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:text="7"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_8"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:text="8"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_9"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:text="9"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_backspace"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:foreground="@drawable/ic_baseline_keyboard_backspace_24"
+                    android:foregroundGravity="center"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:tag="BACKSPACE" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_comma"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:text=","
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_0"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:text="0"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_dot"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:text="."
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/numbers_key_enter"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:foreground="@drawable/ic_baseline_check_24"
+                    android:foregroundGravity="center"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:tag="ENTER" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

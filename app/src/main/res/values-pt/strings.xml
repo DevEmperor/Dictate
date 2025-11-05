@@ -140,6 +140,7 @@
     <string name="dictate_settings_overlay_characters_title">Editar caracteres personalizados (segure o botão ⏎)</string>
     <string name="dictate_overlay_characters_empty">Você precisa definir pelo menos um caractere.</string>
     <string name="dictate_emoji_picker_title">Escolha um emoji</string>
+    <string name="dictate_number_pad_title">Painel numérico</string>
     <string name="dictate_example_prompt_one_name">Tradutor francês</string>
     <string name="dictate_example_prompt_one_prompt">Quero que você atue como um tradutor de francês. Vou falar com você em qualquer idioma e você irá detectar o idioma, traduzir e responder com a versão em francês do meu texto. Quero que responda apenas com a correção e as melhorias, nada mais; não escreva explicações nem adicione aspas no começo ou no fim.</string>
     <string name="dictate_example_prompt_two_name">Resumir</string>
