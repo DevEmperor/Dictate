@@ -1,6 +1,7 @@
 package net.devemperor.dictate.rewording;
 
 import android.animation.TimeInterpolator;
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 
+import net.devemperor.dictate.DictateUtils;
 import net.devemperor.dictate.R;
 
 import java.util.ArrayList;
@@ -81,6 +83,7 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, final int position) {
         holder.promptBtn.animate().cancel();
@@ -131,7 +134,18 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
             callback.onItemLongClicked(position);
             return true;
         });
-        holder.promptBtn.setBackgroundColor(sp.getInt("net.devemperor.dictate.accent_color", -14700810));
+        int accentColor = sp.getInt("net.devemperor.dictate.accent_color", -14700810);
+        int accentColorMedium = DictateUtils.darkenColor(accentColor, 0.18f);
+        int accentColorDark = DictateUtils.darkenColor(accentColor, 0.35f);
+        int backgroundColor;
+        if (model.getId() == -1 || model.getId() == -3) {
+            backgroundColor = accentColor;
+        } else if (model.getId() == -2) {
+            backgroundColor = accentColorDark;
+        } else {
+            backgroundColor = accentColorMedium;
+        }
+        applyPromptButtonColors(holder.promptBtn, backgroundColor);
         if (sp.getBoolean("net.devemperor.dictate.animations", true)) {
             holder.promptBtn.setOnTouchListener((v, event) -> {
                 switch (event.getActionMasked()) {
@@ -165,6 +179,11 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    private void applyPromptButtonColors(MaterialButton button, int backgroundColor) {
+        if (button == null) return;
+        button.setBackgroundColor(backgroundColor);
     }
 
     private void updateSelectAllButtonIcon() {

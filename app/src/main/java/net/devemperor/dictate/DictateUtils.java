@@ -2,6 +2,7 @@ package net.devemperor.dictate;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -449,5 +450,18 @@ public class DictateUtils {
             default:
                 return "";
         }
+    }
+
+    public static int darkenColor(int color, float amount) {
+        float factor = clamp(amount);
+        int alpha = Color.alpha(color);
+        int red = Math.round(Color.red(color) * (1f - factor));
+        int green = Math.round(Color.green(color) * (1f - factor));
+        int blue = Math.round(Color.blue(color) * (1f - factor));
+        return Color.argb(alpha, red, green, blue);
+    }
+
+    private static float clamp(float value) {
+        return Math.max((float) 0.0, Math.min((float) 1.0, value));
     }
 }

@@ -948,16 +948,35 @@ public class DictateInputMethodService extends InputMethodService {
         emojiPickerCl.setBackgroundColor(keyboardBackgroundColor);
         numbersPanelCl.setBackgroundColor(keyboardBackgroundColor);
 
-        View[] backgroundColorViews = {
-                settingsButton, recordButton, resendButton, backspaceButton, switchButton, trashButton, spaceButton, pauseButton, enterButton,
-                editUndoButton, editRedoButton, editCutButton, editCopyButton, editPasteButton, editEmojiButton, editNumbersButton,
-                emojiPickerCloseButton, numbersPanelCloseButton
-        };
+        int accentColorMedium = DictateUtils.darkenColor(accentColor, 0.18f);
+        int accentColorDark = DictateUtils.darkenColor(accentColor, 0.35f);
         TextView[] textColorViews = { infoTv, runningPromptTv, emojiPickerTitleTv, numbersPanelTitleTv };
-        for (View v : backgroundColorViews) v.setBackgroundColor(accentColor);
         for (TextView tv : textColorViews) tv.setTextColor(accentColor);
+        applyButtonColor(settingsButton, accentColorDark);
+        applyButtonColor(recordButton, accentColor);
+        applyButtonColor(resendButton, accentColorMedium);
+        applyButtonColor(backspaceButton, accentColorDark);
+        applyButtonColor(switchButton, accentColorDark);
+        applyButtonColor(trashButton, accentColorDark);
+        applyButtonColor(spaceButton, accentColorMedium);
+        applyButtonColor(pauseButton, accentColorMedium);
+        applyButtonColor(enterButton, accentColorDark);
+        applyButtonColor(editUndoButton, accentColorMedium);
+        applyButtonColor(editRedoButton, accentColorMedium);
+        applyButtonColor(editCutButton, accentColorMedium);
+        applyButtonColor(editCopyButton, accentColorMedium);
+        applyButtonColor(editPasteButton, accentColorMedium);
+        applyButtonColor(editEmojiButton, accentColorMedium);
+        applyButtonColor(editNumbersButton, accentColorMedium);
+        applyButtonColor(emojiPickerCloseButton, accentColor);
+        applyButtonColor(numbersPanelCloseButton, accentColor);
         for (MaterialButton button : numberPanelButtons) {
-            button.setBackgroundColor(accentColor);
+            Object tag = button.getTag();
+            CharSequence text = button.getText();
+            boolean isEnter = tag != null && "ENTER".equalsIgnoreCase(tag.toString());
+            boolean isDigit = text != null && text.length() == 1 && Character.isDigit(text.charAt(0));
+            int background = isEnter ? accentColor : (isDigit ? accentColorMedium : accentColorDark);
+            applyButtonColor(button, background);
         }
         runningPromptPb.getIndeterminateDrawable().setColorFilter(accentColor, android.graphics.PorterDuff.Mode.SRC_IN);
 
@@ -1109,6 +1128,11 @@ public class DictateInputMethodService extends InputMethodService {
         }
     }
 
+    private void applyButtonColor(MaterialButton button, int backgroundColor) {
+        if (button == null) return;
+        button.setBackgroundColor(backgroundColor);
+    }
+
     private void initializeKeyPressAnimations() {
         View[] animatedViews = {
                 settingsButton, recordButton, resendButton, switchButton, trashButton,
@@ -1122,10 +1146,7 @@ public class DictateInputMethodService extends InputMethodService {
         }
     }
 
-    private boolean areAnimationsEnabled() {
-        return sp == null || sp.getBoolean("net.devemperor.dictate.animations", true);
-    }
-
+    @SuppressLint("ClickableViewAccessibility")
     private void applyPressAnimation(View view) {
         if (view == null) return;
         view.setOnTouchListener((v, event) -> {
@@ -1136,7 +1157,7 @@ public class DictateInputMethodService extends InputMethodService {
 
     private void handlePressAnimationEvent(View view, MotionEvent event) {
         if (view == null || event == null) return;
-        if (!areAnimationsEnabled()) {
+        if (!sp.getBoolean("net.devemperor.dictate.animations", true)) {
             view.animate().cancel();
             view.setScaleX(1f);
             view.setScaleY(1f);
@@ -1154,7 +1175,7 @@ public class DictateInputMethodService extends InputMethodService {
     }
 
     private void animateKeyPress(View view, boolean pressed) {
-        if (!areAnimationsEnabled() || view == null) {
+        if (!sp.getBoolean("net.devemperor.dictate.animations", true) || view == null) {
             if (view != null) {
                 view.animate().cancel();
                 if (view.getScaleX() != 1f) view.setScaleX(1f);
