@@ -2,6 +2,7 @@ package net.devemperor.dictate.core;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -38,6 +39,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
@@ -101,6 +103,9 @@ public class DictateInputMethodService extends InputMethodService {
 
     // define handlers and runnables for background tasks
     private static final int DELETE_LOOKBACK_CHARACTERS = 64;
+    private static final float KEY_PRESS_SCALE = 0.92f;
+    private static final long KEY_PRESS_ANIM_DURATION = 80L;
+    private static final TimeInterpolator KEY_PRESS_INTERPOLATOR = new DecelerateInterpolator();
 
     private Handler mainHandler;
     private Handler deleteHandler;
@@ -269,6 +274,7 @@ public class DictateInputMethodService extends InputMethodService {
         LinearLayout numbersPanelKeysContainer = dictateKeyboardView.findViewById(R.id.numbers_panel_keys_container);
         numberPanelButtons.clear();
         collectNumberPanelButtons(numbersPanelKeysContainer);
+        initializeKeyPressAnimations();
 
         overlayCharactersLl = dictateKeyboardView.findViewById(R.id.overlay_characters_ll);
 
@@ -420,6 +426,7 @@ public class DictateInputMethodService extends InputMethodService {
 
         // Enhanced touch handling: swipe left while holding to select words progressively
         backspaceButton.setOnTouchListener((v, event) -> {
+            handlePressAnimationEvent(v, event);
             InputConnection ic = getCurrentInputConnection();
             final float density = getResources().getDisplayMetrics().density;
             final int stepPx = (int) (24f * density + 0.5f);
@@ -588,11 +595,13 @@ public class DictateInputMethodService extends InputMethodService {
 
         // space button that changes cursor position if user swipes over it
         spaceButton.setOnTouchListener((v, event) -> {
+            handlePressAnimationEvent(v, event);
             InputConnection inputConnection = getCurrentInputConnection();
+            int action = event.getActionMasked();
             if (inputConnection != null) {
                 spaceButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_keyboard_double_arrow_left_24,
                         0, R.drawable.ic_baseline_keyboard_double_arrow_right_24, 0);
-                switch (event.getAction()) {
+                switch (action) {
                     case MotionEvent.ACTION_DOWN:
                         spaceButtonUserHasSwiped = false;
                         spaceButton.setTag(event.getX());
@@ -618,6 +627,9 @@ public class DictateInputMethodService extends InputMethodService {
                             vibrate();
                             inputConnection.commitText(" ", 1);
                         }
+                        spaceButton.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
                         spaceButton.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
                         break;
                 }
@@ -662,8 +674,9 @@ public class DictateInputMethodService extends InputMethodService {
         });
 
         enterButton.setOnTouchListener((v, event) -> {
+            handlePressAnimationEvent(v, event);
             if (overlayCharactersLl.getVisibility() == View.VISIBLE) {
-                switch (event.getAction()) {
+                switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_MOVE:
                         for (int i = 0; i < overlayCharactersLl.getChildCount(); i++) {
                             TextView charView = (TextView) overlayCharactersLl.getChildAt(i);
@@ -1090,9 +1103,72 @@ public class DictateInputMethodService extends InputMethodService {
                         commitNumberPanelValue(value);
                     }
                 });
+                applyPressAnimation(button);
                 numberPanelButtons.add(button);
             }
         }
+    }
+
+    private void initializeKeyPressAnimations() {
+        View[] animatedViews = {
+                settingsButton, recordButton, resendButton, switchButton, trashButton,
+                pauseButton, emojiPickerCloseButton, numbersPanelCloseButton,
+                editUndoButton, editRedoButton, editCutButton, editCopyButton,
+                editPasteButton, editEmojiButton, editNumbersButton,
+                infoYesButton, infoNoButton
+        };
+        for (View view : animatedViews) {
+            applyPressAnimation(view);
+        }
+    }
+
+    private boolean areAnimationsEnabled() {
+        return sp == null || sp.getBoolean("net.devemperor.dictate.animations", true);
+    }
+
+    private void applyPressAnimation(View view) {
+        if (view == null) return;
+        view.setOnTouchListener((v, event) -> {
+            handlePressAnimationEvent(v, event);
+            return false;
+        });
+    }
+
+    private void handlePressAnimationEvent(View view, MotionEvent event) {
+        if (view == null || event == null) return;
+        if (!areAnimationsEnabled()) {
+            view.animate().cancel();
+            view.setScaleX(1f);
+            view.setScaleY(1f);
+            return;
+        }
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                animateKeyPress(view, true);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                animateKeyPress(view, false);
+                break;
+        }
+    }
+
+    private void animateKeyPress(View view, boolean pressed) {
+        if (!areAnimationsEnabled() || view == null) {
+            if (view != null) {
+                view.animate().cancel();
+                if (view.getScaleX() != 1f) view.setScaleX(1f);
+                if (view.getScaleY() != 1f) view.setScaleY(1f);
+            }
+            return;
+        }
+        float targetScale = pressed ? KEY_PRESS_SCALE : 1f;
+        view.animate()
+                .scaleX(targetScale)
+                .scaleY(targetScale)
+                .setDuration(KEY_PRESS_ANIM_DURATION)
+                .setInterpolator(KEY_PRESS_INTERPOLATOR)
+                .start();
     }
 
     private void commitNumberPanelValue(String value) {

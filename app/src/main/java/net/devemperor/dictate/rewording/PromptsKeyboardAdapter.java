@@ -1,9 +1,12 @@
 package net.devemperor.dictate.rewording;
 
+import android.animation.TimeInterpolator;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -18,6 +21,10 @@ import java.util.List;
 import java.util.Locale;
 
 public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboardAdapter.RecyclerViewHolder> {
+
+    private static final float PRESSED_SCALE = 0.92f;
+    private static final long PRESS_ANIM_DURATION = 80L;
+    private static final TimeInterpolator PRESS_INTERPOLATOR = new DecelerateInterpolator();
 
     private final SharedPreferences sp;
     private final List<PromptModel> data;
@@ -76,6 +83,9 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, final int position) {
+        holder.promptBtn.animate().cancel();
+        holder.promptBtn.setScaleX(1f);
+        holder.promptBtn.setScaleY(1f);
         PromptModel model = data.get(position);
         if (holder.promptBtn == selectAllButton && model.getId() != -3) {
             selectAllButton = null;
@@ -122,6 +132,34 @@ public class PromptsKeyboardAdapter extends RecyclerView.Adapter<PromptsKeyboard
             return true;
         });
         holder.promptBtn.setBackgroundColor(sp.getInt("net.devemperor.dictate.accent_color", -14700810));
+        if (sp.getBoolean("net.devemperor.dictate.animations", true)) {
+            holder.promptBtn.setOnTouchListener((v, event) -> {
+                switch (event.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.animate()
+                                .scaleX(PRESSED_SCALE)
+                                .scaleY(PRESSED_SCALE)
+                                .setDuration(PRESS_ANIM_DURATION)
+                                .setInterpolator(PRESS_INTERPOLATOR)
+                                .start();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        v.animate()
+                                .scaleX(1f)
+                                .scaleY(1f)
+                                .setDuration(PRESS_ANIM_DURATION)
+                                .setInterpolator(PRESS_INTERPOLATOR)
+                                .start();
+                        break;
+                }
+                return false;
+            });
+        } else {
+            holder.promptBtn.setOnTouchListener(null);
+            holder.promptBtn.setScaleX(1f);
+            holder.promptBtn.setScaleY(1f);
+        }
     }
 
     @Override
