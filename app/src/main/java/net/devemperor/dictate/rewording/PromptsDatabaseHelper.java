@@ -49,7 +49,7 @@ public class PromptsDatabaseHelper extends SQLiteOpenHelper {
         cv.put("POS", 2);
         cv.put("NAME", context.getString(R.string.dictate_example_prompt_three_name));
         cv.put("PROMPT", context.getString(R.string.dictate_example_prompt_three_prompt));
-        cv.put("REQUIRES_SELECTION", 0);
+        cv.put("REQUIRES_SELECTION", 1);
         cv.put("AUTO_APPLY", 0);
         sqLiteDatabase.insert("PROMPTS", null, cv);
 
