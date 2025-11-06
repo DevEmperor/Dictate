@@ -7,7 +7,7 @@ During recording, you can press the "Pause" button at any time to pause the reco
 dictate_how_to_pause_delete
 
 Rewording with AI
-In addition to the dictation function, the rewording function of the Dictate keyboard is another highlight. You can store your own rewording instructions for ChatGPT in the settings. For example, if you want to translate a dictated text into French, you can use the example instruction "French translator".\n\nJust press the "Select all" button and then press one of your instructions to send the selected text to ChatGPT together with your previously written instruction. After a short moment, the edited text will be inserted into the current text field. You can also press an instruction without highlighting any text to generate a text from ChatGPT independently of the spoken text. Depending on the type of revision instruction you want to create, you must activate or deactivate the "Requires text selection" switch when creating a new instruction.
+In addition to the dictation function, the rewording function of the Dictate keyboard is another highlight. You can store your own rewording instructions for ChatGPT in the settings. For example, if you want to translate a dictated text into French, you can use the example instruction "French translator".\n\nSimply press one of your instructions to automatically select the entire text and have it rewritten by the AI. If you only select a specific text, only that text will be rewritten. After a short moment, the edited text will be inserted into the current text field. You can also press an instruction without highlighting any text to generate a text from ChatGPT independently of the spoken text. Depending on the type of revision instruction you want to create, you must activate or deactivate the "Requires text selection" switch when creating a new instruction.
 dictate_how_to_rewording
 
 Live rewording and exact output
@@ -23,7 +23,7 @@ You will find a delete button on the right-hand side of the Dictate keyboard to 
 dictate_how_to_delete_enter_space
 
 Copy, paste and history
-You can cut text to the clipboard, copy it or paste it from there after you have selected the text. You can also use the arrow keys to undo or redo the last changes in the focused text field.
+You can cut text to the clipboard, copy it or paste it from there after you have selected the text. You can also use the arrow keys to undo or redo the last changes in the focused text field. If you want to type emojis or numbers without changing the keyboard, you can simply tap on the corresponding symbols.
 dictate_how_to_copy_paste_undo_redo
 
 Inserting additional characters
@@ -35,7 +35,7 @@ If you press the button with the keyboard at the bottom left, you can quickly sw
 dictate_how_to_switch
 
 Rewording settings
-In the settings above, you can manage your rewording instructions, change the AI model for rewording or switch this function off completely if you don't need it.
+In the settings above, you can manage your rewording instructions, change the AI model for rewording or switch this function off completely if you don't need it. You can also export and import all of your instructions if, for example, you change devices or want to share instructions with others.
 dictate_how_to_rewording_settings
 
 Further settings

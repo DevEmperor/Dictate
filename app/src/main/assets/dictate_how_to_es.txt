@@ -1,59 +1,59 @@
 Grabar y transcribir textos
-La función de dictado es el centro del teclado Dictate. Una vez que abras el teclado, puedes pulsar el botón "Grabar" para comenzar a registrar. Ahora solo habla con libertad y WhisperAI trabajará en segundo plano para asegurarse de que tus ideas con signos de puntuación se conviertan correctamente en texto.\n\nTambién verás un mensaje que muestra cuánto tiempo llevas grabando y podrás pulsar "Enviar" en cualquier momento para iniciar el reconocimiento. Tras un breve instante, el texto se insertará en el campo actual.\n\nSi mantienes pulsado el botón mientras grabas, el teclado volverá automáticamente al teclado usado anteriormente después de la transcripción.\n\nSi tienes unos auriculares con micrófono conectados, Dictate utilizará por defecto el micrófono de los auriculares. Puedes cambiar esto en los ajustes si prefieres usar el micrófono integrado del dispositivo.
+La función de dictado es el corazón del teclado Dictate. Cuando el teclado está abierto, pulsa el botón "Grabar" para comenzar a captar audio. Habla con naturalidad y WhisperAI se encargará de convertir tus ideas en texto con la puntuación correcta.\n\nTambién verás un indicador que muestra cuánto tiempo llevas grabando y puedes pulsar "Enviar" en cualquier momento para iniciar el reconocimiento. Tras unos instantes, el texto se insertará en el campo actual.\n\nSi mantienes pulsado el botón mientras grabas, el teclado volverá automáticamente al teclado usado anteriormente en cuanto finalice la transcripción.\n\nSi tienes conectados unos auriculares con micrófono, Dictate utilizará ese micrófono de forma predeterminada. Puedes cambiarlo en los ajustes si prefieres usar el micrófono integrado del dispositivo.
 dictate_how_to_main
 
-Pausar o borrar grabaciones
-Durante la grabación puedes pulsar el botón "Pausar" en cualquier momento para detenerla temporalmente. La grabación continuará cuando vuelvas a pulsar este botón. Si quieres terminarla, pulsa "Enviar". Si quieres cancelarla, pulsa el botón con el icono de la papelera.
+Pausar o eliminar grabaciones
+Durante la grabación puedes pulsar el botón "Pausar" en cualquier momento para detenerla temporalmente. La grabación continuará cuando pulses de nuevo este botón. Si deseas finalizarla, pulsa "Enviar". Si quieres descartarla, pulsa el botón con el icono de la papelera.
 dictate_how_to_pause_delete
 
 Reescritura con IA
-Además de la función de dictado, la reescritura del teclado Dictate es otro punto destacado. En los ajustes puedes guardar tus propias instrucciones de reescritura para ChatGPT. Por ejemplo, si quieres traducir un texto dictado al francés, puedes usar la instrucción de ejemplo "Traductor francés".\n\nPulsa el botón "Seleccionar todo" y luego una de tus instrucciones para enviar el texto seleccionado a ChatGPT junto con la instrucción que escribiste. Tras un momento, el texto editado se insertará en el campo actual. También puedes pulsar una instrucción sin haber seleccionado texto para generar un texto con ChatGPT independientemente de lo dictado. Según el tipo de instrucción que quieras crear, debes activar o desactivar el interruptor "Requiere selección de texto" al crear un nuevo prompt.
+Además del dictado, la reescritura es otra de las funciones destacadas del teclado Dictate. En los ajustes puedes guardar tus propias instrucciones de reescritura para ChatGPT. Por ejemplo, si quieres traducir un texto dictado al francés, puedes utilizar la instrucción de ejemplo "Traductor francés".\n\nBasta con pulsar una de tus instrucciones para que todo el texto se seleccione automáticamente y la IA lo revise. Si seleccionas solo un pasaje concreto, únicamente ese pasaje será reescrito. Tras unos instantes, el texto revisado se insertará en el campo actual. También puedes pulsar una instrucción sin seleccionar texto para generar contenido con ChatGPT de manera independiente a lo dictado. Dependiendo del tipo de instrucción que quieras crear, debes activar o desactivar el interruptor "Requiere selección de texto" al configurarla.\n\nEn los ajustes también puedes elegir instrucciones que se apliquen automáticamente después de cada transcripción. Si durante una grabación ya sabes qué instrucciones de reescritura quieres utilizar, puedes seleccionarlas allí mismo mientras grabas.
 dictate_how_to_rewording
 
-Reescritura en vivo y salida exacta
-Si quieres reescribir tu texto de forma espontánea, puedes pulsar el botón con las tres estrellas para introducir tus instrucciones sobre el texto seleccionado. Después de pulsar "Enviar" y enviar tu instrucción a ChatGPT, el texto revisado se insertará en el campo actual.\n\nSi sueles insertar un texto o emoji específico, puedes introducir ese texto como instrucción y encerrarlo entre [corchetes]. Cuando pulses el botón de esa instrucción de reescritura, se mostrará únicamente ese texto exacto.
+Reescritura en vivo y salidas exactas
+Si deseas ajustar el texto sobre la marcha, pulsa el botón con las tres estrellas para dictar tu instrucción sobre el texto seleccionado. Después de pulsar "Enviar" y mandar tu instrucción a ChatGPT, el texto revisado se insertará en el campo actual.\n\nSi sueles insertar un texto o un emoji concreto, guarda esa instrucción y pon el contenido entre [corchetes]. Al pulsar el botón de esa instrucción de reescritura, se insertará únicamente ese texto exacto.
 dictate_how_to_live_rewording
 
 Transcribir archivos de audio
-Si ya has grabado un archivo de audio, mantén pulsado el botón "Grabar". Aparecerá un cuadro de selección en el que podrás elegir el archivo deseado. Tras seleccionar el archivo y volver a la app anterior, comenzará la transcripción y el texto se insertará en el campo actual.
+Si ya tienes grabado un archivo de audio, mantén pulsado el botón "Grabar". Aparecerá un selector en el que podrás elegir el archivo deseado. Tras seleccionarlo y volver a la app anterior, la transcripción comenzará y el texto se insertará en el campo actual.
 dictate_how_to_file_transcription
 
 Editar textos
-En el lado derecho del teclado Dictate encontrarás un botón de borrado para eliminar palabras. Cuanto más tiempo lo mantengas pulsado, más rápido será el borrado. Si mantienes pulsado y deslizas a la izquierda, puedes borrar palabra por palabra aún más rápido.\n\nDebajo se encuentra un botón "Intro" y en el centro hay un botón de espacio. Si mantienes pulsado este último, puedes mover el cursor en el campo de texto actual deslizando el dedo.
+En el lado derecho del teclado Dictate encontrarás un botón de borrar para eliminar palabras. Cuanto más tiempo lo mantengas pulsado, más rápido se elimina el texto. Si lo mantienes pulsado y deslizas a la izquierda, podrás borrar palabra por palabra todavía más rápido.\n\nDebajo se encuentra el botón "Intro" y en el centro la barra espaciadora. Si mantienes pulsada la barra espaciadora, desliza el dedo para mover el cursor en el campo de texto actual.
 dictate_how_to_delete_enter_space
 
 Copiar, pegar e historial
-Una vez seleccionado el texto, puedes cortarlo al portapapeles, copiarlo o pegarlo desde allí. También puedes usar las flechas para deshacer o rehacer los últimos cambios en el campo enfocado.
+Después de seleccionar un texto, puedes cortarlo, copiarlo o pegarlo desde el portapapeles. También puedes usar las flechas para deshacer o rehacer los cambios más recientes en el campo enfocado. Si quieres introducir emojis o números sin cambiar de teclado, simplemente pulsa los símbolos correspondientes.
 dictate_how_to_copy_paste_undo_redo
 
 Insertar caracteres adicionales
-Para evitar que tengas que cambiar a un teclado normal cada vez que quieras hacer un pequeño cambio, puedes mantener pulsado el botón "Intro". Aparecerán hasta 8 caracteres adicionales que puedes personalizar a tu gusto en los ajustes. Sólo desliza el dedo a izquierda o derecha para elegir el carácter deseado.
+Para evitar cambiar a un teclado estándar cada vez que quieras hacer un pequeño ajuste, mantén pulsado el botón "Intro". Aparecerán hasta ocho caracteres adicionales que puedes configurar a tu gusto en los ajustes. Solo desliza a izquierda o derecha mientras lo mantienes pulsado para escoger el carácter deseado.
 dictate_how_to_special_characters
 
-Cambiar el idioma y el teclado
-Si pulsas el botón con el icono de teclado en la esquina inferior izquierda, puedes cambiar rápidamente al teclado utilizado anteriormente. Si mantienes pulsado ese botón, puedes cambiar el idioma de grabación de Dictate. En los ajustes puedes seleccionar varios idiomas y luego alternar entre ellos. El texto del botón "Grabar" te muestra qué idioma de entrada está activo.
+Cambiar idioma y teclado
+Pulsa el icono del teclado en la esquina inferior izquierda para volver rápidamente al teclado utilizado anteriormente. Si mantienes pulsado ese botón, podrás cambiar el idioma de grabación de Dictate. En los ajustes puedes seleccionar varios idiomas y alternar entre ellos. El texto del botón "Grabar" indica qué idioma de entrada está activo.
 dictate_how_to_switch
 
 Ajustes de reescritura
-En los ajustes superiores puedes gestionar tus instrucciones de reescritura, cambiar el modelo de IA para la reescritura o desactivar por completo esta función si no la necesitas.
+En los ajustes puedes gestionar tus instrucciones de reescritura, cambiar el modelo de IA que se utiliza para reescribir o desactivar la función por completo si no la necesitas. También puedes exportar e importar todas tus instrucciones, por ejemplo cuando cambias de dispositivo o quieres compartirlas con otras personas.
 dictate_how_to_rewording_settings
 
 Más ajustes
-En los ajustes encontrarás muchas más opciones para personalizar el teclado Dictate a tu gusto.
+Los ajustes incluyen muchas otras opciones para adaptar el teclado Dictate a tus preferencias.
 dictate_how_to_settings
 
-Ver uso
-En los ajustes puedes consultar el consumo de tokens para la reescritura y el tiempo grabado hasta el momento. Dictate calcula los costes estimados según los precios actuales para que tengas todo bajo control desde la app.\n\nTambién puedes restablecer las estadísticas allí. Si quieres recargar saldo en OpenAI, ve a platform.openai.com → Settings → Billing.
+Consultar el uso
+En los ajustes puedes ver cuántos tokens se han usado para la reescritura y cuánto tiempo de grabación se ha acumulado. Dictate calcula el coste estimado según los precios actuales para que siempre tengas una visión clara dentro de la app.\n\nTambién puedes restablecer las estadísticas allí mismo. Si quieres añadir saldo en OpenAI, ve a platform.openai.com -> Settings -> Billing.
 dictate_how_to_usage
 
-Cambiar el prompt de estilo de Whisper
-Con un prompt de estilo puedes influir fácilmente en cómo Whisper reconoce tus grabaciones. A veces puede ocurrir que Whisper no ponga signos de puntuación sin una instrucción de este tipo. Por eso, de forma predeterminada, siempre se selecciona una instrucción que le dice a Whisper que ponga signos de puntuación. Si quieres elegir otra frase, puedes hacerlo en los ajustes.\n\nPara obtener más información, pulsa allí el signo de interrogación azul para ir a una página de OpenAI con más detalles sobre los prompts de estilo.\n\nCon las instrucciones de reescritura sucede algo similar: también puedes establecer un prompt de sistema general.
+Cambiar la instrucción de estilo de Whisper
+Con una instrucción de estilo puedes influir en cómo Whisper interpreta tus grabaciones. Sin esta instrucción puede ocurrir que Whisper no añada signos de puntuación. Por eso, de forma predeterminada, siempre se selecciona una instrucción que solicita la inserción de puntuación. Si quieres usar otra, puedes elegirla en los ajustes.\n\nPara más información, pulsa el signo de interrogación azul y se abrirá una página de OpenAI con detalles adicionales sobre las instrucciones de estilo.\n\nLo mismo se aplica a las instrucciones de reescritura: allí también puedes definir una instrucción de sistema general.
 dictate_how_to_style
 
 Usar tu propio servidor Whisper API
-Si operas tu propio servidor Whisper API compatible con la API de OpenAI, puedes configurarlo en los ajustes. Así podrás transcribir tus grabaciones a través de tu propio servidor. Asegúrate de cambiar también la clave API introducida.
+Si operas un servidor Whisper API compatible con la API de OpenAI, introdúcelo en los ajustes. Así podrás transcribir tus grabaciones a través de tu propio servidor. No olvides actualizar la clave de API configurada.
 dictate_how_to_own_server
 
 Comentarios y soporte
-Si tienes preguntas o problemas, en los ajustes puedes pulsar "Enviar comentarios" para mandar un correo al desarrollador. Siempre me alegra recibir opiniones y sugerencias. Allí también encontrarás un botón para donar por PayPal si te gusta la app.
+Si tienes preguntas o problemas, pulsa "Enviar comentarios" en los ajustes para enviar un correo al desarrollador. Los comentarios y sugerencias de mejora siempre son bienvenidos. Allí también encontrarás un botón para donar mediante PayPal si la app te resulta útil.
 dictate_how_to_feedback_support

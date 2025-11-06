@@ -7,7 +7,7 @@ Während der Aufnahme kannst du jederzeit auf den "Pause"-Button drücken, um di
 dictate_how_to_pause_delete
 
 Überarbeiten mit KI
-Neben der Diktierfunktion ist die Überarbeitungsfunktion der Dictate-Tastatur ein weiteres Highlight. Du kannst in den Einstellungen nach Belieben eigene Überarbeitungs-Anweisungen für ChatGPT hinterlegen. Wenn du beispielsweise einen diktierten Text auf Französisch übersetzen möchtest, kannst du die Beispiel-Anweisung "Übersetzer Französisch" verwenden.\n\nDrücke einfach auf den "Alles auswählen"-Button, und dann auf eine deiner Anweisungen, um den markierten Text an ChatGPT zusammen mit deiner vorher geschriebenen Anweisung zu senden. Nach einem kurzen Moment, wird der überarbeitete Text in das aktuelle Textfeld eingefügt. Außerdem kannst du ohne einen Text zu markieren, auf eine Anweisung drücken, um unabhängig von dem eingesprochenen Text einen Text von ChatGPT zu generieren. Je nachdem, welche Art von Überarbeitungsanweisung du erstellen möchtest, musst du beim Erstellen einer neuen Anweisung den Schalter "Erfordert Textauswahl" aktivieren oder deaktivieren.
+Neben der Diktierfunktion ist die Überarbeitungsfunktion der Dictate-Tastatur ein weiteres Highlight. Du kannst in den Einstellungen nach Belieben eigene Überarbeitungs-Anweisungen für ChatGPT hinterlegen. Wenn du beispielsweise einen diktierten Text auf Französisch übersetzen möchtest, kannst du die Beispiel-Anweisung "Übersetzer Französisch" verwenden.\n\nDrücke dazu einfach auf eine deiner Anweisungen, damit automatisch der gesamte Text ausgewählt und von der KI überarbeitet wird. Wenn du nur einen bestimmten Text markierst, wird auch nur dieser Text überarbeitet. Nach einem kurzen Moment, wird der überarbeitete Text in das aktuelle Textfeld eingefügt. Außerdem kannst du ohne einen Text zu markieren, auf eine Anweisung drücken, um unabhängig von dem eingesprochenen Text einen Text von ChatGPT zu generieren. Je nachdem, welche Art von Überarbeitungsanweisung du erstellen möchtest, musst du beim Erstellen einer neuen Anweisung den Schalter "Erfordert Textauswahl" aktivieren oder deaktivieren.\n\nDu kannst außerdem in den Einstellungen Anweisungen auswählen, die nach jeder Transkription automatisch angewandt werden. Wenn du schon während einer Aufnahme weißt, welche Anweisungen zum Überarbeiten genutzt werden sollen, kannst du diese auch während der Aufnahme auswählen.
 dictate_how_to_rewording
 
 Live-Überarbeitung und exakte Ausgaben
@@ -23,7 +23,7 @@ Du findest auf der Dictate-Tastatur rechts einen Löschen-Button, um Wörter zu 
 dictate_how_to_delete_enter_space
 
 Kopieren, Einfügen und Verlauf
-Du kannst Text in die Zwischenablage ausschneiden, kopieren oder von dort wieder einfügen, nachdem du den Text markiert hast. Außerdem kannst du mit den Pfeiltasten die letzten Änderungen im fokussierten Textfeld rückgängig machen oder wiederherstellen.
+Du kannst Text in die Zwischenablage ausschneiden, kopieren oder von dort wieder einfügen, nachdem du den Text markiert hast. Außerdem kannst du mit den Pfeiltasten die letzten Änderungen im fokussierten Textfeld rückgängig machen oder wiederherstellen. Wenn du ohne die Tastatur zu wechseln Emojis oder Zahlen eintippen möchtest, kannst du einfach auf die zugehörigen Symbole dafür tippen.
 dictate_how_to_copy_paste_undo_redo
 
 Weitere Zeichen einfügen
@@ -35,7 +35,7 @@ Wenn du auf den Button mit der Tastatur unten links drückst, kannst du schnell 
 dictate_how_to_switch
 
 Überarbeitungs-Einstellungen
-In den Einstellungen kannst du oben deine Überarbeitungsanweisungen verwalten, das KI-Modell für die Überarbeitung ändern oder diese Funktion komplett abschalten, falls du sie nicht benötigst.
+In den Einstellungen kannst du oben deine Überarbeitungsanweisungen verwalten, das KI-Modell für die Überarbeitung ändern oder diese Funktion komplett abschalten, falls du sie nicht benötigst. Außerdem kannst du deine gesamten Anweisungen exportieren und importieren, wenn du zum Beispiel dein Gerät wechselst oder Anweisungen mit anderen austauschen möchtest.
 dictate_how_to_rewording_settings
 
 Weitere Einstellungen
