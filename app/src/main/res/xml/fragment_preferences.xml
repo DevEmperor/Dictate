@@ -14,6 +14,14 @@
             android:defaultValue="true"
             app:iconSpaceReserved="false"/>
 
+        <androidx.preference.SwitchPreference
+            android:key="net.devemperor.dictate.auto_formatting_enabled"
+            android:title="@string/dictate_settings_auto_formatting_title"
+            android:summary="@string/dictate_settings_auto_formatting_summary"
+            android:defaultValue="false"
+            app:dependency="net.devemperor.dictate.rewording_enabled"
+            app:iconSpaceReserved="false"/>
+
         <androidx.preference.Preference
             android:key="net.devemperor.dictate.edit_custom_rewording_prompts"
             android:title="@string/dictate_settings_edit_custom_rewording_prompts"

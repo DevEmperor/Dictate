@@ -29,6 +29,7 @@ import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
@@ -84,8 +85,6 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,6 +105,26 @@ public class DictateInputMethodService extends InputMethodService {
     private static final float KEY_PRESS_SCALE = 0.92f;
     private static final long KEY_PRESS_ANIM_DURATION = 80L;
     private static final TimeInterpolator KEY_PRESS_INTERPOLATOR = new DecelerateInterpolator();
+    private static final String AUTO_FORMATTING_PROMPT =
+            "You are an attentive, adaptive formatting assistant. Clean up speech transcripts that may contain spoken formatting instructions. Apply changes only when the speaker explicitly asks for them; "
+                    + "otherwise return the transcript exactly as provided. Keep the output strictly in the transcript's language. Follow these rules:\n"
+                    + "- Follow explicit commands such as \"new paragraph\", \"paragraph break\", or \"line break\" by inserting a blank line.\n"
+                    + "- Convert spoken punctuation cues like \"period\", \"comma\", \"question mark\", \"exclamation mark\", \"open quote\", or \"close quote\" into their symbols and remove the cue words.\n"
+                    + "- Handle spelling and replacement instructions such as \"Henry with i becomes Henri\" or \"replace beta with β\" by adjusting only the targeted words.\n"
+                    + "- Treat list cues like \"bullet\", \"list item\", \"number one\", or \"next bullet\" as requests to format list items with dashes or numbers.\n"
+                    + "- Apply text styling commands such as \"bold\", \"make this bold\", \"italic\", or \"italicize\" by wrapping only the requested span with Markdown (**bold** / _italic_).\n"
+                    + "- Interpret the user's intent intelligently, accommodating paraphrased or partial cues, and always favour the most reasonable formatting that matches the latest request.\n"
+                    + "- Leave all other wording untouched except for spacing needed to apply the commands.\n"
+                    + "- If commands conflict, apply the most recent one.\n"
+                    + "- Never translate, summarise, or add commentary. Output only the final formatted text.\n"
+                    + "Examples:\n"
+                    + "1) Input: Hello new paragraph how are you question mark -> Output: Hello\\n\\nHow are you?\n"
+                    + "2) Input: Please write Henry with i Henri period that's it -> Output: Please write Henri. That's it.\n"
+                    + "3) Input: Agenda colon bullet first item bullet second item -> Output: Agenda:\\n- first item\\n- second item\n"
+                    + "4) Input: Outline colon number one introduction number two results number three conclusion -> Output: Outline:\\n1. Introduction\\n2. Results\\n3. Conclusion\n"
+                    + "5) Input: Please make the words mission critical bold period that's it -> Output: Please make the words **mission critical**. That's it.\n"
+                    + "6) Input: Mention italicize needs review before sending -> Output: Mention _needs review_ before sending.\n"
+                    + "7) Input: Just checking in with you today -> Output: Just checking in with you today.";
 
     private Handler mainHandler;
     private Handler deleteHandler;
@@ -1440,6 +1459,7 @@ public class DictateInputMethodService extends InputMethodService {
 
                 Transcription transcription = clientBuilder.build().audio().transcriptions().create(transcriptionBuilder.build()).asTranscription();
                 String resultText = transcription.text().strip();  // Groq sometimes adds leading whitespace
+                resultText = applyAutoFormattingIfEnabled(resultText);
 
                 usageDb.edit(transcriptionModel, DictateUtils.getAudioDuration(audioFile), 0, 0, transcriptionProvider);
 
@@ -1541,35 +1561,6 @@ public class DictateInputMethodService extends InputMethodService {
         rewordingApiThread = Executors.newSingleThreadExecutor();
         rewordingApiThread.execute(() -> {
             try {
-                int rewordingProvider = sp.getInt("net.devemperor.dictate.rewording_provider", 0);
-                String apiHost = getResources().getStringArray(R.array.dictate_api_providers_values)[rewordingProvider];
-                if (apiHost.equals("custom_server")) apiHost = sp.getString("net.devemperor.dictate.rewording_custom_host", getString(R.string.dictate_custom_server_host_hint));
-
-                String apiKey = sp.getString("net.devemperor.dictate.rewording_api_key", sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY")).replaceAll("[^ -~]", "");
-                String proxyHost = sp.getString("net.devemperor.dictate.proxy_host", getString(R.string.dictate_settings_proxy_hint));
-
-                String rewordingModel = "";
-                switch (rewordingProvider) {
-                    case 0:
-                        rewordingModel = sp.getString("net.devemperor.dictate.rewording_openai_model", sp.getString("net.devemperor.dictate.rewording_model", "gpt-4o-mini"));
-                        break;
-                    case 1:
-                        rewordingModel = sp.getString("net.devemperor.dictate.rewording_groq_model", "llama-3.3-70b-versatile");
-                        break;
-                    case 2:
-                        rewordingModel = sp.getString("net.devemperor.dictate.rewording_custom_model", getString(R.string.dictate_custom_rewording_model_hint));
-                        break;
-                }
-
-                OpenAIOkHttpClient.Builder clientBuilder = OpenAIOkHttpClient.builder()
-                        .apiKey(apiKey)
-                        .baseUrl(apiHost)
-                        .timeout(Duration.ofSeconds(120));
-
-                if (sp.getBoolean("net.devemperor.dictate.proxy_enabled", false)) {
-                    clientBuilder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.split(":")[0], Integer.parseInt(proxyHost.split(":")[1]))));
-                }
-
                 String prompt = model.getPrompt();
                 String rewordedText;
                 if (prompt.startsWith("[") && prompt.endsWith("]")) {
@@ -1589,16 +1580,7 @@ public class DictateInputMethodService extends InputMethodService {
                         prompt += "\n\n" + selectedText;
                     }
 
-                    ChatCompletionCreateParams chatCompletionCreateParams = ChatCompletionCreateParams.builder()
-                            .addUserMessage(prompt)
-                            .model(rewordingModel)
-                            .build();
-                    ChatCompletion chatCompletion = clientBuilder.build().chat().completions().create(chatCompletionCreateParams);
-                    rewordedText = chatCompletion.choices().get(0).message().content().orElse("");
-
-                    if (chatCompletion.usage().isPresent()) {
-                        usageDb.edit(rewordingModel, 0, chatCompletion.usage().get().promptTokens(), chatCompletion.usage().get().completionTokens(), rewordingProvider);
-                    }
+                    rewordedText = requestRewordingFromApi(prompt);
                 }
 
                 if (callback != null) {
@@ -1642,6 +1624,91 @@ public class DictateInputMethodService extends InputMethodService {
                 restorePromptUi();
             }
         });
+    }
+
+    private String requestRewordingFromApi(String prompt) {
+        if (sp == null) throw new IllegalStateException("Preferences unavailable");
+
+        int rewordingProvider = sp.getInt("net.devemperor.dictate.rewording_provider", 0);
+        String[] providerValues = getResources().getStringArray(R.array.dictate_api_providers_values);
+        if (rewordingProvider < 0 || rewordingProvider >= providerValues.length) {
+            throw new IllegalStateException("Invalid rewording provider");
+        }
+
+        String apiHost = providerValues[rewordingProvider];
+        if ("custom_server".equals(apiHost)) {
+            apiHost = sp.getString("net.devemperor.dictate.rewording_custom_host", getString(R.string.dictate_custom_server_host_hint));
+        }
+
+        String apiKey = sp.getString("net.devemperor.dictate.rewording_api_key",
+                sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY"));
+        if (TextUtils.isEmpty(apiKey)) throw new IllegalStateException("API key missing");
+        apiKey = apiKey.replaceAll("[^ -~]", "");
+        if ("NO_API_KEY".equals(apiKey) || apiKey.isEmpty()) throw new IllegalStateException("API key missing");
+
+        String rewordingModel;
+        switch (rewordingProvider) {
+            case 0:
+                rewordingModel = sp.getString("net.devemperor.dictate.rewording_openai_model",
+                        sp.getString("net.devemperor.dictate.rewording_model", "gpt-4o-mini"));
+                break;
+            case 1:
+                rewordingModel = sp.getString("net.devemperor.dictate.rewording_groq_model", "llama-3.3-70b-versatile");
+                break;
+            case 2:
+                rewordingModel = sp.getString("net.devemperor.dictate.rewording_custom_model",
+                        getString(R.string.dictate_custom_rewording_model_hint));
+                break;
+            default:
+                rewordingModel = "";
+        }
+        if (TextUtils.isEmpty(rewordingModel)) throw new IllegalStateException("Rewording model missing");
+
+        OpenAIOkHttpClient.Builder clientBuilder = OpenAIOkHttpClient.builder()
+                .apiKey(apiKey)
+                .baseUrl(apiHost)
+                .timeout(Duration.ofSeconds(120));
+
+        if (sp.getBoolean("net.devemperor.dictate.proxy_enabled", false)) {
+            String proxyHost = sp.getString("net.devemperor.dictate.proxy_host", getString(R.string.dictate_settings_proxy_hint));
+            if (DictateUtils.isValidProxy(proxyHost)) {
+                DictateUtils.applyProxy(clientBuilder, sp);
+            }
+        }
+
+        ChatCompletionCreateParams chatCompletionCreateParams = ChatCompletionCreateParams.builder()
+                .addUserMessage(prompt)
+                .model(rewordingModel)
+                .build();
+        ChatCompletion chatCompletion = clientBuilder.build().chat().completions().create(chatCompletionCreateParams);
+        if (chatCompletion.usage().isPresent() && usageDb != null) {
+            usageDb.edit(rewordingModel, 0, chatCompletion.usage().get().promptTokens(),
+                    chatCompletion.usage().get().completionTokens(), rewordingProvider);
+        }
+        return chatCompletion.choices().get(0).message().content().orElse("");
+    }
+
+    private String applyAutoFormattingIfEnabled(String transcript) {
+        if (TextUtils.isEmpty(transcript) || sp == null
+                || !sp.getBoolean("net.devemperor.dictate.auto_formatting_enabled", false)
+                || !sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
+            return transcript;
+        }
+
+        try {
+            String promptBuilder = AUTO_FORMATTING_PROMPT + "\n\nLanguage hint: " +
+                    (currentInputLanguageValue == null ? "unknown" : currentInputLanguageValue) +
+                    "\n\nTranscript:\n" +
+                    transcript;
+
+            String formattedText = requestRewordingFromApi(promptBuilder);
+            if (!TextUtils.isEmpty(formattedText)) {
+                return formattedText.trim();
+            }
+        } catch (Exception e) {
+            Log.w("DictateInputMethodService", "Auto-formatting failed", e);
+        }
+        return transcript;
     }
 
     private void commitTextToInputConnection(String text) {
