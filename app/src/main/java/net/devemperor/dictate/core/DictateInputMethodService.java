@@ -1461,7 +1461,7 @@ public class DictateInputMethodService extends InputMethodService {
                 } else if (livePrompt) {
                     // continue with ChatGPT API request
                     livePrompt = false;
-                    startGPTApiRequest(new PromptModel(-1, Integer.MIN_VALUE, "", resultText, false, false));
+                    startGPTApiRequest(new PromptModel(-1, Integer.MIN_VALUE, "", resultText, true, false));
                 }
 
                 if (new File(getCacheDir(), sp.getString("net.devemperor.dictate.last_file_name", "audio.m4a")).exists()
