@@ -113,6 +113,8 @@
     <string name="dictate_settings_rewording_title">Rewording Settings</string>
     <string name="dictate_settings_rewording_enabled_title">Rewording using AI ✍️</string>
     <string name="dictate_settings_rewording_enabled_summary">Enable rewording of recognised text with OpenAI\'s GPT models</string>
+    <string name="dictate_settings_auto_formatting_title">Auto-format spoken commands ✨\n(experimental)</string>
+    <string name="dictate_settings_auto_formatting_summary">Use AI to apply spoken formatting instructions (paragraph breaks, spelled-out corrections, etc.)</string>
     <string name="dictate_settings_edit_custom_rewording_prompts">Edit rewording prompts</string>
     <string name="dictate_prompts_overview_info">Below you can create and edit your prompts for rewording using OpenAI\'s GPT models.</string>
     <string name="dictate_prompts_overview_no_prompts">You have no prompts created.\nClick the button below to add one.</string>
