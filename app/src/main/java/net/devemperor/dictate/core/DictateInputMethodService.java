@@ -976,7 +976,7 @@ public class DictateInputMethodService extends InputMethodService {
         applyButtonColor(resendButton, accentColorMedium);
         applyButtonColor(backspaceButton, accentColorDark);
         applyButtonColor(switchButton, accentColorDark);
-        applyButtonColor(trashButton, accentColorDark);
+        applyButtonColor(trashButton, accentColorMedium);
         applyButtonColor(spaceButton, accentColorMedium);
         applyButtonColor(pauseButton, accentColorMedium);
         applyButtonColor(enterButton, accentColorDark);
