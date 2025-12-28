@@ -1886,6 +1886,7 @@ public class DictateInputMethodService extends InputMethodService {
         // get all values from SharedPreferences and add them as custom keys to crashlytics
         FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
         for (String key : sp.getAll().keySet()) {
+            if (key.contains("api_key") || key.contains("proxy_host")) continue;
             Object value = sp.getAll().get(key);
             if (value instanceof Boolean) {
                 crashlytics.setCustomKey(key, (Boolean) value);
