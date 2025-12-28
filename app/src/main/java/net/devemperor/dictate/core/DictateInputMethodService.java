@@ -1457,7 +1457,25 @@ public class DictateInputMethodService extends InputMethodService {
                 }
                 Log.d("DictateKeyboardSerice", "Style-Prompt: " + stylePrompt);
 
-                Transcription transcription = clientBuilder.build().audio().transcriptions().create(transcriptionBuilder.build()).asTranscription();
+                Transcription transcription;
+                int retryCount = 0;
+                while (true) {
+                    try {
+                        transcription = clientBuilder.build().audio().transcriptions().create(transcriptionBuilder.build()).asTranscription();
+                        break;
+                    } catch (RuntimeException e) {
+                        String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+                        boolean isRetryable = !msg.contains("api key") && !msg.contains("quota") && !msg.contains("audio duration")
+                                && !msg.contains("content size limit") && !msg.contains("format");
+
+                        if (isRetryable && retryCount < 3) {
+                            retryCount++;
+                            try { Thread.sleep(3000); } catch (InterruptedException ignored) {}
+                        } else {
+                            throw e;
+                        }
+                    }
+                }
                 String resultText = transcription.text().strip();  // Groq sometimes adds leading whitespace
                 resultText = applyAutoFormattingIfEnabled(resultText);
 
@@ -1680,7 +1698,24 @@ public class DictateInputMethodService extends InputMethodService {
                 .addUserMessage(prompt)
                 .model(rewordingModel)
                 .build();
-        ChatCompletion chatCompletion = clientBuilder.build().chat().completions().create(chatCompletionCreateParams);
+        ChatCompletion chatCompletion;
+        int retryCount = 0;
+        while (true) {
+            try {
+                chatCompletion = clientBuilder.build().chat().completions().create(chatCompletionCreateParams);
+                break;
+            } catch (RuntimeException e) {
+                String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+                boolean isRetryable = !msg.contains("api key") && !msg.contains("quota");
+
+                if (isRetryable && retryCount < 3) {
+                    retryCount++;
+                    try { Thread.sleep(3000); } catch (InterruptedException ignored) {}
+                } else {
+                    throw e;
+                }
+            }
+        }
         if (chatCompletion.usage().isPresent() && usageDb != null) {
             usageDb.edit(rewordingModel, 0, chatCompletion.usage().get().promptTokens(),
                     chatCompletion.usage().get().completionTokens(), rewordingProvider);
