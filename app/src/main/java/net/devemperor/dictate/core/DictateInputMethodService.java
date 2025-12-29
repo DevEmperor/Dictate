@@ -1753,21 +1753,31 @@ public class DictateInputMethodService extends InputMethodService {
         String output = text == null ? "" : text;
         if (sp.getBoolean("net.devemperor.dictate.instant_output", true)) {
             inputConnection.commitText(output, 1);
+            if (sp.getBoolean("net.devemperor.dictate.auto_enter", false)) {
+                performEnterAction();
+            }
         } else if (mainHandler != null) {
             int speed = sp.getInt("net.devemperor.dictate.output_speed", 5);
             for (int i = 0; i < output.length(); i++) {
                 char character = output.charAt(i);
                 String characterString = String.valueOf(character);
                 long delay = (long) (i * (20L / (speed / 5f)));
+                boolean isLastChar = i == output.length() - 1;
                 mainHandler.postDelayed(() -> {
                     InputConnection ic = getCurrentInputConnection();
                     if (ic != null) {
                         ic.commitText(characterString, 1);
+                        if (isLastChar && sp.getBoolean("net.devemperor.dictate.auto_enter", false)) {
+                            performEnterAction();
+                        }
                     }
                 }, delay);
             }
         } else {
             inputConnection.commitText(output, 1);
+            if (sp.getBoolean("net.devemperor.dictate.auto_enter", false)) {
+                performEnterAction();
+            }
         }
     }
 

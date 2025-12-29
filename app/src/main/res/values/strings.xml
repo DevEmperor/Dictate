@@ -150,6 +150,8 @@
     <string name="dictate_default_overlay_characters" translatable="false">()-:!?,.</string>
     <string name="dictate_settings_overlay_characters_title">Edit custom characters (hold ⏎ button)</string>
     <string name="dictate_overlay_characters_empty">You have to set at least one character.</string>
+    <string name="dictate_settings_auto_enter_title">Auto Enter after transcription ⏎</string>
+    <string name="dictate_settings_auto_enter_summary">Automatically press the Enter button after every transcription.</string>
     <string name="dictate_emoji_picker_title">Pick an emoji</string>
     <string name="dictate_number_pad_title">Number pad</string>
     <string name="dictate_example_prompt_one_name">French Translator</string>

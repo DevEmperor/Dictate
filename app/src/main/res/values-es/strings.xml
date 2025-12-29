@@ -141,6 +141,8 @@
     <string name="dictate_donate_msg">Si te gusta Dictate, me haría muy feliz una pequeña donación. 🥰</string>
     <string name="dictate_settings_overlay_characters_title">Editar caracteres personalizados (mantén pulsado el botón ⏎)</string>
     <string name="dictate_overlay_characters_empty">Debes definir al menos un carácter.</string>
+    <string name="dictate_settings_auto_enter_title">Auto Enter tras transcripción ⏎</string>
+    <string name="dictate_settings_auto_enter_summary">Presiona automáticamente el botón Enter tras cada transcripción.</string>
     <string name="dictate_emoji_picker_title">Elige un emoji</string>
     <string name="dictate_number_pad_title">Panel numérico</string>
     <string name="dictate_example_prompt_one_name">Traductor francés</string>

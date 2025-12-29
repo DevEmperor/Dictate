@@ -53,6 +53,13 @@
             app:iconSpaceReserved="false"/>
 
         <androidx.preference.SwitchPreference
+            android:key="net.devemperor.dictate.auto_enter"
+            android:title="@string/dictate_settings_auto_enter_title"
+            android:summary="@string/dictate_settings_auto_enter_summary"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false"/>
+
+        <androidx.preference.SwitchPreference
             android:key="net.devemperor.dictate.resend_button"
             android:title="@string/dictate_settings_enable_resend_button_title"
             android:summary="@string/dictate_settings_enable_resend_button_summary"
