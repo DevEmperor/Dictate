@@ -842,6 +842,7 @@ public class DictateInputMethodService extends InputMethodService {
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting);
+        updateEnterButtonIcon(info);
 
         if (sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
             promptsCl.setVisibility(View.VISIBLE);
@@ -1233,11 +1234,58 @@ public class DictateInputMethodService extends InputMethodService {
         InputConnection inputConnection = getCurrentInputConnection();
         if (inputConnection == null) return;
         EditorInfo editorInfo = getCurrentInputEditorInfo();
-        if (editorInfo != null && (editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
-            inputConnection.commitText("\n", 1);
-        } else {
+
+        if (editorInfo == null) {
             inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
             inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
+            return;
+        }
+
+        int imeAction = editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION;
+        boolean noEnterAction = (editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0;
+
+        if (noEnterAction) {
+            inputConnection.commitText("\n", 1);
+        } else {
+            switch (imeAction) {
+                case EditorInfo.IME_ACTION_GO:
+                case EditorInfo.IME_ACTION_SEARCH:
+                case EditorInfo.IME_ACTION_SEND:
+                case EditorInfo.IME_ACTION_NEXT:
+                case EditorInfo.IME_ACTION_DONE:
+                    inputConnection.performEditorAction(imeAction);
+                    break;
+                default:
+                    inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                    inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
+                    break;
+            }
+        }
+    }
+
+    private void updateEnterButtonIcon(EditorInfo info) {
+        if (info == null || enterButton == null) return;
+
+        int imeAction = info.imeOptions & EditorInfo.IME_MASK_ACTION;
+        boolean noEnterAction = (info.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0;
+
+        if (noEnterAction) {
+            enterButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_subdirectory_arrow_left_24));
+        } else {
+            switch (imeAction) {
+                case EditorInfo.IME_ACTION_GO:
+                case EditorInfo.IME_ACTION_SEARCH:
+                case EditorInfo.IME_ACTION_SEND:
+                case EditorInfo.IME_ACTION_NEXT:
+                    enterButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_send_20));
+                    break;
+                case EditorInfo.IME_ACTION_DONE:
+                    enterButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_check_24));
+                    break;
+                default:
+                    enterButton.setForeground(AppCompatResources.getDrawable(this, R.drawable.ic_baseline_subdirectory_arrow_left_24));
+                    break;
+            }
         }
     }
 
