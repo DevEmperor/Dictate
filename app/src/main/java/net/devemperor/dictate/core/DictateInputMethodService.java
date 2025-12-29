@@ -331,41 +331,7 @@ public class DictateInputMethodService extends InputMethodService {
                     }
                 })
                 .build();
-
-        bluetoothScoReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (!AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED.equals(intent.getAction())) return;
-
-                int state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, AudioManager.SCO_AUDIO_STATE_ERROR);
-                if (state == AudioManager.SCO_AUDIO_STATE_CONNECTED) {
-                    isBluetoothScoStarted = true;
-
-                    // If we were waiting to start the recording until SCO connects, start now
-                    if (recordingPending && waitingForSco) {
-                        waitingForSco = false;
-                        if (bluetoothHandler != null && scoTimeoutRunnable != null) {
-                            bluetoothHandler.removeCallbacks(scoTimeoutRunnable);
-                        }
-                        proceedStartRecording(MediaRecorder.AudioSource.VOICE_COMMUNICATION, true);
-                    }
-
-                    // Update icon if we are recording and currently using BT
-                    if (isRecording) {
-                        updateRecordButtonIconWhileRecording();
-                    }
-                } else if (state == AudioManager.SCO_AUDIO_STATE_DISCONNECTED) {
-                    isBluetoothScoStarted = false;
-
-                    // If we were recording using BT and it got disconnected, keep recording and switch icon
-                    if (isRecording && recordingUsesBluetooth) {
-                        recordingUsesBluetooth = false;
-                        updateRecordButtonIconWhileRecording();
-                    }
-                }
-            }
-        };
-        registerReceiver(bluetoothScoReceiver, new IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED));
+        initAndRegisterBluetoothReceiver();
 
         settingsButton.setOnClickListener(v -> {
             if (isRecording) trashButton.performClick();
@@ -789,6 +755,45 @@ public class DictateInputMethodService extends InputMethodService {
         return dictateKeyboardView;
     }
 
+    private void initAndRegisterBluetoothReceiver() {
+        if (bluetoothScoReceiver != null) return;
+
+        bluetoothScoReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (!AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED.equals(intent.getAction())) return;
+
+                int state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, AudioManager.SCO_AUDIO_STATE_ERROR);
+                if (state == AudioManager.SCO_AUDIO_STATE_CONNECTED) {
+                    isBluetoothScoStarted = true;
+
+                    // If we were waiting to start the recording until SCO connects, start now
+                    if (recordingPending && waitingForSco) {
+                        waitingForSco = false;
+                        if (bluetoothHandler != null && scoTimeoutRunnable != null) {
+                            bluetoothHandler.removeCallbacks(scoTimeoutRunnable);
+                        }
+                        proceedStartRecording(MediaRecorder.AudioSource.VOICE_COMMUNICATION, true);
+                    }
+
+                    // Update icon if we are recording and currently using BT
+                    if (isRecording) {
+                        updateRecordButtonIconWhileRecording();
+                    }
+                } else if (state == AudioManager.SCO_AUDIO_STATE_DISCONNECTED) {
+                    isBluetoothScoStarted = false;
+
+                    // If we were recording using BT and it got disconnected, keep recording and switch icon
+                    if (isRecording && recordingUsesBluetooth) {
+                        recordingUsesBluetooth = false;
+                        updateRecordButtonIconWhileRecording();
+                    }
+                }
+            }
+        };
+        registerReceiver(bluetoothScoReceiver, new IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED));
+    }
+
     // method is called if the user closed the keyboard
     @Override
     public void onFinishInputView(boolean finishingInput) {
@@ -843,6 +848,7 @@ public class DictateInputMethodService extends InputMethodService {
     public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting);
         updateEnterButtonIcon(info);
+        initAndRegisterBluetoothReceiver();
 
         if (sp.getBoolean("net.devemperor.dictate.rewording_enabled", true)) {
             promptsCl.setVisibility(View.VISIBLE);
@@ -1307,23 +1313,27 @@ public class DictateInputMethodService extends InputMethodService {
         boolean btAvailable = useBluetoothMic && am.isBluetoothScoAvailableOffCall() && hasBluetoothInputDevice();  // Check if BT SCO is available and (likely) an input device is present
 
         if (btAvailable) {
-            // Prepare to wait for SCO connection before starting the recorder
-            isPreparingRecording = true;
-            recordingPending = true;
-            waitingForSco = true;
-            updatePromptButtonsEnabledState();
-            mainHandler.post(() -> recordButton.setEnabled(false));
+            if (am.isBluetoothScoOn()) {
+                proceedStartRecording(MediaRecorder.AudioSource.VOICE_COMMUNICATION, true);
+            } else {
+                // Prepare to wait for SCO connection before starting the recorder
+                isPreparingRecording = true;
+                recordingPending = true;
+                waitingForSco = true;
+                updatePromptButtonsEnabledState();
+                mainHandler.post(() -> recordButton.setEnabled(false));
 
-            am.startBluetoothSco();  // initiate SCO connection
+                am.startBluetoothSco();  // initiate SCO connection
 
-            scoTimeoutRunnable = () -> {  // Timeout: if SCO not connected in time, fall back to MIC to avoid gaps
-                if (recordingPending && waitingForSco) {
-                    waitingForSco = false;
-                    try { am.stopBluetoothSco(); } catch (Exception ignored) {}
-                    proceedStartRecording(MediaRecorder.AudioSource.MIC, false);
-                }
-            };
-            bluetoothHandler.postDelayed(scoTimeoutRunnable, 4000); // 4s timeout
+                scoTimeoutRunnable = () -> {  // Timeout: if SCO not connected in time, fall back to MIC to avoid gaps
+                    if (recordingPending && waitingForSco) {
+                        waitingForSco = false;
+                        try { am.stopBluetoothSco(); } catch (Exception ignored) {}
+                        proceedStartRecording(MediaRecorder.AudioSource.MIC, false);
+                    }
+                };
+                bluetoothHandler.postDelayed(scoTimeoutRunnable, 2500); // 2.5s timeout
+            }
         } else {
             proceedStartRecording(MediaRecorder.AudioSource.MIC, false);  // Start immediately with local MIC
         }
