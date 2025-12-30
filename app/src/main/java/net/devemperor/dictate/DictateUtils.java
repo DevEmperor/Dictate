@@ -157,9 +157,14 @@ public class DictateUtils {
                 return audioTime * 0.00005f;
 
             // OpenAI rewording models
-            case "o3-mini":  // o3-mini and o1-mini cost the same
+            case "o4-mini":
+            case "o3-mini":  // o4-mini, o3-mini and o1-mini cost the same
             case "o1-mini":
                 return inputTokens * 0.0000011f + outputTokens * 0.0000044f;
+            case "o1":
+                return inputTokens * 0.000015f + outputTokens * 0.00006f;
+            case "gpt-5.2":
+                return inputTokens * 0.00000175f + outputTokens * 0.000014f;
             case "gpt-5":
                 return inputTokens * 0.00000125f + outputTokens * 0.00001f;
             case "gpt-5-mini":
@@ -209,10 +214,16 @@ public class DictateUtils {
                 return "GPT-4o mini transcribe";
 
             // OpenAI rewording models
+            case "o4-mini":
+                return "OpenAI o4 mini";
             case "o3-mini":
                 return "OpenAI o3 mini";
             case "o1-mini":
                 return "OpenAI o1 mini";
+            case "o1":
+                return "OpenAI o1";
+            case "gpt-5.2":
+                return "GPT-5.2";
             case "gpt-5":
                 return "GPT-5";
             case "gpt-5-mini":
