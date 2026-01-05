@@ -44,6 +44,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
+import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.widget.Button;
@@ -524,10 +525,7 @@ public class DictateInputMethodService extends InputMethodService {
 
         switchButton.setOnClickListener(v -> {
             vibrate();
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                switchToPreviousInputMethod();
-            }
+            switchToPreviousKeyboard();
         });
 
         switchButton.setOnLongClickListener(v -> {
@@ -1565,9 +1563,9 @@ public class DictateInputMethodService extends InputMethodService {
                     mainHandler.post(() -> resendButton.setVisibility(View.VISIBLE));
                 }
 
-                if (autoSwitchKeyboard && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                if (autoSwitchKeyboard) {
                     autoSwitchKeyboard = false;
-                    mainHandler.post(this::switchToPreviousInputMethod);
+                    mainHandler.post(this::switchToPreviousKeyboard);
                 }
 
             } catch (RuntimeException e) {
@@ -1948,6 +1946,23 @@ public class DictateInputMethodService extends InputMethodService {
             if (runningPromptTv != null) runningPromptTv.setVisibility(View.GONE);
             if (runningPromptPb != null) runningPromptPb.setVisibility(View.GONE);
         });
+    }
+
+    private void switchToPreviousKeyboard() {
+        boolean success = false;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                success = switchToNextInputMethod(false);
+            } else {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                success = imm.switchToLastInputMethod(getWindow().getWindow().getAttributes().token);
+            }
+        } catch (Exception ignored) {}
+
+        if (!success) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showInputMethodPicker();
+        }
     }
 
     private void sendLogToCrashlytics(Exception e) {
