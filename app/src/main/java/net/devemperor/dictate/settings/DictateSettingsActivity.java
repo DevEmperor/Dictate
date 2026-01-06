@@ -121,8 +121,8 @@ public class DictateSettingsActivity extends AppCompatActivity {
 
             // let the user choose an audio file used for transcription
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.setType("audio/*");
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"audio/mpeg", "audio/mp4", "audio/wav", "video/mp4", "video/mpeg", "video/webm"});
+            intent.setType("*/*");
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"audio/mpeg", "audio/mp4", "audio/wav", "audio/x-m4a", "audio/webm", "audio/ogg", "audio/amr", "audio/flac", "video/mp4", "video/mpeg", "video/webm"});
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
