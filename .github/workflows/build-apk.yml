@@ -1,6 +1,6 @@
 name: Build and Release APK
 
-on:
+on: 
   workflow_dispatch:
     inputs:
       tag:
