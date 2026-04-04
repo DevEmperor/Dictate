@@ -11,6 +11,8 @@ jobs:
   build:
     name: Build Debug APK
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout repository
@@ -26,7 +28,12 @@ jobs:
       - name: Decode google-services.json
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo "$GOOGLE_SERVICES_JSON" | base64 --decode > app/google-services.json
+        run: |
+          if [ -z "$GOOGLE_SERVICES_JSON" ]; then
+            echo "Error: GOOGLE_SERVICES_JSON secret is not set." >&2
+            exit 1
+          fi
+          echo "$GOOGLE_SERVICES_JSON" | base64 --decode > app/google-services.json
 
       - name: Make gradlew executable
         run: chmod +x gradlew
@@ -40,3 +47,4 @@ jobs:
           name: dictate-debug-apk
           path: app/build/outputs/apk/debug/*.apk
           retention-days: 30
+          if-no-files-found: error
