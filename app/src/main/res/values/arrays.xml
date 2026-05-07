@@ -66,6 +66,7 @@
         <item>@string/dictate_language_german</item>
         <item>@string/dictate_language_spanish</item>
         <item>@string/dictate_language_portuguese</item>
+        <item>@string/dictate_language_japanese</item>
     </string-array>
     <string-array name="dictate_app_languages_values">
         <item>system</item>
@@ -73,6 +74,7 @@
         <item>de</item>
         <item>es</item>
         <item>pt</item>
+        <item>ja</item>
     </string-array>
     <string-array name="dictate_input_languages_values">
         <item>detect</item>
