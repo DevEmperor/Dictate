@@ -1487,6 +1487,7 @@ public class DictateInputMethodService extends InputMethodService {
                 if (apiHost.equals("custom_server")) apiHost = sp.getString("net.devemperor.dictate.transcription_custom_host", getString(R.string.dictate_custom_server_host_hint));
 
                 String apiKey = sp.getString("net.devemperor.dictate.transcription_api_key", sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY")).replaceAll("[^ -~]", "");
+                if (apiKey.isEmpty()) apiKey = "no-key";  // SDK requires non-empty; custom servers that need no auth will ignore the Bearer header
                 String proxyHost = sp.getString("net.devemperor.dictate.proxy_host", getString(R.string.dictate_settings_proxy_hint));
 
                 String transcriptionModel = "";
@@ -1574,7 +1575,7 @@ public class DictateInputMethodService extends InputMethodService {
                     if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
                     mainHandler.post(() -> {
                         resendButton.setVisibility(View.VISIBLE);
-                        String message = Objects.requireNonNull(e.getMessage()).toLowerCase();
+                        String message = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
                         if (message.contains("api key")) {
                             showInfo("invalid_api_key");
                         } else if (message.contains("quota")) {
@@ -1584,7 +1585,7 @@ public class DictateInputMethodService extends InputMethodService {
                         } else if (message.contains("format")) {
                             showInfo("format_not_supported");
                         } else {
-                            showInfo("internet_error");
+                            showApiError(e.getMessage());
                         }
                     });
                 } else if (e.getCause().getMessage() != null && (e.getCause().getMessage().contains("timeout") || e.getCause().getMessage().contains("failed to connect"))) {
@@ -1668,13 +1669,13 @@ public class DictateInputMethodService extends InputMethodService {
                     if (vibrationEnabled) vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
                     mainHandler.post(() -> {
                         resendButton.setVisibility(View.VISIBLE);
-                        String message = Objects.requireNonNull(e.getMessage()).toLowerCase();
+                        String message = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
                         if (message.contains("api key")) {
                             showInfo("invalid_api_key");
                         } else if (message.contains("quota")) {
                             showInfo("quota_exceeded");
                         } else {
-                            showInfo("internet_error");
+                            showApiError(e.getMessage());
                         }
                     });
                 } else if (e.getCause().getMessage() != null && e.getCause().getMessage().contains("timeout")) {
@@ -1716,9 +1717,10 @@ public class DictateInputMethodService extends InputMethodService {
 
         String apiKey = sp.getString("net.devemperor.dictate.rewording_api_key",
                 sp.getString("net.devemperor.dictate.api_key", "NO_API_KEY"));
-        if (TextUtils.isEmpty(apiKey)) throw new IllegalStateException("API key missing");
         apiKey = apiKey.replaceAll("[^ -~]", "");
-        if ("NO_API_KEY".equals(apiKey) || apiKey.isEmpty()) throw new IllegalStateException("API key missing");
+        // Custom servers (provider 2) may not require authentication
+        if (rewordingProvider != 2 && ("NO_API_KEY".equals(apiKey) || apiKey.isEmpty())) throw new IllegalStateException("API key missing");
+        if (apiKey.isEmpty() || "NO_API_KEY".equals(apiKey)) apiKey = "no-key";
 
         String rewordingModel;
         switch (rewordingProvider) {
@@ -2084,6 +2086,15 @@ public class DictateInputMethodService extends InputMethodService {
                 infoNoButton.setOnClickListener(v -> infoCl.setVisibility(View.GONE));
                 break;
         }
+    }
+
+    private void showApiError(String errorMessage) {
+        infoCl.setVisibility(View.VISIBLE);
+        infoTv.setTextColor(getResources().getColor(R.color.dictate_red, getTheme()));
+        infoTv.setText(errorMessage != null && !errorMessage.isEmpty() ? errorMessage : getString(R.string.dictate_internet_error_msg));
+        infoYesButton.setVisibility(View.GONE);
+        infoNoButton.setVisibility(View.VISIBLE);
+        infoNoButton.setOnClickListener(v -> infoCl.setVisibility(View.GONE));
     }
 
     private String getDictateButtonText() {
