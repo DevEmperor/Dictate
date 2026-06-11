@@ -1,0 +1,155 @@
+/*
+ * Copyright (C) 2026 DevEmperor (Dictate)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+package dev.patrickgold.florisboard.dictate.provider
+
+/**
+ * A selectable provider option shown to the user.
+ *
+ * Base URLs are stable facts. Default model ids are conservative starting points only – the source
+ * of truth is the live catalog via [LlmProvider.listModels] when [supportsDynamicModels] is true, so
+ * users can freely pick any model the provider offers (important for OpenRouter's large catalog).
+ *
+ * NOTE: model ids / pricing must be re-verified against the provider when extending defaults – never
+ * guessed. See also [dev.patrickgold.florisboard.dictate.data.usage.DictatePricing].
+ */
+data class ProviderPreset(
+    val id: String,
+    val displayName: String,
+    val baseUrl: String,
+    val capabilities: ProviderCapabilities,
+    val supportsDynamicModels: Boolean,
+    val apiKeyUrl: String? = null,
+    val defaultChatModel: String? = null,
+    val defaultTranscriptionModel: String? = null,
+    val extraHeaders: Map<String, String> = emptyMap(),
+    val isCustom: Boolean = false,
+)
+
+/**
+ * Catalog of built-in OpenAI-compatible providers plus a factory for user-defined custom endpoints.
+ */
+object ProviderRegistry {
+
+    private val CHAT_ONLY = ProviderCapabilities(chat = true, transcription = false)
+    private val CHAT_AND_STT = ProviderCapabilities(chat = true, transcription = true)
+
+    val OPENAI = ProviderPreset(
+        id = "openai",
+        displayName = "OpenAI",
+        baseUrl = "https://api.openai.com/v1/",
+        capabilities = CHAT_AND_STT,
+        supportsDynamicModels = true,
+        apiKeyUrl = "https://platform.openai.com/api-keys",
+        defaultChatModel = "gpt-4o-mini",
+        defaultTranscriptionModel = "gpt-4o-mini-transcribe",
+    )
+
+    val GROQ = ProviderPreset(
+        id = "groq",
+        displayName = "Groq",
+        baseUrl = "https://api.groq.com/openai/v1/",
+        capabilities = CHAT_AND_STT,
+        supportsDynamicModels = true,
+        apiKeyUrl = "https://console.groq.com/keys",
+        defaultChatModel = "llama-3.3-70b-versatile",
+        defaultTranscriptionModel = "whisper-large-v3-turbo",
+    )
+
+    val OPENROUTER = ProviderPreset(
+        id = "openrouter",
+        displayName = "OpenRouter",
+        baseUrl = "https://openrouter.ai/api/v1/",
+        capabilities = CHAT_ONLY,
+        supportsDynamicModels = true,
+        apiKeyUrl = "https://openrouter.ai/keys",
+        // OpenRouter exposes hundreds of models (incl. Claude, Gemini, Llama …); users pick from the
+        // live catalog. This is just a safe default to start with and is fully user-overridable.
+        defaultChatModel = "openai/gpt-4o-mini",
+        // Optional attribution headers recommended by OpenRouter (used for app ranking).
+        extraHeaders = mapOf("X-Title" to "Dictate"),
+    )
+
+    val TOGETHER = ProviderPreset(
+        id = "together",
+        displayName = "Together AI",
+        baseUrl = "https://api.together.xyz/v1/",
+        capabilities = CHAT_ONLY,
+        supportsDynamicModels = true,
+        apiKeyUrl = "https://api.together.ai/settings/api-keys",
+    )
+
+    val DEEPINFRA = ProviderPreset(
+        id = "deepinfra",
+        displayName = "DeepInfra",
+        baseUrl = "https://api.deepinfra.com/v1/openai/",
+        capabilities = CHAT_ONLY,
+        supportsDynamicModels = true,
+        apiKeyUrl = "https://deepinfra.com/dash/api_keys",
+    )
+
+    val MISTRAL = ProviderPreset(
+        id = "mistral",
+        displayName = "Mistral AI",
+        baseUrl = "https://api.mistral.ai/v1/",
+        capabilities = CHAT_ONLY,
+        supportsDynamicModels = true,
+        apiKeyUrl = "https://console.mistral.ai/api-keys",
+    )
+
+    val XAI = ProviderPreset(
+        id = "xai",
+        displayName = "xAI (Grok)",
+        baseUrl = "https://api.x.ai/v1/",
+        capabilities = CHAT_ONLY,
+        supportsDynamicModels = true,
+        apiKeyUrl = "https://console.x.ai",
+    )
+
+    val DEEPSEEK = ProviderPreset(
+        id = "deepseek",
+        displayName = "DeepSeek",
+        baseUrl = "https://api.deepseek.com/v1/",
+        capabilities = CHAT_ONLY,
+        supportsDynamicModels = true,
+        apiKeyUrl = "https://platform.deepseek.com/api_keys",
+    )
+
+    /** Local Ollama server (OpenAI-compatible). No API key required by default. */
+    val OLLAMA = ProviderPreset(
+        id = "ollama",
+        displayName = "Ollama (local)",
+        baseUrl = "http://localhost:11434/v1/",
+        capabilities = CHAT_ONLY,
+        supportsDynamicModels = true,
+        apiKeyUrl = null,
+    )
+
+    /** All built-in presets in display order. The custom option is added by the UI on top of these. */
+    val presets: List<ProviderPreset> = listOf(
+        OPENAI, GROQ, OPENROUTER, TOGETHER, DEEPINFRA, MISTRAL, XAI, DEEPSEEK, OLLAMA,
+    )
+
+    fun byId(id: String): ProviderPreset? = presets.firstOrNull { it.id == id }
+
+    /** Builds a preset for a user-defined OpenAI-compatible endpoint. */
+    fun custom(
+        baseUrl: String,
+        displayName: String = "Custom server",
+        capabilities: ProviderCapabilities = CHAT_AND_STT,
+    ): ProviderPreset = ProviderPreset(
+        id = "custom",
+        displayName = displayName,
+        baseUrl = baseUrl,
+        capabilities = capabilities,
+        supportsDynamicModels = true,
+        isCustom = true,
+    )
+}

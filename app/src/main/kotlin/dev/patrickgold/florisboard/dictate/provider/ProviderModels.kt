@@ -1,0 +1,72 @@
+/*
+ * Copyright (C) 2026 DevEmperor (Dictate)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+package dev.patrickgold.florisboard.dictate.provider
+
+import java.io.File
+
+/** What a provider can do. Most OpenAI-compatible endpoints do chat; only some do transcription. */
+data class ProviderCapabilities(
+    val chat: Boolean,
+    val transcription: Boolean,
+)
+
+/** A selectable model, as offered by a provider (statically or via [LlmProvider.listModels]). */
+data class ModelInfo(
+    val id: String,
+    val displayName: String = id,
+)
+
+enum class ChatRole(val wire: String) {
+    SYSTEM("system"),
+    USER("user"),
+    ASSISTANT("assistant"),
+}
+
+data class ChatMessage(
+    val role: ChatRole,
+    val content: String,
+)
+
+data class ChatRequest(
+    val model: String,
+    val messages: List<ChatMessage>,
+    val temperature: Double? = null,
+    val maxTokens: Int? = null,
+) {
+    companion object {
+        /** Convenience for the common single-user-message rewording case. */
+        fun ofUser(model: String, prompt: String) =
+            ChatRequest(model, listOf(ChatMessage(ChatRole.USER, prompt)))
+    }
+}
+
+data class TokenUsage(
+    val promptTokens: Long,
+    val completionTokens: Long,
+)
+
+data class ChatResult(
+    val text: String,
+    val usage: TokenUsage?,
+)
+
+data class TranscriptionRequest(
+    val audioFile: File,
+    val model: String,
+    /** ISO language code, or null / "detect" for auto-detection. */
+    val language: String? = null,
+    /** Optional style/punctuation prompt to bias recognition. */
+    val prompt: String? = null,
+)
+
+data class TranscriptionResult(
+    val text: String,
+)

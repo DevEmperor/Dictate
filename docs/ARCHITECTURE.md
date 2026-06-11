@@ -123,4 +123,41 @@ object ProviderRegistry {
 4. **Dictate-Panel:** `ImeUiMode.DICTATE` + `DictateInputLayout()` + Mikro-QuickAction.
 5. **Logik-Port:** Recording/Transcription/Rewording (inkl. Queue, Auto-Apply, Live-Prompt).
 6. **Onboarding + Settings-Screens** (eigenes Branding).
-7. **Feinschliff:** Glide-Typing-Evaluierung, Themes, Changelog/Update-Flow.
+7. **Feinschliff:** Themes, Changelog/Update-Flow. (Glide-Typing wird **nicht** eingebaut.)
+
+## 7. Entscheidungen & Umsetzungsstand
+
+### Entscheidung: Alt-DBs vorerst als raw SQLite (kein Room)
+FlorisBoard bringt Room (2.8.4) mit, doch die **bestehenden** Dictate-DBs (`prompts.db`, `usage.db`)
+deklarieren Spalten als `BOOLEAN`/`LONG` (SQLite-Affinität NUMERIC). Room erwartet `INTEGER` und
+**validiert das Schema strikt über Typ-Affinitäten** – es würde die vorhandene Nutzer-DB ablehnen.
+Daher werden beide DBs zunächst als `SQLiteOpenHelper` in Kotlin 1:1 portiert (gleicher Name, gleiche
+Version 2, gleiches Schema) → **null Risiko** für Bestandsdaten. Ein späterer Umstieg auf Room ist
+über eine bewusste `MIGRATION_2_3` möglich (neue Tabellen im Room-Format anlegen, Daten kopieren),
+**erst mit Instrumented-Migrationstest** auf echter Alt-DB. Bis dahin kapseln Helper-Klassen die DBs.
+
+### Glide-Typing: gestrichen
+Auf Wunsch wird Glide-/Swipe-Typing **nicht** integriert. Vorhandene Gesten-Infrastruktur von
+FlorisBoard kann später entschlackt werden.
+
+### Umsetzungsstand
+- [x] **Schritt 1** – Fork als Basis, `applicationId = net.devemperor.dictate`, App-Name, Build-Config grün (Dry-Run, JDK 17). Offen: CMake 4.1.2 für vollen APK-Build (vom Nutzer via Android Studio).
+- [~] **Schritt 2** – Datenschicht (Kotlin):
+  - [x] `dictate/data/prompts` – `PromptModel`, `PromptsDatabaseHelper`
+  - [x] `dictate/data/usage` – `UsageModel`, `UsageDatabaseHelper`, `DictatePricing`
+  - [x] `dictate/data/prefs` – `DictateLegacyPreferences`, `DictateLegacySettings` (Reader der Alt-Prefs)
+  - [ ] Instrumented-Migrationstests mit Alt-Fixtures (sobald Build/CMake läuft)
+  - [ ] Einmaliger Prefs-Import in die neue (JetPref-)Settings-Schicht (Teil von Schritt 6)
+- [x] **Schritt 3** – Provider-Schicht (`dictate/provider/`, reines Kotlin):
+  - [x] Domänenmodelle (`ProviderModels`), Interfaces (`Providers`: `LlmProvider`/`TranscriptionProvider`)
+  - [x] `OpenAiCompatibleClient` (OkHttp + kotlinx.serialization): Chat, Transkription (Multipart), `listModels`, Retry, Proxy, Fehler-Klassifizierung (`DictateApiException`)
+  - [x] `ProviderConfig` + `ProxyConfig` (Proxy-Parsing aus `DictateUtils` portiert)
+  - [x] `ProviderRegistry` mit Presets: OpenAI, Groq, **OpenRouter**, Together, DeepInfra, Mistral, xAI, DeepSeek, Ollama (lokal) + Custom-Factory
+  - [x] OkHttp 4.12.0 zu Version-Catalog + App-Deps hinzugefügt
+  - [ ] Optionale Spezial-Adapter für native Anthropic-/Gemini-APIs (vorerst via OpenRouter erreichbar)
+  - [ ] Legacy-Provider-Index → Preset-Id-Mapping in der Settings-Migration (Schritt 6): `0→openai`, `1→groq`, `2→custom`
+  - [ ] Unit-Tests (Proxy-Parsing, Fehler-Klassifizierung) + Live-Smoke-Test (sobald Build läuft)
+- [ ] **Schritt 4** – `ImeUiMode.DICTATE` + `DictateInputLayout()` + Mikro-QuickAction
+- [ ] **Schritt 5** – Logik-Port (Recording/Transcription/Rewording)
+- [ ] **Schritt 6** – eigenes Onboarding + Settings-Screens
+- [ ] **Schritt 7** – Feinschliff
