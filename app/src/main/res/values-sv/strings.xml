@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">FlorisBoard</string>
+    <string name="key__phone_pause" comment="Label for the Pause key in the telephone keyboard layout">Pausa</string>
+    <string name="key__phone_wait" comment="Label for the Wait key in the telephone keyboard layout">Vänta</string>
+    <!-- One-handed strings -->
+    <string name="one_handed__close_btn_content_description" comment="Content description for the one-handed close button">Stäng enhandsläge.</string>
+    <string name="one_handed__move_start_btn_content_description" comment="Content description for the one-handed move to left button">Flytta tangentbord till vänster.</string>
+    <string name="one_handed__move_end_btn_content_description" comment="Content description for the one-handed move to right button">Flytta tangentbord till höger.</string>
+    <!-- Media strings -->
+    <string name="media__tab__emojis" comment="Tab description for emojis in the media UI">Emojis</string>
+    <string name="media__tab__emoticons" comment="Tab description for emoticons in the media UI">Emotikoner</string>
+    <string name="media__tab__kaomoji" comment="Tab description for kaomoji in the media UI">Kaomoji</string>
+    <!-- Emoji strings -->
+    <string name="emoji__category__smileys_emotion" comment="Emoji category name">Smileys &amp; Emotikoner</string>
+    <string name="emoji__category__people_body" comment="Emoji category name">Personer &amp; Kroppar</string>
+    <string name="emoji__category__animals_nature" comment="Emoji category name">Djur &amp; Natur</string>
+    <string name="emoji__category__food_drink" comment="Emoji category name">Mat &amp; Dryck</string>
+    <string name="emoji__category__travel_places" comment="Emoji category name">Resor &amp; Platser</string>
+    <string name="emoji__category__activities" comment="Emoji category name">Aktiviteter</string>
+    <string name="emoji__category__objects" comment="Emoji category name">Föremål</string>
+    <string name="emoji__category__symbols" comment="Emoji category name">Symboler</string>
+    <string name="emoji__category__flags" comment="Emoji category name">Flaggor</string>
+    <string name="emoji__history__recent"></string>
+    <!-- Quick action strings -->
+    <string name="quick_action__arrow_up" comment="Please mind the limited available space for the quick action strings">Pil upp</string>
+    <!-- Incognito mode strings -->
+    <!-- Settings UI strings -->
+    <string name="settings__title" comment="Title of Settings">Inställningar</string>
+    <string name="settings__help" comment="General label for help buttons in Settings">Hjälp</string>
+    <string name="settings__default" comment="General string which is used when a preference has the default value set">Standard</string>
+    <string name="settings__system_default" comment="General string which is used when a preference has the system default value set">Systemstandard</string>
+    <string name="settings__home__title" comment="Title of the Home screen">Välkommen till {app_name}</string>
+    <string name="settings__home__ime_not_enabled" comment="Error message shown in Home fragment when FlorisBoard is not enabled in the system">FlorisBoard är inte aktiverad och kommer därför inte vara tillgänglig som inmatningsmetod i inmatningsväljaren. Tryck här för att lösa problemet.</string>
+    <string name="settings__home__ime_not_selected" comment="Warning message shown in Home fragment when FlorisBoard is not selected as the default keyboard">FlorisBoard är inte vald som standard inmatningsmetod. Tryck här för att lösa problemet.</string>
+    <string name="settings__localization__subtype_add_title" comment="Title of subtype dialog when adding a new subtype">Lägg till undertyp</string>
+    <string name="settings__localization__subtype_edit_title" comment="Title of subtype dialog when editing an existing subtype">Redigera undertyp</string>
+    <string name="settings__localization__subtype_search_locale_placeholder" comment="Subtype search language placeholder">Sök efter ett språk</string>
+    <string name="settings__localization__subtype_no_subtypes_configured_warning" comment="Warning message that no subtype has been defined">Det verkar som du inte har konfigurerat några undertyper. Undertyp Engelska/QWERTY kommer då användas!</string>
+    <string name="settings__localization__subtype_error_already_exists" comment="Error message shown in subtype dialog when a subtype to add already exists">Denna undertyp finns redan!</string>
+    <string name="settings__theme__title" comment="Title of the Theme screen">Tema</string>
+    <string name="pref__theme__mode__label" comment="Label of the theme mode preference">Temaläge</string>
+    <string name="pref__theme__sunrise_time__label" comment="Label of the sunrise time preference">Soluppgångstid</string>
+    <string name="pref__theme__sunset_time__label" comment="Label of the sunset time preference">Solnedgångstid</string>
+    <string name="pref__theme__day" comment="Label of the day group (day means light theme)">Dag tema</string>
+    <string name="pref__theme__night" comment="Label of the night group (night means dark theme)">Natt tema</string>
+    <string name="pref__theme__source_assets" comment="Label for the theme source field">FlorisBoard app-tillgångar</string>
+    <string name="pref__theme__source_internal" comment="Label for the theme source field">Intern lagring</string>
+    <string name="pref__theme__source_external" comment="Label for the theme source field">Extern leverantör</string>
+    <string name="snygg__rule_element__key">Tangent</string>
+    <string name="settings__keyboard__title" comment="Title of Keyboard preferences screen">Tangentbord</string>
+    <string name="pref__keyboard__number_row__label" comment="Preference title">Sifferrad</string>
+    <string name="pref__keyboard__group_layout__label" comment="Preference group title">Layout</string>
+    <string name="pref__keyboard__group_keypress__label" comment="Preference group title">Tangenttryck</string>
+    <string name="pref__keyboard__popup_enabled__summary" comment="Preference summary">Visa popup vid tangenttryck</string>
+    <string name="pref__keyboard__long_press_delay__label" comment="Preference title">Fördröjning vid långt tryck</string>
+    <!-- Smartbar strings -->
+    <string name="settings__smartbar__title" comment="Title of Smartbar screen">Smartremsa</string>
+    <string name="pref__smartbar__enabled__label" comment="Preference title">Aktivera smartremsa</string>
+    <!-- Typing strings -->
+    <string name="pref__suggestion__title" comment="Preference group title">Förslag</string>
+    <string name="pref__gestures__swipe_up__label" comment="Preference title">Svep uppåt</string>
+    <string name="pref__gestures__swipe_down__label" comment="Preference title">Svep nedåt</string>
+    <string name="pref__gestures__swipe_left__label" comment="Preference title">Svep vänster</string>
+    <string name="pref__gestures__swipe_right__label" comment="Preference title">Svep höger</string>
+    <string name="pref__gestures__space_bar_swipe_up__label" comment="Preference title">Blanksteg svep uppåt</string>
+    <string name="pref__gestures__space_bar_swipe_left__label" comment="Preference title">Blanksteg svep vänster</string>
+    <string name="pref__gestures__space_bar_swipe_right__label" comment="Preference title">Blanksteg svep höger</string>
+    <string name="pref__gestures__space_bar_long_press__label" comment="Preference title">Blanksteg långtryck</string>
+    <!-- About UI strings -->
+    <string name="about__title" comment="Title of About activity">Om</string>
+    <string name="about__app_icon_content_description" comment="Content description of app icon in About">FlorisBoard appikon</string>
+    <string name="about__view_licenses" comment="Label of View licenses button in About">Licenser för öppen källkod</string>
+    <string name="about__view_privacy_policy" comment="Label of View privacy policy button in About">Sekretesspolicy</string>
+    <string name="about__view_source_code" comment="Label of View source code button in About">Källkod</string>
+    <string name="about__license__title" comment="Title of Open-source licenses dialog">Licenser för öppen källkod</string>
+    <string name="about__privacy_policy__title" comment="Preference title">Sekretesspolicy</string>
+    <!-- Setup UI strings -->
+    <string name="setup__title" comment="Title of Setup">Välkommen!</string>
+    <string name="setup__footer__privacy_policy" comment="Privacy policy label for URL">Sekretesspolicy</string>
+    <!-- Physical keyboard -->
+    <!-- Back up & Restore -->
+    <!-- Crash Dialog strings -->
+    <string name="crash_dialog__close" comment="Label of Close button in crash dialog">Stäng</string>
+    <!-- Clipboard strings -->
+    <string name="clipboard__group_other">Annat</string>
+    <string name="clip__delete_item">Radera</string>
+    <!-- Devtools strings -->
+    <!-- Extension strings -->
+    <!-- Action strings -->
+    <!-- Error strings (generic) -->
+    <!-- General strings -->
+    <!-- Screen orientation strings -->
+    <!-- State strings -->
+    <string name="state__disabled">Inaktiverad</string>
+    <!-- Enum label and description strings -->
+    <string name="enum__swipe_action__shift" comment="Enum value label">Skift</string>
+    <string name="enum__swipe_action__switch_to_prev_keyboard" comment="Enum value label">Byt till föregående tangentbord</string>
+    <string name="enum__swipe_action__switch_to_prev_subtype" comment="Enum value label">Byt till föregående undertyp</string>
+    <string name="enum__swipe_action__switch_to_next_subtype" comment="Enum value label">Byt till nästa undertyp</string>
+    <string name="enum__theme_mode__always_day" comment="Enum value label">Alltid dag</string>
+    <string name="enum__theme_mode__always_night" comment="Enum value label">Alltid natt</string>
+    <string name="enum__theme_mode__follow_system" comment="Enum value label">Följ systemet</string>
+    <string name="enum__theme_mode__follow_time" comment="Enum value label">Följ tid</string>
+    <!-- Unit strings (symbols) -->
+    <!-- Unit strings (written words) -->
+</resources>

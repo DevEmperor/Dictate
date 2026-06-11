@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">FlorisBoard</string>
+    <!-- One-handed strings -->
+    <!-- Media strings -->
+    <!-- Emoji strings -->
+    <!-- Quick action strings -->
+    <!-- Incognito mode strings -->
+    <!-- Settings UI strings -->
+    <string name="settings__localization__subtype_select_locale" comment="Subtype select language title">Sprachauswahl</string>
+    <!-- Smartbar strings -->
+    <!-- Typing strings -->
+    <!-- About UI strings -->
+    <!-- Setup UI strings -->
+    <!-- Physical keyboard -->
+    <!-- Back up & Restore -->
+    <!-- Crash Dialog strings -->
+    <!-- Clipboard strings -->
+    <!-- Devtools strings -->
+    <!-- Extension strings -->
+    <!-- Action strings -->
+    <!-- Error strings (generic) -->
+    <!-- General strings -->
+    <!-- Screen orientation strings -->
+    <!-- State strings -->
+    <!-- Enum label and description strings -->
+    <!-- Unit strings (symbols) -->
+    <!-- Unit strings (written words) -->
+</resources>

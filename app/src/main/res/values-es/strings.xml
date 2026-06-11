@@ -1,0 +1,1035 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">FlorisBoard</string>
+    <string name="key__phone_pause" comment="Label for the Pause key in the telephone keyboard layout">Pausar</string>
+    <string name="key__phone_wait" comment="Label for the Wait key in the telephone keyboard layout">Espere</string>
+    <string name="key_popup__threedots_alt" comment="Content description for the three-dots icon in a key popup">Icono de tres puntos. Si está visible, indica que se pueden utilizar más letras si se pulsa durante más tiempo.</string>
+    <!-- One-handed strings -->
+    <string name="one_handed__close_btn_content_description" comment="Content description for the one-handed close button">Cerrar el modo a una mano.</string>
+    <string name="one_handed__move_start_btn_content_description" comment="Content description for the one-handed move to left button">Mover el teclado a la izquierda.</string>
+    <string name="one_handed__move_end_btn_content_description" comment="Content description for the one-handed move to right button">Mover el teclado a la derecha.</string>
+    <!-- Media strings -->
+    <string name="settings__media__title">Emojis</string>
+    <string name="media__tab__emojis" comment="Tab description for emojis in the media UI">Emojis</string>
+    <string name="media__tab__emoticons" comment="Tab description for emoticons in the media UI">Emoticonos</string>
+    <string name="media__tab__kaomoji" comment="Tab description for kaomoji in the media UI">Kaomoji</string>
+    <string name="prefs__media__emoji_preferred_skin_tone">Tono de piel preferido de los emojis</string>
+    <string name="prefs__media__emoji_preferred_hair_style">Estilo del pelo preferido para los emojis</string>
+    <string name="prefs__media__emoji_history__title" comment="Preference group title">Historial de emojis</string>
+    <string name="prefs__media__emoji_history_enabled" comment="Preference title">Habilitar historial de emojis</string>
+    <string name="prefs__media__emoji_history_enabled__summary" comment="Preference summary">Mantener emojis usados recientemente para un acceso rápido</string>
+    <string name="prefs__media__emoji_history_pinned_update_strategy" comment="Preference title">Estrategia de actualización (fijada)</string>
+    <string name="prefs__media__emoji_history_recent_update_strategy" comment="Preference title">Estrategia de actualización (Reciente)</string>
+    <string name="prefs__media__emoji_history_max_size">Cantidad máxima de elementos a guardar</string>
+    <string name="prefs__media__emoji_history_pinned_reset">Restablecer emojis fijados</string>
+    <string name="prefs__media__emoji_history_reset">Restablecer emojis recientes</string>
+    <string name="prefs__media__emoji_suggestion__title" comment="Preference group title">Sugerencias de emojis</string>
+    <string name="prefs__media__emoji_suggestion_enabled" comment="Preference title">Habilitar sugerencias de emojis</string>
+    <string name="prefs__media__emoji_suggestion_enabled__summary" comment="Preference summary">Proporcionar sugerencias de emoji mientras escribes</string>
+    <string name="prefs__media__emoji_suggestion_type" comment="Preference title">Tipo de activador</string>
+    <string name="prefs__media__emoji_suggestion_update_history" comment="Preference title">Actualizar el historial de emojis</string>
+    <string name="prefs__media__emoji_suggestion_update_history__summary" comment="Preference summary">Aceptar emojis sugeridos los añade al historial de emojis</string>
+    <string name="prefs__media__emoji_suggestion_candidate_show_name" comment="Preference title">Mostrar el nombre del emoji</string>
+    <string name="prefs__media__emoji_suggestion_candidate_show_name__summary" comment="Preference summary">Las sugerencias de los emojis muestran su nombre junto al emoji</string>
+    <string name="prefs__media__emoji_suggestion_query_min_length" comment="Preference title">Longitud mínima de consulta</string>
+    <string name="prefs__media__emoji_suggestion_candidate_max_count" comment="Preference title">Número máximo de sugerencias</string>
+    <!-- Emoji strings -->
+    <string name="emoji__category__smileys_emotion" comment="Emoji category name">Emojis &amp; Emociones</string>
+    <string name="emoji__category__people_body" comment="Emoji category name">Personas &amp; Cuerpo</string>
+    <string name="emoji__category__animals_nature" comment="Emoji category name">Animales &amp; Naturaleza</string>
+    <string name="emoji__category__food_drink" comment="Emoji category name">Comida &amp; Bebida</string>
+    <string name="emoji__category__travel_places" comment="Emoji category name">Viajes &amp; Lugares</string>
+    <string name="emoji__category__activities" comment="Emoji category name">Actividades</string>
+    <string name="emoji__category__objects" comment="Emoji category name">Objetos</string>
+    <string name="emoji__category__symbols" comment="Emoji category name">Símbolos</string>
+    <string name="emoji__category__flags" comment="Emoji category name">Banderas</string>
+    <string name="emoji__history__empty_message" comment="Message if the emoji history is empty">No se han encontrado emojis recientemente usados. Una vez que empieces a escribir emojis aparecerán aquí.</string>
+    <string name="emoji__history__phone_locked_message" comment="Message to show if phone is locked">Para acceder a tu historial de emojis, por favor, desbloquea primero tu dispositivo.</string>
+    <string name="emoji__history__usage_tip" comment="Feature discoverability for actions of emoji history">Consejo: ¡Mantén presionados los emoticonos en el historial de los mismos para fijarlos o eliminarlos!</string>
+    <string name="emoji__history__removal_success_message" comment="Toast message if user has used the delete action on an emoji in the emoji history">Se ha eliminado {emoji} del historial de emojis</string>
+    <string name="emoji__history__pinned">Fijado</string>
+    <string name="emoji__history__recent">Reciente</string>
+    <!-- Quick action strings -->
+    <string name="quick_action__arrow_up" comment="Please mind the limited available space for the quick action strings">Arriba</string>
+    <string name="quick_action__arrow_up__tooltip">Realizar flecha hacia arriba</string>
+    <string name="quick_action__arrow_down" comment="Please mind the limited available space for the quick action strings">Abajo</string>
+    <string name="quick_action__arrow_down__tooltip">Realizar flecha hacia abajo</string>
+    <string name="quick_action__arrow_left" comment="Please mind the limited available space for the quick action strings">Izquierda</string>
+    <string name="quick_action__arrow_left__tooltip">Realizar flecha hacia la izquierda</string>
+    <string name="quick_action__arrow_right" comment="Please mind the limited available space for the quick action strings">Derecha</string>
+    <string name="quick_action__arrow_right__tooltip">Realizar flecha hacia la derecha</string>
+    <string name="quick_action__ime_hide_ui" comment="Please mind the limited available space for the quick action strings">Ten en cuenta el limitado espacio disponible para la tira de acción rápida</string>
+    <string name="quick_action__ime_hide_ui__tooltip">Ejecutar ocultar el teclado</string>
+    <string name="quick_action__clipboard_clear_primary_clip" comment="Please mind the limited available space for the quick action strings">Borrar clip</string>
+    <string name="quick_action__clipboard_clear_primary_clip__tooltip">Realizar limpiar portapapeles principal</string>
+    <string name="quick_action__clipboard_copy" comment="Please mind the limited available space for the quick action strings">Copiar</string>
+    <string name="quick_action__clipboard_copy__tooltip">Realizar copia del portapapeles</string>
+    <string name="quick_action__clipboard_cut" comment="Please mind the limited available space for the quick action strings">Cortar</string>
+    <string name="quick_action__clipboard_cut__tooltip">Cortar al portapapeles</string>
+    <string name="quick_action__clipboard_paste" comment="Please mind the limited available space for the quick action strings">Pegar</string>
+    <string name="quick_action__clipboard_paste__tooltip">Pegar del portapapeles</string>
+    <string name="quick_action__clipboard_select_all" comment="Please mind the limited available space for the quick action strings">Marcar todo</string>
+    <string name="quick_action__clipboard_select_all__tooltip">Seleccionar todo en el portapapeles</string>
+    <string name="quick_action__forward_delete" comment="Please mind the limited available space for the quick action strings">Suprimir</string>
+    <string name="quick_action__ime_ui_mode_clipboard" comment="Please mind the limited available space for the quick action strings">Portapapeles</string>
+    <string name="quick_action__ime_ui_mode_clipboard__tooltip">Abrir historial del portapapeles</string>
+    <string name="quick_action__ime_ui_mode_media" comment="Please mind the limited available space for the quick action strings">Emoji</string>
+    <string name="quick_action__ime_ui_mode_media__tooltip">Abrir el panel de emojis</string>
+    <string name="quick_action__language_switch" comment="Please mind the limited available space for the quick action strings">Mudar idioma</string>
+    <string name="quick_action__language_switch__tooltip">Realizar el cambio del idioma</string>
+    <string name="quick_action__settings" comment="Please mind the limited available space for the quick action strings">Ajustes</string>
+    <string name="quick_action__settings__tooltip">Abrir ajustes</string>
+    <string name="quick_action__undo" comment="Please mind the limited available space for the quick action strings">Deshacer</string>
+    <string name="quick_action__undo__tooltip">Deshacer la última entrada</string>
+    <string name="quick_action__redo" comment="Please mind the limited available space for the quick action strings">Rehacer</string>
+    <string name="quick_action__redo__tooltip">Rehacer la última entrada</string>
+    <string name="quick_action__toggle_actions_overflow" comment="Please mind the limited available space for the quick action strings">Más acciones</string>
+    <string name="quick_action__toggle_actions_overflow__tooltip">Mostrar u ocultar las operaciones adicionales</string>
+    <string name="quick_action__toggle_incognito_mode" comment="Please mind the limited available space for the quick action strings">Incógnito</string>
+    <string name="quick_action__toggle_incognito_mode__tooltip">Activar el modo incógnito</string>
+    <string name="quick_action__toggle_autocorrect" comment="Please mind the limited available space for the quick action strings">Autocorregir</string>
+    <string name="quick_action__toggle_autocorrect__tooltip">Activar la autocorrección</string>
+    <string name="quick_action__voice_input" comment="Please mind the limited available space for the quick action strings">Entrada voz</string>
+    <string name="quick_action__voice_input__tooltip" comment="IME stands for Input Method Editor and is indirectly equivalent to 'keyboard'.">Abrir proveedor de entrada de voz</string>
+    <string name="quick_action__one_handed_mode" comment="Please mind the limited available space for the quick action strings">Con una mano</string>
+    <string name="quick_action__one_handed_mode__tooltip">Activar el modo de una mano</string>
+    <string name="quick_action__drag_marker" comment="This action is only used as a placeholder in the actions editor drag and drop screen and only visible in debug mode">Arrastrar</string>
+    <string name="quick_action__drag_marker__tooltip" comment="This action is only used as a placeholder in the actions editor drag and drop screen and only visible in debug mode">Posición actual del cursor</string>
+    <string name="quick_action__noop" comment="Noop=no operation; this action is only used as a placeholder in the actions editor drag and drop screen">Ninguno</string>
+    <string name="quick_action__noop__tooltip" comment="Noop=no operation; this action is only used as a placeholder in the actions editor drag and drop screen">Ninguna operación</string>
+    <string name="quick_actions_overflow__customize_actions_button">Reorganizar operaciones</string>
+    <string name="quick_actions_editor__header">Personalizar el orden de las operaciones</string>
+    <string name="quick_actions_editor__subheader_sticky_action">Acción fijada ({n})</string>
+    <string name="quick_actions_editor__subheader_dynamic_actions">Acciones dinámicas ({n})</string>
+    <string name="quick_actions_editor__subheader_hidden_actions">Acciones ocultas ({n})</string>
+    <string name="select_subtype_panel__header">Selecciona subtipo</string>
+    <!-- Incognito mode strings -->
+    <string name="incognito_mode__toast_after_enabled">El modo incógnito está activo \n\n{app_name} no aprenderá palabras de tus entradas mientras este modo esté activo</string>
+    <string name="incognito_mode__toast_after_disabled">El modo incógnito está deshabilitado por defecto</string>
+    <!-- Settings UI strings -->
+    <string name="settings__title" comment="Title of Settings">Ajustes</string>
+    <string name="settings__preview_keyboard" comment="Hint for try your setup box">Probar los ajustes</string>
+    <string name="settings__help" comment="General label for help buttons in Settings">Ayuda</string>
+    <string name="settings__default" comment="General string which is used when a preference has the default value set">Por defecto</string>
+    <string name="settings__system_default" comment="General string which is used when a preference has the system default value set">Predeterminado del sistema</string>
+    <string name="settings__home__title" comment="Title of the Home screen">Bienvenido a {app_name}</string>
+    <string name="settings__home__ime_not_enabled" comment="Error message shown in Home fragment when FlorisBoard is not enabled in the system">FlorisBoard no está habilitado en el sistema y por lo tanto no estará disponible como método de entrada en el selector de entrada. Haga clic aquí para resolver este problema.</string>
+    <string name="settings__home__ime_not_selected" comment="Warning message shown in Home fragment when FlorisBoard is not selected as the default keyboard">FlorisBoard no está seleccionado como método de entrada predeterminado. Haga clic aquí para solucionar este problema.</string>
+    <string name="settings__localization__title" comment="Title of languages and Layout screen">Idiomas &amp; Distribuciones</string>
+    <string name="settings__localization__display_language_names_in__label" comment="Label of Display language names in preference">Muestra nombres de idiomas en</string>
+    <string name="settings__localization__display_keyboard_labels_in_subtype_language" comment="Label of Display keyboard labels in subtype language preference">Mostrar las etiquetas del teclado en mismo idioma</string>
+    <string name="settings__localization__group_subtypes__label" comment="Label of subtypes group">Subtipos</string>
+    <string name="settings__localization__subtype_add_title" comment="Title of subtype dialog when adding a new subtype">Añadir subtipo</string>
+    <string name="settings__localization__language_pack_title" comment="Title of the language pack manager screen for managing installed and custom language packs">Administrar paquetes de idioma instalados</string>
+    <string name="settings__localization__language_pack_summary" comment="Summary of preference item for adding a new language pack">Experimental: gestión de las extensiones que añaden compatibilidad con determinados idiomas (por ahora, entrada de caracteres chinos)</string>
+    <string name="settings__localization__subtype_edit_title" comment="Title of subtype dialog when editing an existing subtype">Editar subtipo</string>
+    <string name="settings__localization__subtype_locale" comment="Label for locale dropdown in subtype dialog">Idioma principal</string>
+    <string name="settings__localization__subtype_popup_mapping" comment="Label for popup mapping dropdown in subtype screen">Gestionar ventanas emergentes</string>
+    <string name="settings__localization__subtype_characters_layout" comment="Label for layout dropdown in subtype dialog">Disposición de caracteres</string>
+    <string name="settings__localization__subtype_suggestion_provider" comment="Label for suggestion provider dropdown in subtype dialog">Sugerencias</string>
+    <string name="settings__localization__subtype_symbols_layout" comment="Label for layout dropdown in subtype dialog">Disposición de símbolos primarios</string>
+    <string name="settings__localization__subtype_symbols2_layout" comment="Label for layout dropdown in subtype dialog">Disposición de símbolos secundarios</string>
+    <string name="settings__localization__subtype_composer" comment="Label for composer dropdown in subtype dialog.">Editor</string>
+    <string name="settings__localization__subtype_currency_set" comment="Label for currency set dropdown in subtype dialog. 'set' is used as a noun here and can be compared to a group of elements (in this case currency symbols).">Tipo de moneda</string>
+    <string name="settings__localization__subtype_numeric_layout" comment="Label for layout dropdown in subtype dialog">Disposición numérica</string>
+    <string name="settings__localization__subtype_numeric_advanced_layout" comment="Label for layout dropdown in subtype dialog">Disposición numérica (avanzada)</string>
+    <string name="settings__localization__subtype_numeric_row_layout" comment="Label for layout dropdown in subtype dialog">Disposición de la fila de números</string>
+    <string name="settings__localization__subtype_phone_layout" comment="Label for layout dropdown in subtype dialog">Disposición primaria del teléfono</string>
+    <string name="settings__localization__subtype_phone2_layout" comment="Label for layout dropdown in subtype dialog">Disposición secundaria del teléfono</string>
+    <string name="settings__localization__subtype_select_locale" comment="Subtype select language title">Seleccionar idioma</string>
+    <string name="settings__localization__subtype_search_locale_placeholder" comment="Subtype search language placeholder">Buscar un idioma</string>
+    <string name="settings__localization__subtype_search_locale_not_found" comment="Subtype search language not found">No se pudo encontrar un idioma que coincida con \"{search_term}\".</string>
+    <string name="settings__localization__subtype_select_placeholder" comment="Subtype dialog select value placeholder (&amp;#8210; is a hyphen character)">&#8210; seleccionar &#8210;</string>
+    <string name="settings__localization__subtype_summary" comment="Subtype summary">{characters_name} / {symbols_name} / {currency_set_name}</string>
+    <string name="settings__localization__suggested_subtype_presets" comment="Suggested presets title">Preajustes de subtipo sugeridos</string>
+    <string name="settings__localization__suggested_subtype_presets_none_found" comment="Suggested presets none found">No hay preajustes sugeridos disponibles. Use el botón de abajo para ver todos los preajustes de subtipo.</string>
+    <string name="settings__localization__subtype_presets" comment="Subtype presets dialog title">Preajustes de subtipo</string>
+    <string name="settings__localization__subtype_presets_view_all" comment="View all presets button">Mostrar todos</string>
+    <string name="settings__localization__subtype_no_subtypes_configured_warning" comment="Warning message that no subtype has been defined">Parece que no has configurado ningún subtipo. ¡Como alternativa se usará el subtipo Inglés/QWERTY!</string>
+    <string name="settings__localization__subtype_error_already_exists" comment="Error message shown in subtype dialog when a subtype to add already exists">¡Este subtipo ya existe!</string>
+    <string name="settings__localization__subtype_error_fields_no_value" comment="Error message shown in subtype editor if at least one field is set to '- select -' (means no value specified)">Al menos un campo no posee un valor seleccionado. Por favor escoja un valor para el(los) campo(s).</string>
+    <string name="settings__localization__subtype_error_layout_not_installed" comment="Error message shown in subtype list when a layout is not installed, where %s will be replaced by the layout ID">{layout_id} (no instalado)</string>
+    <string name="settings__localization__group_layouts__label" comment="Label of layouts group">Distribuciones</string>
+    <string name="settings__localization__subtype_delete_confirmation_title" comment="Title of the subtype delete confirmation dialog">Confirmación de eliminación</string>
+    <string name="settings__localization__subtype_delete_confirmation_warning" comment="Warning message in the confirmation dialog to confirm the user's intent to delete">¿Está seguro de que desea eliminar este subtipo?</string>
+    <string name="settings__theme__title" comment="Title of the Theme screen">Tema</string>
+    <string name="pref__theme__mode__label" comment="Label of the theme mode preference">Tema</string>
+    <string name="pref__theme__sunrise_time__label" comment="Label of the sunrise time preference">Amanecer</string>
+    <string name="pref__theme__sunset_time__label" comment="Label of the sunset time preference">Hora de puesta de sol</string>
+    <string name="pref__theme__day" comment="Label of the day group (day means light theme)">Tema claro</string>
+    <string name="pref__theme__night" comment="Label of the night group (night means dark theme)">Tema oscuro</string>
+    <string name="pref__theme__theme_accent_color__label" comment="Label of accent color preference in Theme">        Color del énfasis (Temas Material You)
+    </string>
+    <string name="settings__theme_manager__title_manage" comment="Title of the theme manager screen for managing installed and custom themes">Gestionar temas instalados</string>
+    <string name="pref__theme__source_assets" comment="Label for the theme source field">Recursos de aplicación de FlorisBoard</string>
+    <string name="pref__theme__source_internal" comment="Label for the theme source field">Almacenamiento interno</string>
+    <string name="pref__theme__source_external" comment="Label for the theme source field">Almacenamiento externo</string>
+    <string name="settings__theme_manager__title_day" comment="Title of the theme manager screen for day theme selection">Elegir tema claro</string>
+    <string name="settings__theme_manager__title_night" comment="Title of the theme manager screen for night theme selection">Elegir tema oscuro</string>
+    <string name="settings__theme_editor__fine_tune__title">Editor de ajuste fino</string>
+    <string name="settings__theme_editor__fine_tune__level">Nivel de edición</string>
+    <string name="settings__theme_editor__fine_tune__color_representation">Representación de los colores</string>
+    <string name="settings__theme_editor__fine_tune__display_kbd_after_dialogs">Mostrar teclado después de diálogos</string>
+    <string name="settings__theme_editor__add_rule">Añadir regla</string>
+    <string name="settings__theme_editor__edit_rule">Editar regla</string>
+    <string name="settings__theme_editor__no_rules_defined">Esta hoja de estilo no tiene reglas definidas. Agregue una regla para comenzar a personalizar esta hoja de estilo.</string>
+    <string name="settings__theme_editor__rule_already_exists">Esta regla de hoja de estilo ya está definida.</string>
+    <string name="settings__theme_editor__rule_name">Elemento / Nota</string>
+    <string name="settings__theme_editor__rule_codes">Códigos de clave destino</string>
+    <string name="settings__theme_editor__rule_groups">Grupos</string>
+    <string name="settings__theme_editor__rule_modes">Modos de destino (capas)</string>
+    <string name="settings__theme_editor__rule_shift_states">Estados de destino a mayúsculas</string>
+    <string name="settings__theme_editor__rule_selectors">Selectores</string>
+    <string name="settings__theme_editor__add_code">Añadir código clave</string>
+    <string name="settings__theme_editor__edit_code">Editar código clave</string>
+    <string name="settings__theme_editor__no_codes_defined">Aplicar la regla a todos los elementos de destino.</string>
+    <string name="settings__theme_editor__no_enum_value_to_add_anymore">Todos los valores posibles han sido añadidos.</string>
+    <string name="settings__theme_editor__code_already_exists">Este código clave ya está definido.</string>
+    <string name="settings__theme_editor__code_invalid">Este código clave no es válido. Asegúrese de que el código clave esté dentro del rango de {c_min} a {c_max} para los caracteres o {i_min} a {i_max} para las teclas especiales internas.</string>
+    <string name="settings__theme_editor__code_help_text">Alternativamente, los siguientes enlaces lo ayudarán a encontrar el código clave correspondiente:</string>
+    <string name="settings__theme_editor__code_placeholder">Código</string>
+    <string name="settings__theme_editor__code_recording_help_text">Para encontrar el código de una tecla, utilice el botón situado junto al campo de entrada de códigos. Una vez activado, registrará la siguiente pulsación de la tecla e insertará el código en el campo de entrada.</string>
+    <string name="settings__theme_editor__code_recording_started">Grabación de código de tecla iniciada</string>
+    <string name="settings__theme_editor__code_recording_stopped">Grabación de código de tecla detenida</string>
+    <string name="settings__theme_editor__code_recording_requires_default_ime_floris">{app_name} tiene que ser el teclado por defecto para grabar un código de tecla</string>
+    <string name="settings__theme_editor__code_recording_placeholder">Grabando…</string>
+    <string name="settings__theme_editor__add_property">Añadir propiedad</string>
+    <string name="settings__theme_editor__edit_property">Editar propiedad</string>
+    <string name="settings__theme_editor__property_already_exists">Ya existe una propiedad con este nombre dentro de la regla actual.</string>
+    <string name="settings__theme_editor__property_name">Nombre de propiedad</string>
+    <string name="settings__theme_editor__property_value">Valor de propiedad</string>
+    <string name="settings__theme_editor__property_value_shape_apply_for_all_corners">Aplicar para todas las esquinas</string>
+    <string name="settings__theme_editor__property_value_color_dialog_title">Editar cadena de colores</string>
+    <string name="settings__theme_editor__file_selector_dialog_title">Seleccionar archivo</string>
+    <string name="settings__theme_editor__file_selector_no_files_text">Aún no se han añadido archivos a esta extensión. Utilice la acción \"{action_title}\" de la pantalla anterior para importar archivos.</string>
+    <string name="settings__theme_editor__component_meta_is_night_theme">Es tema oscuro</string>
+    <string name="settings__theme_editor__component_meta_is_borderless">Es sin borde</string>
+    <string name="settings__theme_editor__component_meta_stylesheet_path">Ruta de la hoja de estilo</string>
+    <string name="settings__theme_editor__component_meta_material_you__title">Material You</string>
+    <string name="settings__theme_editor__stylesheet_error_title">Error en la hoja de estilos</string>
+    <string name="settings__theme_editor__stylesheet_error_description">{app_name} puede intentar cargar con flexibilidad las hojas de estilo y añadir esquemas, reglas, o remover reglas inválidas, propiedades, o valores. ¿Desea que {app_name} aplique esos cambios? </string>
+    <string name="settings__theme_editor__component_meta_material_you__palette_style">Paleta de colores</string>
+    <string name="settings__theme_editor__component_meta_material_you__color_contrast">Contraste de color</string>
+    <string name="settings__theme_editor__component_meta_material_you__spec_version">Versión de las especificaciones</string>
+    <string name="snygg__rule_annotation__defines">Variables</string>
+    <string name="snygg__rule_annotation__defines_description">Defina variables dentro de esta regla para reutilizar colores o tamaños comunes en su hoja de estilo.</string>
+    <string name="snygg__rule_annotation__font">Fuente</string>
+    <string name="snygg__rule_annotation__font_name">Nombre de la fuente</string>
+    <string name="snygg__rule_element__root">Root</string>
+    <string name="snygg__rule_element__window">Ventana</string>
+    <string name="snygg__rule_element__key">Tecla</string>
+    <string name="snygg__rule_element__key_hint">Tecla sugerida</string>
+    <string name="snygg__rule_element__key_popup_box">Caja emergente de tecla</string>
+    <string name="snygg__rule_element__key_popup_element">Elemento emergente de tecla</string>
+    <string name="snygg__rule_element__key_popup_extended_indicator">Indicador extendido emergente de tecla</string>
+    <string name="snygg__rule_element__clipboard_header">Encabezado del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_header_button">Botón de encabezado del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_header_text">Texto de encabezado del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_subheader">Subencabezado del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_content">Contenido del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_filter_row">Fila del filtro del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_filter_chip">Elemento de filtro de memoria intermedia</string>
+    <string name="snygg__rule_element__clipboard_filter_chip_icon">Icono del filtro del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_filter_chip_text">Texto del chip del filtro del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_grid">Rejilla de portapapeles</string>
+    <string name="snygg__rule_element__clipboard_item">Ítem de portapapeles</string>
+    <string name="snygg__rule_element__clipboard_item_description">Descripción de objeto en el portapapeles</string>
+    <string name="snygg__rule_element__clipboard_item_popup">Ítem de portapapeles emergente</string>
+    <string name="snygg__rule_element__clipboard_item_timestamp">Fecha y hora del objeto en el portapapeles</string>
+    <string name="snygg__rule_element__clipboard_item_actions">Acciones de elemento del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_item_action">Acción de elemento del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_item_action_icon">Icono de acción de elemento del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_item_action_text">Texto de acción de elemento del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_clear_all_dialog">Diálogo de borrar todo del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_clear_all_dialog_message">Mensaje de diálogo de borrar todo del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_clear_all_dialog_buttons">Botones de diálogo de borrar todo del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_clear_all_dialog_button">Botón de diálogo de borrar todo del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_history_disabled_title">Título de historial deshabilitado del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_history_disabled_message">Mensaje de historial deshabilitado del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_history_disabled_button">Botón de historial deshabilitado del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_history_locked_title">Título de historial bloqueado del portapapeles</string>
+    <string name="snygg__rule_element__clipboard_history_locked_message">Mensaje de historial bloqueado del portapapeles</string>
+    <string name="snygg__rule_element__extracted_landscape_input_layout">Disposición de la entrada del paisaje</string>
+    <string name="snygg__rule_element__extracted_landscape_input_field">Campo de entrada en paisaje</string>
+    <string name="snygg__rule_element__extracted_landscape_input_action">Acción de entrada apaisada</string>
+    <string name="snygg__rule_element__glide_trail">Rastro del gesto</string>
+    <string name="snygg__rule_element__incognito_mode_indicator">Indicador de modo incógnito</string>
+    <string name="snygg__rule_element__inline_autofill_chip">Chip de autollenado en línea</string>
+    <string name="snygg__rule_element__media">Multimedia</string>
+    <string name="snygg__rule_element__media_emoji_subheader">Subencabezado de emoji multimedia</string>
+    <string name="snygg__rule_element__media_emoji_key">Tecla de emoji multimedia</string>
+    <string name="snygg__rule_element__media_emoji_key_popup_box">Caja emergente de la tecla de emoji multimedia</string>
+    <string name="snygg__rule_element__media_emoji_key_popup_element">Elemento emergente de la tecla de emoji multimedia</string>
+    <string name="snygg__rule_element__media_emoji_key_popup_extended_indicator">Indicador extendido emergente de la tecla de emoji multimedia</string>
+    <string name="snygg__rule_element__media_emoji_tab">Pestaña de emoji multimedia</string>
+    <string name="snygg__rule_element__media_bottom_row">Fila inferior multimedia</string>
+    <string name="snygg__rule_element__media_bottom_row_button">Botón de fila inferior multimedia</string>
+    <string name="snygg__rule_element__one_handed_panel">Panel a una mano</string>
+    <string name="snygg__rule_element__one_handed_panel_button">Botón de panel a una mano</string>
+    <string name="snygg__rule_element__smartbar">Barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_shared_actions_row">Fila de acciones compartidas de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_shared_actions_toggle">Alternar acciones compartidas de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_extended_actions_row">Fila de acciones extendidas de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_extended_actions_toggle">Alternar acciones extendidas de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_action_key">Tecla de acción de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_action_tile">Mosaico de acción de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_action_tile_icon">Icono de mosaico de acción de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_action_tile_text">Texto de mosaico de acción de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_actions_overflow">Acciones de overflow de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_actions_overflow_customize_button">Botón de personalización de overflow de acciones de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_actions_editor">Editor de acciones de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_actions_editor_header">Cabecera del editor de acciones de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_actions_editor_header_button">Botón de encabezado del editor de acciones de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_actions_editor_subheader">Subencabezado del editor de acciones de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_actions_editor_tile_grid">Cuadrícula del editor de acciones de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_actions_editor_tile">Mosaico del editor de acciones de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_candidates_row">Fila de candidatos de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_candidate_word">Palabra candidata de barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_candidate_word_text">Texto de palabra candidata de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_candidate_word_secondary_text">Texto secundario de palabra candidata de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_candidate_clip">Clip candidato de barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_candidate_clip_icon">Icono de clip candidato de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_candidate_clip_text">Texto de clip candidato de la barra inteligente</string>
+    <string name="snygg__rule_element__smartbar_candidate_spacer">Espaciado candidato de barra inteligente</string>
+    <string name="snygg__rule_element__subtype_panel">Panel subtipo</string>
+    <string name="snygg__rule_element__subtype_panel_header">Encabezado de panel subtipo</string>
+    <string name="snygg__rule_element__subtype_panel_list">Lista de panel subtipo</string>
+    <string name="snygg__rule_element__subtype_panel_list_item">Elemento de lista de panel subtipo</string>
+    <string name="snygg__rule_element__subtype_panel_list_item_icon_leading">Icono de elemento de lista de panel subtipo (importante)</string>
+    <string name="snygg__rule_element__subtype_panel_list_item_text">Texto de elemento de lista de panel subtipo</string>
+    <string name="snygg__rule_selector__pressed">Presionado</string>
+    <string name="snygg__rule_selector__focus">Focalizado</string>
+    <string name="snygg__rule_selector__hover">Flotar</string>
+    <string name="snygg__rule_selector__disabled">Deshabilitado</string>
+    <string name="snygg__property_name__background">Fondo</string>
+    <string name="snygg__property_name__foreground">Primer plano</string>
+    <string name="snygg__property_name__background_image">Imagen de fondo</string>
+    <string name="snygg__property_name__content_scale">Escala de contenido</string>
+    <string name="snygg__property_name__border_color">Color de borde</string>
+    <string name="snygg__property_name__border_style">Estilo de borde</string>
+    <string name="snygg__property_name__border_width">Ancho de borde</string>
+    <string name="snygg__property_name__font_family">Familia de fuente</string>
+    <string name="snygg__property_name__font_size">Tamaño de fuente</string>
+    <string name="snygg__property_name__font_style">Estilo de fuente</string>
+    <string name="snygg__property_name__font_weight">Ancho de fuente</string>
+    <string name="snygg__property_name__letter_spacing">Espaciado de letras</string>
+    <string name="snygg__property_name__line_height">Altura de la línea</string>
+    <string name="snygg__property_name__margin">Margen</string>
+    <string name="snygg__property_name__padding">Espaciado</string>
+    <string name="snygg__property_name__shadow_color">Color de sombra</string>
+    <string name="snygg__property_name__shadow_elevation">Elevación de sombra</string>
+    <string name="snygg__property_name__shape">Forma</string>
+    <string name="snygg__property_name__clip">Clip</string>
+    <string name="snygg__property_name__src">Fuente</string>
+    <string name="snygg__property_name__text_align">Alineado de texto</string>
+    <string name="snygg__property_name__text_decoration_line">Línea de decoración del texto</string>
+    <string name="snygg__property_name__text_max_lines">Líneas máximas del texto</string>
+    <string name="snygg__property_name__text_overflow">Desbordamiento de texto</string>
+    <string name="snygg__property_name__var_primary">Color principal</string>
+    <string name="snygg__property_name__var_primary_variant">Color principal (variante)</string>
+    <string name="snygg__property_name__var_secondary">Color secundario</string>
+    <string name="snygg__property_name__var_secondary_variant">Color secundario (variante)</string>
+    <string name="snygg__property_name__var_background">Fondo común</string>
+    <string name="snygg__property_name__var_surface">Superficie común</string>
+    <string name="snygg__property_name__var_surface_variant">Superficie común (variante)</string>
+    <string name="snygg__property_name__var_on_primary">Primer plano de principal</string>
+    <string name="snygg__property_name__var_on_secondary">Primer plano de secundario</string>
+    <string name="snygg__property_name__var_on_background">Primer plano de fondo</string>
+    <string name="snygg__property_name__var_on_surface">Primer plano de superficie</string>
+    <string name="snygg__property_name__var_on_surface_variant">Primer plano de superficie (variante)</string>
+    <string name="snygg__property_name__var_shape">Forma común</string>
+    <string name="snygg__property_name__var_shape_variant">Forma común (variante)</string>
+    <string name="snygg__property_value__explicit_inherit">Heredar</string>
+    <string name="snygg__property_value__defined_var">Referencia de Var</string>
+    <string name="snygg__property_value__yes">Sí</string>
+    <string name="snygg__property_value__no">No</string>
+    <string name="snygg__property_value__solid_color">Color sólido</string>
+    <string name="snygg__property_value__material_you_light_color">Color Material You (claro)</string>
+    <string name="snygg__property_value__material_you_dark_color">Color Material You (oscuro)</string>
+    <string name="snygg__property_value__font_family_generic">Familia de fuente (genérico)</string>
+    <string name="snygg__property_value__font_family_custom">Familia de fuente (personalizado)</string>
+    <string name="snygg__property_value__font_style">Estilo de fuente</string>
+    <string name="snygg__property_value__font_weight">Ancho de fuente</string>
+    <string name="snygg__property_value__padding">Espaciado o margen</string>
+    <string name="snygg__property_value__rectangle_shape">Forma rectangular</string>
+    <string name="snygg__property_value__circle_shape">Forma circular</string>
+    <string name="snygg__property_value__cut_corner_shape_dp">Forma de esquina recortada (dp)</string>
+    <string name="snygg__property_value__cut_corner_shape_percent">Forma de esquina recortada (%)</string>
+    <string name="snygg__property_value__rounded_corner_shape_dp">Forma de esquina redondeada (dp)</string>
+    <string name="snygg__property_value__rounded_corner_shape_percent">Forma de esquina redondeada (%)</string>
+    <string name="snygg__property_value__dp_size">Tamaño (dp)</string>
+    <string name="snygg__property_value__sp_size">Tamaño (sp)</string>
+    <string name="snygg__property_value__percentage_size">Tamaño (%)</string>
+    <string name="snygg__property_value__content_scale">Escala de contenido</string>
+    <string name="snygg__property_value__text_align">Alineado de texto</string>
+    <string name="snygg__property_value__text_decoration_line">Línea de decoración de texto</string>
+    <string name="snygg__property_value__text_max_lines">Líneas máximas de texto</string>
+    <string name="snygg__property_value__text_overflow">Desbordamiento de texto</string>
+    <string name="snygg__property_value__uri">Referencia URI</string>
+    <string name="settings__input_feedback__title" comment="Title of Input Feedback screen">Sonidos &amp; Vibración</string>
+    <string name="pref__input_feedback__group_audio__label" comment="Preference group title">Respuesta de audio / Sonidos</string>
+    <string name="pref__input_feedback__audio_enabled__label" comment="Preference title">Habilitar respuesta de audio</string>
+    <string name="pref__input_feedback__audio_enabled__summary_disabled" comment="Preference summary">No reproducir nunca sonidos para eventos de entrada, independientemente de la configuración del sistema</string>
+    <string name="pref__input_feedback__audio_volume__label" comment="Preference title">Volumen de sonido para eventos de entrada</string>
+    <string name="pref__input_feedback__audio_feat_key_press__label" comment="Preference title">Sonidos al presionar una tecla</string>
+    <string name="pref__input_feedback__audio_feat_key_long_press__label" comment="Preference title">Sonidos al presionar prolongadamente</string>
+    <string name="pref__input_feedback__audio_feat_key_repeated_action__label" comment="Preference title">Sonidos al presionar repetidamente</string>
+    <string name="pref__input_feedback__audio_feat_gesture_swipe__label" comment="Preference title">Sonidos de gestos deslizantes</string>
+    <string name="pref__input_feedback__audio_feat_gesture_moving_swipe__label" comment="Preference title">Sonidos de gestos deslizantes con movimiento</string>
+    <string name="pref__input_feedback__group_haptic__label" comment="Preference group title">Respuesta táctil / Vibración</string>
+    <string name="pref__input_feedback__haptic_enabled__label" comment="Preference title">Habilitar respuesta táctil</string>
+    <string name="pref__input_feedback__haptic_enabled__summary_disabled" comment="Preference summary">Nunca vibrar por eventos de entrada, independientemente de la configuración del sistema</string>
+    <string name="pref__input_feedback__haptic_vibration_mode__label" comment="Preference title">Modo de vibración</string>
+    <string name="pref__input_feedback__haptic_vibration_duration__label" comment="Preference title">Duración de vibración</string>
+    <string name="pref__input_feedback__haptic_vibration_strength__label" comment="Preference title">Intensidad de vibración</string>
+    <string name="pref__input_feedback__haptic_vibration_strength__summary_no_vibrator" comment="Preference summary">Esta función requiere de un motor de vibración, el cual al parecer no está presente en este dispositivo</string>
+    <string name="pref__input_feedback__haptic_vibration_strength__summary_no_amplitude_ctrl" comment="Preference summary">Esta función requiere soporte de control de amplitud de hardware, el cual falta en su dispositivo</string>
+    <string name="pref__input_feedback__haptic_feat_key_press__label" comment="Preference title">Vibración al presionar una tecla</string>
+    <string name="pref__input_feedback__haptic_feat_key_long_press__label" comment="Preference title">Vibración al presionar prolongadamente</string>
+    <string name="pref__input_feedback__haptic_feat_key_repeated_action__label" comment="Preference title">Vibración al presionar repetidamente</string>
+    <string name="pref__input_feedback__haptic_feat_gesture_swipe__label" comment="Preference title">Vibración de gestos deslizantes</string>
+    <string name="pref__input_feedback__haptic_feat_gesture_moving_swipe__label" comment="Preference title">Vibración de gestos deslizantes con movimiento</string>
+    <string name="pref__input_feedback__any_feat_key_press__summary" comment="Preference summary">ej. teclas, botones, pestañas de emojis</string>
+    <string name="pref__input_feedback__any_feat_key_long_press__summary" comment="Preference summary">ej. menú emergente</string>
+    <string name="pref__input_feedback__any_feat_key_repeated_action__summary" comment="Preference summary">ej. tecla borrar</string>
+    <string name="pref__input_feedback__any_feat_gesture_swipe__summary" comment="Preference summary">sin implemetar</string>
+    <string name="pref__input_feedback__any_feat_gesture_moving_swipe__summary" comment="Preference summary">ej. control de deslizamiento del cursor</string>
+    <string name="settings__keyboard__title" comment="Title of Keyboard preferences screen">Teclado</string>
+    <string name="pref__keyboard__number_row__label" comment="Preference title">Fila de números</string>
+    <string name="pref__keyboard__number_row__summary" comment="Preference summary">Mostrar fila de números en la parte superior del teclado</string>
+    <string name="pref__keyboard__hinted_number_row_mode__label" comment="Preference title">Fila de números sugeridos</string>
+    <string name="pref__keyboard__hinted_symbols_mode__label" comment="Preference title">Símbolos sugeridos</string>
+    <string name="pref__keyboard__utility_key_enabled__label" comment="Preference title">Mostrar teclas de utilidad</string>
+    <string name="pref__keyboard__utility_key_enabled__summary" comment="Preference summary">Muestra una tecla de utilidad configurable junto a la barra espaciadora</string>
+    <string name="pref__keyboard__utility_key_action__label" comment="Preference title">Acción de tecla de utilidad</string>
+    <string name="pref__keyboard__space_bar_mode__label" comment="Preference title">Etiqueta de la barra espaciadora</string>
+    <string name="pref__keyboard__capitalization_behavior__label" comment="Preference title">Comportamiento de las mayúsculas</string>
+    <string name="pref__keyboard__font_size_multiplier__label" comment="Preference title">Multiplicador del tamaño de fuente</string>
+    <string name="pref__keyboard__group_layout__label" comment="Preference group title">Distribución</string>
+    <string name="pref__keyboard__landscape_input_ui_mode__label" comment="Preference value">Entrada a pantalla completa horizontal</string>
+    <string name="pref__keyboard__group_keypress__label" comment="Preference group title">Presionar tecla</string>
+    <string name="pref__keyboard__popup_enabled__label" comment="Preference title">Visibilidad de las teclas emergentes</string>
+    <string name="pref__keyboard__popup_enabled__summary" comment="Preference summary">Mostrar emergente al pulsar una tecla</string>
+    <string name="pref__keyboard__merge_hint_popups_enabled__label" comment="Preference title">Acentos incluyen emergentes de símbolos</string>
+    <string name="pref__keyboard__merge_hint_popups_enabled__summary" comment="Preference summary">Añadir emergentes de símbolos al diseño predeterminado de acentos</string>
+    <string name="pref__keyboard__long_press_delay__label" comment="Preference title">Retardo de la pulsación larga</string>
+    <string name="pref__keyboard__space_bar_switches_to_characters__label" comment="Preference title">La barra espaciadora cambia a caracteres</string>
+    <string name="pref__keyboard__space_bar_switches_to_characters__summary" comment="Preference summary">Automáticamente regresa a los caracteres al estar en teclado numérico o de símbolos</string>
+    <string name="pref__keyboard__incognito_indicator__label" comment="Preference title">Indicador de incógnito</string>
+    <!-- Smartbar strings -->
+    <string name="settings__smartbar__title" comment="Title of Smartbar screen">Barra inteligente</string>
+    <string name="pref__smartbar__enabled__label" comment="Preference title">Barra inteligente</string>
+    <string name="pref__smartbar__enabled__summary" comment="Preference summary">Se mostrará en la parte superior del teclado</string>
+    <string name="pref__smartbar__layout__label" comment="Preference title">Distribución</string>
+    <string name="pref__smartbar__group_layout_specific__label" comment="Preference group title">Opciones específicas de distribución</string>
+    <string name="pref__smartbar__flip_toggles__label" comment="Preference title">Mover botones de filas</string>
+    <string name="pref__smartbar__flip_toggles__summary" comment="Preference summary">Mueve los botones de la fila de acción</string>
+    <string name="pref__smartbar__shared_actions_auto_expand_collapse__label" comment="Preference title">Expandir/contraer automáticamente</string>
+    <string name="pref__smartbar__shared_actions_auto_expand_collapse__summary" comment="Preference summary">Expande/contrae automáticamente la fila de acción según el estado actual</string>
+    <string name="pref__smartbar__extended_actions_placement__label" comment="Preference title">Ubicación de la fila de acción</string>
+    <!-- Typing strings -->
+    <string name="settings__typing__title" comment="Title of Typing screen">Escritura</string>
+    <string name="pref__suggestion__title" comment="Preference group title">Sugerencias</string>
+    <string name="pref__suggestion__enabled__label" comment="Preference title">Mostrar sugerencias</string>
+    <string name="pref__suggestion__enabled__summary" comment="Preference summary">Muestra sugerencias mientras escribe</string>
+    <string name="pref__suggestion__display_mode__label" comment="Preference title">Modo de visualización de sugerencias</string>
+    <string name="pref__suggestion__block_possibly_offensive__label" comment="Preference title">Bloquear posibles palabras ofensivas</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__summary" comment="Preference summary">Muestra sugerencias inline ofrecidas por servicios de autocompletado</string>
+    <string name="pref__suggestion__incognito_mode__label" comment="Label of Incognito mode preference in Typing">Modo incógnito</string>
+    <string name="pref__correction__title" comment="Preference group title">Correcciones</string>
+    <string name="pref__correction__auto_capitalization__label" comment="Preference title">Mayúsculas automáticas</string>
+    <string name="pref__correction__auto_capitalization__summary" comment="Preference summary">Poner en mayúsculas las palabras según el contexto de entrada actual</string>
+    <string name="pref__correction__auto_space_punctuation__label" comment="Preference title">Espacio automático en puntuación</string>
+    <string name="pref__correction__auto_space_punctuation__summary" comment="Preference summary">Insertar automáticamente un espacio después de un punto</string>
+    <string name="pref__correction__remember_caps_lock_state__label" comment="Preference title">Recordar bloqueo de mayúsculas</string>
+    <string name="pref__correction__remember_caps_lock_state__summary" comment="Preference summary">El bloqueo de las mayúsculas se mantendrá cuando se pase a otro campo de texto</string>
+    <string name="pref__correction__double_space_period__label" comment="Preference title">Punto y doble espacio</string>
+    <string name="pref__correction__double_space_period__summary" comment="Preference summary">Pulsar espacio dos veces para insertar un punto seguido de un espacio</string>
+    <string name="pref__spelling__title" comment="Preference group title">Ortografía</string>
+    <string name="pref__spelling__active_spellchecker__summary_disabled">Deshabilitado a nivel sistema. No se mostrarán líneas rojas en campos de texto con palabras incorrectas. Toque para cambiar.</string>
+    <string name="pref__spelling__active_spellchecker__summary_none">No se ha establecido ningún servicio de corrección ortográfica inline. Toque para cambiar.</string>
+    <string name="pref__spelling__language_mode__label" comment="Label of Language mode pref">Idiomas</string>
+    <string name="pref__spelling__use_contacts__label" comment="Label of Use contact list pref">Usar nombres de contactos</string>
+    <string name="pref__spelling__use_contacts__summary" comment="Summary of Use contact list pref">Usar nombres desde su lista de contactos</string>
+    <string name="pref__spelling__use_udm_entries__label" comment="Label of Use user dictionary entries pref">Utilizar entradas del diccionario de usuario</string>
+    <string name="pref__spelling__use_udm_entries__summary" comment="Summary of Use user dictionary entries pref">Usar entradas desde los diccionarios del usuario</string>
+    <string name="settings__dictionary__title" comment="Title of the User dictionaries screen">Diccionarios del usuario</string>
+    <string name="pref__dictionary__enable_system_user_dictionary__label" comment="Preference title">Habilitar diccionario personal del sistema</string>
+    <string name="pref__dictionary__enable_system_user_dictionary__summary" comment="Preference summary">Sugerir palabras almacenadas en el diccionario personal del sistema</string>
+    <string name="pref__dictionary__manage_system_user_dictionary__label" comment="Preference title">Administrar diccionario personal del sistema</string>
+    <string name="pref__dictionary__manage_system_user_dictionary__summary" comment="Preference summary">Añadir, ver y remover entradas para el diccionario personal del sistema</string>
+    <string name="pref__dictionary__enable_internal_user_dictionary__label" comment="Preference title">Habilitar diccionario personal interno</string>
+    <string name="pref__dictionary__enable_internal_user_dictionary__summary" comment="Preference summary">Sugerir palabras almacenadas en el diccionario personal interno</string>
+    <string name="pref__dictionary__manage_floris_user_dictionary__label" comment="Preference title">Administrar diccionario personal interno</string>
+    <string name="pref__dictionary__manage_floris_user_dictionary__summary" comment="Preference summary">Añadir, ver y remover entradas para el diccionario personal interno</string>
+    <string name="settings__udm__title_floris" comment="Title of the User Dictionary Manager activity for internal">Diccionario personal interno</string>
+    <string name="settings__udm__title_system" comment="Title of the User Dictionary Manager activity for system">Diccionario personal del sistema</string>
+    <string name="settings__udm__no_words_in_dictionary" comment="String to show if no words are present in the dictionary">Este diccionario de usuario no contiene ninguna palabra.</string>
+    <string name="settings__udm__word_summary_freq" comment="Summary label for a word entry. The decimal placeholder inserts the frequency for the word it summarizes.">Frecuencia: {freq}</string>
+    <string name="settings__udm__word_summary_freq_shortcut" comment="Summary label for a word entry. The first placeholder inserts the frequency for the word it summarizes, the second placeholder the shortcut defined.">Frecuencia: {freq} | Atajo: {shortcut}</string>
+    <string name="settings__udm__all_languages" comment="Label of the For all languages entry in the language list">Para todos los idiomas</string>
+    <string name="settings__udm__open_system_manager_ui" comment="Label of the Open system manager UI menu option">Abrir IU del administrador del sistema</string>
+    <string name="settings__udm__dictionary_import_success" comment="Message for dictionary import success">¡Diccionario personal importado satisfactoriamente!</string>
+    <string name="settings__udm__dictionary_export_success" comment="Message for dictionary export success">¡Diccionario personal exportado satisfactoriamente!</string>
+    <string name="settings__udm__dialog__title_add" comment="Label for the title (when in adding mode) in the user dictionary add/edit dialog">Añadir palabra</string>
+    <string name="settings__udm__dialog__title_edit" comment="Label for the title (when in editing mode) in the user dictionary add/edit dialog">Editar palabra</string>
+    <string name="settings__udm__dialog__word_label" comment="Label for the word in the user dictionary add/edit dialog">Palabra</string>
+    <string name="settings__udm__dialog__word_error_empty" comment="Error label for the word in the user dictionary add/edit dialog">Por favor ingrese una palabra</string>
+    <string name="settings__udm__dialog__word_error_invalid" comment="Error label for the word in the user dictionary add/edit dialog">Por favor ingrese una palabra que coincida con {regex}</string>
+    <string name="settings__udm__dialog__freq_label" comment="Label for the frequency in the user dictionary add/edit dialog. The two decimal placeholders are the minimum and maximum frequency, both inclusive.">Frecuencia (entre {f_min} y {f_max})</string>
+    <string name="settings__udm__dialog__freq_error_empty" comment="Error label for the frequency in the user dictionary add/edit dialog">Por favor ingrese un valor de frecuencia</string>
+    <string name="settings__udm__dialog__freq_error_invalid" comment="Error label for the frequency in the user dictionary add/edit dialog">Por favor ingrese un número válido dentro de los valores especificados</string>
+    <string name="settings__udm__dialog__shortcut_label" comment="Label for the shortcut in the user dictionary add/edit dialog">Atajo (opcional)</string>
+    <string name="settings__udm__dialog__shortcut_error_invalid" comment="Error label for the shortcut in the user dictionary add/edit dialog">Por favor ingrese un atajo que coincida con {regex}</string>
+    <string name="settings__udm__dialog__locale_label" comment="Label for the language code in the user dictionary add/edit dialog">Código del idioma (opcional)</string>
+    <string name="settings__udm__dialog__locale_error_invalid" comment="Error label for the language code in the user dictionary add/edit dialog">Este código de idioma no se ajusta a la sintaxis esperada. El código debe ser solo un idioma (como en), un idioma y país (como en_US) o un idioma, país y script (como en_US-script).</string>
+    <string name="settings__gestures__title" comment="Title of Gestures screen">Gestos y escritura deslizante</string>
+    <string name="pref__glide__title" comment="Preference group title">Escritura por gestos</string>
+    <string name="pref__glide__enabled__label" comment="Preference title">Escritura por gestos</string>
+    <string name="pref__glide__enabled__summary" comment="Preference summary">Escriba una palabra deslizando su dedo a través de las letras</string>
+    <string name="pref__glide__show_trail__label" comment="Preference title">Mostrar recorrido del gesto</string>
+    <string name="pref__glide__show_trail__summary" comment="Preference summary">Desaparecerá después de cada palabra</string>
+    <string name="pref__glide_trail_fade_duration">Tiempo de desvanecimiento del gesto</string>
+    <string name="pref__glide_preview_refresh_delay">Retraso de actualización de la vista previa</string>
+    <string name="pref__glide__show_preview">Mostrar recorrido del gesto</string>
+    <string name="pref__glide__immediate_backspace_deletes_word__label">Siempre borrar palabra</string>
+    <string name="pref__glide__immediate_backspace_deletes_word__summary">Al pulsar suprimir justo después de un deslizamiento, se borra toda la palabra</string>
+    <string name="pref__gestures__general_title" comment="Preference group title">Gestos generales</string>
+    <string name="pref__gestures__space_bar_title" comment="Preference group title">Gestos en la barra espaciadora</string>
+    <string name="pref__gestures__other_title" comment="Preference group title">Otros gestos / umbrales de gestos</string>
+    <string name="pref__gestures__swipe_up__label" comment="Preference title">Deslizar hacia arriba</string>
+    <string name="pref__gestures__swipe_down__label" comment="Preference title">Deslizar hacia abajo</string>
+    <string name="pref__gestures__swipe_left__label" comment="Preference title">Deslizar a la izquierda</string>
+    <string name="pref__gestures__swipe_right__label" comment="Preference title">Deslizar a la derecha</string>
+    <string name="pref__gestures__space_bar_swipe_up__label" comment="Preference title">Deslizar arriba en la barra espaciadora</string>
+    <string name="pref__gestures__space_bar_swipe_left__label" comment="Preference title">Deslizar a la izquierda en la barra espaciadora</string>
+    <string name="pref__gestures__space_bar_swipe_right__label" comment="Preference title">Deslizar a la derecha en la barra espaciadora</string>
+    <string name="pref__gestures__space_bar_long_press__label" comment="Preference title">Presionar por mucho tiempo la barra espaciadora</string>
+    <string name="pref__gestures__delete_key_swipe_left__label" comment="Preference title">Deslizar a la izquierda desde la tecla de borrar</string>
+    <string name="pref__gestures__delete_key_long_press__label" comment="Preference title">Pulsación larga de la tecla de borrado</string>
+    <string name="pref__gestures__swipe_velocity_threshold__label" comment="Preference title">Velocidad del deslizamiento</string>
+    <string name="pref__gestures__swipe_distance_threshold__label" comment="Preference title">Distancia del deslizamiento</string>
+    <string name="settings__other__title" comment="Title of Other settings">Otro</string>
+    <string name="pref__other__settings_theme__label" comment="Label of Settings theme preference in Other">Ajustes del tema</string>
+    <string name="pref__other__settings_theme__auto_amoled" comment="Possible value of Settings theme preference in Other">Predeterminado del sistema (AMOLED)</string>
+    <string name="pref__other__settings_theme__light" comment="Possible value of Settings theme preference in Other">Claro</string>
+    <string name="pref__other__settings_theme__dark" comment="Possible value of Settings theme preference in Other">Oscuro</string>
+    <string name="pref__other__settings_theme__amoled_dark" comment="Possible value of Settings theme preference in Other">AMOLED Oscuro</string>
+    <string name="pref__other__settings_accent_color__label" comment="Label of accent color preference in Other">Ajustes del color del énfasis
+    </string>
+    <string name="pref__other__settings_language__label" comment="Label of Settings language preference in Other">Ajustes del idioma</string>
+    <string name="pref__other__show_app_icon__label" comment="Label of Show app icon preference in Other">Mostrar el icono de la aplicación en el launcher</string>
+    <string name="pref__other__show_app_icon__summary_atleast_q" comment="Summary of Show app icon preference in Other for Android 10+">Siempre habilitado en Android 10 y superior debido a las restricciones del sistema</string>
+    <!-- About UI strings -->
+    <string name="about__title" comment="Title of About activity">Acerca de</string>
+    <string name="about__app_icon_content_description" comment="Content description of app icon in About">Icono de la aplicación de FlorisBoard</string>
+    <string name="about__view_licenses" comment="Label of View licenses button in About">Licencias de código abierto</string>
+    <string name="about__view_privacy_policy" comment="Label of View privacy policy button in About">Política de privacidad</string>
+    <string name="about__view_source_code" comment="Label of View source code button in About">Código fuente</string>
+    <string name="about__license__title" comment="Title of Open-source licenses dialog">Licencias de código abierto</string>
+    <string name="about__version__title" comment="Preference title">Versión</string>
+    <string name="about__version_copied__title" comment="Title of the toast for copying the version string">Versión copiada al portapapeles</string>
+    <string name="about__version_copied__error" comment="Title of the error toast for copying the version string">Algo salió mal: {error_message}</string>
+    <string name="about__changelog__title" comment="Preference title">Registro de cambios</string>
+    <string name="about__changelog__summary" comment="Preference summary">Qué hay de nuevo</string>
+    <string name="about__repository__title" comment="Preference title">Repositorio (GitHub)</string>
+    <string name="about__repository__summary" comment="Preference summary">Código fuente, discusiones, problemas e informaciones</string>
+    <string name="about__privacy_policy__title" comment="Preference title">Política de privacidad</string>
+    <string name="about__privacy_policy__summary" comment="Preference summary">La política de privacidad para este proyecto</string>
+    <string name="about__project_license__title" comment="Preference title">Licencia del proyecto</string>
+    <string name="about__project_license__summary" comment="Preference summary">FlorisBoard está licenciado bajo {license_name}</string>
+    <string name="about__project_license__error_license_text_failed" comment="Error text for license text loading failure">Error: Fallo al cargar texto de licencia.\n-&gt; Razón: {error_message}</string>
+    <string name="about__project_license__error_reason_asset_manager_null" comment="Error text if asset manager is null">La referencia del gestor de recursos es nula</string>
+    <string name="about__third_party_licenses__title" comment="Preference title">Licencias de terceros</string>
+    <string name="about__third_party_licenses__summary" comment="Preference summary">Licencias de las librerías de terceros incluidas en esta aplicación</string>
+    <!-- Setup UI strings -->
+    <string name="setup__title" comment="Title of Setup">¡Bienvenido/a!</string>
+    <string name="setup__intro_message" comment="Short intro message welcoming new users">¡Gracias por usar {app_name}! Esta configuración rápida lo guiará a través de los pasos necesarios para poder utilizar {app_name} en su dispositivo.</string>
+    <string name="setup__footer__privacy_policy" comment="Privacy policy label for URL">Política de privacidad</string>
+    <string name="setup__footer__repository" comment="Repository label for URL">Repositorio</string>
+    <string name="setup__enable_ime__title">Habilitar {app_name}</string>
+    <string name="setup__enable_ime__description">Android requiere que cada teclado personalizado esté habilitado separadamente antes de poder usarlo. Abra los ajustes de <i>Idiomas e introducción de texto</i> en Sistema y de ahí habilite \"{app_name}\".</string>
+    <string name="setup__enable_ime__open_settings_btn">Abrir ajustes del sistema</string>
+    <string name="setup__select_ime__title">Seleccionar {app_name}</string>
+    <string name="setup__select_ime__description">{app_name} está ahora habilitado en su sistema. ¡Para usarlo activamente cambie a {app_name} seleccionándolo en el diálogo del selector de entrada!</string>
+    <string name="setup__select_ime__switch_keyboard_btn">Cambiar teclado</string>
+    <string name="setup__grant_notification_permission__title">Permitir notificaciones de informes de errores</string>
+    <string name="setup__grant_notification_permission__description">A partir de Android 13+, las aplicaciones deben pedir permiso para
+        enviar notificaciones. En Florisboard, esto solo se utiliza para abrir una pantalla de informe de error en caso de error.
+        Este permiso puede cambiarse en cualquier momento en los ajustes del sistema.
+    </string>
+    <string name="setup__grant_notification_permission__btn">Conceder permiso</string>
+    <string name="setup__finish_up__title">Finalizar</string>
+    <string name="setup__finish_up__description_p1">{app_name} ahora está habilitado en su sistema y listo para ser personalizado.</string>
+    <string name="setup__finish_up__description_p2">Si encuentra algún problema, errores, fallos o sólo desea hacer alguna sugerencia, ¡revise el repositorio del proyecto en el menú de \"Acerca de\"!</string>
+    <string name="setup__finish_up__finish_btn">Empiece a personalizar</string>
+    <!-- Physical keyboard -->
+    <string name="physical_keyboard__title">Teclado físico</string>
+    <string name="physical_keyboard__system_settings__title">Configuración del teclado físico del sistema</string>
+    <string name="physical_keyboard__system_settings__summary">Distribuciones, atajos de teclado y teclas modificadoras</string>
+    <string name="physical_keyboard__system_settings__summary_not_attached">Solo disponible cuando el teclado está conectado</string>
+    <string name="physical_keyboard__show_on_screen_keyboard__title">Mostrar teclado en pantalla</string>
+    <string name="physical_keyboard__show_on_screen_keyboard__summary">Mostrar el teclado en pantalla mientras se utiliza el teclado físico</string>
+    <!-- Back up & Restore -->
+    <string name="backup_and_restore__title">Respaldar &amp; Restaurar</string>
+    <string name="backup_and_restore__back_up__title">Respaldar datos</string>
+    <string name="backup_and_restore__back_up__summary">Genera un fichero de respaldo con preferencias y personalizaciones</string>
+    <string name="backup_and_restore__back_up__destination">Seleccione el destino del respaldo</string>
+    <string name="backup_and_restore__back_up__destination_file_sys">Sistema de archivos local</string>
+    <string name="backup_and_restore__back_up__destination_share_intent">Aplicación de terceros a través del menú compartir</string>
+    <string name="backup_and_restore__back_up__files">Seleccionar que se respaldará</string>
+    <string name="backup_and_restore__back_up__files_jetpref_datastore">Preferencias</string>
+    <string name="backup_and_restore__back_up__files_ime_keyboard">Extensiones del teclado</string>
+    <string name="backup_and_restore__back_up__files_ime_spelling">Extensiones de corrección ortográfica / diccionarios</string>
+    <string name="backup_and_restore__back_up__files_ime_theme">Extensiones de temas</string>
+    <string name="backup_and_restore__back_up__files_clipboard_history">Historial del portapapeles</string>
+    <string name="backup_and_restore__back_up__files_clipboard_history__clipboard_text_items">Ítems de texto</string>
+    <string name="backup_and_restore__back_up__files_clipboard_history__clipboard_image_items">Imágenes</string>
+    <string name="backup_and_restore__back_up__files_clipboard_history__clipboard_video_items">Vídeos</string>
+    <string name="backup_and_restore__back_up__success">¡Fichero de respaldo exportado exitosamente!</string>
+    <string name="backup_and_restore__back_up__failure">Error al exportar fichero de respaldo: {error_message}</string>
+    <string name="backup_and_restore__restore__title">Restaurar datos</string>
+    <string name="backup_and_restore__restore__summary">Restaurar preferencias y personalizaciones desde un fichero de respaldo</string>
+    <string name="backup_and_restore__restore__files">Seleccionar qué se restaurará</string>
+    <string name="backup_and_restore__restore__metadata">Fichero de respaldo seleccionado</string>
+    <string name="backup_and_restore__restore__metadata_warn_different_version">Este fichero de respaldo fue generado en una versión distinta de la actual, la cual usualmente es compatible. Tenga en cuenta que errores menores pueden suceder o que algunas preferencias no se hayan transferido apropiadamente debido a diferencias en las características.</string>
+    <string name="backup_and_restore__restore__metadata_warn_different_vendor">Este fichero de respaldo fue generado por una aplicación de terceros que, por lo general, no es compatible. Se podría incurrir en pérdidas de datos, ¡restaure bajo su propio riesgo!</string>
+    <string name="backup_and_restore__restore__metadata_error_invalid_metadata">Este fichero de respaldo contiene metadatos no válidos. O bien ha sido corrompido o erróneamente modificado. Restaurar desde este fichero no es posible. Por favor, seleccione otro.</string>
+    <string name="backup_and_restore__restore__metadata_error_nothing_to_restore">Este fichero de respaldo no contiene ningún archivo para restaurar. Por favor, seleccione otro.</string>
+    <string name="backup_and_restore__restore__mode">Modo de restauración</string>
+    <string name="backup_and_restore__restore__mode_merge">Combinar con los datos actuales</string>
+    <string name="backup_and_restore__restore__mode_erase_and_overwrite">Borrar y sobrescribir los datos actuales</string>
+    <string name="backup_and_restore__restore__success">¡Datos restaurados exitosamente!</string>
+    <string name="backup_and_restore__restore__failure">Error al restaurar datos: {error_message}</string>
+    <!-- Crash Dialog strings -->
+    <string name="crash_dialog__title" comment="Title of crash dialog">Informe de errores de FlorisBoard</string>
+    <string name="crash_dialog__description" comment="Description of crash dialog">Lamentamos los inconvenientes, pero FlorisBoard se ha cerrado inesperadamente por un error.</string>
+    <string name="crash_dialog__report_instructions" comment="Issue tracker report instructions for the crash dialog. The %s placeholder is the name of the crash report template and always in English/LTR.">Si deseas reportar este fallo, primero comprueba si ya ha sido reportado en el Issue Tracker en GitHub.\nSi no, copie el log del error generado y abre un Issue. Usa la plantilla \"%s\" y rellenala con tu descripción, los pasos para reproducirlo, y pega el log generado al final. Esto ayudará a mejorar FlorisBoard y hacerlo más estable para todo el mundo. ¡Gracias!</string>
+    <string name="crash_dialog__copy_to_clipboard" comment="Label of Copy to clipboard button in crash dialog">Copiar al portapapeles del sistema</string>
+    <string name="crash_dialog__copy_to_clipboard_success" comment="Label of Copy to clipboard success message in crash dialog">Copiado al portapapeles del sistema</string>
+    <string name="crash_dialog__copy_to_clipboard_failure" comment="Label of Copy to clipboard failure message in crash dialog">No se puede copiar al portapapeles del sistema: Instancia del administrador de portapapeles no encontrada</string>
+    <string name="crash_dialog__open_issue_tracker" comment="Label of Open issue tracker button in crash dialog">Abrir issue tracker (github.com)</string>
+    <string name="crash_dialog__close" comment="Label of Close button in crash dialog">Cerrar</string>
+    <string name="crash_notification_channel__title" comment="Title of crash notification channel">Informes de errores de FlorisBoard</string>
+    <string name="crash_once_notification__title" comment="Title of the notification for a single crash">FlorisBoard ha dejado de funcionar…</string>
+    <string name="crash_once_notification__body" comment="Body of the notification for a single crash">Toca para ver detalles</string>
+    <string name="crash_multiple_notification__title" comment="Title of the notification for consecutive crashes">Parece que FlorisBoard ha dejado de funcionar repetidamente…</string>
+    <string name="crash_multiple_notification__body" comment="Body of the notification for consecutive crashes">Volviendo al teclado anterior para detener el bucle de cierre infinito. Toque para ver los detalles del error</string>
+    <!-- Clipboard strings -->
+    <string name="clipboard__header_title">Portapapeles</string>
+    <string name="clipboard__disabled__title">El historial del portapapeles está actualmente deshabilitado</string>
+    <string name="clipboard__disabled__message">El historial del portapapeles de {app_name} le permite almacenar y acceder a texto e imágenes que haya copiado, con la facultad de anclar, configurar borrado automático y definir un número máximo de elementos.</string>
+    <string name="clipboard__disabled__enable_button">Habilitar historial de portapapeles</string>
+    <string name="clipboard__empty__title">Su portapapeles está vacío</string>
+    <string name="clipboard__empty__message">Se mostrarán aquí los clips de texto e imágenes que haya copiado.</string>
+    <string name="clipboard__locked__title">Su portapapeles está bloqueado</string>
+    <string name="clipboard__locked__message">Para acceder al historial del portapapeles, por favor desbloquee su dispositivo.</string>
+    <string name="clipboard__group_pinned">Anclado</string>
+    <string name="clipboard__group_recent">Reciente</string>
+    <string name="clipboard__group_other">Otro</string>
+    <string name="clipboard__item_description_email">Correo electrónico</string>
+    <string name="clipboard__item_description_url">URL</string>
+    <string name="clipboard__item_description_phone">Teléfono</string>
+    <string name="clip__clear_history">Borrar historial</string>
+    <string name="clip__unpin_item">Desanclar</string>
+    <string name="clip__pin_item">Anclar</string>
+    <string name="clip__delete_item">Borrar</string>
+    <string name="clip__paste_item">Pegar</string>
+    <string name="clip__back_to_text_input">Volver a la entrada de texto</string>
+    <string name="clip__cant_paste">Esta aplicación no permite pegar el contenido.</string>
+    <string name="clipboard__cleared_primary_clip">Clip principal borrado</string>
+    <string name="clipboard__cleared_history">Historial borrado</string>
+    <string name="clipboard__cleared_full_history">Historial completo borrado</string>
+    <string name="clipboard__confirm_clear_unfiltered_history__message">¿Estás seguro de que quieres borrar todo el historial del portapapeles? Esto afectará a todos los elementos, excepto los fijados.</string>
+    <string name="clipboard__confirm_clear_filtered_history__message">¿Estás seguro de que quieres borrar el historial del portapapeles? Esto afectará a todos los elementos filtrados actualmente, excepto los fijados.</string>
+    <string name="settings__clipboard__title">Portapapeles</string>
+    <string name="pref__clipboard__use_internal_clipboard__label">Usar portapapeles interno</string>
+    <string name="pref__clipboard__use_internal_clipboard__summary">Usar portapapeles interno en vez del portapapeles del sistema</string>
+    <string name="pref__clipboard__sync_from_system_clipboard__label">Sincronizar portapapeles del sistema</string>
+    <string name="pref__clipboard__sync_to_system_clipboard__label">Sincronizar al portapapeles del sistema</string>
+    <string name="pref__clipboard__group_clipboard_suggestion__label">Sugerencias del portapapeles</string>
+    <string name="pref__clipboard__suggestion_enabled__label" comment="Preference title">Sugerencias del contenido del portapapeles</string>
+    <string name="pref__clipboard__suggestion_enabled__summary" comment="Preference summary">Sugerir contenido del portapapeles copiado anteriormente</string>
+    <string name="pref__clipboard__num_history_grid_columns__label">Número de columnas de la cuadrícula</string>
+    <string name="pref__clipboard__suggestion_timeout__label" comment="Preference title; Translators: This should form a sentence together with `pref__clipboard__suggestion_timeout__summary` and is the first part">Limitar las sugerencias del portapapeles a</string>
+    <string name="pref__clipboard__suggestion_timeout__summary" comment="Preference summary; Translators: This should form a sentence together with `pref__clipboard__suggestion_timeout__label` and is the second part">Elementos copiados en los últimos {v} s</string>
+    <string name="pref__clipboard__group_clipboard_history__label">Historial del portapapeles</string>
+    <string name="pref__clipboard__enable_clipboard_history__label">Habilitar historial de portapapeles</string>
+    <string name="pref__clipboard__enable_clipboard_history__summary">Conservar elementos del portapapeles para acceso rápido</string>
+    <string name="pref__clipboard__clean_up_old__label">Limpiar ítems antiguos</string>
+    <string name="pref__clipboard__clean_up_after__label">Limpiar ítems antiguos después de</string>
+    <string name="pref__clipboard__auto_clean_sensitive__label">Limpiar automáticamente elementos sensibles</string>
+    <string name="pref__clipboard__auto_clean_sensitive_after__label">Limpiar automáticamente elementos sensibles después de</string>
+    <string name="pref__clipboard__limit_history_size__label">Limite de tamaño del historial</string>
+    <string name="pref__clipboard__max_history_size__label">Tamaño máximo del historial</string>
+    <string name="pref__clipboard__history_hide_on_paste__label">Ocultar el historial al pegar</string>
+    <string name="pref__clipboard__history_hide_on_next_text_field__label">Ocultar historial en el siguiente campo de texto</string>
+    <string name="pref__clipboard__clear_primary_clip_affects_history_if_unpinned__label">Eliminar el clip primario afecta al historial</string>
+    <string name="pref__clipboard__clear_primary_clip_affects_history_if_unpinned__summary">Eliminar el clip principal también lo quita del historial, si no está fijado</string>
+    <string name="send_to_clipboard__unknown_error">Ha ocurrido un error desconocido. Por favor, vuelve a intentarlo.</string>
+    <string name="send_to_clipboard__type_not_supported_error">Este tipo de medio no está soportado.</string>
+    <string name="send_to_clipboard__description__copied_image_to_clipboard">Imagen copiada en el portapapeles.</string>
+    <!-- Devtools strings -->
+    <string name="devtools__title" comment="Title of Devtools screen. Translators: treat this string as 'Developer tools' for translation, except a similar short term is available for your language.">Herramientas de desarrollo</string>
+    <string name="devtools__enabled__label" comment="Label of Enable developer tools in Devtools">Habilitar herramientas de desarrollador</string>
+    <string name="devtools__enabled__summary" comment="Summary of Enable developer tools in Devtools">Herramientas diseñadas específicamente para depurar y detectar problemas</string>
+    <string name="devtools__show_primary_clip__label" comment="Label of Show primary clip in Devtools">Mostrar clip principal</string>
+    <string name="devtools__show_primary_clip__summary" comment="Summary of Show primary clip in Devtools">Superpone el clip principal actual del portapapeles</string>
+    <string name="devtools__show_input_state_overlay__label" comment="Label of Show input cache overlay in Devtools">Mostrar la superposición del estado de la entrada</string>
+    <string name="devtools__show_input_state_overlay__summary" comment="Summary of Show input cache overlay in Devtools">Superpone el estado actual de la entrada para la depuración</string>
+    <string name="devtools__show_spelling_overlay__label" comment="Label of Show spelling overlay in Devtools">Mostrar superposición ortográfica</string>
+    <string name="devtools__show_spelling_overlay__summary" comment="Summary of Show spelling overlay in Devtools">Superpone los resultados ortográficos actuales para depuración</string>
+    <string name="devtools__show_inline_autofill_overlay__label">Superponer autocompletar en la línea</string>
+    <string name="devtools__show_inline_autofill_overlay__summary">Superpone los resultados actuales de autocompletar en línea para la depuración</string>
+    <string name="devtools__show_key_touch_boundaries__label" comment="Label of Show key touch boundaries in Devtools">Mostrar límites de toque de teclas</string>
+    <string name="devtools__show_key_touch_boundaries__summary" comment="Summary of Show key touch boundaries in Devtools">Resalte en rojo los límites de los toques clave</string>
+    <string name="devtools__show_drag_and_drop_helpers__label" comment="Label of Show drag and drop helpers in Devtools">Mostrar ayudas para arrastrar &amp; soltar</string>
+    <string name="devtools__show_drag_and_drop_helpers__summary" comment="Summary of Show drag and drop helpers in Devtools">Renderiza los ayudantes, que de otro modo serían invisibles, en las pantallas de arrastrar &amp; soltar para la depuración</string>
+    <string name="devtools__clear_udm_internal_database__label" comment="Label of Clear internal user dictionary database in Devtools">Borrar base de datos del diccionario interno</string>
+    <string name="devtools__clear_udm_internal_database__summary" comment="Summary of Clear internal user dictionary database in Devtools">Borrar todas las palabras de la tabla de base de datos del diccionario</string>
+    <string name="devtools__reset_quick_actions_to_default__label">Restablecer acciones rápidas de la Smartbar</string>
+    <string name="devtools__reset_quick_actions_to_default__summary">Restablecer la disposición por defecto de las acciones rápidas de la Smartbar</string>
+    <string name="devtools__reset_quick_actions_to_default__toast_success">Las acciones rápidas de la Smartbar se restablecieron correctamente a su valor predeterminado</string>
+    <string name="devtools__reset_flag__label" comment="Label of Reset flag preferences in Devtools">Restablecer flag \"{flag_name}\"</string>
+    <string name="devtools__reset_flag_is_ime_set_up__summary" comment="Summary of Reset is IME set up flag in Devtools">Acción de depuración para mostrar nuevamente la pantalla de configuración</string>
+    <string name="devtools__test_crash_report__label" comment="Label of Test Crash Report in Devtools">Probar pantalla de reporte de fallos</string>
+    <string name="devtools__test_crash_report__summary" comment="Summary of Test Crash Report in Devtools">Acción de depuración para producir un fallo intencionalmente</string>
+    <string name="devtools__group_android__title" comment="Title of Android group in Devtools">Herramientas del sistema Android</string>
+    <string name="devtools__android_settings_global__title" comment="Title of Android settings (global) screen">Ajustes Global de Android</string>
+    <string name="devtools__android_settings_secure__title" comment="Title of Android settings (secure) screen">Ajustes Secure de Android</string>
+    <string name="devtools__android_settings_system__title" comment="Title of Android settings (system) screen">Ajustes System de Android</string>
+    <string name="devtools__android_locales__title" comment="Title of Android locales screen">Regiones del sistema</string>
+    <string name="devtools__debuglog__title">Registro de depuración</string>
+    <string name="devtools__debuglog__copied_to_clipboard">Registro de depuración copiado en el portapapeles</string>
+    <string name="devtools__debuglog__copy_log">Copiar registro</string>
+    <string name="devtools__debuglog__copy_for_github">Copiar registro (formato GitHub)</string>
+    <string name="devtools__debuglog__loading">Cargando…</string>
+    <!-- Extension strings -->
+    <string name="ext__home__title">Complementos y ampliaciones</string>
+    <string name="ext__list__ext_theme">Ampliaciones del tema</string>
+    <string name="ext__list__ext_keyboard">Ampliaciones de teclado</string>
+    <string name="ext__list__ext_languagepack">Ampliaciones del paquete de idiomas</string>
+    <string name="ext__meta__authors">Autores</string>
+    <string name="ext__meta__components">Componentes agrupados</string>
+    <string name="ext__meta__components_theme">Temas agrupados</string>
+    <string name="ext__meta__components_language_pack">Paquetes de idiomas incluidos</string>
+    <string name="ext__meta__components_none_found">Esta extensión de fichero no contiene ningún componente agrupado.</string>
+    <string name="ext__meta__description">Descripción</string>
+    <string name="ext__meta__homepage">Página de inicio</string>
+    <string name="ext__meta__id">ID</string>
+    <string name="ext__meta__issue_tracker">Rastreador de problemas</string>
+    <string name="ext__meta__keywords">Palabras Clave</string>
+    <string name="ext__meta__label">Etiqueta</string>
+    <string name="ext__meta__license">Licencia</string>
+    <string name="ext__meta__maintainers">Mantenedores</string>
+    <string name="ext__meta__maintainers_by">Por: {maintainers}</string>
+    <string name="ext__meta__title">Título</string>
+    <string name="ext__meta__version">Versión</string>
+    <string name="ext__error__not_found_title">Extensión no encontrada</string>
+    <string name="ext__error__not_found_description">Ninguna extensión con el ID \"{id}\" pudo ser encontrada.</string>
+    <string name="ext__editor__title_create_any">Crear extensión</string>
+    <string name="ext__editor__title_create_keyboard">Crear extensión de teclado</string>
+    <string name="ext__editor__title_create_theme">Crear extensión de tema</string>
+    <string name="ext__editor__title_edit_any">Editar extensión</string>
+    <string name="ext__editor__title_edit_keyboard">Editar extensión de teclado</string>
+    <string name="ext__editor__title_edit_theme">Editar extensión de tema</string>
+    <string name="ext__editor__metadata__title">Administrar metadatos</string>
+    <string name="ext__editor__metadata__title_invalid">Metadatos no válidos</string>
+    <string name="ext__editor__metadata__message_invalid">Los metadatos para esta extensión no son válidos, ¡por favor verifique el editor de metadatos para más detalles!</string>
+    <string name="ext__editor__dependencies__title">Administrar dependencias</string>
+    <string name="ext__editor__files__title">Administrar ficheros de archivos</string>
+    <string name="ext__editor__files__type_fonts">Tipo de letra</string>
+    <string name="ext__editor__files__type_images">Imágenes</string>
+    <string name="ext__editor__create_component__title">Crear componente</string>
+    <string name="ext__editor__create_component__title_theme">Crear tema</string>
+    <string name="ext__editor__create_component__from_empty">Vacío</string>
+    <string name="ext__editor__create_component__from_existing">De existente</string>
+    <string name="ext__editor__create_component__from_empty_warning">Crear y configurar un componente vacío puede ser difícil si eres nuevo en {app_name} o si no estás familiarizado con los detalles. Considere la posibilidad de copiar un componente existente y modificarlo a su gusto si ese es el caso.</string>
+    <string name="ext__editor__edit_component__title">Editar componente</string>
+    <string name="ext__editor__edit_component__title_theme">Editar componente de tema</string>
+    <string name="ext__export__success">¡Extensión exportada exitosamente!</string>
+    <string name="ext__export__failure">Error al exportar extensión: {error_message}</string>
+    <string name="ext__import__success">¡Extensión importada exitosamente!</string>
+    <string name="ext__import__failure">Error al importar extensión: {error_message}</string>
+    <string name="ext__import__ext_any" comment="Title of Importer screen for import of any supported FlorisBoard extension">Importar extensión</string>
+    <string name="ext__import__ext_keyboard" comment="Title of Importer screen for keyboard extension import">Importar extensión de teclado</string>
+    <string name="ext__import__ext_theme" comment="Title of Importer screen for theme extension import">Importar extensión de tema</string>
+    <string name="ext__import__ext_languagepack" comment="Title of Importer screen for language pack extension import">Importar extensión de paquete de idioma</string>
+    <string name="ext__import__file_skip" comment="Label when a file cannot be imported in the current context. The actual reason string is in a separate text view below this string.">El archivo no puede ser importado. Razón:</string>
+    <string name="ext__import__file_skip_unsupported" comment="Reason string when file is unsupported">Tipo de archivo no soportado o irreconocible.</string>
+    <string name="ext__import__file_skip_ext_core" comment="Reason string when ext has core extension ID">No se ha podido reemplazar o actualizar los paquetes de extensión por defecto provistos con los recursos base de la aplicación. Considere actualizar la aplicación si desea usar una nueva versión de un paquete de extensión base.</string>
+    <string name="ext__import__file_skip_ext_corrupted" comment="Reason string when file seems to be ext but is corrupted">El archivo parece ser un fichero de extensión pero el análisis de los datos del fichero falló. O bien el fichero está dañado o este archivo no es una extensión en absoluto.</string>
+    <string name="ext__import__file_skip_ext_incorrect_type" comment="Reason string when file is of incorrect extension serial type">Se esperaba un fichero de extensión con tipo de serie \"{expected_serial_type}\" pero resultó ser \"{actual_serial_type}\".</string>
+    <string name="ext__import__file_skip_ext_not_supported" comment="Reason string when file is loaded in incorrect context">Se esperaba un archivo de medios (imagen, audio, fuente, etc.) pero se encontró un fichero de extensión.</string>
+    <string name="ext__import__file_skip_media_not_supported" comment="Reason string when file is loaded in incorrect context">Se esperaba un fichero de extensión pero se encontró un archivo de medios (imagen, audio, fuente, etc.).</string>
+    <string name="ext__import__error_unexpected_exception" comment="Label when an error occurred during import. The error message will be appended below this text view">Ha ocurrido un error inesperado durante la importación. Se proporcionaron los siguientes detalles:</string>
+    <string name="ext__validation__enter_package_name">Por favor, introduzca el nombre del paquete</string>
+    <string name="ext__validation__error_package_name">El nombre del paquete no coincide con la expresión regular {id_regex}</string>
+    <string name="ext__validation__enter_version">Por favor, introduzca una versión</string>
+    <string name="ext__validation__enter_title">Por favor, introduzca un título</string>
+    <string name="ext__validation__enter_maintainer">Por favor, ingrese al menos un administrador válido</string>
+    <string name="ext__validation__enter_license">Por favor, introduzca un identificador de licencia</string>
+    <string name="ext__validation__enter_component_id">Por favor, introduzca un identificador de componente</string>
+    <string name="ext__validation__error_component_id">Por favor, introduzca un identificador de componente que coincida con {component_id_regex}</string>
+    <string name="ext__validation__enter_component_label">Por favor, introduzca una etiqueta de componente</string>
+    <string name="ext__validation__hint_component_label_to_long">La etiqueta de tu componente es muy larga, lo que podría ocasionar que se vea cortada en la interfaz</string>
+    <string name="ext__validation__error_author">Por favor, introduzca al menos un autor válido</string>
+    <string name="ext__validation__error_stylesheet_path_blank">La ruta de la hoja de estilo no puede estar vacía</string>
+    <string name="ext__validation__error_stylesheet_path">Por favor, introduzca un directorio válido a la hoja de estilos, que coincida con {stylesheet_path_regex}</string>
+    <string name="ext__validation__enter_property">Por favor, introduzca un nombre de variable</string>
+    <string name="ext__validation__error_property">Por favor, introduzca un nombre de variable que coincida con {variable_name_regex}</string>
+    <string name="ext__validation__enter_color">Por favor, introduzca una cadena de color</string>
+    <string name="ext__validation__error_color">Por favor, introduzca una cadena de color válida</string>
+    <string name="ext__validation__enter_dp_size">Por favor, introduzca un tamaño dp</string>
+    <string name="ext__validation__enter_valid_number">Por favor, introduce un número válido</string>
+    <string name="ext__validation__enter_positive_number">Por favor, introduce un número positivo (&gt;=0)</string>
+    <string name="ext__validation__enter_percent_size">Por favor, introduce un porcentaje</string>
+    <string name="ext__validation__enter_number_between_0_100">Por favor, introduce un número entre 0 y 100</string>
+    <string name="ext__validation__hint_value_above_50_percent">Cualquier valor superior al 50% se comportará como si fuese el 50%, considere la posibilidad de disminuir el porcentaje</string>
+    <string name="ext__update_box__internet_permission_hint">Ya que esta aplicación no tiene permisos para acceder a Internet, las actualizaciones de las extensiones instaladas deben verificarse manualmente.</string>
+    <string name="ext__update_box__search_for_updates">Buscar actualizaciones</string>
+    <string name="ext__addon_management_box__managing_placeholder">Gestionando {extensions}</string>
+    <string name="ext__addon_management_box__addon_manager_info">Todas las tareas relacionadas con la importación, exportación, creación, personalización y eliminación de extensiones pueden ser manejadas a través del administrador de complementos centralizado.</string>
+    <string name="ext__addon_management_box__go_to_page">Ir a {ext_home_title}</string>
+    <string name="ext__home__info">Puede descargar e instalar extensiones de la tienda FlorisBoard Addons o importar cualquier archivo de extensión que haya descargado de internet.</string>
+    <string name="ext__home__visit_store">Visita la tienda de complementos</string>
+    <string name="ext__home__manage_extensions">Administrar las extensiones instaladas</string>
+    <string name="ext__list__view_details">Ver detalles</string>
+    <string name="ext__check_updates__title">Verificar actualizaciones</string>
+    <!-- Action strings -->
+    <string name="action__add">Añadir</string>
+    <string name="action__apply">Aplicar</string>
+    <string name="action__back_up">Respaldar</string>
+    <string name="action__cancel">Cancelar</string>
+    <string name="action__create">Crear</string>
+    <string name="action__default">Por defecto</string>
+    <string name="action__delete">Eliminar</string>
+    <string name="action__delete_confirm_title">Confirmar borrado</string>
+    <string name="action__delete_confirm_message">¿Está seguro de querer borrar \"{name}\"? Esta acción no se puede deshacer una vez realizada.</string>
+    <string name="action__reset_confirm_title">Confirme el reinicio</string>
+    <string name="action__reset_confirm_message">¿Estás seguro de que quieres restablecer \"{name}\"? Esta acción no se puede deshacer una vez ejecutada.</string>
+    <string name="action__discard">Descartar</string>
+    <string name="action__discard_confirm_title">Cambios sin guardar</string>
+    <string name="action__discard_confirm_message">¿Está seguro de que desea descartar los cambios no guardados? Esta acción no se puede deshacer una vez ejecutada.</string>
+    <string name="action__edit">Editar</string>
+    <string name="action__export">Exportar</string>
+    <string name="action__export_file">Importar archivo</string>
+    <string name="action__export_files">Importar archivos</string>
+    <string name="action__import">Importar</string>
+    <string name="action__import_file">Importar archivo</string>
+    <string name="action__import_files">Importar archivos</string>
+    <string name="action__no">No</string>
+    <string name="action__ok">OK</string>
+    <string name="action__restore">Restaurar</string>
+    <string name="action__save">Guardar</string>
+    <string name="action__select">Seleccionar</string>
+    <string name="action__select_dir">Seleccionar carpeta</string>
+    <string name="action__select_dirs">Seleccionar carpetas</string>
+    <string name="action__select_file">Seleccionar archivo</string>
+    <string name="action__select_files">Seleccionar archivos</string>
+    <string name="action__yes">Si</string>
+    <!-- Error strings (generic) -->
+    <string name="error__title">Error</string>
+    <string name="error__details">Detalles</string>
+    <string name="error__invalid">Inválido</string>
+    <string name="error__snackbar_message">Algo salió mal</string>
+    <string name="error__snackbar_message_template">Algo salió mal: {error_message}</string>
+    <!-- General strings -->
+    <string name="general__example_given" comment="This string is used where an example will be inserted in the {example} block. When translating, use the abbreviation used in your language for 'example given'.">ej. {example}</string>
+    <string name="general__no_browser_app_found_for_url">No se ha encontrado ninguna aplicación de navegador para manejar la URL {url}</string>
+    <string name="general__select_dropdown_value_placeholder">&#45; seleccionar &#45;</string>
+    <string name="general__unlimited">Sin límite</string>
+    <string name="general__file_name">Nombre del archivo</string>
+    <string name="general__properties">Propiedades</string>
+    <string name="general__auto" comment="Generic shorthand for 'Automatic' value">Auto</string>
+    <!-- Screen orientation strings -->
+    <string name="screen_orientation__portrait">Retrato</string>
+    <string name="screen_orientation__landscape">Paisaje</string>
+    <string name="screen_orientation__vertical">Vertical</string>
+    <string name="screen_orientation__horizontal">Horizontal</string>
+    <!-- State strings -->
+    <string name="state__disabled">Deshabilitado</string>
+    <string name="state__enabled">Habilitado</string>
+    <string name="state__no_dir_selected">Ningún directorio seleccionado</string>
+    <string name="state__no_dirs_selected">No hay directorios seleccionados</string>
+    <string name="state__no_file_selected">Ningún archivo seleccionado</string>
+    <string name="state__no_files_selected">No hay archivos seleccionados</string>
+    <!-- Enum label and description strings -->
+    <string name="enum__candidates_display_mode__classic" comment="Enum value label">Clásico (3 columnas)</string>
+    <string name="enum__candidates_display_mode__dynamic" comment="Enum value label">Ancho dinámico</string>
+    <string name="enum__candidates_display_mode__dynamic_scrollable" comment="Enum value label">Ancho dinámico &amp; desplazable</string>
+    <string name="enum__capitalization_behavior__capslock_by_double_tap" comment="Enum value label">Permitr Bloq May haciendo doble toque en mayúscula</string>
+    <string name="enum__capitalization_behavior__capslock_by_cycle" comment="Enum value label">Cambiar modo de capitalización cada vez que se pulsa la tecla Mayús</string>
+    <string name="enum__clipboard_sync_behavior__no_events" comment="Enum value label">Sin eventos</string>
+    <string name="enum__clipboard_sync_behavior__no_events__description" comment="Enum value description">No se sincronizan eventos en esta dirección. En este modo, la sincronización excluye el contenido del texto.</string>
+    <string name="enum__clipboard_sync_behavior__only_clear_events" comment="Enum value label">Limpiar solo los eventos</string>
+    <string name="enum__clipboard_sync_behavior__only_clear_events__description" comment="Enum value description">Solo se sincronizan en esta dirección los datos del clip de borrado de eventos. En este modo, sync excluye el contenido de texto.</string>
+    <string name="enum__clipboard_sync_behavior__only_set_events" comment="Enum value label">Fijar solo los eventos</string>
+    <string name="enum__clipboard_sync_behavior__only_set_events__description" comment="Enum value description">Solo los datos del clip de configuración de los eventos se sincronizan en esta dirección. En este modo, la sincronización incluye el contenido del texto.</string>
+    <string name="enum__clipboard_sync_behavior__all_events" comment="Enum value label">Todos los eventos</string>
+    <string name="enum__clipboard_sync_behavior__all_events__description" comment="Enum value description">Tanto la configuración de los eventos como el borrado de los datos del clip se sincronizan en esta dirección. En este modo, sync incluye el contenido del texto.</string>
+    <string name="enum__color_representation__hex" comment="Enum value label">Hexadecimal</string>
+    <string name="enum__color_representation__rgb" comment="Enum value label">Rojo Verde Azul</string>
+    <string name="enum__color_representation__hsv" comment="Enum value label">Tono Saturación Valor</string>
+    <string name="enum__display_kbd_after_dialogs__always" comment="Enum value label">Mostrar siempre</string>
+    <string name="enum__display_kbd_after_dialogs__always__description" comment="Enum value description">Mostrar siempre el teclado al cerrar un editor de diálogo</string>
+    <string name="enum__display_kbd_after_dialogs__never" comment="Enum value label">No mostrar nunca</string>
+    <string name="enum__display_kbd_after_dialogs__never__description" comment="Enum value description">No mostrar el teclado al cerrar un editor de diálogo</string>
+    <string name="enum__display_kbd_after_dialogs__remember" comment="Enum value label">Recordar último estado</string>
+    <string name="enum__display_kbd_after_dialogs__remember__description" comment="Enum value description">Mostrar el teclado al cerrar un editor de diálogo si había sido mostrado anteriormente</string>
+    <string name="enum__display_language_names_in__system_locale" comment="Enum value label">Región de sistema</string>
+    <string name="enum__display_language_names_in__system_locale__description" comment="Enum value description">Los nombres de los idiomas en la aplicación y el teclado se muestran en la configuración regional establecida para todo el dispositivo</string>
+    <string name="enum__display_language_names_in__native_locale" comment="Enum value label">Región nativa</string>
+    <string name="enum__display_language_names_in__native_locale__description" comment="Enum value description">Los nombres de los idiomas en la aplicación y la interfaz de usuario del teclado se muestran en la configuración regional a la que se refieren</string>
+    <string name="enum__emoji_history_update_strategy__auto_sort_prepend" comment="Enum value label">Ordenar automáticamente (anteponer)</string>
+    <string name="enum__emoji_history_update_strategy__auto_sort_prepend__description" comment="Enum value description">Reordena automáticamente los emoticonos según su uso. Se añaden nuevos emoticonos al inicio.</string>
+    <string name="enum__emoji_history_update_strategy__auto_sort_append" comment="Enum value label">Ordenar automáticamente (anexar)</string>
+    <string name="enum__emoji_history_update_strategy__auto_sort_append__description" comment="Enum value description">Reordena automáticamente los emoticonos según su uso. Los nuevos emoticonos se añaden al final.</string>
+    <string name="enum__emoji_history_update_strategy__manual_sort_prepend" comment="Enum value label">Ordenar manualmente (anteponer)</string>
+    <string name="enum__emoji_history_update_strategy__manual_sort_prepend__description" comment="Enum value description">No reordenar automáticamente los emoticonos según se usan. Los nuevos emoticonos se añaden al principio.</string>
+    <string name="enum__emoji_history_update_strategy__manual_sort_append" comment="Enum value label">Ordenar manualmente (anexar)</string>
+    <string name="enum__emoji_history_update_strategy__manual_sort_append__description" comment="Enum value description">No reordenar automáticamente los emoticonos según se usan. Los nuevos emoticonos se añaden al final.</string>
+    <string name="enum__emoji_skin_tone__default" comment="Enum value label">{emoji} Tono de piel predeterminado</string>
+    <string name="enum__emoji_skin_tone__light_skin_tone" comment="Enum value label">{emoji} Piel clara</string>
+    <string name="enum__emoji_skin_tone__medium_light_skin_tone" comment="Enum value label">{emoji} Piel clara intermedia</string>
+    <string name="enum__emoji_skin_tone__medium_skin_tone" comment="Enum value label">{emoji} Piel intermedia</string>
+    <string name="enum__emoji_skin_tone__medium_dark_skin_tone" comment="Enum value label">{emoji} Piel oscura intermedia</string>
+    <string name="enum__emoji_skin_tone__dark_skin_tone" comment="Enum value label">{emoji} Piel oscura</string>
+    <string name="enum__emoji_hair_style__default" comment="Enum value label">{emoji} Cabello predeterminado</string>
+    <string name="enum__emoji_hair_style__red_hair" comment="Enum value label">{emoji} Cabello rojizo</string>
+    <string name="enum__emoji_hair_style__curly_hair" comment="Enum value label">{emoji} Cabello rizado</string>
+    <string name="enum__emoji_hair_style__white_hair" comment="Enum value label">{emoji} Cabello blanco</string>
+    <string name="enum__emoji_hair_style__bald" comment="Enum value label">{emoji} Calvo</string>
+    <string name="enum__emoji_suggestion_type__leading_colon">Los dos puntos</string>
+    <string name="enum__emoji_suggestion_type__leading_colon__description" comment="Keep the :emoji_name while translating, this is a syntax guide">Sugerir emoticonos utilizando :emoji_name</string>
+    <string name="enum__emoji_suggestion_type__inline_text">Texto en línea</string>
+    <string name="enum__emoji_suggestion_type__inline_text__description">Sugerir emoticonos simplemente escribiendo el nombre del emoticono</string>
+    <string name="enum__extended_actions_placement__above_candidates" comment="Enum value label">Sobre las sugerencias</string>
+    <string name="enum__extended_actions_placement__above_candidates__description" comment="Enum value description">Coloca la fila de acciones extendida entre la interfaz de usuario de la aplicación y la fila de las sugerencias</string>
+    <string name="enum__extended_actions_placement__below_candidates" comment="Enum value label">Debajo de las sugerencias</string>
+    <string name="enum__extended_actions_placement__below_candidates__description" comment="Enum value description">Coloca la fila de acciones extendidas entre la fila de las sugerencias y el teclado</string>
+    <string name="enum__extended_actions_placement__overlay_app_ui" comment="Enum value label">Superponer la interfaz de la aplicación</string>
+    <string name="enum__extended_actions_placement__overlay_app_ui__description" comment="Enum value description">Coloca la fila de acciones extendidas como una superposición sobre la interfaz de usuario de la aplicación, sin afectar la altura de la interfaz de usuario del teclado resultante. Tenga en cuenta que esta ubicación puede hacer que el campo de entrada de la aplicación se sobre dibuje parcialmente</string>
+    <string name="enum__haptic_vibration_mode__use_vibrator_directly" comment="Enum value label">Usar motor de vibración directamente</string>
+    <string name="enum__haptic_vibration_mode__use_vibrator_directly__description" comment="Enum value description">{app_name} interactúa directamente con el motor de vibración predeterminado. Esto ofrece mayor control sobre la duración y la intensidad de la vibración aunque puede que no sea tan fluida y optimizada como usar la interfaz de reacción háptica</string>
+    <string name="enum__haptic_vibration_mode__use_haptic_feedback_interface" comment="Enum value label">Usar interfaz de reacción háptica</string>
+    <string name="enum__haptic_vibration_mode__use_haptic_feedback_interface__description" comment="Enum value description">{app_name} usa la interfaz de reacción háptica para accionar una secuencia de vibración predefinida para las pulsaciones de teclas. Esta función podría funcionar excepcionalmente bien en algunos dispositivos, así como también fallar u operar pobremente en otros</string>
+    <string name="enum__key_hint_mode__accent_priority" comment="Enum value label">Acento es prioridad</string>
+    <string name="enum__key_hint_mode__accent_priority__description" comment="Enum value description">El carácter inicial elegido al hacer una pulsación larga será siempre el acento principal, o el símbolo si no hay acento principal disponible</string>
+    <string name="enum__key_hint_mode__hint_priority" comment="Enum value label">Símbolo es prioridad</string>
+    <string name="enum__key_hint_mode__hint_priority__description" comment="Enum value description">El carácter inicial elegido al hacer una pulsación larga será siempre el símbolo, o el acento principal si no hay símbolo disponible</string>
+    <string name="enum__key_hint_mode__smart_priority" comment="Enum value label">Priorización inteligente</string>
+    <string name="enum__key_hint_mode__smart_priority__description" comment="Enum value description">El carácter inicial elegido al hacer una pulsación larga será decidido dinámicamente entre el símbolo o el acento principal, de acuerdo al idioma y distribución del teclado actual</string>
+    <string name="enum__incognito_display_mode__replace_shared_actions_toggle" comment="Enum value label">Reemplazar el interruptor de acciones de compartir con el indicador de incógnito</string>
+    <string name="enum__incognito_display_mode__display_behind_keyboard" comment="Enum value label">Mostrar el indicador de incógnito tras el teclado</string>
+    <string name="enum__incognito_mode__force_off" comment="Enum value label">Forzar apagado</string>
+    <string name="enum__incognito_mode__force_off__description" comment="Enum value description">El modo incógnito siempre estará desactivado, independientemente de las opciones pasadas de la aplicación de destino. La acción rápida de incógnito en la barra inteligente no estará disponible con esta opción.</string>
+    <string name="enum__incognito_mode__force_on" comment="Enum value label">Forzar encendido</string>
+    <string name="enum__incognito_mode__force_on__description" comment="Enum value description">El modo incógnito estará siempre activado, independientemente de las opciones pasadas de la aplicación de destino. La acción rápida de incógnito en la barra inteligente no estará disponible con esta opción.</string>
+    <string name="enum__incognito_mode__dynamic_on_off" comment="Enum value label">Encendido/Apagado Dinámico</string>
+    <string name="enum__incognito_mode__dynamic_on_off__description" comment="Enum value description">Opción recomendada. El modo de incógnito se habilitará o deshabilitará dinámicamente a través de las opciones pasadas de la aplicación de destino o alternándolo manualmente a través de la acción rápida de incógnito en la barra inteligente.</string>
+    <string name="enum__input_feedback_activation_mode__audio_respect_system_settings" comment="Enum value label">Reproducción dinámica de sonidos para eventos de entrada, según la configuración del sistema</string>
+    <string name="enum__input_feedback_activation_mode__audio_ignore_system_settings" comment="Enum value label">Reproducir siempre los sonidos de los eventos de entrada, independientemente de la configuración del sistema</string>
+    <string name="enum__input_feedback_activation_mode__haptic_respect_system_settings" comment="Enum value label">Vibración dinámica para eventos de entrada, dependiendo de la configuración del sistema</string>
+    <string name="enum__input_feedback_activation_mode__haptic_ignore_system_settings" comment="Enum value label">Vibrar siempre, independientemente de la configuración del sistema</string>
+    <string name="enum__input_shift_state__unshifted" comment="Enum value label">Sin desplazar</string>
+    <string name="enum__input_shift_state__shifted_manual" comment="Enum value label">Cambio (manual)</string>
+    <string name="enum__input_shift_state__shifted_automatic" comment="Enum value label">Cambio (automático)</string>
+    <string name="enum__input_shift_state__caps_lock" comment="Enum value label">Bloq Mayús</string>
+    <string name="enum__keyboard_mode__characters" comment="Enum value label">Caracteres</string>
+    <string name="enum__keyboard_mode__symbols" comment="Enum value label">Símbolos</string>
+    <string name="enum__keyboard_mode__symbols2" comment="Enum value label">Símbolos 2</string>
+    <string name="enum__keyboard_mode__numeric" comment="Enum value label">Numérico</string>
+    <string name="enum__keyboard_mode__numeric_advanced" comment="Enum value label">Avanzado numérico</string>
+    <string name="enum__keyboard_mode__phone" comment="Enum value label">Teléfono</string>
+    <string name="enum__keyboard_mode__phone2" comment="Enum value label">Teléfono 2</string>
+    <string name="enum__landscape_input_ui_mode__never_show" comment="Enum value label">No mostrar nunca</string>
+    <string name="enum__landscape_input_ui_mode__always_show" comment="Enum value label">Mostrar siempre</string>
+    <string name="enum__landscape_input_ui_mode__dynamically_show" comment="Enum value label">Mostrar dinámicamente</string>
+    <string name="enum__shape_corner__top_start" comment="Enum value label">Inicio superior</string>
+    <string name="enum__shape_corner__top_end" comment="Enum value label">Parte superior</string>
+    <string name="enum__shape_corner__bottom_end" comment="Enum value label">Parte inferior</string>
+    <string name="enum__shape_corner__bottom_start" comment="Enum value label">Empezar por el final</string>
+    <string name="enum__smartbar_layout__suggestions_only" comment="Enum value label">Solo sugerencias</string>
+    <string name="enum__smartbar_layout__suggestions_only__description" comment="Enum value description">Muestra solo la barra de sugerencias, sin ningún botón/fila de acción ni acción fija</string>
+    <string name="enum__smartbar_layout__actions_only" comment="Enum value label">Solo acciones</string>
+    <string name="enum__smartbar_layout__actions_only__description" comment="Enum value description">Muestra sólo la fila de acciones, sin ninguna barra de sugerencias ni botón de acción fija</string>
+    <string name="enum__smartbar_layout__suggestions_action_shared" comment="Enum value label">Compartida entre sugerencias &amp; acciones</string>
+    <string name="enum__smartbar_layout__suggestions_action_shared__description" comment="Enum value description">Se comparte/intercambia entre la barra con sugerencias y la fila de acción, botón de acción fijo incluido</string>
+    <string name="enum__smartbar_layout__suggestions_actions_extended" comment="Enum value label">Extensión de sugerencias &amp; acciones</string>
+    <string name="enum__smartbar_layout__suggestions_actions_extended__description" comment="Enum value description">Barra de sugerencias estática expandible con la fila de acción y botón de acción fijo</string>
+    <string name="enum__snygg_level__basic" comment="Enum value label">Básico</string>
+    <string name="enum__snygg_level__basic__description" comment="Enum value description">Sólo se muestran las propiedades del color, las propiedades y las reglas se traducen.</string>
+    <string name="enum__snygg_level__advanced" comment="Enum value label">Avanzado</string>
+    <string name="enum__snygg_level__advanced__description" comment="Enum value description">Se muestran todas las propiedades, se traducen las propiedades y las reglas.</string>
+    <string name="enum__snygg_level__developer" comment="Enum value label">Desarrollador</string>
+    <string name="enum__snygg_level__developer__description" comment="Enum value description">Se muestran todas las propiedades, las propiedades y las reglas se muestran tal y como están escritas en el propio archivo de la hoja de estilos.</string>
+    <string name="enum__space_bar_mode__nothing" comment="Enum value label">Sin etiqueta</string>
+    <string name="enum__space_bar_mode__current_language" comment="Enum value label">Idioma actual</string>
+    <string name="enum__space_bar_mode__space_bar_key" comment="Enum value label">␣</string>
+    <string name="enum__spelling_language_mode__use_system_languages" comment="Enum value label">Usar idiomas del sistema</string>
+    <string name="enum__spelling_language_mode__use_keyboard_subtypes" comment="Enum value label">Usar subtipos de teclado</string>
+    <string name="enum__swipe_action__no_action" comment="Enum value label">Sin acción</string>
+    <string name="enum__swipe_action__cycle_to_previous_keyboard_mode" comment="Enum value label">Alternar con el modo de teclado anterior</string>
+    <string name="enum__swipe_action__cycle_to_next_keyboard_mode" comment="Enum value label">Alternar con el modo de teclado siguiente</string>
+    <string name="enum__swipe_action__delete_character" comment="Enum value label">Borrar caracter antes del cursor</string>
+    <string name="enum__swipe_action__delete_characters_precisely" comment="Enum value label">Eliminar caracteres con precisión</string>
+    <string name="enum__swipe_action__delete_word" comment="Enum value label">Borrar palabra antes del cursor</string>
+    <string name="enum__swipe_action__delete_words_precisely" comment="Enum value label">Eliminar palabras con precisión</string>
+    <string name="enum__swipe_action__hide_keyboard" comment="Enum value label">Ocultar teclado</string>
+    <string name="enum__swipe_action__insert_space" comment="Enum value label">Insertar espacio</string>
+    <string name="enum__swipe_action__move_cursor_up" comment="Enum value label">Mover cursor hacia arriba</string>
+    <string name="enum__swipe_action__move_cursor_down" comment="Enum value label">Mover cursor hacia abajo</string>
+    <string name="enum__swipe_action__move_cursor_left" comment="Enum value label">Mover cursor a la izquierda</string>
+    <string name="enum__swipe_action__move_cursor_right" comment="Enum value label">Mover cursor a la derecha</string>
+    <string name="enum__swipe_action__move_cursor_start_of_line" comment="Enum value label">Mover cursor al inicio de la línea</string>
+    <string name="enum__swipe_action__move_cursor_end_of_line" comment="Enum value label">Mover cursor al final de la línea</string>
+    <string name="enum__swipe_action__move_cursor_start_of_page" comment="Enum value label">Mover cursor al inicio de la página</string>
+    <string name="enum__swipe_action__move_cursor_end_of_page" comment="Enum value label">Mover cursor al final de la página</string>
+    <string name="enum__swipe_action__switch_to_clipboard_context" comment="Enum value label">Abrir gestor/historial del portapapeles</string>
+    <string name="enum__swipe_action__switch_to_media_context" comment="Enum value label">Abrir panel de emojis</string>
+    <string name="enum__swipe_action__shift" comment="Enum value label">Mayúsculas</string>
+    <string name="enum__swipe_action__redo" comment="Enum value label">Rehacer</string>
+    <string name="enum__swipe_action__undo" comment="Enum value label">Deshacer</string>
+    <string name="enum__swipe_action__select_characters_precisely" comment="Enum value label">Seleccionar caracteres con precisión</string>
+    <string name="enum__swipe_action__select_words_precisely" comment="Enum value label">Seleccionar palabras con precisión</string>
+    <string name="enum__swipe_action__show_input_method_picker" comment="Enum value label">Mostrar selector de método de entrada</string>
+    <string name="enum__swipe_action__switch_to_prev_keyboard" comment="Enum value label">Cambiar a teclado anterior</string>
+    <string name="enum__swipe_action__switch_to_prev_subtype" comment="Enum value label">Cambiar a subtipo anterior</string>
+    <string name="enum__swipe_action__switch_to_next_subtype" comment="Enum value label">Cambiar al subtipo siguiente</string>
+    <string name="enum__swipe_action__toggle_smartbar_visibility" comment="Enum value label">Alternar visibilidad de la barra inteligente</string>
+    <string name="enum__theme_mode__always_day" comment="Enum value label">Siempre claro</string>
+    <string name="enum__theme_mode__always_night" comment="Enum value label">Siempre oscuro</string>
+    <string name="enum__theme_mode__follow_system" comment="Enum value label">De acuerdo al sistema</string>
+    <string name="enum__theme_mode__follow_time" comment="Enum value label">De acuerdo al horario</string>
+    <string name="enum__utility_key_action__switch_to_emojis" comment="Enum value label">Cambiar a emojis</string>
+    <string name="enum__utility_key_action__switch_language" comment="Enum value label">Cambiar idioma</string>
+    <string name="enum__utility_key_action__switch_keyboard_app" comment="Enum value label">Cambiar aplicación de teclado</string>
+    <string name="enum__utility_key_action__dynamic_switch_language_emojis" comment="Enum value label">Dinámico: cambiar a emojis / cambiar de idioma</string>
+    <!-- Unit strings (symbols) -->
+    <!-- Unit strings (written words) -->
+    <plurals name="unit__hours__written">
+        <item quantity="one">{v} hora</item>
+        <item quantity="other">{v} horas</item>
+    </plurals>
+    <plurals name="unit__minutes__written">
+        <item quantity="one">{v} minuto</item>
+        <item quantity="other">{v} minutos</item>
+    </plurals>
+    <plurals name="unit__seconds__written">
+        <item quantity="one">{v} segundo</item>
+        <item quantity="other">{v} segundos</item>
+    </plurals>
+    <plurals name="unit__items__written">
+        <item quantity="one">{v} ítem</item>
+        <item quantity="other">{v} ítems</item>
+    </plurals>
+    <plurals name="unit__characters__written">
+        <item quantity="one">{v} carácter</item>
+        <item quantity="other">{v} caracteres</item>
+    </plurals>
+    <plurals name="unit__candidates__written">
+        <item quantity="one">{v} sugerencia</item>
+        <item quantity="other">{v} sugerencia</item>
+    </plurals>
+</resources>

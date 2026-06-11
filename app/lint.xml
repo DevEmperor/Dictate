@@ -1,0 +1,3 @@
+<lint>
+    <issue id="ExtraTranslation" severity="warning"/>
+</lint>

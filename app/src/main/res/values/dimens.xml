@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="key_width">33dp</dimen>
+    <dimen name="key_height">42dp</dimen>
+
+    <dimen name="suggestions_chip_corner_radius">32dp</dimen>
+
+    <dimen name="suggestion_chip_bg_padding_start">13dp</dimen>
+    <dimen name="suggestion_chip_bg_padding_top">0dp</dimen>
+    <dimen name="suggestion_chip_bg_padding_end">13dp</dimen>
+    <dimen name="suggestion_chip_bg_padding_bottom">0dp</dimen>
+
+    <dimen name="suggestion_chip_fg_title_margin_start">4dp</dimen>
+    <dimen name="suggestion_chip_fg_title_margin_top">0dp</dimen>
+    <dimen name="suggestion_chip_fg_title_margin_end">4dp</dimen>
+    <dimen name="suggestion_chip_fg_title_margin_bottom">0dp</dimen>
+
+    <dimen name="suggestion_chip_fg_subtitle_margin_start">4dp</dimen>
+    <dimen name="suggestion_chip_fg_subtitle_margin_top">0dp</dimen>
+    <dimen name="suggestion_chip_fg_subtitle_margin_end">4dp</dimen>
+    <dimen name="suggestion_chip_fg_subtitle_margin_bottom">0dp</dimen>
+</resources>

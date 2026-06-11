@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Permission needed to vibrate if the user has key press vibration enabled -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <!-- Permission needed to create notifications on devices running Android 13+ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <!-- Android 11+ only: Define that FlorisBoard requests to see all apps that
+          ship with an IME or Spell Check service. This is used to guide the user
+          in the Settings Ui why FlorisBoard may not be working.
+     -->
+    <queries>
+        <intent>
+            <action android:name="android.view.InputMethod"/>
+        </intent>
+        <intent>
+            <action android:name="android.service.textservice.SpellCheckerService"/>
+        </intent>
+    </queries>
+
+    <application
+        android:name="dev.patrickgold.florisboard.FlorisApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/backup_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/floris_app_icon"
+        android:label="@string/floris_app_name"
+        android:enableOnBackInvokedCallback="true"
+        android:roundIcon="@mipmap/floris_app_icon_round"
+        android:supportsRtl="true"
+        android:theme="@style/FlorisAppTheme"
+        tools:targetApi="tiramisu">
+
+        <!-- Allow app to be profiled for benchmarking and baseline profile generation -->
+        <profileable android:shell="true"/>
+
+        <!-- IME service -->
+        <service
+            android:name="dev.patrickgold.florisboard.FlorisImeService"
+            android:label="@string/floris_app_name"
+            android:permission="android.permission.BIND_INPUT_METHOD"
+            android:directBootAware="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.view.InputMethod"/>
+            </intent-filter>
+            <meta-data android:name="android.view.im" android:resource="@xml/method"/>
+        </service>
+
+        <!-- Spellchecker service -->
+        <service
+            android:name="dev.patrickgold.florisboard.FlorisSpellCheckerService"
+            android:label="@string/floris_app_name"
+            android:permission="android.permission.BIND_TEXT_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.textservice.SpellCheckerService"/>
+            </intent-filter>
+            <meta-data android:name="android.view.textservice.scs" android:resource="@xml/spellchecker"/>
+        </service>
+
+        <!-- Main App Activity -->
+        <activity
+            android:name="dev.patrickgold.florisboard.app.FlorisAppActivity"
+            android:icon="@mipmap/floris_app_icon"
+            android:label="@string/settings__title"
+            android:launchMode="singleTask"
+            android:roundIcon="@mipmap/floris_app_icon_round"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/FlorisAppTheme.Splash"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="ui" android:host="florisboard" android:pathPrefix="/" />
+            </intent-filter>
+            <intent-filter android:label="Import Extension">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="content"/>
+                <data android:mimeType="application/vnd.florisboard.extension+zip"/>
+                <data android:mimeType="application/octet-stream"/><!-- Firefox looking at you :eyes: -->
+            </intent-filter>
+            <intent-filter android:label="Import Extension">
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="application/vnd.florisboard.extension+zip"/>
+                <data android:mimeType="application/octet-stream"/><!-- Firefox looking at you :eyes: -->
+            </intent-filter>
+        </activity>
+
+        <!-- Using an activity alias to disable/enable the app icon in the launcher -->
+        <activity-alias
+            android:name="dev.patrickgold.florisboard.SettingsLauncherAlias"
+            android:icon="@mipmap/floris_app_icon"
+            android:label="@string/floris_app_name"
+            android:launchMode="singleTask"
+            android:roundIcon="@mipmap/floris_app_icon_round"
+            android:targetActivity="dev.patrickgold.florisboard.app.FlorisAppActivity"
+            android:theme="@style/FlorisAppTheme.Splash"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Crash Dialog Activity -->
+        <activity
+            android:name="dev.patrickgold.florisboard.lib.crashutility.CrashDialogActivity"
+            android:icon="@mipmap/floris_app_icon"
+            android:label="@string/crash_dialog__title"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/CrashDialogTheme"/>
+
+        <!-- Copy to Clipboard Activity -->
+        <activity
+            android:name="dev.patrickgold.florisboard.ime.clipboard.FlorisCopyToClipboardActivity"
+            android:theme="@style/FlorisAppTheme.Transparent"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="image/*"/>
+            </intent-filter>
+        </activity>
+
+        <!-- Clipboard Media File Provider -->
+        <provider
+            android:name="dev.patrickgold.florisboard.ime.clipboard.provider.ClipboardMediaProvider"
+            android:authorities="${applicationId}.provider.clipboard"
+            android:grantUriPermissions="true"
+            android:exported="false">
+        </provider>
+
+        <!-- Default file provider to share files from the "files" or "cache" dir -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider.file"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
+
+        <!-- Disable default EmojiCompat initializer -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+                tools:node="remove"/>
+        </provider>
+
+    </application>
+
+</manifest>
