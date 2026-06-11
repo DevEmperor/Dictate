@@ -140,8 +140,20 @@ Version 2, gleiches Schema) → **null Risiko** für Bestandsdaten. Ein spätere
 Auf Wunsch wird Glide-/Swipe-Typing **nicht** integriert. Vorhandene Gesten-Infrastruktur von
 FlorisBoard kann später entschlackt werden.
 
+### Entscheidung: `lib:native` (Rust) entfernt
+FlorisBoards `:lib:native` ist in `main` nur ein **Dummy-Gerüst** (`lib.rs` exportiert einzig
+`dummyAdd → dummy::addnumbers`, einziger Konsument war ein `flogError`-Smoke-Test in
+`FlorisApplication`). Es ist Vorarbeit für künftige NLP-/Wortvorhersage, die in `main` noch nicht
+aktiv ist. Da Dictate es nicht braucht (und Glide/Vorhersage gestrichen sind) **und** sein CMake
+zwingend eine `rustup`-Toolchain + Android-Rust-Targets verlangt, wurde das Modul **komplett
+entfernt**: gelöscht `lib/native/` + `libnative/` (Dummy-Crate), entfernt `include(":lib:native")`
+(settings.gradle.kts), `implementation(projects.lib.native)` (app/build.gradle.kts) sowie die 3
+Referenzen in `FlorisApplication.kt` (Import, `System.loadLibrary("fl_native")`, `dummyAdd`-Log).
+**Folge: voller APK-Build ohne jede Rust-Toolchain.** Falls künftig Upstream-NLP gewünscht wird,
+holt man das Modul bewusst aus FlorisBoard zurück. Reversibel via git.
+
 ### Umsetzungsstand
-- [x] **Schritt 1** – Fork als Basis, `applicationId = net.devemperor.dictate`, App-Name, Build-Config grün (Dry-Run, JDK 17). Offen: CMake 4.1.2 für vollen APK-Build (vom Nutzer via Android Studio).
+- [x] **Schritt 1** – Fork als Basis, `applicationId = net.devemperor.dictate` (Release ohne Suffix; Debug `.debug`), App-Name. **Voller Debug-APK-Build grün** (JDK 17, 112 Tasks, 32 MB `app-debug.apk`, 0 Fehler) nach Entfernen des Rust-Dummy-Moduls `:lib:native` (s. Entscheidung oben). Damit baut das Projekt **ohne Rust-Toolchain**.
 - [~] **Schritt 2** – Datenschicht (Kotlin):
   - [x] `dictate/data/prompts` – `PromptModel`, `PromptsDatabaseHelper`
   - [x] `dictate/data/usage` – `UsageModel`, `UsageDatabaseHelper`, `DictatePricing`

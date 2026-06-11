@@ -49,7 +49,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.florisboard.lib.kotlin.io.deleteContentsRecursively
 import org.florisboard.lib.kotlin.tryOrNull
-import org.florisboard.libnative.dummyAdd
 import java.lang.ref.WeakReference
 
 /**
@@ -60,15 +59,6 @@ private var FlorisApplicationReference = WeakReference<FlorisApplication?>(null)
 
 @Suppress("unused")
 class FlorisApplication : Application() {
-    companion object {
-        init {
-            try {
-                System.loadLibrary("fl_native")
-            } catch (_: Exception) {
-            }
-        }
-    }
-
     private val mainHandler by lazy { Handler(mainLooper) }
     private val scope = CoroutineScope(Dispatchers.Default)
     val preferenceStoreLoaded = MutableStateFlow(false)
@@ -96,7 +86,6 @@ class FlorisApplication : Application() {
             )
             CrashUtility.install(this)
             FlorisEmojiCompat.init(this)
-            flogError { "dummy result: ${dummyAdd(3,4)}" }
 
             if (!UserManagerCompat.isUserUnlocked(this)) {
                 cacheDir?.deleteContentsRecursively()
