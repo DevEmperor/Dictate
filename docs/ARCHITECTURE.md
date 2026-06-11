@@ -175,6 +175,11 @@ holt man das Modul bewusst aus FlorisBoard zurück. Reversibel via git.
   - [x] `dictate/ui/DictateInputLayout.kt` – UI-Gerüst (Zurück-zu-TEXT-Button, Mikro-Toggle mit Status; Aufnahmelogik = Schritt 5). Nutzt vorerst die gestylten `media-*`-Snygg-Elemente.
   - [x] Mikro-**QuickAction**: Icon (`Icons.Default.Mic` in `ComputingEvaluator`), Display-Name/Tooltip + Strings (`quick_action__ime_ui_mode_dictate[__tooltip]`), und als **Sticky-Action** der Smartbar (`QuickActionArrangement.Default`; System-`VOICE_INPUT` nun in dynamicActions). Auch in `PopupUiController.ExceptionsForKeyCodes`.
   - [ ] Eigene `dictate-*`-Theme-Elemente + lokalisierte Strings (mit Schritt 6)
-- [ ] **Schritt 5** – Logik-Port (Recording/Transcription/Rewording)
+- [~] **Schritt 5** – Logik-Port (Recording/Transcription/Rewording), rudimentäre Fusion (Build grün):
+  - [x] `dictate/audio/RecordingController.kt` – `MediaRecorder`-Wrapper (MIC, MPEG_4/AAC, 64 kbps/44,1 kHz → `dictate_audio.m4a` im Cache; Konstruktor-Branch für API < 31)
+  - [x] `RECORD_AUDIO`-Permission im Manifest
+  - [x] `dictate/DictateController.kt` – Orchestrierung Aufnahme→Transkription→`editorInstance.commitText`; beobachtbarer `UiState` (Idle/Recording/Transcribing/Error). Provider/Key/Modell vorerst aus **Legacy-Prefs** (`DictateLegacyPreferences`), Provider-Index 0/1/2 → OpenAI/Groq/Custom über `OpenAiCompatibleClient`
+  - [x] `DictateInputLayout` an Controller verdrahtet (Mikro togglet Aufnahme/Transkription, Statuszeile, Fehleranzeige, Abbruch beim Verlassen)
+  - [ ] **Noch offen (spätere Verfeinerung):** Rewording + Prompt-Queue, Auto-Apply, Live-Prompt, Usage-Tracking, per-Sprache-Style-Prompt, Sprachauswahl, Bluetooth-Mic/Audio-Focus, „resend"/Instant-Recording
 - [ ] **Schritt 6** – eigenes Onboarding + Settings-Screens
 - [ ] **Schritt 7** – Feinschliff

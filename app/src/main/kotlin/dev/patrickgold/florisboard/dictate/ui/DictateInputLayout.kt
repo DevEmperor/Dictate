@@ -17,17 +17,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import dev.patrickgold.florisboard.dictate.DictateController
 import dev.patrickgold.florisboard.ime.ImeUiMode
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
@@ -42,13 +43,10 @@ import org.florisboard.lib.snygg.ui.SnyggText
  * The Dictate AI voice panel, rendered as its own [ImeUiMode.DICTATE] next to the regular typing
  * keyboard (see `ImeWindow`). Reached via the microphone QuickAction in the Smartbar.
  *
- * This is the UI scaffold: it owns the back-to-keyboard action and a record toggle with status
- * feedback. The actual recording / transcription / rewording wiring is added in a later step
- * (RecordingController + the provider layer in `dictate/provider`).
- *
- * NOTE: it currently reuses the already-themed `media-*` Snygg elements so it inherits the active
- * theme with zero stylesheet changes. Dedicated `dictate-*` theme elements will be introduced
- * together with the custom onboarding/settings work.
+ * The mic button drives [DictateController]: tap to record, tap again to transcribe and commit the
+ * text into the focused field. This is the rudimentary fused flow; richer UI (prompts, live prompt,
+ * usage) and dedicated `dictate-*` theming come later. It currently reuses the already-themed
+ * `media-*` Snygg elements so it inherits the active theme with no stylesheet changes.
  */
 @Composable
 fun DictateInputLayout(
@@ -56,9 +54,12 @@ fun DictateInputLayout(
 ) {
     val context = LocalContext.current
     val keyboardManager by context.keyboardManager()
+    val state by DictateController.state.collectAsState()
 
-    // Placeholder local state until the RecordingController is wired up.
-    var isRecording by remember { mutableStateOf(false) }
+    // Abort any in-progress recording if the panel leaves composition (e.g. mode switch).
+    DisposableEffect(Unit) {
+        onDispose { DictateController.abortRecording() }
+    }
 
     SnyggColumn(
         elementName = FlorisImeUi.Media.elementName,
@@ -86,8 +87,7 @@ fun DictateInputLayout(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 4.dp),
-                // TODO: move to strings.xml (R.string.dictate__panel_title) once the Dictate
-                //  resource set is introduced with the custom onboarding.
+                // TODO: move to strings.xml (R.string.dictate__panel_title) with the Dictate resource set.
                 text = "Dictate",
             )
         }
@@ -100,13 +100,19 @@ fun DictateInputLayout(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            val isTranscribing = state is DictateController.UiState.Transcribing
             SnyggIconButton(
                 elementName = FlorisImeUi.MediaBottomRowButton.elementName,
-                onClick = { isRecording = !isRecording },
+                onClick = { DictateController.onMicClick(context) },
+                enabled = !isTranscribing,
                 modifier = Modifier.size(72.dp),
             ) {
                 SnyggIcon(
-                    imageVector = if (isRecording) Icons.Filled.Stop else Icons.Filled.Mic,
+                    imageVector = when (state) {
+                        is DictateController.UiState.Recording -> Icons.Filled.Stop
+                        is DictateController.UiState.Transcribing -> Icons.Filled.HourglassEmpty
+                        else -> Icons.Filled.Mic
+                    },
                     modifier = Modifier.size(40.dp),
                 )
             }
@@ -114,7 +120,12 @@ fun DictateInputLayout(
                 elementName = FlorisImeUi.MediaEmojiSubheader.elementName,
                 modifier = Modifier.padding(top = 12.dp),
                 // TODO: localize via strings.xml together with the Dictate resource set.
-                text = if (isRecording) "Aufnahme läuft … (Logik folgt)" else "Tippen zum Diktieren",
+                text = when (val s = state) {
+                    is DictateController.UiState.Recording -> "Aufnahme läuft – zum Beenden tippen"
+                    is DictateController.UiState.Transcribing -> "Transkribiere …"
+                    is DictateController.UiState.Error -> s.message
+                    else -> "Tippen zum Diktieren"
+                },
             )
         }
     }
