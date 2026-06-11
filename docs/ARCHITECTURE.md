@@ -169,7 +169,12 @@ holt man das Modul bewusst aus FlorisBoard zurück. Reversibel via git.
   - [ ] Optionale Spezial-Adapter für native Anthropic-/Gemini-APIs (vorerst via OpenRouter erreichbar)
   - [ ] Legacy-Provider-Index → Preset-Id-Mapping in der Settings-Migration (Schritt 6): `0→openai`, `1→groq`, `2→custom`
   - [ ] Unit-Tests (Proxy-Parsing, Fehler-Klassifizierung) + Live-Smoke-Test (sobald Build läuft)
-- [ ] **Schritt 4** – `ImeUiMode.DICTATE` + `DictateInputLayout()` + Mikro-QuickAction
+- [x] **Schritt 4** – Dictate als eigener IME-Modus (Build grün, inkrementell 2m):
+  - [x] `KeyCode.IME_UI_MODE_DICTATE = -214` + `TextKeyData.IME_UI_MODE_DICTATE` (SYSTEM_GUI) + interne-Codes-Liste
+  - [x] `ImeUiMode.DICTATE(3)`; `KeyboardManager.handleKeyCode` schaltet darauf; `ImeWindow` rendert `DictateInputLayout()`
+  - [x] `dictate/ui/DictateInputLayout.kt` – UI-Gerüst (Zurück-zu-TEXT-Button, Mikro-Toggle mit Status; Aufnahmelogik = Schritt 5). Nutzt vorerst die gestylten `media-*`-Snygg-Elemente.
+  - [x] Mikro-**QuickAction**: Icon (`Icons.Default.Mic` in `ComputingEvaluator`), Display-Name/Tooltip + Strings (`quick_action__ime_ui_mode_dictate[__tooltip]`), und als **Sticky-Action** der Smartbar (`QuickActionArrangement.Default`; System-`VOICE_INPUT` nun in dynamicActions). Auch in `PopupUiController.ExceptionsForKeyCodes`.
+  - [ ] Eigene `dictate-*`-Theme-Elemente + lokalisierte Strings (mit Schritt 6)
 - [ ] **Schritt 5** – Logik-Port (Recording/Transcription/Rewording)
 - [ ] **Schritt 6** – eigenes Onboarding + Settings-Screens
 - [ ] **Schritt 7** – Feinschliff

@@ -133,6 +133,7 @@ data class TextKeyData(
                 IME_UI_MODE_TEXT,
                 IME_UI_MODE_MEDIA,
                 IME_UI_MODE_CLIPBOARD,
+                IME_UI_MODE_DICTATE,
                 SYSTEM_INPUT_METHOD_PICKER,
                 SYSTEM_PREV_INPUT_METHOD,
                 SYSTEM_NEXT_INPUT_METHOD,
@@ -423,6 +424,12 @@ data class TextKeyData(
             type = KeyType.SYSTEM_GUI,
             code = KeyCode.IME_UI_MODE_CLIPBOARD,
             label = "ime_ui_mode_clipboard",
+        )
+        /** Predefined key data for [KeyCode.IME_UI_MODE_DICTATE] (Dictate AI voice panel) */
+        val IME_UI_MODE_DICTATE = TextKeyData(
+            type = KeyType.SYSTEM_GUI,
+            code = KeyCode.IME_UI_MODE_DICTATE,
+            label = "ime_ui_mode_dictate",
         )
 
         /** Predefined key data for [KeyCode.SYSTEM_INPUT_METHOD_PICKER] */
