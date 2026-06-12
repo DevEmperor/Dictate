@@ -49,10 +49,6 @@ Reihenfolge = grobe Priorität; wird Punkt für Punkt erledigt und hier abgehakt
 - [x] **8. About-Section + Version 4.0.0**
   Alles in About auf „Dictate Keyboard"; Version 4.0.0 setzen.
 
-- [ ] **9. (Später) Privacy Policy**
-  Alte Policy: https://www.iubenda.com/privacy-policy/66430035. Neue, eigene Policy erstellen und
-  im GitHub-Repo (DevEmperor/Dictate) ablegen; danach `florisboard__privacy_policy_url` darauf
-  zeigen lassen. Claude soll beim Erstellen helfen.
 
 ## Bereits erledigt (Schritt 7, vorher)
 - URLs auf `github.com/DevEmperor/Dictate` umgestellt; Crash-/About-Selbstreferenzen entbrandet.
