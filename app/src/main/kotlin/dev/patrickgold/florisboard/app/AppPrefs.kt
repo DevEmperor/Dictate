@@ -212,6 +212,35 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
     }
 
+    val dictate = Dictate()
+    inner class Dictate {
+        // Transcription provider id, matching ProviderRegistry ids that support speech-to-text
+        // ("openai", "groq", "custom"). Rewording providers (e.g. OpenRouter) come later.
+        val transcriptionProviderId = string(
+            key = "dictate__transcription_provider_id",
+            default = "openai",
+        )
+        val apiKey = string(
+            key = "dictate__api_key",
+            default = "",
+        )
+        // Empty means "use the provider preset's default transcription model".
+        val transcriptionModel = string(
+            key = "dictate__transcription_model",
+            default = "",
+        )
+        // OpenAI-compatible base URL, used when transcriptionProviderId == "custom".
+        val customBaseUrl = string(
+            key = "dictate__custom_base_url",
+            default = "",
+        )
+        // Guard so the one-time import from the legacy Dictate SharedPreferences runs only once.
+        val legacyImported = boolean(
+            key = "dictate__legacy_imported",
+            default = false,
+        )
+    }
+
     val dictionary = Dictionary()
     inner class Dictionary {
         val enableSystemUserDictionary = boolean(

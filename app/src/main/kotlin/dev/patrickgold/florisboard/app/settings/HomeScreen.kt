@@ -22,6 +22,7 @@ import androidx.compose.material.icons.automirrored.outlined.Assignment
 import androidx.compose.material.icons.filled.Extension
 import androidx.compose.material.icons.filled.Gesture
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.SentimentSatisfiedAlt
 import androidx.compose.material.icons.filled.SmartButton
 import androidx.compose.material.icons.filled.Spellcheck
@@ -105,6 +106,12 @@ fun HomeScreen() = FlorisScreen {
                 }
             }
         }*/
+        Preference(
+            icon = Icons.Default.Mic,
+            // TODO: move to strings.xml with the Dictate resource set.
+            title = "Dictate",
+            onClick = { navController.navigate(Routes.Settings.Dictate) },
+        )
         Preference(
             icon = Icons.Default.Language,
             title = stringRes(R.string.settings__localization__title),

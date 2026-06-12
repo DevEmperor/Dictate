@@ -11,13 +11,12 @@
 package dev.patrickgold.florisboard.dictate
 
 import android.content.Context
+import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.audio.RecordingController
-import dev.patrickgold.florisboard.dictate.data.prefs.DictateLegacyPreferences
-import dev.patrickgold.florisboard.dictate.data.prefs.DictateLegacySettings
 import dev.patrickgold.florisboard.dictate.provider.DictateApiException
 import dev.patrickgold.florisboard.dictate.provider.OpenAiCompatibleClient
+import dev.patrickgold.florisboard.dictate.provider.ProviderPreset
 import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
-import dev.patrickgold.florisboard.dictate.provider.ProxyConfig
 import dev.patrickgold.florisboard.dictate.provider.TranscriptionRequest
 import dev.patrickgold.florisboard.editorInstance
 import kotlinx.coroutines.CoroutineScope
@@ -33,13 +32,13 @@ import kotlinx.coroutines.launch
  * editor: tap to record, tap again to transcribe the audio and commit the result into the focused
  * text field.
  *
- * Provider, API key and model are taken from the LEGACY Dictate settings for now (see
- * [DictateLegacyPreferences]), so upgrading users dictate with their existing configuration out of
- * the box. The new settings/onboarding layer (roadmap step 6) will replace this source.
+ * Provider, API key and model are read from the unified JetPref store (`prefs.dictate`), which is
+ * seeded once from the legacy Dictate settings on first run (see [dev.patrickgold.florisboard.
+ * dictate.data.prefs.DictateLegacyMigrator]) and is editable in the in-app Dictate settings screen.
  *
  * Not yet ported from the legacy service (intentionally, later refinement): rewording + prompt
  * queue, auto-apply, live prompt, usage tracking, per-language style prompt, language selection,
- * Bluetooth mic and audio focus.
+ * proxy, Bluetooth mic and audio focus.
  */
 object DictateController {
 
@@ -49,6 +48,8 @@ object DictateController {
         data object Transcribing : UiState
         data class Error(val message: String) : UiState
     }
+
+    private val prefs by FlorisPreferenceStore
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
@@ -97,25 +98,30 @@ object DictateController {
             return
         }
 
-        val settings = DictateLegacyPreferences(context.applicationContext).readSnapshot()
-        val apiKey = settings.effectiveTranscriptionApiKey()
-        if (apiKey.isNullOrBlank() || apiKey == "NO_API_KEY") {
-            _state.value = UiState.Error("Kein API-Schlüssel hinterlegt – in den Einstellungen konfigurieren.")
+        val apiKey = prefs.dictate.apiKey.get()
+        if (apiKey.isBlank()) {
+            _state.value = UiState.Error("Kein API-Schlüssel hinterlegt – in den Dictate-Einstellungen konfigurieren.")
             return
         }
+
+        val preset = resolvePreset()
+        val model = prefs.dictate.transcriptionModel.get().takeIf { it.isNotBlank() }
+            ?: preset.defaultTranscriptionModel
+            ?: "gpt-4o-mini-transcribe"
 
         _state.value = UiState.Transcribing
         val appContext = context.applicationContext
         scope.launch {
             try {
-                val client = buildTranscriptionClient(settings, apiKey)
-                val request = TranscriptionRequest(
-                    audioFile = audioFile,
-                    model = transcriptionModelFor(settings),
-                    language = null, // auto-detect for now; explicit language selection comes later
-                    prompt = stylePromptFor(settings),
+                val client = OpenAiCompatibleClient.from(preset, apiKey, baseUrlOverride = baseUrlOverrideFor(preset))
+                val result = client.transcribe(
+                    TranscriptionRequest(
+                        audioFile = audioFile,
+                        model = model,
+                        language = null, // auto-detect for now; explicit language selection comes later
+                        prompt = null,
+                    )
                 )
-                val result = client.transcribe(request)
                 val editorInstance by appContext.editorInstance()
                 editorInstance.commitText(result.text)
                 _state.value = UiState.Idle
@@ -129,28 +135,12 @@ object DictateController {
         }
     }
 
-    private fun buildTranscriptionClient(
-        settings: DictateLegacySettings,
-        apiKey: String,
-    ): OpenAiCompatibleClient {
-        val proxy = if (settings.proxyEnabled) ProxyConfig.parse(settings.proxyHost) else null
-        return when (settings.transcriptionProvider) {
-            1 -> OpenAiCompatibleClient.from(ProviderRegistry.GROQ, apiKey, proxy = proxy)
-            2 -> {
-                val host = settings.transcriptionCustomHost.orEmpty()
-                OpenAiCompatibleClient.from(ProviderRegistry.custom(host), apiKey, baseUrlOverride = host, proxy = proxy)
-            }
-            else -> OpenAiCompatibleClient.from(ProviderRegistry.OPENAI, apiKey, proxy = proxy)
-        }
+    private fun resolvePreset(): ProviderPreset = when (prefs.dictate.transcriptionProviderId.get()) {
+        "groq" -> ProviderRegistry.GROQ
+        "custom" -> ProviderRegistry.custom(prefs.dictate.customBaseUrl.get())
+        else -> ProviderRegistry.OPENAI
     }
 
-    private fun transcriptionModelFor(settings: DictateLegacySettings): String = when (settings.transcriptionProvider) {
-        1 -> settings.transcriptionGroqModel?.takeUnless { it.isBlank() } ?: "whisper-large-v3-turbo"
-        2 -> settings.transcriptionCustomModel?.takeUnless { it.isBlank() } ?: "whisper-1"
-        else -> settings.transcriptionOpenaiModel?.takeUnless { it.isBlank() } ?: "gpt-4o-mini-transcribe"
-    }
-
-    /** Style prompt sent to the transcription API. Only the custom-text option is wired up for now. */
-    private fun stylePromptFor(settings: DictateLegacySettings): String? =
-        settings.stylePromptCustomText?.takeIf { settings.stylePromptSelection == 2 && it.isNotBlank() }
+    private fun baseUrlOverrideFor(preset: ProviderPreset): String? =
+        if (preset.isCustom) prefs.dictate.customBaseUrl.get().takeIf { it.isNotBlank() } else null
 }

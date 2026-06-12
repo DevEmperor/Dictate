@@ -181,5 +181,12 @@ holt man das Modul bewusst aus FlorisBoard zurück. Reversibel via git.
   - [x] `dictate/DictateController.kt` – Orchestrierung Aufnahme→Transkription→`editorInstance.commitText`; beobachtbarer `UiState` (Idle/Recording/Transcribing/Error). Provider/Key/Modell vorerst aus **Legacy-Prefs** (`DictateLegacyPreferences`), Provider-Index 0/1/2 → OpenAI/Groq/Custom über `OpenAiCompatibleClient`
   - [x] `DictateInputLayout` an Controller verdrahtet (Mikro togglet Aufnahme/Transkription, Statuszeile, Fehleranzeige, Abbruch beim Verlassen)
   - [ ] **Noch offen (spätere Verfeinerung):** Rewording + Prompt-Queue, Auto-Apply, Live-Prompt, Usage-Tracking, per-Sprache-Style-Prompt, Sprachauswahl, Bluetooth-Mic/Audio-Focus, „resend"/Instant-Recording
-- [ ] **Schritt 6** – eigenes Onboarding + Settings-Screens
+- [~] **Schritt 6** – Settings + Onboarding in FlorisBoard integriert („aus einem Guss", Build grün):
+  - [x] JetPref-Gruppe `Dictate` in `AppPrefs.kt` (transcriptionProviderId, apiKey, transcriptionModel, customBaseUrl, legacyImported)
+  - [x] `DictateLegacyMigrator` – einmalige Übernahme Legacy→JetPref (Provider-Index 0/1/2→openai/groq/custom, Key, Modell, Custom-Host), idempotent via `legacyImported`; aufgerufen in `FlorisApplication.init` nach dem Laden des Stores
+  - [x] `DictateController` liest jetzt aus JetPref (`prefs.dictate`) statt Legacy
+  - [x] `app/settings/dictate/DictateScreen.kt` – Provider-Liste, API-Key (maskierter Text-Dialog), Modell, Custom-URL (bedingt). Route `Settings.Dictate` + Nav-Registrierung + **Home-Kachel** (Mikro-Icon, ganz oben)
+  - [x] Onboarding: „Configure Dictate"-Schritt im `SetupScreen` (FinishUp) → führt zum Dictate-Screen
+  - [ ] Lokalisierung der Dictate-Strings (aktuell Literale, TODO), eigene `dictate-*`-Theme-Elemente
+  - [ ] Proxy/Style-Prompt/Sprachauswahl in die neuen Settings übernehmen
 - [ ] **Schritt 7** – Feinschliff
