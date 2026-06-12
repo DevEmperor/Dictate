@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
  * with a visible indicator.
  *
  * Not yet ported from the legacy service (later refinement): rewording + prompt queue, auto-apply,
- * live prompt, usage tracking, per-language style prompt and language selection.
+ * live prompt, usage tracking and per-language style prompt.
  */
 object DictateController {
 
@@ -101,6 +101,24 @@ object DictateController {
             val segment = SystemClock.elapsedRealtime() - current.startedAtMs
             _state.value = current.copy(accumulatedMs = current.accumulatedMs + segment, paused = true)
         }
+    }
+
+    /** The active dictation language (defaults to auto-detect); read live from the JetPref store. */
+    fun activeLanguage(): DictateLanguage = DictateLanguages.of(prefs.dictate.activeInputLanguage.get())
+
+    /** Advances the active language to the next entry in the user's selected subset (no-op if ≤1). */
+    fun cycleLanguage() {
+        val selection = DictateLanguages.parseSelection(prefs.dictate.inputLanguages.get())
+        if (selection.size <= 1) return
+        val currentCode = prefs.dictate.activeInputLanguage.get()
+        val idx = selection.indexOfFirst { it.code == currentCode }
+        val next = selection[(idx + 1) % selection.size] // idx == -1 (unknown) → starts at index 0
+        scope.launch { prefs.dictate.activeInputLanguage.set(next.code) }
+    }
+
+    /** Sets the active dictation language explicitly (from the recording bar's language picker). */
+    fun setLanguage(code: String) {
+        scope.launch { prefs.dictate.activeInputLanguage.set(code) }
     }
 
     /** Clears a transient error back to idle (the Smartbar UI calls this after showing it briefly). */
@@ -173,7 +191,9 @@ object DictateController {
                     TranscriptionRequest(
                         audioFile = audioFile,
                         model = model,
-                        language = null, // auto-detect for now; explicit language selection comes later
+                        // Null for "detect" so the provider auto-detects; otherwise the chosen code.
+                        language = prefs.dictate.activeInputLanguage.get()
+                            .takeIf { it != DictateLanguages.DETECT },
                         prompt = null,
                     ),
                     onRetry = { attempt -> _state.value = UiState.Transcribing(attempt) },

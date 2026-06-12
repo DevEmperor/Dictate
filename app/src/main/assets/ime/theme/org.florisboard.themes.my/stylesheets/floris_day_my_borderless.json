@@ -150,6 +150,14 @@
     "margin": "6dp",
     "shape": "circle()"
   },
+  "smartbar-action-key[code=-214]": {
+    "background": "var(--primary)",
+    "shape": "circle()",
+    "margin": "6dp"
+  },
+  "smartbar-action-key-icon[code=-214]": {
+    "foreground": "var(--on-primary)"
+  },
   "smartbar-action-key": {
     "background": "transparent",
     "foreground": "var(--on-background)",

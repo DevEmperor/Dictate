@@ -254,6 +254,18 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__instant_recording",
             default = false,
         )
+        // Comma-separated dictation language codes the user cycles through on the recording bar
+        // (see DictateLanguages; "detect" = auto-detect). Default mirrors the legacy app.
+        val inputLanguages = string(
+            key = "dictate__input_languages",
+            default = "detect,en",
+        )
+        // The currently active dictation language code; persists across sessions and is switched
+        // from the recording bar's language chip.
+        val activeInputLanguage = string(
+            key = "dictate__active_input_language",
+            default = "detect",
+        )
         // Guard so the one-time import from the legacy Dictate SharedPreferences runs only once.
         val legacyImported = boolean(
             key = "dictate__legacy_imported",

@@ -16,8 +16,11 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -30,14 +33,19 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.DictateController
+import dev.patrickgold.florisboard.dictate.DictateLanguages
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
 import dev.patrickgold.jetpref.datastore.model.collectAsState
 import kotlinx.coroutines.delay
@@ -157,18 +166,80 @@ private fun RecordingContent(state: DictateController.UiState.Recording) {
         SnyggText(text = formatElapsed(elapsedMs))
     }
 
-    // Pause/resume button (far right, left of the sticky mic).
-    SnyggIconButton(
-        elementName = FlorisImeUi.SmartbarActionKey.elementName,
-        onClick = { DictateController.togglePause() },
-        modifier = Modifier.fillMaxHeight().aspectRatio(1f),
-    ) {
-        SnyggIcon(
-            imageVector = if (state.paused) Icons.Default.PlayArrow else Icons.Default.Pause,
-            contentDescription = stringRes(
-                if (state.paused) R.string.dictate__action_resume else R.string.dictate__action_pause,
+    // Right group: language chip + pause/resume button (left of the sticky mic).
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        LanguageChip()
+        SnyggIconButton(
+            elementName = FlorisImeUi.SmartbarActionKey.elementName,
+            onClick = { DictateController.togglePause() },
+            modifier = Modifier.fillMaxHeight().aspectRatio(1f),
+        ) {
+            SnyggIcon(
+                imageVector = if (state.paused) Icons.Default.PlayArrow else Icons.Default.Pause,
+                contentDescription = stringRes(
+                    if (state.paused) R.string.dictate__action_resume else R.string.dictate__action_pause,
+                ),
+            )
+        }
+    }
+}
+
+/**
+ * Compact dictation-language selector shown on the recording bar. Tap cycles through the user's
+ * selected languages ([prefs.dictate.inputLanguages]); long-press opens a quick picker of that same
+ * subset. Auto-detect is shown as a globe; any other language as its short code (DE, EN, …). The
+ * choice only matters at transcription time, so switching mid-recording is fine.
+ */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun LanguageChip() {
+    val prefs by FlorisPreferenceStore
+    val activeCode by prefs.dictate.activeInputLanguage.collectAsState()
+    val selectionRaw by prefs.dictate.inputLanguages.collectAsState()
+    val selection = remember(selectionRaw) { DictateLanguages.parseSelection(selectionRaw) }
+    val active = remember(activeCode) { DictateLanguages.of(activeCode) }
+    var menuOpen by remember { mutableStateOf(false) }
+
+    // Same footprint/look as the cancel and pause buttons – no chip background – so the bar reads
+    // as one consistent set of controls.
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .aspectRatio(1f)
+            .combinedClickable(
+                onClick = { DictateController.cycleLanguage() },
+                onLongClick = { if (selection.size > 1) menuOpen = true },
             ),
-        )
+        contentAlignment = Alignment.Center,
+    ) {
+        if (active.code == DictateLanguages.DETECT) {
+            SnyggIcon(
+                imageVector = Icons.Default.Language,
+                contentDescription = stringRes(R.string.dictate__language_detect),
+                modifier = Modifier.size(20.dp),
+            )
+        } else {
+            SnyggText(text = active.shortCode)
+        }
+        DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+            selection.forEach { lang ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            if (lang.code == DictateLanguages.DETECT) {
+                                stringRes(R.string.dictate__language_detect)
+                            } else {
+                                lang.displayName()
+                            }
+                        )
+                    },
+                    onClick = {
+                        DictateController.setLanguage(lang.code)
+                        menuOpen = false
+                    },
+                )
+            }
+        }
     }
 }
 

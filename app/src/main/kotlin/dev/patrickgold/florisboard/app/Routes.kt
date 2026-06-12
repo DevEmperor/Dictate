@@ -58,6 +58,7 @@ import dev.patrickgold.florisboard.app.settings.advanced.OtherScreen
 import dev.patrickgold.florisboard.app.settings.advanced.PhysicalKeyboardScreen
 import dev.patrickgold.florisboard.app.settings.advanced.RestoreScreen
 import dev.patrickgold.florisboard.app.settings.clipboard.ClipboardScreen
+import dev.patrickgold.florisboard.app.settings.dictate.DictateLanguagesScreen
 import dev.patrickgold.florisboard.app.settings.dictate.DictateScreen
 import dev.patrickgold.florisboard.app.settings.dictionary.DictionaryScreen
 import dev.patrickgold.florisboard.app.settings.dictionary.UserDictionaryScreen
@@ -112,6 +113,10 @@ object Routes {
         @Serializable
         @Deeplink("settings/dictate")
         object Dictate
+
+        @Serializable
+        @Deeplink("settings/dictate/languages")
+        object DictateLanguages
 
         @Serializable
         @Deeplink("settings/localization")
@@ -283,6 +288,7 @@ object Routes {
             composableWithDeepLink(Settings.Home::class) { HomeScreen() }
 
             composableWithDeepLink(Settings.Dictate::class) { DictateScreen() }
+            composableWithDeepLink(Settings.DictateLanguages::class) { DictateLanguagesScreen() }
 
             composableWithDeepLink(Settings.Localization::class) { LocalizationScreen() }
             composableWithDeepLink(Settings.SelectLocale::class) { SelectLocaleScreen() }

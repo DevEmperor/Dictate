@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.ModelTraining
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material.icons.filled.VolumeOff
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -38,6 +39,9 @@ import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceModel
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.app.LocalNavController
+import dev.patrickgold.florisboard.app.Routes
+import dev.patrickgold.florisboard.dictate.DictateLanguages
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import org.florisboard.lib.compose.stringRes
 import dev.patrickgold.jetpref.datastore.model.PreferenceData
@@ -61,6 +65,7 @@ fun DictateScreen() = FlorisScreen {
     val prefs by FlorisPreferenceStore
 
     content {
+        val navController = LocalNavController.current
         val providerId by prefs.dictate.transcriptionProviderId.collectAsState()
 
         ListPreference(
@@ -104,6 +109,22 @@ fun DictateScreen() = FlorisScreen {
                     summaryProvider = { it.ifBlank { baseUrlRequired } },
                 )
             }
+        }
+
+        PreferenceGroup(title = stringRes(R.string.dictate__languages_group)) {
+            val selectionRaw by prefs.dictate.inputLanguages.collectAsState()
+            val detectLabel = stringRes(R.string.dictate__language_detect)
+            val summary = remember(selectionRaw, detectLabel) {
+                DictateLanguages.parseSelection(selectionRaw).joinToString(", ") {
+                    if (it.code == DictateLanguages.DETECT) detectLabel else it.displayName()
+                }
+            }
+            Preference(
+                icon = Icons.Default.Translate,
+                title = stringRes(R.string.dictate__languages_title),
+                summary = summary,
+                onClick = { navController.navigate(Routes.Settings.DictateLanguages) },
+            )
         }
 
         PreferenceGroup(title = stringRes(R.string.dictate__recording_group)) {

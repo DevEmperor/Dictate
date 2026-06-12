@@ -41,13 +41,19 @@ Usage-Anzeige, Aufnahme-Komfort** fehlt noch.
 
 | # | Feature | Status | Anmerkung |
 |---|---------|--------|-----------|
-| 2.1 | **Multi-Select Eingabesprachen** (~55 Sprachen) | 🔲 | alt: `MultiSelectListPreference`; neu fest `language=null` (Auto-Detect) |
-| 2.2 | **Sprache umschalten** per Long-Press (durch ausgewählte cyclen) | 🔲 | alt: Long-Press auf Switch-Button |
-| 2.3 | Sprache am Button anzeigen (Flag-Emoji + Name) | 🔲 | `translateLanguageToEmoji` |
-| 2.4 | **Style-Prompt pro Sprache** (Punktuation/Großschreibung) | 🔲 | `getPunctuationPromptForLanguage`, 55 Sprachen |
+| 2.1 | **Multi-Select Eingabesprachen** (~55 Sprachen) | ✅ | `DictateLanguages` + eigener Settings-Subscreen (`DictateLanguagesScreen`), gespeichert als CSV in `prefs.dictate.inputLanguages` |
+| 2.2 | **Sprache umschalten** (durch ausgewählte cyclen) | ✅ | Sprach-Chip in der Aufnahmeleiste: Tippen = cyclen, Langdruck = Popup; `activeInputLanguage` persistiert |
+| 2.3 | Sprache am Button anzeigen | ✅ | Chip zeigt Kürzel (DE/EN) bzw. Globus für „Auto"; bewusst **keine Flaggen** (Android rendert sie nicht zuverlässig, Sprache≠Land) |
+| 2.4 | **Style-Prompt pro Sprache** (Punktuation/Großschreibung) | 🔲 | `getPunctuationPromptForLanguage`, 55 Sprachen — bewusst ausgeklammert, kommt später |
 
-> Empfehlung: 2.1–2.4 zusammen als „Eingabesprachen"-Block portieren. Wichtig für
-> Erkennungsqualität (Whisper bekommt `language` + Style-Prompt).
+> 2.1–2.3 portiert. `language` geht jetzt an Whisper (Auto-Detect = nicht gesendet). Der Sprach-Chip
+> erscheint nur **während der Aufnahme** (links neben Pause), damit das Keyboard sonst nicht überladen wird.
+> 2.4 (Style-Prompt) bleibt für später.
+
+> Nebenbei in diesem Block erledigt: **Akzentfarbe entkoppelt** — die Standard-Keyboard-Themes hatten
+> `--primary` fix auf `#30b7e6`; jetzt folgen Enter-Key, Mic & Akzentelemente `prefs.theme.accentColor`
+> (Default Hellblau) via `dynamic-light/dark-color(...)`. Dark-Mode-Rollen (primary/inversePrimary)
+> korrigiert. Das Mic ist jetzt ein **FAB** (Akzent-Kreis, `var(--primary)`/`var(--on-primary)`, 6dp Margin).
 
 ---
 
