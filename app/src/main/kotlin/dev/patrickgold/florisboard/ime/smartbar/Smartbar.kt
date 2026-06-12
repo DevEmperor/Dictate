@@ -59,6 +59,8 @@ import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
 import dev.patrickgold.florisboard.ime.nlp.NlpInlineAutofill
+import dev.patrickgold.florisboard.dictate.DictateController
+import dev.patrickgold.florisboard.dictate.ui.DictateSmartbarUi
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickActionButton
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickActionsRow
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.ToggleOverflowPanelAction
@@ -161,6 +163,9 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
 
     val shouldAnimate by prefs.smartbar.sharedActionsExpandWithAnimation.collectAsState()
 
+    // Drives the in-Smartbar dictation indicator (recording timer / transcribing spinner).
+    val dictateState by DictateController.state.collectAsState()
+
     @Composable
     fun SharedActionsToggle() {
         SnyggIconButton(
@@ -217,8 +222,9 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
         ) {
             val enterTransition = if (shouldAnimate) HorizontalEnterTransition else NoEnterTransition
             val exitTransition = if (shouldAnimate) HorizontalExitTransition else NoExitTransition
+            val isDictating = dictateState !is DictateController.UiState.Idle
             this@CenterContent.AnimatedVisibility(
-                visible = !expanded,
+                visible = !expanded && !isDictating,
                 enter = enterTransition,
                 exit = exitTransition,
             ) {
@@ -229,7 +235,7 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
                 }
             }
             this@CenterContent.AnimatedVisibility(
-                visible = expanded,
+                visible = expanded && !isDictating,
                 enter = enterTransition,
                 exit = exitTransition,
             ) {
@@ -237,6 +243,13 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
                     FlorisImeUi.SmartbarSharedActionsRow.elementName,
                     modifier = modifier.fillMaxSize(),
                 )
+            }
+            this@CenterContent.AnimatedVisibility(
+                visible = isDictating,
+                enter = enterTransition,
+                exit = exitTransition,
+            ) {
+                DictateSmartbarUi(dictateState)
             }
         }
     }

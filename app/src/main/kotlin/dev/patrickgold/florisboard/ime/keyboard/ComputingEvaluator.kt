@@ -40,7 +40,9 @@ import androidx.compose.material.icons.filled.KeyboardCapslock
 import androidx.compose.material.icons.filled.KeyboardHide
 import androidx.compose.material.icons.filled.KeyboardVoice
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SelectAll
@@ -261,7 +263,11 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
             Icons.AutoMirrored.Outlined.Assignment
         }
         KeyCode.IME_UI_MODE_DICTATE -> {
-            Icons.Default.Mic
+            when (dev.patrickgold.florisboard.dictate.DictateController.state.value) {
+                is dev.patrickgold.florisboard.dictate.DictateController.UiState.Recording -> Icons.Default.Stop
+                is dev.patrickgold.florisboard.dictate.DictateController.UiState.Transcribing -> Icons.Default.HourglassEmpty
+                else -> Icons.Default.Mic
+            }
         }
         KeyCode.LANGUAGE_SWITCH -> {
             Icons.Default.Language

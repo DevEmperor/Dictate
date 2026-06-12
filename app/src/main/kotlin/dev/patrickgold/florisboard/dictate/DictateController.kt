@@ -11,6 +11,7 @@
 package dev.patrickgold.florisboard.dictate
 
 import android.content.Context
+import android.os.SystemClock
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.audio.RecordingController
@@ -45,7 +46,7 @@ object DictateController {
 
     sealed interface UiState {
         data object Idle : UiState
-        data object Recording : UiState
+        data class Recording(val startedAtMs: Long) : UiState
         data object Transcribing : UiState
         data class Error(val message: String) : UiState
     }
@@ -68,6 +69,11 @@ object DictateController {
         }
     }
 
+    /** Clears a transient error back to idle (the Smartbar UI calls this after showing it briefly). */
+    fun clearError() {
+        if (_state.value is UiState.Error) _state.value = UiState.Idle
+    }
+
     /** Aborts an in-progress recording and returns to idle (e.g. when leaving the panel). */
     fun abortRecording() {
         recorder?.cancel()
@@ -80,7 +86,7 @@ object DictateController {
     private fun startRecording(context: Context) {
         try {
             recorder = RecordingController(context.applicationContext).also { it.start() }
-            _state.value = UiState.Recording
+            _state.value = UiState.Recording(SystemClock.elapsedRealtime())
         } catch (t: Throwable) {
             recorder = null
             _state.value = UiState.Error(
