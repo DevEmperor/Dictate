@@ -1,8 +1,8 @@
 {
   "$schema": "https://schemas.florisboard.org/snygg/v2/stylesheet",
   "@defines": {
-    "--primary": "#388e3c",
-    "--primary-variant": "#306d32",
+    "--primary": "#1c7eab",
+    "--primary-variant": "#155f81",
     "--secondary": "#ff9800",
     "--secondary-variant": "#804c00",
     "--background": "#000000",

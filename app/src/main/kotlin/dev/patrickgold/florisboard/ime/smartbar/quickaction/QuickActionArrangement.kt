@@ -69,8 +69,13 @@ data class QuickActionArrangement(
             // Dictate's flagship action: the AI voice panel is always one tap away in the Smartbar.
             stickyAction = QuickAction.InsertKey(TextKeyData.IME_UI_MODE_DICTATE),
             dynamicActions = listOf(
+                // Default visible order requested by the user.
+                QuickAction.InsertKey(TextKeyData.CLIPBOARD_SELECT_ALL),
                 QuickAction.InsertKey(TextKeyData.UNDO),
                 QuickAction.InsertKey(TextKeyData.REDO),
+                QuickAction.InsertKey(TextKeyData.CLIPBOARD_CUT),
+                QuickAction.InsertKey(TextKeyData.CLIPBOARD_COPY),
+                QuickAction.InsertKey(TextKeyData.CLIPBOARD_PASTE),
                 QuickAction.InsertKey(TextKeyData.SETTINGS),
                 QuickAction.InsertKey(TextKeyData.TOGGLE_FLOATING_WINDOW),
                 QuickAction.InsertKey(TextKeyData.TOGGLE_RESIZE_MODE),
@@ -84,10 +89,6 @@ data class QuickActionArrangement(
                 QuickAction.InsertKey(TextKeyData.ARROW_LEFT),
                 QuickAction.InsertKey(TextKeyData.ARROW_RIGHT),
                 QuickAction.InsertKey(TextKeyData.CLIPBOARD_CLEAR_PRIMARY_CLIP),
-                QuickAction.InsertKey(TextKeyData.CLIPBOARD_COPY),
-                QuickAction.InsertKey(TextKeyData.CLIPBOARD_CUT),
-                QuickAction.InsertKey(TextKeyData.CLIPBOARD_PASTE),
-                QuickAction.InsertKey(TextKeyData.CLIPBOARD_SELECT_ALL),
                 QuickAction.InsertKey(TextKeyData.LANGUAGE_SWITCH),
                 QuickAction.InsertKey(TextKeyData.FORWARD_DELETE),
                 QuickAction.InsertKey(TextKeyData.IME_HIDE_UI),

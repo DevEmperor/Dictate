@@ -535,7 +535,7 @@
     <string name="settings__udm__dialog__locale_label" comment="Label for the language code in the user dictionary add/edit dialog">Language code (optional)</string>
     <string name="settings__udm__dialog__locale_error_invalid" comment="Error label for the language code in the user dictionary add/edit dialog">This language code does not conform to the expected syntax. The code must either be a language only (like en), a language and country (like en_US) or a language, country, and script (like en_US-script).</string>
 
-    <string name="settings__gestures__title" comment="Title of Gestures screen">Gestures &amp; Glide typing</string>
+    <string name="settings__gestures__title" comment="Title of Gestures screen">Gestures</string>
     <string name="pref__glide__title" comment="Preference group title">Glide typing</string>
     <string name="pref__glide__enabled__label" comment="Preference title">Enable glide typing</string>
     <string name="pref__glide__enabled__summary" comment="Preference summary">Type in a word by sliding your finger through its letters</string>
@@ -1198,6 +1198,7 @@
     <!-- Dictate onboarding step -->
     <string name="dictate__setup_description" comment="Onboarding text inviting the user to set up Dictate">Set up your AI provider and API key so you can start dictating with the mic.</string>
     <string name="dictate__setup_configure_btn" comment="Onboarding button opening the Dictate settings">Configure Dictate</string>
+    <string name="setup__grant_mic_permission__title" comment="Title of the microphone permission onboarding step">Microphone access</string>
     <string name="setup__grant_mic_permission__description" comment="Onboarding: ask for microphone permission for dictation">Dictate needs microphone access to record your voice for transcription.</string>
     <string name="setup__grant_mic_permission__btn" comment="Onboarding button to grant the microphone permission">Grant microphone permission</string>
 

@@ -403,7 +403,7 @@
     <string name="settings__udm__dialog__shortcut_error_invalid" comment="Error label for the shortcut in the user dictionary add/edit dialog">Bitte einen Shortcut eingeben, der zu {regex} passt</string>
     <string name="settings__udm__dialog__locale_label" comment="Label for the language code in the user dictionary add/edit dialog">Sprachcode (optional)</string>
     <string name="settings__udm__dialog__locale_error_invalid" comment="Error label for the language code in the user dictionary add/edit dialog">Dieser Sprachcode entspricht nicht der Syntax. Der Code muss entweder ein Land (wie en), Land und Region (wie en_US) oder Land, Region und Script (wie en_US-script) sein.</string>
-    <string name="settings__gestures__title" comment="Title of Gestures screen">Gesten &amp; Glide Typing</string>
+    <string name="settings__gestures__title" comment="Title of Gestures screen">Gesten</string>
     <string name="pref__glide__title" comment="Preference group title">Glide Typing</string>
     <string name="pref__glide__enabled__label" comment="Preference title">Glide Typing aktivieren</string>
     <string name="pref__glide__enabled__summary" comment="Preference summary">Durch Gleiten über die Buchstaben Wort eingeben</string>

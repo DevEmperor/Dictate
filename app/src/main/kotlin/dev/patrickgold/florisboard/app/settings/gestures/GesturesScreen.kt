@@ -38,13 +38,6 @@ fun GesturesScreen() = FlorisScreen {
     previewFieldVisible = true
 
     content {
-        FlorisInfoCard(
-            modifier = Modifier.padding(8.dp),
-            text = """
-                Glide typing is currently not available and will be re-implemented from the ground up with word suggestions & the new keyboard layout engine. DO NOT file an issue for this missing functionality.
-            """.trimIndent()
-        )
-
         /*PreferenceGroup(title = stringRes(R.string.pref__glide__title)) {
             SwitchPreference(
                 prefs.glide.enabled,

@@ -4,6 +4,7 @@
 
     <!-- Permission needed to vibrate if the user has key press vibration enabled -->
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <!-- Permission needed to record audio for Dictate voice transcription -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>

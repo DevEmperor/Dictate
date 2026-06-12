@@ -96,12 +96,25 @@ fun SetupScreen() = FlorisScreen {
             }
         }
 
+    var isMicGranted by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
+                PackageManager.PERMISSION_GRANTED
+        )
+    }
+    val requestMic =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            isMicGranted = isGranted
+        }
+
     content(
         isFlorisBoardEnabled,
         isFlorisBoardSelected,
+        isMicGranted,
         context,
         navController,
         requestNotification,
+        requestMic,
         hasNotificationPermission,
         scope,
     )
@@ -111,9 +124,11 @@ fun SetupScreen() = FlorisScreen {
 private fun FlorisScreenScope.content(
     isFlorisBoardEnabled: Boolean,
     isFlorisBoardSelected: Boolean,
+    isMicGranted: Boolean,
     context: Context,
     navController: NavController,
     requestNotification: ManagedActivityResultLauncher<String, Boolean>,
+    requestMic: ManagedActivityResultLauncher<String, Boolean>,
     hasNotificationPermission: NotificationPermissionState,
     scope: CoroutineScope,
 ) {
@@ -122,6 +137,7 @@ private fun FlorisScreenScope.content(
         val initStep = when {
             !isFlorisBoardEnabled -> Steps.EnableIme.id
             !isFlorisBoardSelected -> Steps.SelectIme.id
+            !isMicGranted -> Steps.GrantMicPermission.id
             hasNotificationPermission == NotificationPermissionState.NOT_SET && AndroidVersion.ATLEAST_API33_T -> Steps.SelectNotification.id
             else -> Steps.FinishUp.id
         }
@@ -129,11 +145,12 @@ private fun FlorisScreenScope.content(
     }
 
     content {
-        LaunchedEffect(isFlorisBoardEnabled, isFlorisBoardSelected, hasNotificationPermission) {
+        LaunchedEffect(isFlorisBoardEnabled, isFlorisBoardSelected, isMicGranted, hasNotificationPermission) {
             stepState.setCurrentAuto(
                 when {
                     !isFlorisBoardEnabled -> Steps.EnableIme.id
                     !isFlorisBoardSelected -> Steps.SelectIme.id
+                    !isMicGranted -> Steps.GrantMicPermission.id
                     hasNotificationPermission == NotificationPermissionState.NOT_SET && AndroidVersion.ATLEAST_API33_T -> Steps.SelectNotification.id
                     else -> Steps.FinishUp.id
                 }
@@ -171,7 +188,7 @@ private fun FlorisScreenScope.content(
                 Spacer(modifier = Modifier.height(16.dp))
             },
             steps = steps(
-                context, navController, requestNotification, scope
+                context, navController, requestNotification, requestMic, scope
             ),
             footer = {
                 footer(context)
@@ -206,6 +223,7 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
     context: Context,
     navController: NavController,
     requestNotification: ManagedActivityResultLauncher<String, Boolean>,
+    requestMic: ManagedActivityResultLauncher<String, Boolean>,
     scope: CoroutineScope,
 ): List<FlorisStep> {
 
@@ -228,6 +246,15 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
                 InputMethodUtils.showImePicker(context)
             }
         },
+        FlorisStep(
+            id = Steps.GrantMicPermission.id,
+            title = stringRes(R.string.setup__grant_mic_permission__title),
+        ) {
+            StepText(stringRes(R.string.setup__grant_mic_permission__description))
+            StepButton(stringRes(R.string.setup__grant_mic_permission__btn)) {
+                requestMic.launch(Manifest.permission.RECORD_AUDIO)
+            }
+        },
         if (AndroidVersion.ATLEAST_API33_T) {
             FlorisStep(
                 id = Steps.SelectNotification.id,
@@ -245,22 +272,6 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
         ) {
             StepText(stringRes(R.string.setup__finish_up__description_p1))
             StepText(stringRes(R.string.setup__finish_up__description_p2))
-            // Dictate needs microphone access to record audio for transcription; ask for it here.
-            var micGranted by remember {
-                mutableStateOf(
-                    ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-                        PackageManager.PERMISSION_GRANTED
-                )
-            }
-            val requestMic = rememberLauncherForActivityResult(
-                ActivityResultContracts.RequestPermission()
-            ) { granted -> micGranted = granted }
-            if (!micGranted) {
-                StepText(stringRes(R.string.setup__grant_mic_permission__description))
-                StepButton(label = stringRes(R.string.setup__grant_mic_permission__btn)) {
-                    requestMic.launch(Manifest.permission.RECORD_AUDIO)
-                }
-            }
             // Dictate onboarding: let the user set their AI provider + API key right here.
             StepText(stringRes(R.string.dictate__setup_description))
             StepButton(label = stringRes(R.string.dictate__setup_configure_btn)) {
@@ -281,6 +292,7 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
 private sealed class Steps(val id: Int) {
     data object EnableIme : Steps(id = 1)
     data object SelectIme : Steps(id = 2)
-    data object SelectNotification : Steps(id = 3)
-    data object FinishUp : Steps(id = 4)
+    data object GrantMicPermission : Steps(id = 3)
+    data object SelectNotification : Steps(id = 4)
+    data object FinishUp : Steps(id = 5)
 }
