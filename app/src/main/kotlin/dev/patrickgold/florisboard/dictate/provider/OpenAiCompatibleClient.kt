@@ -66,6 +66,36 @@ class OpenAiCompatibleClient(
         return ChatResult(text, usage)
     }
 
+    /**
+     * Transcribes [request]. [onRetry] is invoked with the (1-based) attempt number each time a
+     * transient failure triggers a retry, so the UI can surface a "retrying…" indicator.
+     */
+    suspend fun transcribe(
+        request: TranscriptionRequest,
+        onRetry: (attempt: Int) -> Unit,
+    ): TranscriptionResult {
+        val fileBody = request.audioFile.asRequestBody(guessAudioMediaType(request.audioFile))
+        val multipart = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("file", request.audioFile.name, fileBody)
+            .addFormDataPart("model", request.model)
+            .addFormDataPart("response_format", "json")
+            .apply {
+                val lang = request.language
+                if (!lang.isNullOrEmpty() && lang != "detect") addFormDataPart("language", lang)
+                if (!request.prompt.isNullOrEmpty()) addFormDataPart("prompt", request.prompt)
+            }
+            .build()
+        val httpRequest = Request.Builder()
+            .url(config.normalizedBaseUrl + "audio/transcriptions")
+            .headers(authHeaders())
+            .post(multipart)
+            .build()
+        val body = executeForBody(httpRequest, onRetry = onRetry)
+        val response = json.decodeFromString(TranscriptionResponseDto.serializer(), body)
+        return TranscriptionResult(response.text.trim())
+    }
+
     override suspend fun transcribe(request: TranscriptionRequest): TranscriptionResult {
         val fileBody = request.audioFile.asRequestBody(guessAudioMediaType(request.audioFile))
         val multipart = MultipartBody.Builder()
@@ -109,7 +139,11 @@ class OpenAiCompatibleClient(
         return builder.build()
     }
 
-    private suspend fun executeForBody(request: Request, maxRetries: Int = 3): String {
+    private suspend fun executeForBody(
+        request: Request,
+        maxRetries: Int = 3,
+        onRetry: (attempt: Int) -> Unit = {},
+    ): String {
         var attempt = 0
         while (true) {
             try {
@@ -122,6 +156,7 @@ class OpenAiCompatibleClient(
                 }
                 if (mapped.kind.isRetryable && attempt < maxRetries) {
                     attempt++
+                    onRetry(attempt + 1) // report the upcoming attempt (2nd, 3rd, …)
                     delay(RETRY_DELAY_MS)
                 } else {
                     throw mapped

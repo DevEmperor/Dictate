@@ -1177,6 +1177,12 @@
     <string name="dictate__error_transcription_failed" comment="Generic transcription failure">Transcription failed.</string>
     <string name="dictate__error_unknown" comment="Unknown transcription error">Unknown error during transcription.</string>
 
+    <!-- Dictate in-Smartbar recording controls -->
+    <string name="dictate__status_retrying" comment="Shown while a failed transcription is being retried. {attempt} is the attempt number.">Retrying… ({attempt})</string>
+    <string name="dictate__action_cancel" comment="Content description for the button that discards the current recording">Cancel recording</string>
+    <string name="dictate__action_pause" comment="Content description for the button that pauses the recording">Pause recording</string>
+    <string name="dictate__action_resume" comment="Content description for the button that resumes the recording">Resume recording</string>
+
     <!-- Dictate settings screen -->
     <string name="dictate__title" comment="Title of the Dictate settings screen and home tile">Dictate</string>
     <string name="dictate__provider_title" comment="Label for the transcription provider selector">Transcription provider</string>
@@ -1194,6 +1200,17 @@
     <string name="dictate__base_url_placeholder" translatable="false">https://your-server/v1/</string>
     <string name="dictate__base_url_required" comment="Summary shown when the custom base URL is not yet set">Required for the custom provider</string>
     <string name="dictate__value_not_set" comment="Generic summary for an unset text setting">Not set</string>
+
+    <!-- Dictate recording settings -->
+    <string name="dictate__recording_group" comment="Group title for recording-related settings">Recording</string>
+    <string name="dictate__audio_focus_title" comment="Setting: pause other apps' audio while recording">Pause other audio</string>
+    <string name="dictate__audio_focus_summary" comment="Summary for the audio focus setting">Pause music and other apps while recording</string>
+    <string name="dictate__bluetooth_mic_title" comment="Setting: use a Bluetooth microphone">Bluetooth microphone</string>
+    <string name="dictate__bluetooth_mic_summary" comment="Summary for the Bluetooth mic setting">Record through a connected Bluetooth headset when available</string>
+    <string name="dictate__keep_screen_awake_title" comment="Setting: keep the screen on while recording">Keep screen awake</string>
+    <string name="dictate__keep_screen_awake_summary" comment="Summary for the keep-screen-awake setting">Prevent the screen from turning off while recording</string>
+    <string name="dictate__instant_recording_title" comment="Setting: start recording when the keyboard opens">Instant recording</string>
+    <string name="dictate__instant_recording_summary" comment="Summary for the instant recording setting">Start recording automatically when the keyboard opens</string>
 
     <!-- Dictate onboarding step -->
     <string name="dictate__setup_description" comment="Onboarding text inviting the user to set up Dictate">Set up your AI provider and API key so you can start dictating with the mic.</string>

@@ -234,6 +234,26 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__custom_base_url",
             default = "",
         )
+        // Pause/duck other apps' audio while recording (default on, as in the legacy Dictate).
+        val audioFocus = boolean(
+            key = "dictate__audio_focus",
+            default = true,
+        )
+        // Route recording through a connected Bluetooth (SCO) microphone when available.
+        val useBluetoothMic = boolean(
+            key = "dictate__use_bluetooth_mic",
+            default = false,
+        )
+        // Keep the screen awake while a recording is in progress (default on).
+        val keepScreenAwake = boolean(
+            key = "dictate__keep_screen_awake",
+            default = true,
+        )
+        // Start recording immediately whenever the keyboard opens on a text field (default off).
+        val instantRecording = boolean(
+            key = "dictate__instant_recording",
+            default = false,
+        )
         // Guard so the one-time import from the legacy Dictate SharedPreferences runs only once.
         val legacyImported = boolean(
             key = "dictate__legacy_imported",

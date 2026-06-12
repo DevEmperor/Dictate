@@ -9,6 +9,11 @@
     <!-- Permission needed to record audio for Dictate voice transcription -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
+    <!-- Permissions needed to optionally route Dictate recording through a Bluetooth microphone
+         and to manage audio focus / SCO routing while recording -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30"/>
+
     <!-- Permission needed to create notifications on devices running Android 13+ -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 

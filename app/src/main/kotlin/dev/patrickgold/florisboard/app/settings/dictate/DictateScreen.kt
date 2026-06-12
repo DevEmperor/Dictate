@@ -13,10 +13,14 @@ package dev.patrickgold.florisboard.app.settings.dictate
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bluetooth
+import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.BrightnessHigh
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.ModelTraining
+import androidx.compose.material.icons.filled.VolumeOff
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,6 +46,7 @@ import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.PreferenceUiScope
 import dev.patrickgold.jetpref.datastore.ui.Preference
+import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
 import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
 import kotlinx.coroutines.launch
@@ -99,6 +104,33 @@ fun DictateScreen() = FlorisScreen {
                     summaryProvider = { it.ifBlank { baseUrlRequired } },
                 )
             }
+        }
+
+        PreferenceGroup(title = stringRes(R.string.dictate__recording_group)) {
+            SwitchPreference(
+                prefs.dictate.audioFocus,
+                icon = Icons.Default.VolumeOff,
+                title = stringRes(R.string.dictate__audio_focus_title),
+                summary = stringRes(R.string.dictate__audio_focus_summary),
+            )
+            SwitchPreference(
+                prefs.dictate.useBluetoothMic,
+                icon = Icons.Default.Bluetooth,
+                title = stringRes(R.string.dictate__bluetooth_mic_title),
+                summary = stringRes(R.string.dictate__bluetooth_mic_summary),
+            )
+            SwitchPreference(
+                prefs.dictate.keepScreenAwake,
+                icon = Icons.Default.BrightnessHigh,
+                title = stringRes(R.string.dictate__keep_screen_awake_title),
+                summary = stringRes(R.string.dictate__keep_screen_awake_summary),
+            )
+            SwitchPreference(
+                prefs.dictate.instantRecording,
+                icon = Icons.Default.Bolt,
+                title = stringRes(R.string.dictate__instant_recording_title),
+                summary = stringRes(R.string.dictate__instant_recording_summary),
+            )
         }
     }
 }

@@ -39,8 +39,11 @@ class RecordingController(private val context: Context) {
     /**
      * Starts a new recording. Throws if the microphone cannot be acquired (e.g. permission missing
      * or another app holds it). On failure the recorder is released so the controller stays usable.
+     *
+     * [audioSource] defaults to the local mic; pass [MediaRecorder.AudioSource.VOICE_COMMUNICATION]
+     * when recording is routed through a Bluetooth SCO headset.
      */
-    fun start() {
+    fun start(audioSource: Int = MediaRecorder.AudioSource.MIC) {
         if (recorder != null) return
         val file = File(context.cacheDir, AUDIO_FILE_NAME)
         @Suppress("DEPRECATION")
@@ -50,7 +53,7 @@ class RecordingController(private val context: Context) {
             MediaRecorder()
         }
         try {
-            mr.setAudioSource(MediaRecorder.AudioSource.MIC)
+            mr.setAudioSource(audioSource)
             mr.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             mr.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             mr.setAudioEncodingBitRate(64_000)
@@ -83,6 +86,16 @@ class RecordingController(private val context: Context) {
         } finally {
             runCatching { mr.release() }
         }
+    }
+
+    /** Pauses the in-progress recording. No-op if nothing is recording. */
+    fun pause() {
+        runCatching { recorder?.pause() }
+    }
+
+    /** Resumes a previously paused recording. No-op if nothing is recording. */
+    fun resume() {
+        runCatching { recorder?.resume() }
     }
 
     /** Stops and discards the current recording without returning it. */

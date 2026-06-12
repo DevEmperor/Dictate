@@ -339,6 +339,17 @@ class FlorisImeService : LifecycleInputMethodService() {
             activeState.isSelectionMode = editorInfo.initialSelection.isSelectionMode
             editorInstance.handleStartInputView(editorInfo, isRestart = restarting)
         }
+
+        // Instant recording: optionally start dictation as soon as the keyboard opens on a field.
+        if (!restarting &&
+            prefs.dictate.instantRecording.get() &&
+            dev.patrickgold.florisboard.dictate.DictateController.state.value is
+                dev.patrickgold.florisboard.dictate.DictateController.UiState.Idle &&
+            androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) ==
+                android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            dev.patrickgold.florisboard.dictate.DictateController.onMicClick(this)
+        }
     }
 
     override fun onEvaluateInputViewShown(): Boolean {
