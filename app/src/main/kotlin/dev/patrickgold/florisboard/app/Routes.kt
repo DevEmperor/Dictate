@@ -62,6 +62,7 @@ import dev.patrickgold.florisboard.app.settings.dictate.DictateScreen
 import dev.patrickgold.florisboard.app.settings.dictionary.DictionaryScreen
 import dev.patrickgold.florisboard.app.settings.dictionary.UserDictionaryScreen
 import dev.patrickgold.florisboard.app.settings.dictionary.UserDictionaryType
+import dev.patrickgold.florisboard.app.settings.gestures.GesturesScreen
 import dev.patrickgold.florisboard.app.settings.keyboard.InputFeedbackScreen
 import dev.patrickgold.florisboard.app.settings.keyboard.KeyboardScreen
 import dev.patrickgold.florisboard.app.settings.localization.LanguagePackManagerScreen
@@ -163,6 +164,10 @@ object Routes {
         @Serializable
         @Deeplink("settings/dictionary/user-dictionary")
         data class UserDictionary(val type: UserDictionaryType)
+
+        @Serializable
+        @Deeplink("settings/gestures")
+        object Gestures
 
         @Serializable
         @Deeplink("settings/clipboard")
@@ -309,6 +314,8 @@ object Routes {
                 val payload = navBackStack.toRoute<Settings.UserDictionary>()
                 UserDictionaryScreen(payload.type)
             }
+
+            composableWithDeepLink(Settings.Gestures::class) { GesturesScreen() }
 
             composableWithDeepLink(Settings.Clipboard::class) { ClipboardScreen() }
 

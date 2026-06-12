@@ -41,9 +41,10 @@ Reihenfolge = grobe Priorität; wird Punkt für Punkt erledigt und hier abgehakt
   `RECORD_AUDIO` im Setup-Flow aktiv anfragen (eigener Step), damit beim Diktieren kein
   Permission-Fehler auftritt.
 
-- [x] **7. Glide-/Swipe-Typing & Gesten entfernen**
-  Glide-Typing und Gesten-Infrastruktur ausbauen (zu viel Overhead für den Start). Gestrichen
-  laut Architektur-Entscheidung.
+- [x] **7. Glide-Typing-Status geklärt; Gesten BLEIBEN**
+  Glide-Typing war upstream bereits deaktiviert (default=false, Settings auskommentiert
+  „currently not available"). Gesten/Swipe **bleiben vollständig erhalten** inkl. der
+  Gesten-Einstellungsseite (Nutzer-Entscheidung 2026-06-12) – frei konfigurierbar.
 
 - [x] **8. About-Section + Version 4.0.0**
   Alles in About auf „Dictate Keyboard"; Version 4.0.0 setzen.
@@ -67,7 +68,6 @@ Reihenfolge = grobe Priorität; wird Punkt für Punkt erledigt und hier abgehakt
 - **#5**: Icon zentral über `ic_app_icon_foreground` (Webp aus Altprojekt), `ic_app_icon_background`
   `#4F576D`, Monochrome = Dictate-Mikro. Greift für Launcher, IME-Picker, About und Splash zugleich.
 - **#7**: Glide-Typing war upstream bereits deaktiviert (default=false, Settings auskommentiert
-  „currently not available"). Gesten-**Settings-Screen** komplett entfernt (Tile + Route + Datei).
-  Kern-Touch-Erkennung (`SwipeGesture`: Tap/Long-Press/Backspace-halten/Cursor per Space-Swipe) bleibt,
-  da ihr Löschen das Tippen zerstören würde. Falls gewünscht: einzelne Swipe-Defaults (z. B.
-  swipeUp=Shift, swipeDown=Hide, swipeLeft/Right=Subtype) können noch auf NO_ACTION gesetzt werden.
+  „currently not available"). Die Gesten-Settings-Seite wurde zunächst entfernt, dann auf
+  Nutzerwunsch **wieder vollständig hergestellt** (Tile + Route + `GesturesScreen.kt`). Gesten/Swipe
+  bleiben damit komplett erhalten und in den Einstellungen frei konfigurierbar.
