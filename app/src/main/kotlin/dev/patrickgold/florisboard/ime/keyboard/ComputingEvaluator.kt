@@ -42,7 +42,6 @@ import androidx.compose.material.icons.filled.KeyboardVoice
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SelectAll
@@ -264,7 +263,9 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
         }
         KeyCode.IME_UI_MODE_DICTATE -> {
             when (dev.patrickgold.florisboard.dictate.DictateController.state.value) {
-                is dev.patrickgold.florisboard.dictate.DictateController.UiState.Recording -> Icons.Default.Stop
+                // While recording, show a "send" arrow so it's obvious that tapping again submits
+                // the recording for transcription (rather than merely stopping it).
+                is dev.patrickgold.florisboard.dictate.DictateController.UiState.Recording -> Icons.AutoMirrored.Filled.Send
                 is dev.patrickgold.florisboard.dictate.DictateController.UiState.Transcribing -> Icons.Default.HourglassEmpty
                 else -> Icons.Default.Mic
             }

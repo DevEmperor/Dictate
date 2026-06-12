@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import dev.patrickgold.compose.tooltip.PlainTooltip
+import dev.patrickgold.florisboard.dictate.DictateController
 import dev.patrickgold.florisboard.ime.input.LocalInputFeedbackController
 import dev.patrickgold.florisboard.ime.keyboard.ComputingEvaluator
 import dev.patrickgold.florisboard.ime.keyboard.computeImageVector
@@ -122,7 +124,11 @@ fun QuickActionButton(
                 // Render foreground
                 when (action) {
                     is QuickAction.InsertKey -> {
-                        val (imageVector, label) = remember(action, evaluator) {
+                        // The Dictate action has a dynamic icon (mic → send → hourglass) that depends
+                        // on the recording state. Observe it so the icon recomputes on state changes;
+                        // for all other actions this is a cheap, stable subscription.
+                        val dictateState by DictateController.state.collectAsState()
+                        val (imageVector, label) = remember(action, evaluator, dictateState) {
                             evaluator.computeImageVector(action.data) to evaluator.computeLabel(action.data)
                         }
                         if (imageVector != null) {
