@@ -11,6 +11,7 @@
 package dev.patrickgold.florisboard.dictate
 
 import android.content.Context
+import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.audio.RecordingController
 import dev.patrickgold.florisboard.dictate.provider.DictateApiException
@@ -84,7 +85,7 @@ object DictateController {
             recorder = null
             _state.value = UiState.Error(
                 // Most common cause is the missing RECORD_AUDIO permission (granted in onboarding later).
-                "Aufnahme fehlgeschlagen – Mikrofon-Berechtigung erteilen. (${t.message})",
+                context.getString(R.string.dictate__error_recording_failed, t.message ?: ""),
             )
         }
     }
@@ -94,13 +95,13 @@ object DictateController {
         recorder = null
         val audioFile = activeRecorder?.stop()
         if (audioFile == null || !audioFile.exists() || audioFile.length() == 0L) {
-            _state.value = UiState.Error("Keine Aufnahme erkannt – bitte etwas länger sprechen.")
+            _state.value = UiState.Error(context.getString(R.string.dictate__error_no_audio))
             return
         }
 
         val apiKey = prefs.dictate.apiKey.get()
         if (apiKey.isBlank()) {
-            _state.value = UiState.Error("Kein API-Schlüssel hinterlegt – in den Dictate-Einstellungen konfigurieren.")
+            _state.value = UiState.Error(context.getString(R.string.dictate__error_no_api_key))
             return
         }
 
@@ -126,9 +127,9 @@ object DictateController {
                 editorInstance.commitText(result.text)
                 _state.value = UiState.Idle
             } catch (e: DictateApiException) {
-                _state.value = UiState.Error(e.message ?: "Transkription fehlgeschlagen.")
+                _state.value = UiState.Error(e.message ?: appContext.getString(R.string.dictate__error_transcription_failed))
             } catch (t: Throwable) {
-                _state.value = UiState.Error(t.message ?: "Unbekannter Fehler bei der Transkription.")
+                _state.value = UiState.Error(t.message ?: appContext.getString(R.string.dictate__error_unknown))
             } finally {
                 audioFile.delete()
             }

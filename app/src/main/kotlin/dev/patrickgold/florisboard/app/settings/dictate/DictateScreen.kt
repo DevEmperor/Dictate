@@ -31,9 +31,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceModel
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
+import org.florisboard.lib.compose.stringRes
 import dev.patrickgold.jetpref.datastore.model.PreferenceData
 import dev.patrickgold.jetpref.datastore.model.collectAsState
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
@@ -47,7 +49,7 @@ import kotlinx.coroutines.launch
 // TODO: move all user-facing strings to strings.xml when the Dictate resource set is localized.
 @Composable
 fun DictateScreen() = FlorisScreen {
-    title = "Dictate"
+    title = stringRes(R.string.dictate__title)
     previewFieldVisible = false
     iconSpaceReserved = true
 
@@ -59,39 +61,42 @@ fun DictateScreen() = FlorisScreen {
         ListPreference(
             prefs.dictate.transcriptionProviderId,
             icon = Icons.Default.Mic,
-            title = "Transcription provider",
+            title = stringRes(R.string.dictate__provider_title),
             entries = listPrefEntries {
-                entry(key = "openai", label = "OpenAI")
-                entry(key = "groq", label = "Groq")
-                entry(key = "custom", label = "Custom (OpenAI-compatible)")
+                entry(key = "openai", label = stringRes(R.string.dictate__provider__openai))
+                entry(key = "groq", label = stringRes(R.string.dictate__provider__groq))
+                entry(key = "custom", label = stringRes(R.string.dictate__provider__custom))
             },
         )
 
+        val apiKeyNotSet = stringRes(R.string.dictate__api_key_not_set)
         TextInputPreference(
             pref = prefs.dictate.apiKey,
             icon = Icons.Default.Key,
-            title = "API key",
-            placeholder = "sk-…",
+            title = stringRes(R.string.dictate__api_key_title),
+            placeholder = stringRes(R.string.dictate__api_key_placeholder),
             isSecret = true,
-            summaryProvider = { if (it.isBlank()) "Not set – tap to configure" else "••••••" + it.takeLast(4) },
+            summaryProvider = { if (it.isBlank()) apiKeyNotSet else "••••••" + it.takeLast(4) },
         )
 
+        val modelDefault = stringRes(R.string.dictate__model_default_summary)
         TextInputPreference(
             pref = prefs.dictate.transcriptionModel,
             icon = Icons.Default.ModelTraining,
-            title = "Transcription model",
-            placeholder = "leave empty for provider default",
-            summaryProvider = { it.ifBlank { "Provider default" } },
+            title = stringRes(R.string.dictate__model_title),
+            placeholder = stringRes(R.string.dictate__model_placeholder),
+            summaryProvider = { it.ifBlank { modelDefault } },
         )
 
         if (providerId == "custom") {
-            PreferenceGroup(title = "Custom server") {
+            val baseUrlRequired = stringRes(R.string.dictate__base_url_required)
+            PreferenceGroup(title = stringRes(R.string.dictate__custom_server_title)) {
                 TextInputPreference(
                     pref = prefs.dictate.customBaseUrl,
                     icon = Icons.Default.Dns,
-                    title = "Base URL",
-                    placeholder = "https://your-server/v1/",
-                    summaryProvider = { it.ifBlank { "Required for the custom provider" } },
+                    title = stringRes(R.string.dictate__base_url_title),
+                    placeholder = stringRes(R.string.dictate__base_url_placeholder),
+                    summaryProvider = { it.ifBlank { baseUrlRequired } },
                 )
             }
         }
@@ -126,8 +131,8 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.TextInputPreference(
         var text by remember(value) { mutableStateOf(value) }
         JetPrefAlertDialog(
             title = title,
-            confirmLabel = "OK",
-            dismissLabel = "Cancel",
+            confirmLabel = stringRes(R.string.action__ok),
+            dismissLabel = stringRes(R.string.action__cancel),
             onConfirm = {
                 scope.launch { pref.set(text.trim()) }
                 dialogOpen = false

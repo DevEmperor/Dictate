@@ -108,8 +108,7 @@ fun HomeScreen() = FlorisScreen {
         }*/
         Preference(
             icon = Icons.Default.Mic,
-            // TODO: move to strings.xml with the Dictate resource set.
-            title = "Dictate",
+            title = stringRes(R.string.dictate__title),
             onClick = { navController.navigate(Routes.Settings.Dictate) },
         )
         Preference(

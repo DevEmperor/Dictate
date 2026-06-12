@@ -201,6 +201,11 @@ class FlorisAppActivity : ComponentActivity() {
                     )
                     PreviewKeyboardField(previewFieldController)
                 }
+                // Show the "What's new" dialog once after an update (only when setup is complete, so
+                // it never competes with the onboarding flow).
+                if (isImeSetUp) {
+                    ChangelogDialog()
+                }
             }
         }
 

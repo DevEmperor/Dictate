@@ -174,7 +174,8 @@ holt man das Modul bewusst aus FlorisBoard zurück. Reversibel via git.
   - [x] `ImeUiMode.DICTATE(3)`; `KeyboardManager.handleKeyCode` schaltet darauf; `ImeWindow` rendert `DictateInputLayout()`
   - [x] `dictate/ui/DictateInputLayout.kt` – UI-Gerüst (Zurück-zu-TEXT-Button, Mikro-Toggle mit Status; Aufnahmelogik = Schritt 5). Nutzt vorerst die gestylten `media-*`-Snygg-Elemente.
   - [x] Mikro-**QuickAction**: Icon (`Icons.Default.Mic` in `ComputingEvaluator`), Display-Name/Tooltip + Strings (`quick_action__ime_ui_mode_dictate[__tooltip]`), und als **Sticky-Action** der Smartbar (`QuickActionArrangement.Default`; System-`VOICE_INPUT` nun in dynamicActions). Auch in `PopupUiController.ExceptionsForKeyCodes`.
-  - [ ] Eigene `dictate-*`-Theme-Elemente + lokalisierte Strings (mit Schritt 6)
+  - [x] Lokalisierte Strings (Panel-Titel/Status, in Schritt 7 nach `strings.xml` ausgelagert)
+  - [ ] Eigene `dictate-*`-Theme-Elemente (bewusst offen – ästhetisches Polieren durch den Nutzer)
 - [~] **Schritt 5** – Logik-Port (Recording/Transcription/Rewording), rudimentäre Fusion (Build grün):
   - [x] `dictate/audio/RecordingController.kt` – `MediaRecorder`-Wrapper (MIC, MPEG_4/AAC, 64 kbps/44,1 kHz → `dictate_audio.m4a` im Cache; Konstruktor-Branch für API < 31)
   - [x] `RECORD_AUDIO`-Permission im Manifest
@@ -187,6 +188,15 @@ holt man das Modul bewusst aus FlorisBoard zurück. Reversibel via git.
   - [x] `DictateController` liest jetzt aus JetPref (`prefs.dictate`) statt Legacy
   - [x] `app/settings/dictate/DictateScreen.kt` – Provider-Liste, API-Key (maskierter Text-Dialog), Modell, Custom-URL (bedingt). Route `Settings.Dictate` + Nav-Registrierung + **Home-Kachel** (Mikro-Icon, ganz oben)
   - [x] Onboarding: „Configure Dictate"-Schritt im `SetupScreen` (FinishUp) → führt zum Dictate-Screen
-  - [ ] Lokalisierung der Dictate-Strings (aktuell Literale, TODO), eigene `dictate-*`-Theme-Elemente
+  - [x] Lokalisierung der Dictate-Strings (in Schritt 7 erledigt: alle Literale aus DictateScreen/Setup/Controller/Layout/Home nach `strings.xml`, englische Basis)
+  - [ ] eigene `dictate-*`-Theme-Elemente (offen, Nutzer-Polieren)
   - [ ] Proxy/Style-Prompt/Sprachauswahl in die neuen Settings übernehmen
-- [ ] **Schritt 7** – Feinschliff
+- [~] **Schritt 7** – Feinschliff (Branding + Changelog + Lokalisierung; Build grün):
+  - [x] **Branding-Cleanup**: alle `florisboard__*`-URLs auf `github.com/DevEmperor/Dictate` (Repo, Issues, Changelog→/releases, Commit, Key-Codes) umgestellt; hartcodierte „FlorisBoard"-Selbstreferenzen in `strings.xml` → `{app_name}` (Home-Hinweise, Theme-Assets, About-Icon/Lizenz) bzw. „Dictate" hardcoded für Crash-Dialog/-Notifications (kein curlyFormat dort). `strings_dont_translate.xml` behält die Key-Namen (Code-Referenzen bleiben gültig).
+    - [ ] TODO: echte **Privacy-Policy-URL** nachtragen (zeigt aktuell aufs Repo als Non-404-Platzhalter)
+    - [ ] TODO: Spell-Checker-/Theme-Editor-**Wiki-Links** zeigen aufs Repo-Root (Fork hat noch keine Wiki-Seiten)
+  - [x] **Changelog/Update-Flow**: `ChangelogDialog` (JetPref-Alert) erscheint einmalig nach Update via vorhandenem `AppVersionUtils.shouldShowChangelog`, markiert via `updateVersionLastChangelog` als gesehen; „Alle Änderungen"-Link → GitHub-Releases. Eingehängt in `FlorisAppActivity.AppContent` (nur wenn `isImeSetUp`). Hinweis: greift nur auf Release-Builds (Debug-Suffix bricht das Versions-Parsing – Upstream-Verhalten).
+  - [x] **Lokalisierung**: alle Dictate-Literale in `strings.xml` (`dictate__*`, `changelog__*`), englische Basis
+  - [ ] Versionierung für In-Place-Update (`projectVersionCode`/`Name` > altes 3.2.0) – bewusst nicht angefasst (Datenvertrags-/Release-Entscheidung)
+  - [ ] eigene `dictate-*`-Theme-Elemente (ästhetisch, Nutzer-Polieren)
+  - [ ] „FlorisBoard Addons Store"-Texte (Extension-Feature) – offen, eigene Feature-Entscheidung

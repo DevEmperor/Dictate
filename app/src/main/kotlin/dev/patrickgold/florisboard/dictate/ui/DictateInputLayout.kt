@@ -28,11 +28,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.dictate.DictateController
 import dev.patrickgold.florisboard.ime.ImeUiMode
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
 import dev.patrickgold.florisboard.keyboardManager
+import org.florisboard.lib.compose.stringRes
 import org.florisboard.lib.snygg.ui.SnyggColumn
 import org.florisboard.lib.snygg.ui.SnyggIcon
 import org.florisboard.lib.snygg.ui.SnyggIconButton
@@ -87,8 +89,7 @@ fun DictateInputLayout(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 4.dp),
-                // TODO: move to strings.xml (R.string.dictate__panel_title) with the Dictate resource set.
-                text = "Dictate",
+                text = stringRes(R.string.dictate__panel_title),
             )
         }
 
@@ -119,12 +120,11 @@ fun DictateInputLayout(
             SnyggText(
                 elementName = FlorisImeUi.MediaEmojiSubheader.elementName,
                 modifier = Modifier.padding(top = 12.dp),
-                // TODO: localize via strings.xml together with the Dictate resource set.
                 text = when (val s = state) {
-                    is DictateController.UiState.Recording -> "Aufnahme läuft – zum Beenden tippen"
-                    is DictateController.UiState.Transcribing -> "Transkribiere …"
+                    is DictateController.UiState.Recording -> stringRes(R.string.dictate__status_recording)
+                    is DictateController.UiState.Transcribing -> stringRes(R.string.dictate__status_transcribing)
                     is DictateController.UiState.Error -> s.message
-                    else -> "Tippen zum Diktieren"
+                    else -> stringRes(R.string.dictate__status_idle)
                 },
             )
         }

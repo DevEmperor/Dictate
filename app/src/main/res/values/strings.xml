@@ -126,8 +126,8 @@
     <string name="settings__system_default" comment="General string which is used when a preference has the system default value set">System default</string>
 
     <string name="settings__home__title" comment="Title of the Home screen">Welcome to {app_name}</string>
-    <string name="settings__home__ime_not_enabled" comment="Error message shown in Home fragment when FlorisBoard is not enabled in the system">FlorisBoard is not enabled in the system and thus won\'t be available as an input method in the input picker. Click here to resolve this issue.</string>
-    <string name="settings__home__ime_not_selected" comment="Warning message shown in Home fragment when FlorisBoard is not selected as the default keyboard">FlorisBoard is not selected as the default input method. Click here to resolve this issue.</string>
+    <string name="settings__home__ime_not_enabled" comment="Error message shown in Home fragment when the keyboard is not enabled in the system">{app_name} is not enabled in the system and thus won\'t be available as an input method in the input picker. Click here to resolve this issue.</string>
+    <string name="settings__home__ime_not_selected" comment="Warning message shown in Home fragment when the keyboard is not selected as the default keyboard">{app_name} is not selected as the default input method. Click here to resolve this issue.</string>
 
     <string name="settings__localization__title" comment="Title of languages and Layout screen">Languages &amp; Layouts</string>
     <string name="settings__localization__display_language_names_in__label" comment="Label of Display language names in preference">Display language names in</string>
@@ -177,7 +177,7 @@
         Accent color (Material You themes)
     </string>
     <string name="settings__theme_manager__title_manage" comment="Title of the theme manager screen for managing installed and custom themes">Manage installed themes</string>
-    <string name="pref__theme__source_assets" comment="Label for the theme source field">FlorisBoard App Assets</string>
+    <string name="pref__theme__source_assets" comment="Label for the theme source field">{app_name} App Assets</string>
     <string name="pref__theme__source_internal" comment="Label for the theme source field">Internal Storage</string>
     <string name="pref__theme__source_external" comment="Label for the theme source field">External Provider</string>
 
@@ -579,7 +579,7 @@
 
     <!-- About UI strings -->
     <string name="about__title" comment="Title of About activity">About</string>
-    <string name="about__app_icon_content_description" comment="Content description of app icon in About">App icon of FlorisBoard</string>
+    <string name="about__app_icon_content_description" comment="Content description of app icon in About">App icon of {app_name}</string>
     <string name="about__view_licenses" comment="Label of View licenses button in About">Open source licenses</string>
     <string name="about__view_privacy_policy" comment="Label of View privacy policy button in About">Privacy policy</string>
     <string name="about__view_source_code" comment="Label of View source code button in About">Source code</string>
@@ -596,7 +596,7 @@
     <string name="about__privacy_policy__title" comment="Preference title">Privacy policy</string>
     <string name="about__privacy_policy__summary" comment="Preference summary">The privacy policy for this project</string>
     <string name="about__project_license__title" comment="Preference title">Project license</string>
-    <string name="about__project_license__summary" comment="Preference summary">FlorisBoard is licensed under {license_name}</string>
+    <string name="about__project_license__summary" comment="Preference summary">{app_name} is licensed under {license_name}</string>
     <string name="about__project_license__error_license_text_failed" comment="Error text for license text loading failure">Error: Failed to load license text.\n-&gt; Reason: {error_message}</string>
     <string name="about__project_license__error_reason_asset_manager_null" comment="Error text if asset manager is null">Asset manager reference is null</string>
     <string name="about__third_party_licenses__title" comment="Preference title">Third-party licenses</string>
@@ -669,19 +669,19 @@
     <string name="backup_and_restore__restore__failure">Failed to restore data: {error_message}</string>
 
     <!-- Crash Dialog strings -->
-    <string name="crash_dialog__title" comment="Title of crash dialog">FlorisBoard error report</string>
-    <string name="crash_dialog__description" comment="Description of crash dialog">Sorry for the inconvenience, but FlorisBoard has crashed due to an unexpected error.</string>
-    <string name="crash_dialog__report_instructions" comment="Issue tracker report instructions for the crash dialog. The %s placeholder is the name of the crash report template and always in English/LTR.">If you wish to report this error, first check out the issue tracker on GitHub if your crash has not already been reported.\nIf it hasn\'t, copy the generated crash log and open a new issue. Use the \"%s\" template and fill out the description, the steps to reproduce, and paste the generated crash log at the end. This helps in making FlorisBoard better and more stable for everyone. Thank you!</string>
+    <string name="crash_dialog__title" comment="Title of crash dialog">Dictate error report</string>
+    <string name="crash_dialog__description" comment="Description of crash dialog">Sorry for the inconvenience, but Dictate has crashed due to an unexpected error.</string>
+    <string name="crash_dialog__report_instructions" comment="Issue tracker report instructions for the crash dialog. The %s placeholder is the name of the crash report template and always in English/LTR.">If you wish to report this error, first check out the issue tracker on GitHub if your crash has not already been reported.\nIf it hasn\'t, copy the generated crash log and open a new issue. Use the \"%s\" template and fill out the description, the steps to reproduce, and paste the generated crash log at the end. This helps in making Dictate better and more stable for everyone. Thank you!</string>
     <string name="crash_dialog__bug_report_template" comment="Name of the template to use in the GitHub issue tracker (is always in English)" translatable="false">Crash report</string>
     <string name="crash_dialog__copy_to_clipboard" comment="Label of Copy to clipboard button in crash dialog">Copy to system clipboard</string>
     <string name="crash_dialog__copy_to_clipboard_success" comment="Label of Copy to clipboard success message in crash dialog">Copied to system clipboard</string>
     <string name="crash_dialog__copy_to_clipboard_failure" comment="Label of Copy to clipboard failure message in crash dialog">Cannot copy to system clipboard: Clipboard manager instance not found</string>
     <string name="crash_dialog__open_issue_tracker" comment="Label of Open issue tracker button in crash dialog">Open issue tracker (github.com)</string>
     <string name="crash_dialog__close" comment="Label of Close button in crash dialog">Close</string>
-    <string name="crash_notification_channel__title" comment="Title of crash notification channel">FlorisBoard error reports</string>
-    <string name="crash_once_notification__title" comment="Title of the notification for a single crash">FlorisBoard has stopped working…</string>
+    <string name="crash_notification_channel__title" comment="Title of crash notification channel">Dictate error reports</string>
+    <string name="crash_once_notification__title" comment="Title of the notification for a single crash">Dictate has stopped working…</string>
     <string name="crash_once_notification__body" comment="Body of the notification for a single crash">Tap to view error details</string>
-    <string name="crash_multiple_notification__title" comment="Title of the notification for consecutive crashes">FlorisBoard seems to stop working repeatedly…</string>
+    <string name="crash_multiple_notification__title" comment="Title of the notification for consecutive crashes">Dictate seems to stop working repeatedly…</string>
     <string name="crash_multiple_notification__body" comment="Body of the notification for consecutive crashes">Falling back to previous keyboard to stop infinite crash loop. Tap to view error details</string>
 
 
@@ -1161,5 +1161,49 @@
         <item quantity="one">{v} candidate</item>
         <item quantity="other">{v} candidates</item>
     </plurals>
+
+    <!-- ============================== Dictate ============================== -->
+    <!-- Strings for the Dictate AI voice features (panel, settings, onboarding). -->
+
+    <!-- Dictate input panel (IME) -->
+    <string name="dictate__panel_title" comment="Title of the Dictate voice panel inside the keyboard">Dictate</string>
+    <string name="dictate__status_idle" comment="Status shown on the Dictate panel when ready to record">Tap to dictate</string>
+    <string name="dictate__status_recording" comment="Status shown while recording audio">Recording – tap to stop</string>
+    <string name="dictate__status_transcribing" comment="Status shown while the audio is being transcribed">Transcribing…</string>
+    <string name="dictate__back_to_keyboard" comment="Content description for the button that returns from the Dictate panel to the typing keyboard">Back to keyboard</string>
+
+    <!-- Dictate errors. %s is a provider/system error detail. -->
+    <string name="dictate__error_recording_failed" comment="Error when audio recording could not be started. %s is the system error detail.">Recording failed – grant the microphone permission. (%s)</string>
+    <string name="dictate__error_no_audio" comment="Error when no audio was captured">No recording detected – please speak a little longer.</string>
+    <string name="dictate__error_no_api_key" comment="Error when no API key is configured">No API key set – configure it in the Dictate settings.</string>
+    <string name="dictate__error_transcription_failed" comment="Generic transcription failure">Transcription failed.</string>
+    <string name="dictate__error_unknown" comment="Unknown transcription error">Unknown error during transcription.</string>
+
+    <!-- Dictate settings screen -->
+    <string name="dictate__title" comment="Title of the Dictate settings screen and home tile">Dictate</string>
+    <string name="dictate__provider_title" comment="Label for the transcription provider selector">Transcription provider</string>
+    <string name="dictate__provider__openai" translatable="false">OpenAI</string>
+    <string name="dictate__provider__groq" translatable="false">Groq</string>
+    <string name="dictate__provider__custom" comment="Label for a user-defined OpenAI-compatible provider">Custom (OpenAI-compatible)</string>
+    <string name="dictate__api_key_title" comment="Label for the API key field">API key</string>
+    <string name="dictate__api_key_placeholder" translatable="false">sk-…</string>
+    <string name="dictate__api_key_not_set" comment="Summary shown when no API key is set">Not set – tap to configure</string>
+    <string name="dictate__model_title" comment="Label for the transcription model field">Transcription model</string>
+    <string name="dictate__model_placeholder" comment="Placeholder hint for the model field">leave empty for provider default</string>
+    <string name="dictate__model_default_summary" comment="Summary shown when no model override is set">Provider default</string>
+    <string name="dictate__custom_server_title" comment="Group title for custom server settings">Custom server</string>
+    <string name="dictate__base_url_title" comment="Label for the custom server base URL field">Base URL</string>
+    <string name="dictate__base_url_placeholder" translatable="false">https://your-server/v1/</string>
+    <string name="dictate__base_url_required" comment="Summary shown when the custom base URL is not yet set">Required for the custom provider</string>
+    <string name="dictate__value_not_set" comment="Generic summary for an unset text setting">Not set</string>
+
+    <!-- Dictate onboarding step -->
+    <string name="dictate__setup_description" comment="Onboarding text inviting the user to set up Dictate">Set up your AI provider and API key so you can start dictating with the mic.</string>
+    <string name="dictate__setup_configure_btn" comment="Onboarding button opening the Dictate settings">Configure Dictate</string>
+
+    <!-- ============================== Changelog ============================== -->
+    <string name="changelog__dialog_title" comment="Title of the what's-new dialog shown after an update">What\'s new</string>
+    <string name="changelog__view_all" comment="Button that opens the full changelog/releases page online">View all changes</string>
+    <string name="changelog__current" comment="What's-new text shown after updating to the current version">Dictate now runs on a full FlorisBoard-based typing keyboard: a complete multi-language layout keyboard with a dedicated mic action that opens the Dictate voice panel. Your provider and API key are configured in Settings → Dictate, and settings from the previous Dictate app are imported automatically.</string>
 
 </resources>
