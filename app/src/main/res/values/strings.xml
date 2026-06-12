@@ -95,8 +95,6 @@
     <string name="quick_action__toggle_incognito_mode__tooltip">Toggle incognito mode</string>
     <string name="quick_action__toggle_autocorrect" comment="Please mind the limited available space for the quick action strings">Autocorrect</string>
     <string name="quick_action__toggle_autocorrect__tooltip">Toggle autocorrect</string>
-    <string name="quick_action__voice_input" comment="Please mind the limited available space for the quick action strings">Voice input</string>
-    <string name="quick_action__voice_input__tooltip" comment="IME stands for Input Method Editor and is indirectly equivalent to 'keyboard'.">Open voice input provider</string>
     <string name="quick_action__floating_window_mode" comment="Please mind the limited available space for the quick action strings">Floating</string>
     <string name="quick_action__floating_window_mode__tooltip">Toggle floating keyboard window mode</string>
     <string name="quick_action__one_handed_mode" comment="Please mind the limited available space for the quick action strings">One-handed</string>
@@ -618,7 +616,7 @@
 
     <string name="setup__grant_notification_permission__title">Permit Crash Report Notifications</string>
     <string name="setup__grant_notification_permission__description">As of Android 13+, apps must ask for permission to
-        send notifications. In Florisboard, this is only used to open a crash report screen in the event of a crash.
+        send notifications. In Dictate Keyboard, this is only used to open a crash report screen in the event of a crash.
         This permission can be changed at any time in the system settings.
     </string>
     <string name="setup__grant_notification_permission__btn">Grant Permission</string>
@@ -832,7 +830,7 @@
     <string name="ext__export__failure">Failed to export extension: {error_message}</string>
     <string name="ext__import__success">Successfully imported extension!</string>
     <string name="ext__import__failure">Failed to import extension: {error_message}</string>
-    <string name="ext__import__ext_any" comment="Title of Importer screen for import of any supported FlorisBoard extension">Import extension</string>
+    <string name="ext__import__ext_any" comment="Title of Importer screen for import of any supported Dictate Keyboard extension">Import extension</string>
     <string name="ext__import__ext_keyboard" comment="Title of Importer screen for keyboard extension import">Import keyboard extension</string>
     <string name="ext__import__ext_theme" comment="Title of Importer screen for theme extension import">Import theme extension</string>
     <string name="ext__import__ext_languagepack" comment="Title of Importer screen for language pack extension import">Import language pack extension</string>
@@ -872,7 +870,7 @@
     <string name="ext__addon_management_box__managing_placeholder">Managing {extensions}</string>
     <string name="ext__addon_management_box__addon_manager_info">All tasks related to importing, exporting, creating, customizing, and removing extensions can be handled through the centralized addon manager.</string>
     <string name="ext__addon_management_box__go_to_page">Go to {ext_home_title}</string>
-    <string name="ext__home__info">You can download and install extensions from the FlorisBoard Addons Store or import any extension file you have downloaded from the internet.</string>
+    <string name="ext__home__info">You can download and install extensions from the Dictate Keyboard Addons Store or import any extension file you have downloaded from the internet.</string>
     <string name="ext__home__visit_store">Visit Addons Store</string>
     <string name="ext__home__manage_extensions">Manage installed extensions</string>
     <string name="ext__list__view_details">View details</string>
@@ -1200,10 +1198,12 @@
     <!-- Dictate onboarding step -->
     <string name="dictate__setup_description" comment="Onboarding text inviting the user to set up Dictate">Set up your AI provider and API key so you can start dictating with the mic.</string>
     <string name="dictate__setup_configure_btn" comment="Onboarding button opening the Dictate settings">Configure Dictate</string>
+    <string name="setup__grant_mic_permission__description" comment="Onboarding: ask for microphone permission for dictation">Dictate needs microphone access to record your voice for transcription.</string>
+    <string name="setup__grant_mic_permission__btn" comment="Onboarding button to grant the microphone permission">Grant microphone permission</string>
 
     <!-- ============================== Changelog ============================== -->
     <string name="changelog__dialog_title" comment="Title of the what's-new dialog shown after an update">What\'s new</string>
     <string name="changelog__view_all" comment="Button that opens the full changelog/releases page online">View all changes</string>
-    <string name="changelog__current" comment="What's-new text shown after updating to the current version">Dictate now runs on a full FlorisBoard-based typing keyboard: a complete multi-language layout keyboard with a dedicated mic action that opens the Dictate voice panel. Your provider and API key are configured in Settings → Dictate, and settings from the previous Dictate app are imported automatically.</string>
+    <string name="changelog__current" comment="What's-new text shown after updating to the current version">Dictate now runs on a full Dictate Keyboard-based typing keyboard: a complete multi-language layout keyboard with a dedicated mic action that opens the Dictate voice panel. Your provider and API key are configured in Settings → Dictate, and settings from the previous Dictate app are imported automatically.</string>
 
 </resources>

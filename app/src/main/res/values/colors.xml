@@ -12,7 +12,7 @@
     <color name="colorError">#B00020</color><!-- Red 1000? -->
     <color name="textColorError">#FFFFFF</color><!-- White -->
 
-    <color name="ic_app_icon_background">#3D3E42</color>
+    <color name="ic_app_icon_background">#4F576D</color><!-- Dictate icon background -->
 
     <color name="cardViewBackgroundColor">#FFFFFF</color><!-- White -->
     <color name="navigationBarColor">#000000</color><!-- Black -->

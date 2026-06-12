@@ -69,8 +69,6 @@ data class QuickActionArrangement(
             // Dictate's flagship action: the AI voice panel is always one tap away in the Smartbar.
             stickyAction = QuickAction.InsertKey(TextKeyData.IME_UI_MODE_DICTATE),
             dynamicActions = listOf(
-                // System voice input (switches to the device's voice IME) stays available here.
-                QuickAction.InsertKey(TextKeyData.VOICE_INPUT),
                 QuickAction.InsertKey(TextKeyData.UNDO),
                 QuickAction.InsertKey(TextKeyData.REDO),
                 QuickAction.InsertKey(TextKeyData.SETTINGS),

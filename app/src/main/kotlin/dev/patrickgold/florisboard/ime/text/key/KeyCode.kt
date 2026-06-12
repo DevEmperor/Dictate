@@ -103,7 +103,6 @@ object KeyCode {
 
     const val IME_SHOW_UI =                 -231
     const val IME_HIDE_UI =                 -232
-    const val VOICE_INPUT =                 -233
 
     const val TOGGLE_SMARTBAR_VISIBILITY =  -241
     const val TOGGLE_ACTIONS_OVERFLOW =     -242

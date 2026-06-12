@@ -3,7 +3,7 @@
   "meta": {
     "id": "org.florisboard.themes",
     "version": "0.2.0",
-    "title": "FlorisBoard default themes",
+    "title": "Dictate Keyboard default themes",
     "description": "Default themes (both day and night) for the keyboard UI",
     "maintainers": [ "patrickgold <patrick@patrickgold.dev>", "lm41 <lm41@lm41.xyz>" ],
     "license": "apache-2.0"
@@ -11,37 +11,37 @@
   "themes": [
     {
       "id": "floris_day",
-      "label": "Floris Day",
+      "label": "Dictate Day",
       "authors": [ "patrickgold" ],
       "isNight": false
     },
     {
       "id": "floris_day_borderless",
-      "label": "Floris Day (Borderless)",
+      "label": "Dictate Day (Borderless)",
       "authors": [ "patrickgold" ],
       "isNight": false
     },
     {
       "id": "floris_night",
-      "label": "Floris Night",
+      "label": "Dictate Night",
       "authors": [ "patrickgold" ],
       "isNight": true
     },
     {
       "id": "floris_night_borderless",
-      "label": "Floris Night (Borderless)",
+      "label": "Dictate Night (Borderless)",
       "authors": [ "patrickgold" ],
       "isNight": true
     },
     {
       "id": "floris_pure_night",
-      "label": "Floris Pure Night",
+      "label": "Dictate Pure Night",
       "authors": [ "serebit" ],
       "isNight": true
     },
     {
       "id": "floris_pure_night_borderless",
-      "label": "Floris Pure Night (Borderless)",
+      "label": "Dictate Pure Night (Borderless)",
       "authors": [ "serebit" ],
       "isNight": true
     }

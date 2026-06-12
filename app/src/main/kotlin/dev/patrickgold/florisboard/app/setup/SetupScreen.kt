@@ -16,8 +16,10 @@
 
 package dev.patrickgold.florisboard.app.setup
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,12 +35,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisAppActivity
@@ -239,6 +245,22 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
         ) {
             StepText(stringRes(R.string.setup__finish_up__description_p1))
             StepText(stringRes(R.string.setup__finish_up__description_p2))
+            // Dictate needs microphone access to record audio for transcription; ask for it here.
+            var micGranted by remember {
+                mutableStateOf(
+                    ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
+                        PackageManager.PERMISSION_GRANTED
+                )
+            }
+            val requestMic = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { granted -> micGranted = granted }
+            if (!micGranted) {
+                StepText(stringRes(R.string.setup__grant_mic_permission__description))
+                StepButton(label = stringRes(R.string.setup__grant_mic_permission__btn)) {
+                    requestMic.launch(Manifest.permission.RECORD_AUDIO)
+                }
+            }
             // Dictate onboarding: let the user set their AI provider + API key right here.
             StepText(stringRes(R.string.dictate__setup_description))
             StepButton(label = stringRes(R.string.dictate__setup_configure_btn)) {

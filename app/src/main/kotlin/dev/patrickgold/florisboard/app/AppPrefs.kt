@@ -626,7 +626,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val accentColor = custom(
             key = "other__accent_color",
-            default = Color.Unspecified,
+            default = Color(0xFF29B6F6), // Dictate light blue
             serializer = ColorPreferenceSerializer,
         )
         val settingsLanguage = string(
@@ -752,7 +752,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val accentColor = custom(
             key = "theme__accent_color",
-            default = Color.Unspecified,
+            default = Color(0xFF29B6F6), // Dictate light blue
             serializer = ColorPreferenceSerializer,
         )
         val sunriseTime = localTime(

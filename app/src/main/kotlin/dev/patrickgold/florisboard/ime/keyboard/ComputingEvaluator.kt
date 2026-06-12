@@ -227,9 +227,6 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
         KeyCode.TOGGLE_RESIZE_MODE -> {
             context()?.vectorResource(id = R.drawable.ic_resize)
         }
-        KeyCode.VOICE_INPUT -> {
-            Icons.Default.KeyboardVoice
-        }
         KeyCode.IME_HIDE_UI -> {
             Icons.Default.KeyboardHide
         }
