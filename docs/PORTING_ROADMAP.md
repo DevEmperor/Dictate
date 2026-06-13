@@ -81,22 +81,38 @@ Usage-Anzeige, Aufnahme-Komfort** fehlt noch.
 
 | # | Feature | Status | Anmerkung |
 |---|---------|--------|-----------|
-| 4.1 | Rewording an/aus | 🔲 | Pref `rewording_enabled` |
-| 4.2 | **Eigene Prompts (CRUD)** | 🟡 | `PromptsDatabaseHelper` portiert, **nicht verdrahtet**; keine Edit/Overview-UI |
-| 4.3 | **Prompt-Leiste im Keyboard** (horizontale Grid) | 🔲 | alt: `PromptsKeyboardAdapter` |
-| 4.4 | Prompt „benötigt Auswahl" vs. frei | 🔲 | `requiresSelection` |
-| 4.5 | **Auto-Apply-Prompts** (nach Transkription automatisch) | 🔲 | `getAutoApplyIds` |
-| 4.6 | **Prompt-Queue** (mehrere Prompts während Aufnahme verketten) | 🔲 | `queuedPromptIds` |
-| 4.7 | **Live/Instant-Prompt** (aufnehmen → direkt an GPT) | 🔲 | id `-1` |
-| 4.8 | Add/Edit-Prompt-Screens | 🔲 | alt: `PromptEditActivity`, `PromptsOverviewActivity` |
-| 4.9 | **Auto-Formatting** (gesprochene Formatierbefehle → Markdown) | 🔲 | `AUTO_FORMATTING_PROMPT`, Pref `auto_formatting_enabled` |
-| 4.10 | **System-Prompt** Rewording (nichts/predefined/custom) | 🔲 | `system_prompt_selection` |
-| 4.11 | **Style-Prompt** Transkription (nichts/predefined/custom) | 🔲 | `style_prompt_selection` (siehe 2.4) |
-| 4.12 | „Alles auswählen"-Toggle als Prompt | 🟡 | jetzt als Quick-Action `CLIPBOARD_SELECT_ALL` abgedeckt |
+| 4.1 | Rewording an/aus | 🟡 | Pref `rewordingEnabled` + Engine-Gating ✓ (P1); Settings-UI offen (P2) |
+| 4.2 | **Eigene Prompts (CRUD)** | 🟡 | `PromptsDatabaseHelper` an Controller verdrahtet ✓ (P1); Edit/Overview-UI offen (P2) |
+| 4.3 | **Prompt-Leiste im Keyboard** (Smartbar-Chips, kontextuell) | 🔲 | Zielbild: scrollbare Chips, kein Vollgrid (P3) |
+| 4.4 | Prompt „benötigt Auswahl" vs. frei | ✅ | `requiresSelection` in `applyPrompt` (P1) |
+| 4.5 | **Auto-Apply-Prompts** (nach Transkription automatisch) | 🟡 | Engine ✓ (`postProcessTranscript`, P1); Settings-Flag-UI offen (P2) |
+| 4.6 | ~~Prompt-Queue (während Aufnahme verketten)~~ | ❌ | **Gestrichen** (Entscheidung 2026-06-13) → ersetzt durch Auto-Apply + Nachformulieren |
+| 4.7 | **Live/Instant-Prompt** (aufnehmen → direkt an GPT) | 🟡 | Engine ✓ (`startLivePrompt`, P1); UI-Trigger offen (P3/P4) |
+| 4.8 | Add/Edit-Prompt-Screens | 🔲 | alt: `PromptEditActivity`, `PromptsOverviewActivity` (P2) |
+| 4.9 | **Auto-Formatting** (gesprochene Formatierbefehle → Markdown) | 🟡 | Engine ✓ (`AUTO_FORMATTING_PROMPT`, Pref `autoFormattingEnabled`, P1); Settings-Toggle offen (P2) |
+| 4.10 | **System-Prompt** Rewording (nichts/predefined/custom) | 🟡 | Engine ✓ (`systemPromptSelection`, P1); Settings-UI offen (P2) |
+| 4.11 | **Style-Prompt** Transkription (nichts/predefined/custom) | 🟡 | Engine ✓ (in `transcribe` verdrahtet, per-Sprache, P1; **deckt 2.4 ab**); Settings-UI offen (P2) |
+| 4.12 | „Alles auswählen"-Toggle als Prompt | ✅ | als Quick-Action `CLIPBOARD_SELECT_ALL` abgedeckt; Tile aus der Leiste gestrichen |
 
-> Das ist der größte Brocken. Reihenfolge-Vorschlag: erst API/Provider (Abschnitt 5)
-> sauber zweigleisig, dann Prompt-Datenmodell + Settings-UI, dann Keyboard-Leiste,
-> dann Queue/Auto-Apply/Live, zuletzt Auto-Formatting.
+> Das ist der größte Brocken. **Zielbild (festgezurrt 2026-06-13):** kontextuelle Chip-Leiste in der
+> Smartbar als Hauptfläche; Queue gestrichen → Auto-Apply + 1-Tap-Nachformulieren; Select-All-Tile
+> raus (gibt's als QuickAction); Verwaltung/System-/Style-Prompt in den Compose-Settings.
+> **Phasen:** P0 Daten/Prefs ✓ · P1 Engine im Controller ✓ · P2 Settings-UI (CRUD, System-/Style-Prompt,
+> Auto-Formatting) · P3 Smartbar-Chip-Leiste · P4 Panel-Ergänzung (Live/Verwaltung) · P5 Auto-Formatting-Feinschliff.
+
+> **Block-Notiz (2026-06-13, Abschnitt 4 – P0+P1):** Fundament + Rewording-Engine umgesetzt.
+> *Daten/Prefs (P0):* `DictatePromptDefaults` (be-precise- & auto-formatting-Prompt + per-Sprache
+> Punctuation-Map, 1:1 aus `DictateUtils`); neue `prefs.dictate`-Prefs (`rewordingEnabled`,
+> `rewordingProviderId`/`rewordingApiKey`/`rewordingModel`/`rewordingCustomBaseUrl`,
+> `system-/stylePromptSelection`+`…Custom`, `autoFormattingEnabled`); `DictateLegacyMigrator` importiert
+> jetzt auch alle Rewording-Settings (prompts.db wird ohnehin geteilt). *Engine (P1):* `DictateController`
+> hat `applyPrompt()` (Snippet `[..]`, `requiresSelection` ↔ Markierung ersetzen / am Cursor einfügen,
+> System-Prompt-Anhang wie alt: ein User-Message `instruction\n\nsystem\n\ninput`), `startLivePrompt()`
+> (Transkript als GPT-Befehl, optional auf Markierung), `postProcessTranscript()` (Auto-Formatting →
+> Auto-Apply-Prompts, best-effort via runCatching, Transkript geht nie verloren), Style-Prompt in
+> `transcribe()` verdrahtet. Neuer `UiState.Rewording(label)` + Spinner in der Smartbar. Chat läuft über
+> den vorhandenen `complete(ChatRequest)`. **Noch ohne UI-Trigger** (Chips/Settings folgen P2/P3) – außer
+> Auto-Formatting/Auto-Apply, die für migrierte Nutzer mit aktivem Flag bereits automatisch laufen.
 
 ---
 

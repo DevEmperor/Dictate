@@ -54,6 +54,37 @@ object DictateLegacyMigrator {
 
             s.transcriptionCustomHost?.takeIf { it.isNotBlank() }
                 ?.let { prefs.dictate.customBaseUrl.set(it) }
+
+            // --- Rewording / GPT settings (roadmap section 4). The prompts themselves live in the
+            // shared prompts.db and carry over automatically; only these settings need importing. ---
+            prefs.dictate.rewordingEnabled.set(s.rewordingEnabled)
+            prefs.dictate.autoFormattingEnabled.set(s.autoFormattingEnabled)
+
+            val rewordingProviderId = when (s.rewordingProvider) {
+                1 -> "groq"
+                2 -> "custom"
+                else -> "openai"
+            }
+            prefs.dictate.rewordingProviderId.set(rewordingProviderId)
+
+            s.effectiveRewordingApiKey()
+                ?.takeIf { it.isNotBlank() && it != "NO_API_KEY" }
+                ?.let { prefs.dictate.rewordingApiKey.set(it) }
+
+            val rewordingModel = when (s.rewordingProvider) {
+                1 -> s.rewordingGroqModel
+                2 -> s.rewordingCustomModel
+                else -> s.rewordingOpenaiModel
+            }
+            rewordingModel?.takeIf { it.isNotBlank() }?.let { prefs.dictate.rewordingModel.set(it) }
+
+            s.rewordingCustomHost?.takeIf { it.isNotBlank() }
+                ?.let { prefs.dictate.rewordingCustomBaseUrl.set(it) }
+
+            prefs.dictate.systemPromptSelection.set(s.systemPromptSelection)
+            s.systemPromptCustomText?.let { prefs.dictate.systemPromptCustom.set(it) }
+            prefs.dictate.stylePromptSelection.set(s.stylePromptSelection)
+            s.stylePromptCustomText?.let { prefs.dictate.stylePromptCustom.set(it) }
         }
 
         prefs.dictate.legacyImported.set(true)

@@ -1176,6 +1176,11 @@
     <string name="dictate__error_no_api_key" comment="Error when no API key is configured">No API key set – configure it in the Dictate settings.</string>
     <string name="dictate__error_transcription_failed" comment="Generic transcription failure">Transcription failed.</string>
     <string name="dictate__error_unknown" comment="Unknown transcription error">Unknown error during transcription.</string>
+    <string name="dictate__error_rewording_failed" comment="Generic rewording (GPT) failure">Rewording failed.</string>
+
+    <!-- Dictate rewording (GPT) status -->
+    <string name="dictate__status_rewording" comment="Shown while a rewording prompt is being applied">Reworking…</string>
+    <string name="dictate__status_formatting" comment="Shown while the auto-formatting pass runs on a transcript">Formatting…</string>
 
     <!-- Dictate in-Smartbar recording controls -->
     <string name="dictate__status_retrying" comment="Shown while a failed transcription is being retried. {attempt} is the attempt number.">Retrying… ({attempt})</string>

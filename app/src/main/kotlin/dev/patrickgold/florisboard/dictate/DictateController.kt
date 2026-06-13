@@ -21,6 +21,10 @@ import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.audio.BluetoothMicRouter
 import dev.patrickgold.florisboard.dictate.audio.RecordingController
+import dev.patrickgold.florisboard.dictate.data.prompts.DictatePromptDefaults
+import dev.patrickgold.florisboard.dictate.data.prompts.PromptModel
+import dev.patrickgold.florisboard.dictate.data.prompts.PromptsDatabaseHelper
+import dev.patrickgold.florisboard.dictate.provider.ChatRequest
 import dev.patrickgold.florisboard.dictate.provider.DictateApiException
 import dev.patrickgold.florisboard.dictate.provider.OpenAiCompatibleClient
 import dev.patrickgold.florisboard.dictate.provider.ProviderPreset
@@ -35,6 +39,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
@@ -49,8 +54,11 @@ import java.io.File
  * focus (pause other apps while recording), optional Bluetooth-SCO mic and a transcription retry
  * with a visible indicator.
  *
- * Not yet ported from the legacy service (later refinement): rewording + prompt queue, auto-apply,
- * live prompt, usage tracking and per-language style prompt.
+ * Rewording (GPT) is wired in: [applyPrompt] runs a prompt on the selection/cursor, [startLivePrompt]
+ * sends a spoken instruction to the model, and every transcription runs through [postProcessTranscript]
+ * (auto-formatting + auto-apply prompts). The prompt chips that drive these come later (UI phase).
+ *
+ * Not yet ported from the legacy service (later refinement): usage tracking.
  */
 object DictateController {
 
@@ -65,6 +73,8 @@ object DictateController {
         ) : UiState
         /** [attempt] is 1 for the first try, 2/3/… while retrying after a transient failure. */
         data class Transcribing(val attempt: Int = 1) : UiState
+        /** A rewording/GPT request is in flight (manual prompt, auto-apply, auto-format or live). */
+        data class Rewording(val label: String) : UiState
         data class Error(val message: String) : UiState
     }
 
@@ -82,11 +92,15 @@ object DictateController {
     private var focusRequest: AudioFocusRequest? = null
     private var btRouter: BluetoothMicRouter? = null
 
+    /** When true, the next finished recording is fed to the rewording model instead of committed. */
+    private var livePromptArmed = false
+
     /** Single entry point for the mic button: starts recording, or stops and transcribes. */
     fun onMicClick(context: Context) {
         when (_state.value) {
             is UiState.Recording -> stopAndTranscribe(context)
-            is UiState.Transcribing -> Unit // ignore taps while a request is in flight
+            // Ignore taps while a transcription or rewording request is in flight.
+            is UiState.Transcribing, is UiState.Rewording -> Unit
             else -> startRecording(context)
         }
     }
@@ -135,6 +149,7 @@ object DictateController {
         recorder?.cancel()
         recorder = null
         cleanupAudioRouting()
+        livePromptArmed = false
         if (_state.value is UiState.Recording) {
             _state.value = UiState.Idle
         }
@@ -239,6 +254,9 @@ object DictateController {
 
         _state.value = UiState.Transcribing()
         val appContext = context.applicationContext
+        // Live prompt is consumed by this transcription only (the next recording is normal again).
+        val live = livePromptArmed
+        livePromptArmed = false
         scope.launch {
             try {
                 val client = OpenAiCompatibleClient.from(preset, apiKey, baseUrlOverride = baseUrlOverrideFor(preset))
@@ -249,12 +267,23 @@ object DictateController {
                         // Null for "detect" so the provider auto-detects; otherwise the chosen code.
                         language = prefs.dictate.activeInputLanguage.get()
                             .takeIf { it != DictateLanguages.DETECT },
-                        prompt = null,
+                        // Style/punctuation prompt biases recognition (roadmap 2.4 / 4.11).
+                        prompt = transcriptionStylePrompt(),
                     ),
                     onRetry = { attempt -> _state.value = UiState.Transcribing(attempt) },
                 )
                 val editorInstance by appContext.editorInstance()
-                editorInstance.commitText(result.text)
+                val finalText = if (live) {
+                    // The spoken transcript is an instruction; send it to GPT (optionally operating
+                    // on the current selection) and insert the answer instead of the transcript.
+                    _state.value = UiState.Rewording(appContext.getString(R.string.dictate__status_rewording))
+                    val selection = editorInstance.activeContent.selectedText.takeIf { it.isNotEmpty() }
+                    requestReword(result.text, selection)
+                } else {
+                    // Normal dictation: auto-formatting + auto-apply prompts, then commit.
+                    postProcessTranscript(appContext, result.text)
+                }
+                editorInstance.commitText(finalText)
                 _state.value = UiState.Idle
             } catch (e: DictateApiException) {
                 _state.value = UiState.Error(e.message ?: appContext.getString(R.string.dictate__error_transcription_failed))
@@ -265,6 +294,163 @@ object DictateController {
             }
         }
     }
+
+    // --- Rewording / GPT engine (roadmap section 4) ---------------------------------------------
+
+    /**
+     * Applies a rewording [prompt] and commits the result. Used by the prompt chips (Phase 3):
+     *  - a `[snippet]` prompt (text wrapped in brackets) is inserted literally, no API call;
+     *  - a `requiresSelection` prompt operates on [selectionOverride] (or the current selection) and
+     *    replaces it with the reworded result;
+     *  - a free prompt generates from the instruction alone and inserts at the cursor.
+     * No-op unless idle (or recovering from a transient error).
+     */
+    fun applyPrompt(context: Context, prompt: PromptModel, selectionOverride: String? = null) {
+        if (_state.value !is UiState.Idle && _state.value !is UiState.Error) return
+        val appContext = context.applicationContext
+        val editorInstance by appContext.editorInstance()
+        val raw = prompt.prompt.orEmpty()
+
+        // Snippet shortcut: text wrapped in [...] is inserted literally (no network call).
+        if (raw.length >= 2 && raw.startsWith("[") && raw.endsWith("]")) {
+            editorInstance.commitText(raw.substring(1, raw.length - 1))
+            return
+        }
+
+        val input = selectionOverride
+            ?: if (prompt.requiresSelection) editorInstance.activeContent.selectedText else null
+        if (prompt.requiresSelection && input.isNullOrEmpty()) return // nothing to operate on
+
+        if (rewordingApiKey().isBlank()) {
+            _state.value = UiState.Error(appContext.getString(R.string.dictate__error_no_api_key))
+            return
+        }
+
+        _state.value = UiState.Rewording(prompt.name ?: appContext.getString(R.string.dictate__status_rewording))
+        scope.launch {
+            try {
+                val text = requestReword(raw, input)
+                // commitText replaces the active selection if any, else inserts at the cursor.
+                editorInstance.commitText(text)
+                _state.value = UiState.Idle
+            } catch (e: DictateApiException) {
+                _state.value = UiState.Error(e.message ?: appContext.getString(R.string.dictate__error_rewording_failed))
+            } catch (t: Throwable) {
+                _state.value = UiState.Error(t.message ?: appContext.getString(R.string.dictate__error_rewording_failed))
+            }
+        }
+    }
+
+    /**
+     * Starts (or stops) a *live prompt* recording: the spoken transcript is sent to the rewording
+     * model as an instruction instead of being inserted verbatim. Toggles like the mic button.
+     */
+    fun startLivePrompt(context: Context) {
+        when (_state.value) {
+            is UiState.Recording -> {
+                livePromptArmed = true
+                stopAndTranscribe(context)
+            }
+            is UiState.Transcribing, is UiState.Rewording -> Unit
+            else -> {
+                livePromptArmed = true
+                startRecording(context)
+            }
+        }
+    }
+
+    /**
+     * Runs the post-transcription rewording chain on [transcript]: optional auto-formatting, then the
+     * user's auto-apply prompts in order. Each step is best-effort – a failing step keeps the text so
+     * far so the user never loses their dictation. Returns the text to commit.
+     */
+    private suspend fun postProcessTranscript(context: Context, transcript: String): String {
+        if (!prefs.dictate.rewordingEnabled.get() || transcript.isBlank()) return transcript
+        var text = transcript
+
+        // 1) Auto-formatting (spoken cues → Markdown). Low-level prompt, no be-precise suffix.
+        if (prefs.dictate.autoFormattingEnabled.get()) {
+            _state.value = UiState.Rewording(context.getString(R.string.dictate__status_formatting))
+            val lang = prefs.dictate.activeInputLanguage.get()
+            val formatPrompt = DictatePromptDefaults.AUTO_FORMATTING_PROMPT +
+                "\n\nLanguage hint: " + lang + "\n\nTranscript:\n" + text
+            text = runCatching { requestRewordRaw(formatPrompt).ifBlank { text } }.getOrDefault(text)
+        }
+
+        // 2) Auto-apply prompts, in POS order; each operates on the running text if it needs input.
+        val autoApply = withContext(Dispatchers.IO) {
+            promptsDb(context).getAll().filter { it.autoApply }
+        }
+        for (p in autoApply) {
+            val instruction = p.prompt.orEmpty()
+            if (instruction.isBlank()) continue
+            _state.value = UiState.Rewording(p.name ?: context.getString(R.string.dictate__status_rewording))
+            text = runCatching {
+                requestReword(instruction, if (p.requiresSelection) text else null)
+            }.getOrDefault(text)
+        }
+        return text
+    }
+
+    /**
+     * High-level rewording call: builds the user message as `instruction [+ system prompt] [+ input]`
+     * (exactly as the legacy app did – the be-precise prompt is tuned for this position) and returns
+     * the trimmed model output.
+     */
+    private suspend fun requestReword(instruction: String, input: String?): String {
+        val sys = systemPrompt()
+        val content = buildString {
+            append(instruction)
+            if (sys.isNotBlank()) append("\n\n").append(sys)
+            if (!input.isNullOrBlank()) append("\n\n").append(input)
+        }
+        return requestRewordRaw(content)
+    }
+
+    /** Low-level rewording call: sends [userContent] verbatim as a single user message. */
+    private suspend fun requestRewordRaw(userContent: String): String {
+        val apiKey = rewordingApiKey()
+        if (apiKey.isBlank()) {
+            throw DictateApiException(DictateApiException.Kind.INVALID_API_KEY, "No API key set")
+        }
+        val preset = resolveRewordingPreset()
+        val model = prefs.dictate.rewordingModel.get().ifBlank { preset.defaultChatModel ?: "gpt-4o-mini" }
+        val client = OpenAiCompatibleClient.from(preset, apiKey, baseUrlOverride = rewordingBaseUrlOverrideFor(preset))
+        return client.complete(ChatRequest.ofUser(model, userContent)).text.trim()
+    }
+
+    private fun systemPrompt(): String = when (prefs.dictate.systemPromptSelection.get()) {
+        DictatePromptDefaults.SELECTION_PREDEFINED -> DictatePromptDefaults.REWORDING_BE_PRECISE
+        DictatePromptDefaults.SELECTION_CUSTOM -> prefs.dictate.systemPromptCustom.get()
+        else -> ""
+    }
+
+    /** Style/punctuation prompt sent with the transcription request (independent of rewording). */
+    private fun transcriptionStylePrompt(): String? = when (prefs.dictate.stylePromptSelection.get()) {
+        DictatePromptDefaults.SELECTION_PREDEFINED ->
+            DictatePromptDefaults.punctuationPromptFor(prefs.dictate.activeInputLanguage.get())
+        DictatePromptDefaults.SELECTION_CUSTOM ->
+            prefs.dictate.stylePromptCustom.get().takeIf { it.isNotBlank() }
+        else -> null
+    }
+
+    private fun resolveRewordingPreset(): ProviderPreset {
+        val id = prefs.dictate.rewordingProviderId.get()
+        return if (id == "custom") {
+            ProviderRegistry.custom(prefs.dictate.rewordingCustomBaseUrl.get())
+        } else {
+            ProviderRegistry.byId(id) ?: ProviderRegistry.OPENAI
+        }
+    }
+
+    /** Rewording key, falling back to the shared transcription key when not set separately. */
+    private fun rewordingApiKey(): String =
+        prefs.dictate.rewordingApiKey.get().ifBlank { prefs.dictate.apiKey.get() }
+
+    private fun rewordingBaseUrlOverrideFor(preset: ProviderPreset): String? =
+        if (preset.isCustom) prefs.dictate.rewordingCustomBaseUrl.get().takeIf { it.isNotBlank() } else null
+
+    private fun promptsDb(context: Context) = PromptsDatabaseHelper(context.applicationContext)
 
     private fun requestAudioFocusIfEnabled(context: Context) {
         if (!prefs.dictate.audioFocus.get()) return

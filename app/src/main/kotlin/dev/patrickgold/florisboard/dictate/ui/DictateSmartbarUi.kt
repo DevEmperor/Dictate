@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Language
@@ -96,6 +97,7 @@ fun DictateSmartbarUi(state: DictateController.UiState, modifier: Modifier = Mod
         when (state) {
             is DictateController.UiState.Recording -> RecordingContent(state)
             is DictateController.UiState.Transcribing -> TranscribingContent(state)
+            is DictateController.UiState.Rewording -> RewordingContent(state)
             is DictateController.UiState.Error -> {
                 SnyggText(text = state.message)
                 LaunchedEffect(state) {
@@ -262,6 +264,29 @@ private fun TranscribingContent(state: DictateController.UiState.Transcribing) {
             stringRes(R.string.dictate__status_transcribing)
         },
     )
+}
+
+/**
+ * Shown while a rewording/GPT request runs (auto-formatting, auto-apply or live prompt): a spinning
+ * icon plus the active prompt's label. Mirrors [TranscribingContent] visually.
+ */
+@Composable
+private fun RewordingContent(state: DictateController.UiState.Rewording) {
+    val transition = rememberInfiniteTransition(label = "rewording")
+    val rotation by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(tween(900)),
+        label = "spin",
+    )
+    SnyggIcon(
+        imageVector = Icons.Default.AutoAwesome,
+        modifier = Modifier
+            .size(18.dp)
+            .rotate(rotation),
+    )
+    Spacer(modifier = Modifier.width(10.dp))
+    SnyggText(text = state.label.ifBlank { stringRes(R.string.dictate__status_rewording) })
 }
 
 private fun formatElapsed(ms: Long): String {

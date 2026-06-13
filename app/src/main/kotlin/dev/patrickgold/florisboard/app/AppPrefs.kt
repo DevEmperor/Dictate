@@ -271,6 +271,60 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__legacy_imported",
             default = false,
         )
+
+        // --- Rewording / GPT (roadmap section 4) -------------------------------------------------
+        // Master switch for the rewording feature (prompt chips, auto-apply, live prompt). Default
+        // on, mirroring the legacy app.
+        val rewordingEnabled = boolean(
+            key = "dictate__rewording_enabled",
+            default = true,
+        )
+        // Chat (rewording) provider id – any chat-capable ProviderRegistry id ("openai", "groq",
+        // "openrouter", … or "custom"). Independent from the transcription provider.
+        val rewordingProviderId = string(
+            key = "dictate__rewording_provider_id",
+            default = "openai",
+        )
+        // Rewording API key. Blank means "reuse the transcription apiKey".
+        val rewordingApiKey = string(
+            key = "dictate__rewording_api_key",
+            default = "",
+        )
+        // Blank means "use the rewording provider preset's default chat model".
+        val rewordingModel = string(
+            key = "dictate__rewording_model",
+            default = "",
+        )
+        // OpenAI-compatible base URL, used when rewordingProviderId == "custom".
+        val rewordingCustomBaseUrl = string(
+            key = "dictate__rewording_custom_base_url",
+            default = "",
+        )
+        // System prompt appended to every rewording request: 0 = none, 1 = predefined (be-precise),
+        // 2 = custom. See DictatePromptDefaults.SELECTION_*.
+        val systemPromptSelection = int(
+            key = "dictate__system_prompt_selection",
+            default = 1,
+        )
+        val systemPromptCustom = string(
+            key = "dictate__system_prompt_custom",
+            default = "",
+        )
+        // Style prompt biasing the transcription model (roadmap 2.4): 0 = none, 1 = predefined
+        // per-language punctuation/capitalization sentence, 2 = custom.
+        val stylePromptSelection = int(
+            key = "dictate__style_prompt_selection",
+            default = 1,
+        )
+        val stylePromptCustom = string(
+            key = "dictate__style_prompt_custom",
+            default = "",
+        )
+        // Run the spoken-formatting-cues → Markdown pass automatically on every transcript.
+        val autoFormattingEnabled = boolean(
+            key = "dictate__auto_formatting_enabled",
+            default = false,
+        )
     }
 
     val dictionary = Dictionary()
