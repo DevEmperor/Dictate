@@ -356,6 +356,10 @@ class FlorisImeService : LifecycleInputMethodService() {
         ) {
             dev.patrickgold.florisboard.dictate.DictateController.onMicClick(this)
         }
+
+        // Rate/donate nudge (roadmap 9.7/9.8): shown in the Smartbar once enough audio was dictated.
+        // Guarded internally to no-op unless idle, so it never interrupts a recording started above.
+        dev.patrickgold.florisboard.dictate.DictateController.maybePromptForReview()
     }
 
     override fun onEvaluateInputViewShown(): Boolean {

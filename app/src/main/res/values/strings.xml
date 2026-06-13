@@ -1191,6 +1191,10 @@
     <string name="dictate__action_resume" comment="Content description for the button that resumes the recording">Resume recording</string>
     <string name="dictate__action_resend" comment="Content description for the button that retries the last failed audio">Try again</string>
     <string name="dictate__action_dismiss" comment="Content description for the button that dismisses the resend error">Dismiss</string>
+    <string name="dictate__action_yes" comment="Content description for the accept button of the rate/donate nudge">Yes</string>
+    <string name="dictate__action_no" comment="Content description for the decline button of the rate/donate nudge">No, thanks</string>
+    <string name="dictate__promo_rate_message" comment="Smartbar nudge asking the user to rate the app after enough usage">Enjoying Dictate? A quick rating helps a lot!</string>
+    <string name="dictate__promo_donate_message" comment="Smartbar nudge asking the user to donate after enough usage">Dictate saves you time? Support it with a small donation!</string>
 
     <!-- Dictate settings screen -->
     <string name="dictate__title" comment="Title of the Dictate settings screen and home tile">Dictate</string>

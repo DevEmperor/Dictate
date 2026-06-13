@@ -275,6 +275,25 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__resend_button",
             default = true,
         )
+        // --- Rate / Donate nudges (roadmap 9.7/9.8) ----------------------------------------------
+        // Cumulative seconds of successfully transcribed *recorded* audio, used to gate the one-time
+        // rate/donate prompts. Replaces the legacy usage DB (which was dropped); only this counter
+        // remains. Incremented after each successful mic transcription.
+        val totalAudioSeconds = long(
+            key = "dictate__total_audio_seconds",
+            default = 0L,
+        )
+        // Set once the user has acted on the rate prompt (accepted or declined), so it never reappears.
+        val hasRated = boolean(
+            key = "dictate__has_rated",
+            default = false,
+        )
+        // Set once the user has acted on the donate prompt; accepting/declining donate also sets
+        // hasRated, so a donor is never asked to rate afterwards (mirrors the legacy behavior).
+        val hasDonated = boolean(
+            key = "dictate__has_donated",
+            default = false,
+        )
         // Comma-separated dictation language codes the user cycles through on the recording bar
         // (see DictateLanguages; "detect" = auto-detect). Default mirrors the legacy app.
         val inputLanguages = string(

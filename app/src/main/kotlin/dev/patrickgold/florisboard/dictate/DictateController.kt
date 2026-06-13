@@ -12,6 +12,7 @@ package dev.patrickgold.florisboard.dictate
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
@@ -82,7 +83,12 @@ object DictateController {
         data class Rewording(val label: String) : UiState
         /** [canResend] is true when the failed audio was kept so the user can retry it (roadmap 10.3). */
         data class Error(val message: String, val canResend: Boolean = false) : UiState
+        /** A one-time rate/donate nudge shown in the Smartbar after enough usage (roadmap 9.7/9.8). */
+        data class Promo(val kind: PromoKind) : UiState
     }
+
+    /** Which one-time nudge is being shown (see [maybePromptForReview]). */
+    enum class PromoKind { RATE, DONATE }
 
     private val prefs by FlorisPreferenceStore
 
@@ -111,8 +117,15 @@ object DictateController {
     /** Whether [lastAudioFile] was a live-prompt recording, so a resend repeats the same mode. */
     private var lastWasLive = false
 
+    /** Recorded seconds of [lastAudioFile], re-credited towards the nudges if a resend succeeds. */
+    private var lastAudioSeconds = 0L
+
     /** Synthetic Enter key dispatched for auto-enter (10.1); reuses the keyboard's full enter logic. */
     private val EnterKeyData = TextKeyData(type = KeyType.ENTER_EDITING, code = KeyCode.ENTER, label = "enter")
+
+    /** Cumulative recorded audio (seconds) after which the rate / donate nudges appear (roadmap 9.7/9.8). */
+    private const val RATE_THRESHOLD_SECONDS = 180L   // 3 min
+    private const val DONATE_THRESHOLD_SECONDS = 300L // 5 min (user choice; legacy used 10 min)
 
     /** Single entry point for the mic button: starts recording, or stops and transcribes. */
     fun onMicClick(context: Context) {
@@ -217,13 +230,23 @@ object DictateController {
     private fun stopAndTranscribe(context: Context) {
         val activeRecorder = recorder
         recorder = null
+        // Capture the recorded length before leaving the Recording state, to credit the usage counter
+        // that gates the rate/donate nudges (roadmap 9.7/9.8).
+        val recordedSeconds = recordedSecondsOf(_state.value)
         val audioFile = activeRecorder?.stop()
         cleanupAudioRouting()
         if (audioFile == null || !audioFile.exists() || audioFile.length() == 0L) {
             _state.value = UiState.Error(context.getString(R.string.dictate__error_no_audio))
             return
         }
-        transcribe(context, audioFile)
+        transcribe(context, audioFile, recordedSeconds)
+    }
+
+    /** Elapsed recorded seconds of a [UiState.Recording] (running + accumulated), else 0. */
+    private fun recordedSecondsOf(state: UiState): Long {
+        val rec = state as? UiState.Recording ?: return 0L
+        val running = if (rec.paused) 0L else SystemClock.elapsedRealtime() - rec.startedAtMs
+        return ((rec.accumulatedMs + running) / 1000L).coerceAtLeast(0L)
     }
 
     /**
@@ -275,7 +298,7 @@ object DictateController {
      * Shared transcription path for both recorded and picked audio: resolves provider/key/model,
      * uploads [audioFile], commits the result and deletes the file afterwards.
      */
-    private fun transcribe(context: Context, audioFile: File) {
+    private fun transcribe(context: Context, audioFile: File, recordedSeconds: Long = 0L) {
         val apiKey = prefs.dictate.apiKey.get()
         if (apiKey.isBlank()) {
             _state.value = UiState.Error(context.getString(R.string.dictate__error_no_api_key))
@@ -323,15 +346,17 @@ object DictateController {
                 // Output behavior (roadmap 10.1/10.2): instant or typed, then optional auto-enter.
                 commitOutput(appContext, finalText)
                 discardLastAudio()
+                // Credit recorded audio towards the rate/donate gating (roadmap 9.7/9.8).
+                if (recordedSeconds > 0L) creditAudioSeconds(recordedSeconds)
                 _state.value = UiState.Idle
             } catch (e: DictateApiException) {
-                keepAudio = retainForResend(audioFile, live)
+                keepAudio = retainForResend(audioFile, live, recordedSeconds)
                 _state.value = UiState.Error(
                     e.message ?: appContext.getString(R.string.dictate__error_transcription_failed),
                     canResend = keepAudio,
                 )
             } catch (t: Throwable) {
-                keepAudio = retainForResend(audioFile, live)
+                keepAudio = retainForResend(audioFile, live, recordedSeconds)
                 _state.value = UiState.Error(
                     t.message ?: appContext.getString(R.string.dictate__error_unknown),
                     canResend = keepAudio,
@@ -379,11 +404,12 @@ object DictateController {
      * Retains [audioFile] (and whether it was a live prompt) for a later resend if the resend button is
      * enabled and the file is usable; returns true when kept. Any previously kept audio is discarded.
      */
-    private fun retainForResend(audioFile: File, wasLive: Boolean): Boolean {
+    private fun retainForResend(audioFile: File, wasLive: Boolean, recordedSeconds: Long): Boolean {
         if (!prefs.dictate.resendButton.get() || !audioFile.exists() || audioFile.length() == 0L) return false
         if (lastAudioFile != audioFile) discardLastAudio()
         lastAudioFile = audioFile
         lastWasLive = wasLive
+        lastAudioSeconds = recordedSeconds
         return true
     }
 
@@ -391,6 +417,7 @@ object DictateController {
     private fun discardLastAudio() {
         lastAudioFile?.takeIf { it.exists() }?.delete()
         lastAudioFile = null
+        lastAudioSeconds = 0L
     }
 
     /**
@@ -406,7 +433,70 @@ object DictateController {
         }
         // Repeat the original mode so a failed live prompt resends as a live prompt.
         livePromptArmed = lastWasLive
-        transcribe(context, audio)
+        transcribe(context, audio, lastAudioSeconds)
+    }
+
+    // --- Rate / Donate nudges (roadmap 9.7/9.8) -------------------------------------------------
+
+    /**
+     * Shows a one-time rate or donate nudge in the Smartbar once the user has accumulated enough
+     * transcribed audio, mirroring the legacy app: rate after [RATE_THRESHOLD_SECONDS], donate after
+     * [DONATE_THRESHOLD_SECONDS]. Each is shown until acted on (a flag is then set); accepting or
+     * declining donate also marks rate as done, so a donor is never asked to rate. No-op unless idle.
+     * Called when the keyboard appears so it never interrupts an in-flight recording/transcription.
+     */
+    fun maybePromptForReview() {
+        if (_state.value !is UiState.Idle) return
+        val total = prefs.dictate.totalAudioSeconds.get()
+        val kind = when {
+            total > DONATE_THRESHOLD_SECONDS && !prefs.dictate.hasDonated.get() -> PromoKind.DONATE
+            total > RATE_THRESHOLD_SECONDS && total <= DONATE_THRESHOLD_SECONDS && !prefs.dictate.hasRated.get() -> PromoKind.RATE
+            else -> return
+        }
+        _state.value = UiState.Promo(kind)
+    }
+
+    /** Opens the Play Store / PayPal page for the active promo and marks it done. No-op otherwise. */
+    fun acceptPromo(context: Context) {
+        val kind = (_state.value as? UiState.Promo)?.kind ?: return
+        val url = when (kind) {
+            PromoKind.RATE -> "https://play.google.com/store/apps/details?id=net.devemperor.dictate"
+            PromoKind.DONATE -> "https://paypal.me/DevEmperor"
+        }
+        runCatching {
+            context.startActivity(
+                Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            )
+        }
+        markPromoDone(kind)
+        _state.value = UiState.Idle
+    }
+
+    /** Dismisses the active promo without opening anything, but still marks it done. No-op otherwise. */
+    fun declinePromo() {
+        val kind = (_state.value as? UiState.Promo)?.kind ?: return
+        markPromoDone(kind)
+        _state.value = UiState.Idle
+    }
+
+    /** Persists the "handled" flags: declining/accepting donate also marks rate as done. */
+    private fun markPromoDone(kind: PromoKind) {
+        scope.launch {
+            when (kind) {
+                PromoKind.RATE -> prefs.dictate.hasRated.set(true)
+                PromoKind.DONATE -> {
+                    prefs.dictate.hasDonated.set(true)
+                    prefs.dictate.hasRated.set(true)
+                }
+            }
+        }
+    }
+
+    /** Adds [seconds] to the cumulative audio counter that gates the nudges. */
+    private fun creditAudioSeconds(seconds: Long) {
+        scope.launch {
+            prefs.dictate.totalAudioSeconds.set(prefs.dictate.totalAudioSeconds.get() + seconds)
+        }
     }
 
     // --- Rewording / GPT engine (roadmap section 4) ---------------------------------------------

@@ -31,13 +31,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -88,6 +91,7 @@ fun DictateSmartbarUi(state: DictateController.UiState, modifier: Modifier = Mod
     val arrangement = when {
         state is DictateController.UiState.Recording -> Arrangement.SpaceBetween
         state is DictateController.UiState.Error && state.canResend -> Arrangement.SpaceBetween
+        state is DictateController.UiState.Promo -> Arrangement.SpaceBetween
         else -> Arrangement.Center
     }
     SnyggRow(
@@ -113,6 +117,7 @@ fun DictateSmartbarUi(state: DictateController.UiState, modifier: Modifier = Mod
                     }
                 }
             }
+            is DictateController.UiState.Promo -> PromoContent(state.kind)
             else -> {}
         }
     }
@@ -329,6 +334,46 @@ private fun RowScope.ResendErrorContent(message: String) {
         SnyggIcon(
             imageVector = Icons.Default.Close,
             contentDescription = stringRes(R.string.dictate__action_dismiss),
+        )
+    }
+}
+
+/**
+ * One-time rate/donate nudge (roadmap 9.7/9.8): a star/heart icon, a short message and accept (✓) /
+ * decline (✗) buttons. Accepting opens the Play Store (rate) or PayPal (donate); both buttons mark the
+ * nudge as handled so it never reappears. Shown only when idle, replacing the normal Smartbar.
+ */
+@Composable
+private fun RowScope.PromoContent(kind: DictateController.PromoKind) {
+    val context = LocalContext.current
+    val isRate = kind == DictateController.PromoKind.RATE
+    SnyggIcon(
+        imageVector = if (isRate) Icons.Default.Star else Icons.Default.Favorite,
+        modifier = Modifier.size(18.dp),
+    )
+    Spacer(modifier = Modifier.width(8.dp))
+    SnyggText(
+        text = stringRes(if (isRate) R.string.dictate__promo_rate_message else R.string.dictate__promo_donate_message),
+        modifier = Modifier.weight(1f),
+    )
+    SnyggIconButton(
+        elementName = FlorisImeUi.SmartbarActionKey.elementName,
+        onClick = { DictateController.acceptPromo(context) },
+        modifier = Modifier.fillMaxHeight().aspectRatio(1f),
+    ) {
+        SnyggIcon(
+            imageVector = Icons.Default.Check,
+            contentDescription = stringRes(R.string.dictate__action_yes),
+        )
+    }
+    SnyggIconButton(
+        elementName = FlorisImeUi.SmartbarActionKey.elementName,
+        onClick = { DictateController.declinePromo() },
+        modifier = Modifier.fillMaxHeight().aspectRatio(1f),
+    ) {
+        SnyggIcon(
+            imageVector = Icons.Default.Close,
+            contentDescription = stringRes(R.string.dictate__action_no),
         )
     }
 }

@@ -95,6 +95,12 @@ object DictateLegacyMigrator {
             prefs.dictate.instantOutput.set(s.instantOutput)
             prefs.dictate.outputSpeed.set(s.outputSpeed)
             prefs.dictate.resendButton.set(s.resendButton)
+
+            // --- Rate/donate nudges (roadmap 9.7/9.8): carry over the "handled" flags so users who
+            // already rated/donated in the legacy app are never asked again. The old usage DB that
+            // tracked total audio time was dropped, so the new counter simply starts at 0. ---
+            prefs.dictate.hasRated.set(s.hasRatedInPlaystore)
+            prefs.dictate.hasDonated.set(s.hasDonated)
         }
 
         prefs.dictate.legacyImported.set(true)
