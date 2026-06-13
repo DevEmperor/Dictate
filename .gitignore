@@ -65,3 +65,6 @@ debug/
 target/
 **/*.rs.bk
 *.pdb
+
+# Dictate: docs hidden from the public repo for now (kept locally)
+private/
