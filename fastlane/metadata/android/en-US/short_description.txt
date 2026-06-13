@@ -1,1 +1,0 @@
-An open-source keyboard which respects your privacy. Currently in beta.

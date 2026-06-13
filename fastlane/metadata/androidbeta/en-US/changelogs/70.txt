@@ -1,3 +1,0 @@
-This release improves the Smartbar, the Emoji Palette and fixes a lot of other minor issues.
-
-Detailed changelog: https://github.com/florisboard/florisboard/releases/tag/v0.3.14-beta14

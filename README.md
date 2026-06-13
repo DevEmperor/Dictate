@@ -42,7 +42,6 @@
 >
 > This means the codebase here is **not stable yet** and changes daily. If you just want to
 > *use* the app, grab the stable release from [Google Play](https://play.google.com/store/apps/details?id=net.devemperor.dictate).
-> The development progress is tracked in [`docs/PORTING_ROADMAP.md`](docs/PORTING_ROADMAP.md).
 >
 > The previous Java codebase is preserved on the [`legacy-java`](https://github.com/DevEmperor/Dictate/tree/legacy-java)
 > branch and tagged as [`v3.2.0-final`](https://github.com/DevEmperor/Dictate/releases/tag/v3.2.0-final).
@@ -115,8 +114,9 @@ The resulting APK lands in `app/build/outputs/apk/debug/`.
 
 ## 🗺️ Roadmap
 
-The rewrite is being ported feature-by-feature. The living plan, including what's done and
-what's next, lives in [`docs/PORTING_ROADMAP.md`](docs/PORTING_ROADMAP.md).
+The rewrite is being ported feature-by-feature. A public roadmap will be published once the
+foundation is stable — for now, follow along via the commit history and
+[releases](https://github.com/DevEmperor/Dictate/releases).
 
 ## 🤝 Contributing
 

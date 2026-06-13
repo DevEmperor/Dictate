@@ -1,3 +1,0 @@
-This release fixes a lot of bugs, improves the input connection logic and slightly improves performance.
-
-Detailed changelog: https://github.com/florisboard/florisboard/releases/tag/v0.3.16
