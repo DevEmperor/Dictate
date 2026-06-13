@@ -317,6 +317,11 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__live_prompt_action_migrated",
             default = false,
         )
+        // Same one-time injection for the AI prompt-panel Smartbar action (DICTATE_PROMPTS).
+        val promptsActionMigrated = boolean(
+            key = "dictate__prompts_action_migrated",
+            default = false,
+        )
 
         // --- Rewording / GPT (roadmap section 4) -------------------------------------------------
         // Master switch for the rewording feature (prompt chips, auto-apply, live prompt). Default

@@ -94,6 +94,8 @@ object KeyCode {
 
     // Dictate: record a spoken instruction and send it straight to the rewording model (live prompt).
     const val DICTATE_LIVE_PROMPT =         -215
+    // Dictate: open the AI prompt panel (always-available list of rewording prompts).
+    const val DICTATE_PROMPTS =             -216
 
     const val SYSTEM_INPUT_METHOD_PICKER =  -221
     const val SYSTEM_PREV_INPUT_METHOD =    -222

@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.KeyboardHide
 import androidx.compose.material.icons.filled.KeyboardVoice
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MoreHoriz
@@ -49,6 +50,7 @@ import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.SentimentSatisfiedAlt
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SpaceBar
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.ui.graphics.vector.ImageVector
 import dev.patrickgold.florisboard.FlorisImeService
 import dev.patrickgold.florisboard.R
@@ -267,7 +269,8 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
                 // While recording, show a "send" arrow so it's obvious that tapping again submits
                 // the recording for transcription (rather than merely stopping it).
                 is dev.patrickgold.florisboard.dictate.DictateController.UiState.Recording -> Icons.AutoMirrored.Filled.Send
-                is dev.patrickgold.florisboard.dictate.DictateController.UiState.Transcribing -> Icons.Default.HourglassEmpty
+                // While transcribing, show a stop button: tapping aborts the in-flight transcription.
+                is dev.patrickgold.florisboard.dictate.DictateController.UiState.Transcribing -> Icons.Default.Stop
                 else -> Icons.Default.Mic
             }
         }
@@ -279,6 +282,14 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
                 is dev.patrickgold.florisboard.dictate.DictateController.UiState.Transcribing,
                 is dev.patrickgold.florisboard.dictate.DictateController.UiState.Rewording -> Icons.Default.HourglassEmpty
                 else -> Icons.Default.AutoAwesome
+            }
+        }
+        KeyCode.DICTATE_PROMPTS -> {
+            // Opens the AI rewording-prompt panel. Magic-wand glyph (distinct from the live-prompt
+            // sparkle), hourglass while a rewording request is running.
+            when (dev.patrickgold.florisboard.dictate.DictateController.state.value) {
+                is dev.patrickgold.florisboard.dictate.DictateController.UiState.Rewording -> Icons.Default.HourglassEmpty
+                else -> Icons.Default.AutoFixHigh
             }
         }
         KeyCode.LANGUAGE_SWITCH -> {

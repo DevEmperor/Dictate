@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.dictate.DictateController
@@ -52,25 +53,30 @@ fun DictatePromptStrip(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         prompts.forEach { prompt ->
-            val raw = prompt.prompt.orEmpty()
-            // Distinct icon per prompt type, matching the management screen so users learn one set:
-            //  - `[snippet]` (inserted literally, no API call) → short-text glyph
-            //  - "requires selection" (rewrites the highlighted text) → select-all glyph
-            //  - free prompt (generates from the instruction) → sparkle glyph
-            val isSnippet = raw.length >= 2 && raw.startsWith("[") && raw.endsWith("]")
-            val icon = when {
-                isSnippet -> Icons.AutoMirrored.Filled.ShortText
-                prompt.requiresSelection -> Icons.Default.SelectAll
-                else -> Icons.Default.AutoAwesome
-            }
             // Reuse the already-themed action-tile element (rounded pill, padding, ripple) so the
             // chips inherit every theme without dedicated dictate-* styling (deferred polish).
             SnyggChip(
                 elementName = FlorisImeUi.SmartbarActionTile.elementName,
                 onClick = { DictateController.applyPrompt(context, prompt) },
-                imageVector = icon,
+                imageVector = dictatePromptIcon(prompt),
                 text = prompt.name.orEmpty(),
             )
         }
+    }
+}
+
+/**
+ * Distinct icon per prompt type, matching the management screen so users learn one set:
+ *  - `[snippet]` (inserted literally, no API call) → short-text glyph
+ *  - "requires selection" (rewrites the highlighted/whole text) → select-all glyph
+ *  - free prompt (generates from the instruction) → sparkle glyph
+ */
+internal fun dictatePromptIcon(prompt: PromptModel): ImageVector {
+    val raw = prompt.prompt.orEmpty()
+    val isSnippet = raw.length >= 2 && raw.startsWith("[") && raw.endsWith("]")
+    return when {
+        isSnippet -> Icons.AutoMirrored.Filled.ShortText
+        prompt.requiresSelection -> Icons.Default.SelectAll
+        else -> Icons.Default.AutoAwesome
     }
 }

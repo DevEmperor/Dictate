@@ -135,6 +135,7 @@ data class TextKeyData(
                 IME_UI_MODE_CLIPBOARD,
                 IME_UI_MODE_DICTATE,
                 DICTATE_LIVE_PROMPT,
+                DICTATE_PROMPTS,
                 SYSTEM_INPUT_METHOD_PICKER,
                 SYSTEM_PREV_INPUT_METHOD,
                 SYSTEM_NEXT_INPUT_METHOD,
@@ -436,6 +437,12 @@ data class TextKeyData(
             type = KeyType.SYSTEM_GUI,
             code = KeyCode.DICTATE_LIVE_PROMPT,
             label = "dictate_live_prompt",
+        )
+        /** Predefined key data for [KeyCode.DICTATE_PROMPTS] (open the AI rewording-prompt panel) */
+        val DICTATE_PROMPTS = TextKeyData(
+            type = KeyType.SYSTEM_GUI,
+            code = KeyCode.DICTATE_PROMPTS,
+            label = "dictate_prompts",
         )
 
         /** Predefined key data for [KeyCode.SYSTEM_INPUT_METHOD_PICKER] */

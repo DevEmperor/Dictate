@@ -71,6 +71,7 @@ data class QuickActionArrangement(
             dynamicActions = listOf(
                 // Default visible order requested by the user.
                 QuickAction.InsertKey(TextKeyData.DICTATE_LIVE_PROMPT),
+                QuickAction.InsertKey(TextKeyData.DICTATE_PROMPTS),
                 QuickAction.InsertKey(TextKeyData.CLIPBOARD_SELECT_ALL),
                 QuickAction.InsertKey(TextKeyData.UNDO),
                 QuickAction.InsertKey(TextKeyData.REDO),

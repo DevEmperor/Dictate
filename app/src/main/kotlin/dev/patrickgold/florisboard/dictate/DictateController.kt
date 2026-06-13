@@ -36,6 +36,7 @@ import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.key.KeyType
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
 import dev.patrickgold.florisboard.keyboardManager
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -104,6 +105,9 @@ object DictateController {
     private var recorder: RecordingController? = null
     private var startJob: Job? = null
 
+    /** The in-flight transcription coroutine, cancellable via the stop button (see [cancelTranscription]). */
+    private var transcribeJob: Job? = null
+
     private var audioManager: AudioManager? = null
     private var focusRequest: AudioFocusRequest? = null
     private var btRouter: BluetoothMicRouter? = null
@@ -131,8 +135,10 @@ object DictateController {
     fun onMicClick(context: Context) {
         when (_state.value) {
             is UiState.Recording -> stopAndTranscribe(context)
-            // Ignore taps while a transcription or rewording request is in flight.
-            is UiState.Transcribing, is UiState.Rewording -> Unit
+            // Tapping the mic while transcribing aborts it (the button shows a stop icon, see the
+            // ComputingEvaluator). Rewording stays a no-op.
+            is UiState.Transcribing -> cancelTranscription()
+            is UiState.Rewording -> Unit
             else -> startRecording(context)
         }
     }
@@ -206,6 +212,18 @@ object DictateController {
 
     /** Kept for the legacy in-keyboard panel; identical to [cancelRecording]. */
     fun abortRecording() = cancelRecording()
+
+    /**
+     * Aborts an in-flight transcription (stop button shown on the mic while transcribing). Cancels the
+     * network coroutine, drops the audio (handled in the job's finally) and returns to idle. No-op
+     * outside the transcribing state, so a tap can never interrupt a rewording request.
+     */
+    fun cancelTranscription() {
+        if (_state.value !is UiState.Transcribing) return
+        transcribeJob?.cancel()
+        transcribeJob = null
+        _state.value = UiState.Idle
+    }
 
     private fun startRecording(context: Context) {
         if (_state.value is UiState.Recording) return
@@ -316,7 +334,7 @@ object DictateController {
         // Live prompt is consumed by this transcription only (the next recording is normal again).
         val live = livePromptArmed
         livePromptArmed = false
-        scope.launch {
+        transcribeJob = scope.launch {
             var keepAudio = false
             try {
                 val client = OpenAiCompatibleClient.from(preset, apiKey, baseUrlOverride = baseUrlOverrideFor(preset))
@@ -349,6 +367,10 @@ object DictateController {
                 // Credit recorded audio towards the rate/donate gating (roadmap 9.7/9.8).
                 if (recordedSeconds > 0L) creditAudioSeconds(recordedSeconds)
                 _state.value = UiState.Idle
+            } catch (c: CancellationException) {
+                // User aborted via the stop button: discard quietly (state set by cancelTranscription),
+                // never show an error. The audio is dropped in the finally block.
+                throw c
             } catch (e: DictateApiException) {
                 keepAudio = retainForResend(audioFile, live, recordedSeconds)
                 _state.value = UiState.Error(
@@ -521,9 +543,25 @@ object DictateController {
             return
         }
 
-        val input = selectionOverride
-            ?: if (prompt.requiresSelection) editorInstance.activeContent.selectedText else null
-        if (prompt.requiresSelection && input.isNullOrEmpty()) return // nothing to operate on
+        val input: String? = when {
+            selectionOverride != null -> selectionOverride
+            !prompt.requiresSelection -> null
+            else -> {
+                val content = editorInstance.activeContent
+                val selected = content.selectedText
+                if (selected.isNotEmpty()) {
+                    selected
+                } else {
+                    // Nothing selected: select the whole field (so the user sees what gets reworded)
+                    // and operate on its full text. The reworded result then replaces the now-selected
+                    // content via commitText. Matches the "tap a prompt with no selection" flow.
+                    val whole = content.text
+                    if (whole.isBlank()) return // empty field – nothing to operate on
+                    editorInstance.performClipboardSelectAll()
+                    whole
+                }
+            }
+        }
 
         if (rewordingApiKey().isBlank()) {
             _state.value = UiState.Error(appContext.getString(R.string.dictate__error_no_api_key))

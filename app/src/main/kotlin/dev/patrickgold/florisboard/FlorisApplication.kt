@@ -112,6 +112,7 @@ class FlorisApplication : Application() {
             Log.i("PREFS", result.toString())
             DictateLegacyMigrator.migrateIfNeeded(this@FlorisApplication)
             DictateLegacyMigrator.migrateLivePromptActionIfNeeded(this@FlorisApplication)
+            DictateLegacyMigrator.migratePromptsActionIfNeeded(this@FlorisApplication)
             preferenceStoreLoaded.value = true
         }
         extensionManager.value.init()

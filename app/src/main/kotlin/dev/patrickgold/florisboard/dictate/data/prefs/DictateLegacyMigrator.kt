@@ -117,16 +117,36 @@ object DictateLegacyMigrator {
     suspend fun migrateLivePromptActionIfNeeded(context: Context) {
         val prefs by FlorisPreferenceStore
         if (prefs.dictate.livePromptActionMigrated.get()) return
+        ensureActionPresent(TextKeyData.DICTATE_LIVE_PROMPT, KeyCode.DICTATE_LIVE_PROMPT)
+        prefs.dictate.livePromptActionMigrated.set(true)
+    }
 
+    /**
+     * Like [migrateLivePromptActionIfNeeded], but for the AI prompt-panel action ([KeyCode.DICTATE_PROMPTS]).
+     * Injected separately (own guard) so users who already ran the live-prompt migration still receive it.
+     */
+    suspend fun migratePromptsActionIfNeeded(context: Context) {
+        val prefs by FlorisPreferenceStore
+        if (prefs.dictate.promptsActionMigrated.get()) return
+        ensureActionPresent(TextKeyData.DICTATE_PROMPTS, KeyCode.DICTATE_PROMPTS)
+        prefs.dictate.promptsActionMigrated.set(true)
+    }
+
+    /**
+     * Injects [keyData] at the front of the saved dynamic action row unless an action with [code] is
+     * already present anywhere in the arrangement. New defaults do not retroactively merge into a
+     * persisted arrangement, so without this an upgrading user could never see/place the action.
+     */
+    private suspend fun ensureActionPresent(keyData: TextKeyData, code: Int) {
+        val prefs by FlorisPreferenceStore
         val arrangement = prefs.smartbar.actionArrangement.get()
         val alreadyPresent = arrangement.run { dynamicActions + hiddenActions + listOfNotNull(stickyAction) }
-            .any { it.keyData().code == KeyCode.DICTATE_LIVE_PROMPT }
+            .any { it.keyData().code == code }
         if (!alreadyPresent) {
-            val livePrompt = QuickAction.InsertKey(TextKeyData.DICTATE_LIVE_PROMPT)
+            val action = QuickAction.InsertKey(keyData)
             prefs.smartbar.actionArrangement.set(
-                arrangement.copy(dynamicActions = listOf(livePrompt) + arrangement.dynamicActions),
+                arrangement.copy(dynamicActions = listOf(action) + arrangement.dynamicActions),
             )
         }
-        prefs.dictate.livePromptActionMigrated.set(true)
     }
 }

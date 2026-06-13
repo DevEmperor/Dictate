@@ -80,9 +80,11 @@
     <string name="quick_action__ime_ui_mode_media" comment="Please mind the limited available space for the quick action strings">Emoji</string>
     <string name="quick_action__ime_ui_mode_media__tooltip">Open emoji panel</string>
     <string name="quick_action__ime_ui_mode_dictate" comment="Please mind the limited available space for the quick action strings">Dictate</string>
-    <string name="quick_action__ime_ui_mode_dictate__tooltip">Open the Dictate voice panel</string>
+    <string name="quick_action__ime_ui_mode_dictate__tooltip">Tap to dictate, tap again to transcribe</string>
     <string name="quick_action__dictate_live_prompt" comment="Please mind the limited available space for the quick action strings">Live prompt</string>
     <string name="quick_action__dictate_live_prompt__tooltip">Record a spoken instruction and send it to the AI</string>
+    <string name="quick_action__dictate_prompts" comment="Please mind the limited available space for the quick action strings">AI prompts</string>
+    <string name="quick_action__dictate_prompts__tooltip">Open the AI rewording prompts</string>
     <string name="quick_action__language_switch" comment="Please mind the limited available space for the quick action strings">Switch language</string>
     <string name="quick_action__language_switch__tooltip">Perform language switch</string>
     <string name="quick_action__settings" comment="Please mind the limited available space for the quick action strings">Settings</string>
@@ -593,6 +595,11 @@
     <string name="about__changelog__summary" comment="Preference summary">What\'s new</string>
     <string name="about__repository__title" comment="Preference title">Repository (GitHub)</string>
     <string name="about__repository__summary" comment="Preference summary">Source code, discussions, issues and info</string>
+    <string name="about__made_by" comment="Personal signature shown under the app name in the About header" translatable="false">Made with ❤️ by DevEmperor\nSoli deo gloria ✝️</string>
+    <string name="about__feedback__title" comment="Preference title">Feedback &amp; support</string>
+    <string name="about__feedback__summary" comment="Preference summary">Send an email with questions, bugs or ideas</string>
+    <string name="about__feedback__email" translatable="false">contact@devemperor.net</string>
+    <string name="about__feedback__subject" comment="Default subject line of the feedback email" translatable="false">Dictate Feedback</string>
     <string name="about__privacy_policy__title" comment="Preference title">Privacy policy</string>
     <string name="about__privacy_policy__summary" comment="Preference summary">The privacy policy for this project</string>
     <string name="about__project_license__title" comment="Preference title">Project license</string>
@@ -1166,7 +1173,8 @@
     <!-- Strings for the Dictate AI voice features (panel, settings, onboarding). -->
 
     <!-- Dictate input panel (IME) -->
-    <string name="dictate__panel_title" comment="Title of the Dictate voice panel inside the keyboard">Dictate</string>
+    <string name="dictate__panel_title" comment="Title of the Dictate AI prompt panel inside the keyboard">AI prompts</string>
+    <string name="dictate__panel_no_prompts" comment="Shown in the prompt panel when no prompts exist yet">No prompts yet. Add some in the Dictate settings under Rewording.</string>
     <string name="dictate__status_idle" comment="Status shown on the Dictate panel when ready to record">Tap to dictate</string>
     <string name="dictate__status_recording" comment="Status shown while recording audio">Recording – tap to stop</string>
     <string name="dictate__status_transcribing" comment="Status shown while the audio is being transcribed">Transcribing…</string>
@@ -1193,8 +1201,10 @@
     <string name="dictate__action_dismiss" comment="Content description for the button that dismisses the resend error">Dismiss</string>
     <string name="dictate__action_yes" comment="Content description for the accept button of the rate/donate nudge">Yes</string>
     <string name="dictate__action_no" comment="Content description for the decline button of the rate/donate nudge">No, thanks</string>
-    <string name="dictate__promo_rate_message" comment="Smartbar nudge asking the user to rate the app after enough usage">Enjoying Dictate? A quick rating helps a lot!</string>
-    <string name="dictate__promo_donate_message" comment="Smartbar nudge asking the user to donate after enough usage">Dictate saves you time? Support it with a small donation!</string>
+    <string name="dictate__promo_rate_message" comment="Smartbar nudge asking the user to rate the app after enough usage. Kept short to fit the single-line Smartbar.">Enjoying Dictate?</string>
+    <string name="dictate__promo_donate_message" comment="Smartbar nudge asking the user to donate after enough usage. Kept short to fit the single-line Smartbar.">Support Dictate?</string>
+    <string name="dictate__promo_rate_action" comment="Label of the accent pill button that opens the Play Store to rate the app">Rate</string>
+    <string name="dictate__promo_donate_action" comment="Label of the accent pill button that opens PayPal to donate">Donate</string>
 
     <!-- Dictate settings screen -->
     <string name="dictate__title" comment="Title of the Dictate settings screen and home tile">Dictate</string>
