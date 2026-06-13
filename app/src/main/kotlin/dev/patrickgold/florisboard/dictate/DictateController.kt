@@ -381,14 +381,17 @@ object DictateController {
      */
     private suspend fun postProcessTranscript(context: Context, transcript: String): String {
         if (!prefs.dictate.rewordingEnabled.get() || transcript.isBlank()) return transcript
+        // No rewording key (not even a shared transcription one) → nothing here can run; return the raw
+        // transcript instead of flashing "Formatting…" and looping through doomed throw/catch calls.
+        if (rewordingApiKey().isBlank()) return transcript
         var text = transcript
 
         // 1) Auto-formatting (spoken cues → Markdown). Low-level prompt, no be-precise suffix.
         if (prefs.dictate.autoFormattingEnabled.get()) {
             _state.value = UiState.Rewording(context.getString(R.string.dictate__status_formatting))
-            val lang = prefs.dictate.activeInputLanguage.get()
-            val formatPrompt = DictatePromptDefaults.AUTO_FORMATTING_PROMPT +
-                "\n\nLanguage hint: " + lang + "\n\nTranscript:\n" + text
+            // Hint the model with the readable language name ("German"), or "unknown" for auto-detect.
+            val languageName = DictateLanguages.englishNameFor(prefs.dictate.activeInputLanguage.get())
+            val formatPrompt = DictatePromptDefaults.buildAutoFormattingPrompt(languageName, text)
             text = runCatching { requestRewordRaw(formatPrompt).ifBlank { text } }.getOrDefault(text)
         }
 

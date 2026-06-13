@@ -61,6 +61,16 @@ object DictatePromptDefaults {
             "7) Input: Just checking in with you today -> Output: Just checking in with you today."
 
     /**
+     * Assembles the full auto-formatting request: the [AUTO_FORMATTING_PROMPT] rules, a *language hint*,
+     * and the [transcript] to clean up. Extracted (and unit-tested) so the wording stays stable across
+     * refactors. A null/blank [languageName] becomes `"unknown"`, matching the legacy app's fallback.
+     */
+    fun buildAutoFormattingPrompt(languageName: String?, transcript: String): String =
+        AUTO_FORMATTING_PROMPT +
+            "\n\nLanguage hint: " + (languageName?.takeIf { it.isNotBlank() } ?: "unknown") +
+            "\n\nTranscript:\n" + transcript
+
+    /**
      * Returns a short example sentence (in [languageCode]) that demonstrates capitalization and
      * punctuation. Sent as the transcription `prompt` so the model mirrors that style. Falls back to
      * the English sentence for unknown / "detect" codes (and tries the base language for `xx-YY`).

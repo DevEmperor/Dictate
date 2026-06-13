@@ -17,7 +17,7 @@ import java.util.Locale
  * provider (ISO-639-1, or a BCP-47 tag for regional variants such as `zh-CN`); the special value
  * [DictateLanguages.DETECT] means "let the model auto-detect" and is never sent to the API.
  */
-data class DictateLanguage(val code: String, private val englishName: String) {
+data class DictateLanguage(val code: String, val englishName: String) {
     /** Short uppercase badge for the smartbar chip, e.g. `DE`, `EN`, `ZH`, `YUE`. */
     val shortCode: String
         get() = code.substringBefore('-').uppercase(Locale.ROOT)
@@ -107,6 +107,16 @@ object DictateLanguages {
 
     /** Resolves a code to its [DictateLanguage], falling back to "detect" for unknown codes. */
     fun of(code: String): DictateLanguage = byCode[code] ?: all.first()
+
+    /**
+     * English language name for [code] (e.g. `"German"`), used as the auto-formatting *language hint*.
+     * Returns `null` for [DETECT], blank, or unknown codes so the caller can substitute "unknown" – a
+     * readable name guides the model far better than the bare ISO code.
+     */
+    fun englishNameFor(code: String?): String? {
+        if (code.isNullOrEmpty() || code == DETECT) return null
+        return byCode[code]?.englishName
+    }
 
     /** Parses the comma-separated [prefs.dictate.inputLanguages] value into a sanitized subset. */
     fun parseSelection(raw: String): List<DictateLanguage> {
