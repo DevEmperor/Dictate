@@ -44,7 +44,7 @@ Usage-Anzeige, Aufnahme-Komfort** fehlt noch.
 | 2.1 | **Multi-Select Eingabesprachen** (~55 Sprachen) | ✅ | `DictateLanguages` + eigener Settings-Subscreen (`DictateLanguagesScreen`), gespeichert als CSV in `prefs.dictate.inputLanguages` |
 | 2.2 | **Sprache umschalten** (durch ausgewählte cyclen) | ✅ | Sprach-Chip in der Aufnahmeleiste: Tippen = cyclen, Langdruck = Popup; `activeInputLanguage` persistiert |
 | 2.3 | Sprache am Button anzeigen | ✅ | Chip zeigt Kürzel (DE/EN) bzw. Globus für „Auto"; bewusst **keine Flaggen** (Android rendert sie nicht zuverlässig, Sprache≠Land) |
-| 2.4 | **Style-Prompt pro Sprache** (Punktuation/Großschreibung) | 🔲 | `getPunctuationPromptForLanguage`, 55 Sprachen — bewusst ausgeklammert, kommt später |
+| 2.4 | **Style-Prompt pro Sprache** (Punktuation/Großschreibung) | ✅ | `getPunctuationPromptForLanguage`, 55 Sprachen; Engine in `transcribe()` (P1) + Settings-UI „Punctuation & style" unter Languages (P2) |
 
 > 2.1–2.3 portiert. `language` geht jetzt an Whisper (Auto-Detect = nicht gesendet). Der Sprach-Chip
 > erscheint nur **während der Aufnahme** (links neben Pause), damit das Keyboard sonst nicht überladen wird.
@@ -81,24 +81,25 @@ Usage-Anzeige, Aufnahme-Komfort** fehlt noch.
 
 | # | Feature | Status | Anmerkung |
 |---|---------|--------|-----------|
-| 4.1 | Rewording an/aus | 🟡 | Pref `rewordingEnabled` + Engine-Gating ✓ (P1); Settings-UI offen (P2) |
-| 4.2 | **Eigene Prompts (CRUD)** | 🟡 | `PromptsDatabaseHelper` an Controller verdrahtet ✓ (P1); Edit/Overview-UI offen (P2) |
+| 4.1 | Rewording an/aus | ✅ | Pref `rewordingEnabled` + Engine-Gating (P1) + Master-Toggle im `DictateRewordingScreen` (P2) |
+| 4.2 | **Eigene Prompts (CRUD)** | 🟡 | `DictatePromptsScreen` (Liste + Add/Edit/Delete-Dialog) auf shared `prompts.db` (P2); **Reorder + Export/Import noch offen** (→ P4) |
 | 4.3 | **Prompt-Leiste im Keyboard** (Smartbar-Chips, kontextuell) | 🔲 | Zielbild: scrollbare Chips, kein Vollgrid (P3) |
-| 4.4 | Prompt „benötigt Auswahl" vs. frei | ✅ | `requiresSelection` in `applyPrompt` (P1) |
-| 4.5 | **Auto-Apply-Prompts** (nach Transkription automatisch) | 🟡 | Engine ✓ (`postProcessTranscript`, P1); Settings-Flag-UI offen (P2) |
+| 4.4 | Prompt „benötigt Auswahl" vs. frei | ✅ | `requiresSelection` in `applyPrompt` (P1) + Switch im Editor (P2) |
+| 4.5 | **Auto-Apply-Prompts** (nach Transkription automatisch) | ✅ | Engine (`postProcessTranscript`, P1) + Auto-Apply-Switch pro Prompt im Editor (P2) |
 | 4.6 | ~~Prompt-Queue (während Aufnahme verketten)~~ | ❌ | **Gestrichen** (Entscheidung 2026-06-13) → ersetzt durch Auto-Apply + Nachformulieren |
 | 4.7 | **Live/Instant-Prompt** (aufnehmen → direkt an GPT) | 🟡 | Engine ✓ (`startLivePrompt`, P1); UI-Trigger offen (P3/P4) |
-| 4.8 | Add/Edit-Prompt-Screens | 🔲 | alt: `PromptEditActivity`, `PromptsOverviewActivity` (P2) |
-| 4.9 | **Auto-Formatting** (gesprochene Formatierbefehle → Markdown) | 🟡 | Engine ✓ (`AUTO_FORMATTING_PROMPT`, Pref `autoFormattingEnabled`, P1); Settings-Toggle offen (P2) |
-| 4.10 | **System-Prompt** Rewording (nichts/predefined/custom) | 🟡 | Engine ✓ (`systemPromptSelection`, P1); Settings-UI offen (P2) |
-| 4.11 | **Style-Prompt** Transkription (nichts/predefined/custom) | 🟡 | Engine ✓ (in `transcribe` verdrahtet, per-Sprache, P1; **deckt 2.4 ab**); Settings-UI offen (P2) |
+| 4.8 | Add/Edit-Prompt-Screens | ✅ | als Editor-Dialog im `DictatePromptsScreen` (ersetzt `PromptEditActivity`/`PromptsOverviewActivity`) (P2) |
+| 4.9 | **Auto-Formatting** (gesprochene Formatierbefehle → Markdown) | 🟡 | Engine ✓ (`AUTO_FORMATTING_PROMPT`, P1) + Settings-Toggle (P2); Feinschliff/Tests offen (P5) |
+| 4.10 | **System-Prompt** Rewording (nichts/predefined/custom) | ✅ | Engine (`systemPromptSelection`, P1) + ListPreference + Custom-Feld (P2) |
+| 4.11 | **Style-Prompt** Transkription (nichts/predefined/custom) | ✅ | Engine in `transcribe` (per-Sprache, P1; **deckt 2.4 ab**) + ListPreference + Custom-Feld unter Languages (P2) |
 | 4.12 | „Alles auswählen"-Toggle als Prompt | ✅ | als Quick-Action `CLIPBOARD_SELECT_ALL` abgedeckt; Tile aus der Leiste gestrichen |
 
 > Das ist der größte Brocken. **Zielbild (festgezurrt 2026-06-13):** kontextuelle Chip-Leiste in der
 > Smartbar als Hauptfläche; Queue gestrichen → Auto-Apply + 1-Tap-Nachformulieren; Select-All-Tile
 > raus (gibt's als QuickAction); Verwaltung/System-/Style-Prompt in den Compose-Settings.
 > **Phasen:** P0 Daten/Prefs ✓ · P1 Engine im Controller ✓ · P2 Settings-UI (CRUD, System-/Style-Prompt,
-> Auto-Formatting) · P3 Smartbar-Chip-Leiste · P4 Panel-Ergänzung (Live/Verwaltung) · P5 Auto-Formatting-Feinschliff.
+> Auto-Formatting) ✓ · P3 Smartbar-Chip-Leiste · P4 Panel-Ergänzung (Live/Verwaltung; Prompt-Reorder + Export/Import) ·
+> P5 Auto-Formatting-Feinschliff.
 
 > **Block-Notiz (2026-06-13, Abschnitt 4 – P0+P1):** Fundament + Rewording-Engine umgesetzt.
 > *Daten/Prefs (P0):* `DictatePromptDefaults` (be-precise- & auto-formatting-Prompt + per-Sprache
@@ -113,6 +114,19 @@ Usage-Anzeige, Aufnahme-Komfort** fehlt noch.
 > `transcribe()` verdrahtet. Neuer `UiState.Rewording(label)` + Spinner in der Smartbar. Chat läuft über
 > den vorhandenen `complete(ChatRequest)`. **Noch ohne UI-Trigger** (Chips/Settings folgen P2/P3) – außer
 > Auto-Formatting/Auto-Apply, die für migrierte Nutzer mit aktivem Flag bereits automatisch laufen.
+
+> **Block-Notiz (2026-06-13, Abschnitt 4 – P2 Settings-UI):** Komplette Compose-Settings für Rewording.
+> *Neue Screens/Routen:* `DictateRewordingScreen` (`settings/dictate/rewording`) – Master-Toggle, eigener
+> Chat-Provider (alle chat-fähigen Presets + Custom), Rewording-API-Key (leer = Transkriptions-Key),
+> Modell, Custom-Base-URL, Auto-Formatting-Toggle, System-Prompt (none/predefined/custom + Custom-Feld),
+> „Manage prompts"-Eintrag mit Live-Prompt-Count. `DictatePromptsScreen` (`settings/dictate/prompts`) –
+> Liste + FAB + Editor-Dialog (Name, Prompt, „benötigt Auswahl", „automatisch anwenden", Löschen) auf der
+> geteilten `prompts.db`; ersetzt `PromptsOverviewActivity`/`PromptEditActivity`. Im Haupt-`DictateScreen`:
+> Style-Prompt (Punctuation & style) unter *Languages* und ein *Rewording*-Eintrag, der in den neuen Screen
+> navigiert. *Refactor:* `TextInputPreference` (jetzt mit `multiline`) + `promptSelectionEntries()` nach
+> `DictateSettingsComponents.kt` ausgelagert. **Bewusst auf P4 verschoben:** Prompt-Reihenfolge per Drag
+> sowie JSON-Export/-Import (waren in der alten `PromptsOverviewActivity`). **Noch keine Keyboard-Chips** –
+> Prompts sind anlegbar/aktiv (Auto-Apply läuft), aber manuell antippbar erst mit P3. Build grün.
 
 ---
 

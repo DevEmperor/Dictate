@@ -10,52 +10,37 @@
 
 package dev.patrickgold.florisboard.app.settings.dictate
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.BrightnessHigh
 import androidx.compose.material.icons.filled.Dns
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.ModelTraining
+import androidx.compose.material.icons.filled.Spellcheck
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material.icons.filled.VolumeOff
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
-import dev.patrickgold.florisboard.app.FlorisPreferenceModel
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.dictate.DictateLanguages
+import dev.patrickgold.florisboard.dictate.data.prompts.DictatePromptDefaults
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import org.florisboard.lib.compose.stringRes
-import dev.patrickgold.jetpref.datastore.model.PreferenceData
 import dev.patrickgold.jetpref.datastore.model.collectAsState
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
-import dev.patrickgold.jetpref.datastore.ui.PreferenceUiScope
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
-import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
-import kotlinx.coroutines.launch
 
-// TODO: move all user-facing strings to strings.xml when the Dictate resource set is localized.
 @Composable
 fun DictateScreen() = FlorisScreen {
     title = stringRes(R.string.dictate__title)
@@ -125,6 +110,38 @@ fun DictateScreen() = FlorisScreen {
                 summary = summary,
                 onClick = { navController.navigate(Routes.Settings.DictateLanguages) },
             )
+
+            // Style prompt biases the transcription model towards proper punctuation/casing in the
+            // active language (roadmap 2.4 / 4.11). It is sent with the transcription request.
+            val styleSelection by prefs.dictate.stylePromptSelection.collectAsState()
+            ListPreference(
+                prefs.dictate.stylePromptSelection,
+                icon = Icons.Default.Spellcheck,
+                title = stringRes(R.string.dictate__style_prompt_title),
+                entries = promptSelectionEntries(),
+            )
+            if (styleSelection == DictatePromptDefaults.SELECTION_CUSTOM) {
+                TextInputPreference(
+                    pref = prefs.dictate.stylePromptCustom,
+                    icon = Icons.Default.Edit,
+                    title = stringRes(R.string.dictate__style_prompt_custom_title),
+                    placeholder = stringRes(R.string.dictate__style_prompt_custom_placeholder),
+                    multiline = true,
+                )
+            }
+        }
+
+        PreferenceGroup(title = stringRes(R.string.dictate__rewording_group)) {
+            val rewordingEnabled by prefs.dictate.rewordingEnabled.collectAsState()
+            Preference(
+                icon = Icons.Default.AutoAwesome,
+                title = stringRes(R.string.dictate__rewording_title),
+                summary = stringRes(
+                    if (rewordingEnabled) R.string.dictate__rewording_summary_on
+                    else R.string.dictate__rewording_summary_off,
+                ),
+                onClick = { navController.navigate(Routes.Settings.DictateRewording) },
+            )
         }
 
         PreferenceGroup(title = stringRes(R.string.dictate__recording_group)) {
@@ -151,57 +168,6 @@ fun DictateScreen() = FlorisScreen {
                 icon = Icons.Default.Bolt,
                 title = stringRes(R.string.dictate__instant_recording_title),
                 summary = stringRes(R.string.dictate__instant_recording_summary),
-            )
-        }
-    }
-}
-
-/**
- * A [Preference] row that edits a string preference through a single-line text dialog. Used for the
- * API key, model and custom base URL. Secret fields are masked while typing.
- */
-@Composable
-private fun PreferenceUiScope<FlorisPreferenceModel>.TextInputPreference(
-    pref: PreferenceData<String>,
-    title: String,
-    icon: ImageVector? = null,
-    placeholder: String = "",
-    isSecret: Boolean = false,
-    summaryProvider: (String) -> String = { it.ifBlank { "Not set" } },
-) {
-    val value by pref.collectAsState()
-    val scope = rememberCoroutineScope()
-    var dialogOpen by remember { mutableStateOf(false) }
-
-    Preference(
-        icon = icon,
-        title = title,
-        summary = summaryProvider(value),
-        onClick = { dialogOpen = true },
-    )
-
-    if (dialogOpen) {
-        var text by remember(value) { mutableStateOf(value) }
-        JetPrefAlertDialog(
-            title = title,
-            confirmLabel = stringRes(R.string.action__ok),
-            dismissLabel = stringRes(R.string.action__cancel),
-            onConfirm = {
-                scope.launch { pref.set(text.trim()) }
-                dialogOpen = false
-            },
-            onDismiss = { dialogOpen = false },
-        ) {
-            OutlinedTextField(
-                modifier = Modifier.padding(top = 4.dp),
-                value = text,
-                onValueChange = { text = it },
-                singleLine = true,
-                placeholder = { Text(placeholder) },
-                visualTransformation = if (isSecret) PasswordVisualTransformation() else VisualTransformation.None,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = if (isSecret) KeyboardType.Password else KeyboardType.Uri,
-                ),
             )
         }
     }
