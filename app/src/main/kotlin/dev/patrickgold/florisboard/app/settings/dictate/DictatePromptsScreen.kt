@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -264,6 +265,7 @@ fun DictatePromptsScreen() = FlorisScreen {
                                 active = prompt.requiresSelection,
                                 contentDescription = stringRes(R.string.dictate__prompt_badge_selection),
                             )
+                            Spacer(Modifier.width(6.dp))
                             PromptStatusIcon(
                                 icon = Icons.Default.Autorenew,
                                 active = prompt.autoApply,
