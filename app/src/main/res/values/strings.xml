@@ -1181,7 +1181,7 @@
     <string name="dictate__error_rewording_failed" comment="Generic rewording (GPT) failure">Rewording failed.</string>
 
     <!-- Dictate rewording (GPT) status -->
-    <string name="dictate__status_rewording" comment="Shown while a rewording prompt is being applied">Reworking…</string>
+    <string name="dictate__status_rewording" comment="Shown while a rewording prompt is being applied">Rewording…</string>
     <string name="dictate__status_formatting" comment="Shown while the auto-formatting pass runs on a transcript">Formatting…</string>
 
     <!-- Dictate in-Smartbar recording controls -->
