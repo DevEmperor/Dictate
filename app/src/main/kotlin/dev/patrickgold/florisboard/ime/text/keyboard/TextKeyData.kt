@@ -134,6 +134,7 @@ data class TextKeyData(
                 IME_UI_MODE_MEDIA,
                 IME_UI_MODE_CLIPBOARD,
                 IME_UI_MODE_DICTATE,
+                DICTATE_LIVE_PROMPT,
                 SYSTEM_INPUT_METHOD_PICKER,
                 SYSTEM_PREV_INPUT_METHOD,
                 SYSTEM_NEXT_INPUT_METHOD,
@@ -429,6 +430,12 @@ data class TextKeyData(
             type = KeyType.SYSTEM_GUI,
             code = KeyCode.IME_UI_MODE_DICTATE,
             label = "ime_ui_mode_dictate",
+        )
+        /** Predefined key data for [KeyCode.DICTATE_LIVE_PROMPT] (record → send to GPT as instruction) */
+        val DICTATE_LIVE_PROMPT = TextKeyData(
+            type = KeyType.SYSTEM_GUI,
+            code = KeyCode.DICTATE_LIVE_PROMPT,
+            label = "dictate_live_prompt",
         )
 
         /** Predefined key data for [KeyCode.SYSTEM_INPUT_METHOD_PICKER] */

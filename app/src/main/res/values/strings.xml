@@ -81,6 +81,8 @@
     <string name="quick_action__ime_ui_mode_media__tooltip">Open emoji panel</string>
     <string name="quick_action__ime_ui_mode_dictate" comment="Please mind the limited available space for the quick action strings">Dictate</string>
     <string name="quick_action__ime_ui_mode_dictate__tooltip">Open the Dictate voice panel</string>
+    <string name="quick_action__dictate_live_prompt" comment="Please mind the limited available space for the quick action strings">Live prompt</string>
+    <string name="quick_action__dictate_live_prompt__tooltip">Record a spoken instruction and send it to the AI</string>
     <string name="quick_action__language_switch" comment="Please mind the limited available space for the quick action strings">Switch language</string>
     <string name="quick_action__language_switch__tooltip">Perform language switch</string>
     <string name="quick_action__settings" comment="Please mind the limited available space for the quick action strings">Settings</string>
@@ -1270,6 +1272,19 @@
     <string name="dictate__prompt_auto_apply_summary" comment="Summary for the auto-apply switch">Run this prompt on every transcription automatically</string>
     <string name="dictate__prompt_badge_selection" comment="Badge in the prompt list: prompt needs a selection">Selection</string>
     <string name="dictate__prompt_badge_auto" comment="Badge in the prompt list: prompt runs automatically">Auto</string>
+    <string name="dictate__prompt_reorder_hint" comment="Hint shown above the prompt list explaining drag-to-reorder">Long-press and drag a prompt to reorder.</string>
+    <string name="dictate__prompts_export" comment="Toolbar action: export prompts to a JSON file">Export prompts</string>
+    <string name="dictate__prompts_import" comment="Toolbar action: import prompts from a JSON file">Import prompts</string>
+    <string name="dictate__prompts_export_filename" comment="Default file name for the prompt export">dictate_prompts.json</string>
+    <string name="dictate__prompts_export_success" comment="Toast after a successful export">Prompts exported</string>
+    <string name="dictate__prompts_export_failed" comment="Toast after a failed export">Export failed</string>
+    <string name="dictate__prompts_import_success" comment="Toast after a successful import">Prompts imported</string>
+    <string name="dictate__prompts_import_failed" comment="Toast after a failed import">Import failed</string>
+    <string name="dictate__prompts_import_no_prompts" comment="Toast when the imported file has no usable prompts">No prompts found in file</string>
+    <string name="dictate__prompts_import_mode_title" comment="Title of the import-mode dialog">Import prompts</string>
+    <string name="dictate__prompts_import_mode_message" comment="Message of the import-mode dialog">Replace your existing prompts, or add the imported prompts to them?</string>
+    <string name="dictate__prompts_import_mode_replace" comment="Import-mode dialog button: replace existing prompts">Replace</string>
+    <string name="dictate__prompts_import_mode_add" comment="Import-mode dialog button: add to existing prompts">Add</string>
 
     <!-- Dictate file transcription (long-press the mic to pick an audio/video file) -->
     <string name="dictate__file_preparing" comment="Toast shown while the picked file is copied to the cache">Preparing file…</string>

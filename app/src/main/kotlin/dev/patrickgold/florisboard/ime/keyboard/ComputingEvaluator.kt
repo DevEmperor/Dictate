@@ -40,6 +40,7 @@ import androidx.compose.material.icons.filled.KeyboardCapslock
 import androidx.compose.material.icons.filled.KeyboardHide
 import androidx.compose.material.icons.filled.KeyboardVoice
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MoreHoriz
@@ -268,6 +269,16 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
                 is dev.patrickgold.florisboard.dictate.DictateController.UiState.Recording -> Icons.AutoMirrored.Filled.Send
                 is dev.patrickgold.florisboard.dictate.DictateController.UiState.Transcribing -> Icons.Default.HourglassEmpty
                 else -> Icons.Default.Mic
+            }
+        }
+        KeyCode.DICTATE_LIVE_PROMPT -> {
+            // Live prompt: record a spoken instruction, then hand it to the rewording model. Sparkle
+            // icon (AI) when idle; send arrow while recording; hourglass while the request is running.
+            when (dev.patrickgold.florisboard.dictate.DictateController.state.value) {
+                is dev.patrickgold.florisboard.dictate.DictateController.UiState.Recording -> Icons.AutoMirrored.Filled.Send
+                is dev.patrickgold.florisboard.dictate.DictateController.UiState.Transcribing,
+                is dev.patrickgold.florisboard.dictate.DictateController.UiState.Rewording -> Icons.Default.HourglassEmpty
+                else -> Icons.Default.AutoAwesome
             }
         }
         KeyCode.LANGUAGE_SWITCH -> {

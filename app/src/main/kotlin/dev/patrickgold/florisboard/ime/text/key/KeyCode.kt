@@ -92,6 +92,9 @@ object KeyCode {
     const val IME_UI_MODE_CLIPBOARD =       -213
     const val IME_UI_MODE_DICTATE =         -214
 
+    // Dictate: record a spoken instruction and send it straight to the rewording model (live prompt).
+    const val DICTATE_LIVE_PROMPT =         -215
+
     const val SYSTEM_INPUT_METHOD_PICKER =  -221
     const val SYSTEM_PREV_INPUT_METHOD =    -222
     const val SYSTEM_NEXT_INPUT_METHOD =    -223
