@@ -16,10 +16,14 @@ import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.BrightnessHigh
 import androidx.compose.material.icons.filled.Dns
+import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.ModelTraining
+import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Spellcheck
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material.icons.filled.VolumeOff
@@ -35,6 +39,7 @@ import dev.patrickgold.florisboard.dictate.data.prompts.DictatePromptDefaults
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import org.florisboard.lib.compose.stringRes
 import dev.patrickgold.jetpref.datastore.model.collectAsState
+import dev.patrickgold.jetpref.datastore.ui.DialogSliderPreference
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.Preference
@@ -168,6 +173,38 @@ fun DictateScreen() = FlorisScreen {
                 icon = Icons.Default.Bolt,
                 title = stringRes(R.string.dictate__instant_recording_title),
                 summary = stringRes(R.string.dictate__instant_recording_summary),
+            )
+        }
+
+        PreferenceGroup(title = stringRes(R.string.dictate__output_group)) {
+            SwitchPreference(
+                prefs.dictate.autoEnter,
+                icon = Icons.AutoMirrored.Filled.KeyboardReturn,
+                title = stringRes(R.string.dictate__auto_enter_title),
+                summary = stringRes(R.string.dictate__auto_enter_summary),
+            )
+            SwitchPreference(
+                prefs.dictate.instantOutput,
+                icon = Icons.Default.Keyboard,
+                title = stringRes(R.string.dictate__instant_output_title),
+                summary = stringRes(R.string.dictate__instant_output_summary),
+            )
+            DialogSliderPreference(
+                prefs.dictate.outputSpeed,
+                icon = Icons.Default.Speed,
+                title = stringRes(R.string.dictate__output_speed_title),
+                valueLabel = { stringRes(R.string.dictate__output_speed_value, "v" to it) },
+                min = 1,
+                max = 10,
+                stepIncrement = 1,
+                // Only relevant when the text is "typed" out rather than committed instantly.
+                enabledIf = { prefs.dictate.instantOutput isEqualTo false },
+            )
+            SwitchPreference(
+                prefs.dictate.resendButton,
+                icon = Icons.Default.Replay,
+                title = stringRes(R.string.dictate__resend_button_title),
+                summary = stringRes(R.string.dictate__resend_button_summary),
             )
         }
     }

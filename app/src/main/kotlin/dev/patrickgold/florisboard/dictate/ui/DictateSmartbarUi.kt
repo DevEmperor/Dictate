@@ -20,6 +20,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -30,11 +31,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -54,6 +57,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
@@ -81,10 +85,10 @@ import org.florisboard.lib.snygg.ui.SnyggText
  */
 @Composable
 fun DictateSmartbarUi(state: DictateController.UiState, modifier: Modifier = Modifier) {
-    val arrangement = if (state is DictateController.UiState.Recording) {
-        Arrangement.SpaceBetween
-    } else {
-        Arrangement.Center
+    val arrangement = when {
+        state is DictateController.UiState.Recording -> Arrangement.SpaceBetween
+        state is DictateController.UiState.Error && state.canResend -> Arrangement.SpaceBetween
+        else -> Arrangement.Center
     }
     SnyggRow(
         elementName = FlorisImeUi.SmartbarSharedActionsRow.elementName,
@@ -99,10 +103,14 @@ fun DictateSmartbarUi(state: DictateController.UiState, modifier: Modifier = Mod
             is DictateController.UiState.Transcribing -> TranscribingContent(state)
             is DictateController.UiState.Rewording -> RewordingContent(state)
             is DictateController.UiState.Error -> {
-                SnyggText(text = state.message)
-                LaunchedEffect(state) {
-                    delay(4000L)
-                    DictateController.clearError()
+                if (state.canResend) {
+                    ResendErrorContent(state.message)
+                } else {
+                    SnyggText(text = state.message)
+                    LaunchedEffect(state) {
+                        delay(4000L)
+                        DictateController.clearError()
+                    }
                 }
             }
             else -> {}
@@ -287,6 +295,42 @@ private fun RewordingContent(state: DictateController.UiState.Rewording) {
     )
     Spacer(modifier = Modifier.width(10.dp))
     SnyggText(text = state.label.ifBlank { stringRes(R.string.dictate__status_rewording) })
+}
+
+/**
+ * Error variant shown when the failed audio was kept (roadmap 10.3): the message plus a resend button
+ * that retries the same audio and a dismiss button that drops it. Unlike the transient error, this one
+ * does not auto-clear so the user has time to react.
+ */
+@Composable
+private fun RowScope.ResendErrorContent(message: String) {
+    val context = LocalContext.current
+    SnyggIcon(
+        imageVector = Icons.Default.CloudOff,
+        modifier = Modifier.size(18.dp),
+    )
+    Spacer(modifier = Modifier.width(8.dp))
+    SnyggText(text = message, modifier = Modifier.weight(1f))
+    SnyggIconButton(
+        elementName = FlorisImeUi.SmartbarActionKey.elementName,
+        onClick = { DictateController.resendLastAudio(context) },
+        modifier = Modifier.fillMaxHeight().aspectRatio(1f),
+    ) {
+        SnyggIcon(
+            imageVector = Icons.Default.Refresh,
+            contentDescription = stringRes(R.string.dictate__action_resend),
+        )
+    }
+    SnyggIconButton(
+        elementName = FlorisImeUi.SmartbarActionKey.elementName,
+        onClick = { DictateController.dismissResend() },
+        modifier = Modifier.fillMaxHeight().aspectRatio(1f),
+    ) {
+        SnyggIcon(
+            imageVector = Icons.Default.Close,
+            contentDescription = stringRes(R.string.dictate__action_dismiss),
+        )
+    }
 }
 
 private fun formatElapsed(ms: Long): String {

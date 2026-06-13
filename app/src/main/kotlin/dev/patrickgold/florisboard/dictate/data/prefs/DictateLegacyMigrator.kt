@@ -89,6 +89,12 @@ object DictateLegacyMigrator {
             s.systemPromptCustomText?.let { prefs.dictate.systemPromptCustom.set(it) }
             prefs.dictate.stylePromptSelection.set(s.stylePromptSelection)
             s.stylePromptCustomText?.let { prefs.dictate.stylePromptCustom.set(it) }
+
+            // --- Output behavior (roadmap section 10) ---
+            prefs.dictate.autoEnter.set(s.autoEnter)
+            prefs.dictate.instantOutput.set(s.instantOutput)
+            prefs.dictate.outputSpeed.set(s.outputSpeed)
+            prefs.dictate.resendButton.set(s.resendButton)
         }
 
         prefs.dictate.legacyImported.set(true)

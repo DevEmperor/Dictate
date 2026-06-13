@@ -31,8 +31,13 @@ import dev.patrickgold.florisboard.dictate.provider.ProviderPreset
 import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
 import dev.patrickgold.florisboard.dictate.provider.TranscriptionRequest
 import dev.patrickgold.florisboard.editorInstance
+import dev.patrickgold.florisboard.ime.text.key.KeyCode
+import dev.patrickgold.florisboard.ime.text.key.KeyType
+import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
+import dev.patrickgold.florisboard.keyboardManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -75,7 +80,8 @@ object DictateController {
         data class Transcribing(val attempt: Int = 1) : UiState
         /** A rewording/GPT request is in flight (manual prompt, auto-apply, auto-format or live). */
         data class Rewording(val label: String) : UiState
-        data class Error(val message: String) : UiState
+        /** [canResend] is true when the failed audio was kept so the user can retry it (roadmap 10.3). */
+        data class Error(val message: String, val canResend: Boolean = false) : UiState
     }
 
     private val prefs by FlorisPreferenceStore
@@ -98,6 +104,15 @@ object DictateController {
 
     /** When true, the next finished recording is fed to the rewording model instead of committed. */
     private var livePromptArmed = false
+
+    /** Audio kept after a failed transcription so the resend button can retry it (roadmap 10.3). */
+    private var lastAudioFile: File? = null
+
+    /** Whether [lastAudioFile] was a live-prompt recording, so a resend repeats the same mode. */
+    private var lastWasLive = false
+
+    /** Synthetic Enter key dispatched for auto-enter (10.1); reuses the keyboard's full enter logic. */
+    private val EnterKeyData = TextKeyData(type = KeyType.ENTER_EDITING, code = KeyCode.ENTER, label = "enter")
 
     /** Single entry point for the mic button: starts recording, or stops and transcribes. */
     fun onMicClick(context: Context) {
@@ -155,6 +170,12 @@ object DictateController {
     /** Clears a transient error back to idle (the Smartbar UI calls this after showing it briefly). */
     fun clearError() {
         if (_state.value is UiState.Error) _state.value = UiState.Idle
+    }
+
+    /** Dismisses a resendable error: clears it and drops the kept audio (the resend is declined). */
+    fun dismissResend() {
+        discardLastAudio()
+        clearError()
     }
 
     /** Aborts an in-progress recording and returns to idle (cancel button / leaving the keyboard). */
@@ -273,6 +294,7 @@ object DictateController {
         val live = livePromptArmed
         livePromptArmed = false
         scope.launch {
+            var keepAudio = false
             try {
                 val client = OpenAiCompatibleClient.from(preset, apiKey, baseUrlOverride = baseUrlOverrideFor(preset))
                 val result = client.transcribe(
@@ -298,16 +320,93 @@ object DictateController {
                     // Normal dictation: auto-formatting + auto-apply prompts, then commit.
                     postProcessTranscript(appContext, result.text)
                 }
-                editorInstance.commitText(finalText)
+                // Output behavior (roadmap 10.1/10.2): instant or typed, then optional auto-enter.
+                commitOutput(appContext, finalText)
+                discardLastAudio()
                 _state.value = UiState.Idle
             } catch (e: DictateApiException) {
-                _state.value = UiState.Error(e.message ?: appContext.getString(R.string.dictate__error_transcription_failed))
+                keepAudio = retainForResend(audioFile, live)
+                _state.value = UiState.Error(
+                    e.message ?: appContext.getString(R.string.dictate__error_transcription_failed),
+                    canResend = keepAudio,
+                )
             } catch (t: Throwable) {
-                _state.value = UiState.Error(t.message ?: appContext.getString(R.string.dictate__error_unknown))
+                keepAudio = retainForResend(audioFile, live)
+                _state.value = UiState.Error(
+                    t.message ?: appContext.getString(R.string.dictate__error_unknown),
+                    canResend = keepAudio,
+                )
             } finally {
-                audioFile.delete()
+                if (!keepAudio) audioFile.delete()
             }
         }
+    }
+
+    // --- Output behavior + resend (roadmap section 10) ------------------------------------------
+
+    /**
+     * Commits [text] into the focused field honoring the output prefs: either all at once
+     * ([prefs.dictate.instantOutput]) or "typed" character by character at the configured speed, then
+     * an optional auto-enter (10.1). Runs on the caller's (Main) coroutine, so the typewriter delay
+     * suspends rather than blocks.
+     */
+    private suspend fun commitOutput(context: Context, text: String) {
+        val editorInstance by context.editorInstance()
+        if (prefs.dictate.instantOutput.get()) {
+            editorInstance.commitText(text)
+        } else if (text.isNotEmpty()) {
+            val perChar = perCharDelayMs(prefs.dictate.outputSpeed.get())
+            text.forEach { ch ->
+                editorInstance.commitText(ch.toString())
+                delay(perChar)
+            }
+        }
+        if (prefs.dictate.autoEnter.get()) {
+            performAutoEnter(context)
+        }
+    }
+
+    /** Per-character delay for the typewriter output: speed 1 → 100 ms … 5 → 20 ms … 10 → 10 ms (legacy mapping). */
+    private fun perCharDelayMs(speed: Int): Long = (100L / speed.coerceIn(1, 10)).coerceAtLeast(1L)
+
+    /** Presses Enter / triggers the editor action by dispatching a real [KeyCode.ENTER] key event. */
+    private fun performAutoEnter(context: Context) {
+        val keyboardManager by context.keyboardManager()
+        keyboardManager.inputEventDispatcher.sendDownUp(EnterKeyData)
+    }
+
+    /**
+     * Retains [audioFile] (and whether it was a live prompt) for a later resend if the resend button is
+     * enabled and the file is usable; returns true when kept. Any previously kept audio is discarded.
+     */
+    private fun retainForResend(audioFile: File, wasLive: Boolean): Boolean {
+        if (!prefs.dictate.resendButton.get() || !audioFile.exists() || audioFile.length() == 0L) return false
+        if (lastAudioFile != audioFile) discardLastAudio()
+        lastAudioFile = audioFile
+        lastWasLive = wasLive
+        return true
+    }
+
+    /** Deletes the kept resend audio (if any) and forgets it. */
+    private fun discardLastAudio() {
+        lastAudioFile?.takeIf { it.exists() }?.delete()
+        lastAudioFile = null
+    }
+
+    /**
+     * Retries the last failed recording with the same audio (roadmap 10.3). No-op unless we are idle or
+     * showing an error and a usable kept audio exists.
+     */
+    fun resendLastAudio(context: Context) {
+        if (_state.value !is UiState.Error && _state.value !is UiState.Idle) return
+        val audio = lastAudioFile
+        if (audio == null || !audio.exists() || audio.length() == 0L) {
+            lastAudioFile = null
+            return
+        }
+        // Repeat the original mode so a failed live prompt resends as a live prompt.
+        livePromptArmed = lastWasLive
+        transcribe(context, audio)
     }
 
     // --- Rewording / GPT engine (roadmap section 4) ---------------------------------------------

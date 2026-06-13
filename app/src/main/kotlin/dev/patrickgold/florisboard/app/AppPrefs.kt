@@ -254,6 +254,27 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__instant_recording",
             default = false,
         )
+        // --- Output behavior (roadmap section 10) ------------------------------------------------
+        // Press Enter / trigger the editor action automatically after committing a transcription.
+        val autoEnter = boolean(
+            key = "dictate__auto_enter",
+            default = false,
+        )
+        // Commit the transcription all at once (true) or "type" it out character by character (false).
+        val instantOutput = boolean(
+            key = "dictate__instant_output",
+            default = true,
+        )
+        // Speed of the typewriter animation when instantOutput is off (1 = slow … 10 = fast).
+        val outputSpeed = int(
+            key = "dictate__output_speed",
+            default = 5,
+        )
+        // Show a resend button when a recording failed to transcribe/reword, to retry the same audio.
+        val resendButton = boolean(
+            key = "dictate__resend_button",
+            default = true,
+        )
         // Comma-separated dictation language codes the user cycles through on the recording bar
         // (see DictateLanguages; "detect" = auto-detect). Default mirrors the legacy app.
         val inputLanguages = string(

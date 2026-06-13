@@ -1189,6 +1189,8 @@
     <string name="dictate__action_cancel" comment="Content description for the button that discards the current recording">Cancel recording</string>
     <string name="dictate__action_pause" comment="Content description for the button that pauses the recording">Pause recording</string>
     <string name="dictate__action_resume" comment="Content description for the button that resumes the recording">Resume recording</string>
+    <string name="dictate__action_resend" comment="Content description for the button that retries the last failed audio">Try again</string>
+    <string name="dictate__action_dismiss" comment="Content description for the button that dismisses the resend error">Dismiss</string>
 
     <!-- Dictate settings screen -->
     <string name="dictate__title" comment="Title of the Dictate settings screen and home tile">Dictate</string>
@@ -1218,6 +1220,15 @@
     <string name="dictate__keep_screen_awake_summary" comment="Summary for the keep-screen-awake setting">Prevent the screen from turning off while recording</string>
     <string name="dictate__instant_recording_title" comment="Setting: start recording when the keyboard opens">Instant recording</string>
     <string name="dictate__instant_recording_summary" comment="Summary for the instant recording setting">Start recording automatically when the keyboard opens</string>
+    <string name="dictate__output_group" comment="Group title for output-behavior settings">Output</string>
+    <string name="dictate__auto_enter_title" comment="Setting: press Enter after a transcription">Auto-enter</string>
+    <string name="dictate__auto_enter_summary" comment="Summary for the auto-enter setting">Press Enter automatically after a transcription is inserted</string>
+    <string name="dictate__instant_output_title" comment="Setting: insert the whole transcription at once">Instant output</string>
+    <string name="dictate__instant_output_summary" comment="Summary for the instant output setting">Insert the whole text at once; turn off to type it out gradually</string>
+    <string name="dictate__output_speed_title" comment="Setting: speed of the typing-out animation">Typing speed</string>
+    <string name="dictate__output_speed_value" comment="Value label for the typing speed slider">{v}</string>
+    <string name="dictate__resend_button_title" comment="Setting: show a resend button on failure">Resend button</string>
+    <string name="dictate__resend_button_summary" comment="Summary for the resend button setting">If transcription fails, show a button to retry with the same recording</string>
 
     <!-- Dictate language selection -->
     <string name="dictate__languages_group" comment="Group title for dictation language settings">Languages</string>
