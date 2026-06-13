@@ -44,6 +44,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,7 +61,9 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
 import dev.patrickgold.florisboard.ime.nlp.NlpInlineAutofill
 import dev.patrickgold.florisboard.dictate.DictateController
+import dev.patrickgold.florisboard.dictate.ui.DictatePromptStrip
 import dev.patrickgold.florisboard.dictate.ui.DictateSmartbarUi
+import dev.patrickgold.florisboard.editorInstance
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickActionButton
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickActionsRow
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.ToggleOverflowPanelAction
@@ -68,6 +71,8 @@ import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.nlpManager
 import dev.patrickgold.jetpref.datastore.model.collectAsState
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.florisboard.lib.android.AndroidVersion
 import org.florisboard.lib.compose.horizontalTween
@@ -166,6 +171,23 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
     // Drives the in-Smartbar dictation indicator (recording timer / transcribing spinner).
     val dictateState by DictateController.state.collectAsState()
 
+    // Contextual prompt chip strip: shown in place of the candidates while text is selected and
+    // rewording is enabled (roadmap 4.3). The selection flag is derived as a distinct boolean so the
+    // Smartbar does not recompose on every keystroke, only when the selection mode actually flips.
+    val dictatePrompts by DictateController.prompts.collectAsState()
+    val dictateRewordingEnabled by prefs.dictate.rewordingEnabled.collectAsState()
+    val editorInstance by context.editorInstance()
+    val hasDictateSelection by remember(editorInstance) {
+        editorInstance.activeContentFlow
+            .map { it.selection.isSelectionMode && it.selectedText.isNotBlank() }
+            .distinctUntilChanged()
+    }.collectAsState(initial = false)
+    // Reload prompts whenever a selection starts, so the strip reflects edits made in settings.
+    LaunchedEffect(hasDictateSelection) {
+        if (hasDictateSelection) DictateController.refreshPrompts(context)
+    }
+    val showDictatePromptStrip = dictateRewordingEnabled && hasDictateSelection && dictatePrompts.isNotEmpty()
+
     @Composable
     fun SharedActionsToggle() {
         SnyggIconButton(
@@ -224,7 +246,7 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
             val exitTransition = if (shouldAnimate) HorizontalExitTransition else NoExitTransition
             val isDictating = dictateState !is DictateController.UiState.Idle
             this@CenterContent.AnimatedVisibility(
-                visible = !expanded && !isDictating,
+                visible = !expanded && !isDictating && !showDictatePromptStrip,
                 enter = enterTransition,
                 exit = exitTransition,
             ) {
@@ -243,6 +265,13 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
                     FlorisImeUi.SmartbarSharedActionsRow.elementName,
                     modifier = modifier.fillMaxSize(),
                 )
+            }
+            this@CenterContent.AnimatedVisibility(
+                visible = !expanded && !isDictating && showDictatePromptStrip,
+                enter = enterTransition,
+                exit = exitTransition,
+            ) {
+                DictatePromptStrip(dictatePrompts, modifier = Modifier.fillMaxSize())
             }
             this@CenterContent.AnimatedVisibility(
                 visible = isDictating,
@@ -337,7 +366,9 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
     ) {
         when (smartbarLayout) {
             SmartbarLayout.SUGGESTIONS_ONLY -> {
-                if (shouldShowInlineSuggestionsUi) {
+                if (showDictatePromptStrip) {
+                    DictatePromptStrip(dictatePrompts, modifier = Modifier.fillMaxSize())
+                } else if (shouldShowInlineSuggestionsUi) {
                     InlineSuggestionsUi(inlineSuggestions)
                 } else {
                     CandidatesRow()

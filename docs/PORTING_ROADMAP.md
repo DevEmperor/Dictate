@@ -83,11 +83,11 @@ Usage-Anzeige, Aufnahme-Komfort** fehlt noch.
 |---|---------|--------|-----------|
 | 4.1 | Rewording an/aus | ✅ | Pref `rewordingEnabled` + Engine-Gating (P1) + Master-Toggle im `DictateRewordingScreen` (P2) |
 | 4.2 | **Eigene Prompts (CRUD)** | 🟡 | `DictatePromptsScreen` (Liste + Add/Edit/Delete-Dialog) auf shared `prompts.db` (P2); **Reorder + Export/Import noch offen** (→ P4) |
-| 4.3 | **Prompt-Leiste im Keyboard** (Smartbar-Chips, kontextuell) | 🔲 | Zielbild: scrollbare Chips, kein Vollgrid (P3) |
+| 4.3 | **Prompt-Leiste im Keyboard** (Smartbar-Chips, kontextuell) | ✅ | `DictatePromptStrip`: scrollbare Chips in der Smartbar-Mitte (statt Kandidaten) bei aktiver Textauswahl, triggert `applyPrompt` (P3) |
 | 4.4 | Prompt „benötigt Auswahl" vs. frei | ✅ | `requiresSelection` in `applyPrompt` (P1) + Switch im Editor (P2) |
 | 4.5 | **Auto-Apply-Prompts** (nach Transkription automatisch) | ✅ | Engine (`postProcessTranscript`, P1) + Auto-Apply-Switch pro Prompt im Editor (P2) |
 | 4.6 | ~~Prompt-Queue (während Aufnahme verketten)~~ | ❌ | **Gestrichen** (Entscheidung 2026-06-13) → ersetzt durch Auto-Apply + Nachformulieren |
-| 4.7 | **Live/Instant-Prompt** (aufnehmen → direkt an GPT) | 🟡 | Engine ✓ (`startLivePrompt`, P1); UI-Trigger offen (P3/P4) |
+| 4.7 | **Live/Instant-Prompt** (aufnehmen → direkt an GPT) | 🟡 | Engine ✓ (`startLivePrompt`, P1); UI-Trigger offen (→ P4 Panel) |
 | 4.8 | Add/Edit-Prompt-Screens | ✅ | als Editor-Dialog im `DictatePromptsScreen` (ersetzt `PromptEditActivity`/`PromptsOverviewActivity`) (P2) |
 | 4.9 | **Auto-Formatting** (gesprochene Formatierbefehle → Markdown) | 🟡 | Engine ✓ (`AUTO_FORMATTING_PROMPT`, P1) + Settings-Toggle (P2); Feinschliff/Tests offen (P5) |
 | 4.10 | **System-Prompt** Rewording (nichts/predefined/custom) | ✅ | Engine (`systemPromptSelection`, P1) + ListPreference + Custom-Feld (P2) |
@@ -98,7 +98,7 @@ Usage-Anzeige, Aufnahme-Komfort** fehlt noch.
 > Smartbar als Hauptfläche; Queue gestrichen → Auto-Apply + 1-Tap-Nachformulieren; Select-All-Tile
 > raus (gibt's als QuickAction); Verwaltung/System-/Style-Prompt in den Compose-Settings.
 > **Phasen:** P0 Daten/Prefs ✓ · P1 Engine im Controller ✓ · P2 Settings-UI (CRUD, System-/Style-Prompt,
-> Auto-Formatting) ✓ · P3 Smartbar-Chip-Leiste · P4 Panel-Ergänzung (Live/Verwaltung; Prompt-Reorder + Export/Import) ·
+> Auto-Formatting) ✓ · P3 Smartbar-Chip-Leiste ✓ · P4 Panel-Ergänzung (Live/Verwaltung; Prompt-Reorder + Export/Import) ·
 > P5 Auto-Formatting-Feinschliff.
 
 > **Block-Notiz (2026-06-13, Abschnitt 4 – P0+P1):** Fundament + Rewording-Engine umgesetzt.
@@ -127,6 +127,20 @@ Usage-Anzeige, Aufnahme-Komfort** fehlt noch.
 > `DictateSettingsComponents.kt` ausgelagert. **Bewusst auf P4 verschoben:** Prompt-Reihenfolge per Drag
 > sowie JSON-Export/-Import (waren in der alten `PromptsOverviewActivity`). **Noch keine Keyboard-Chips** –
 > Prompts sind anlegbar/aktiv (Auto-Apply läuft), aber manuell antippbar erst mit P3. Build grün.
+
+> **Block-Notiz (2026-06-13, Abschnitt 4 – P3 Smartbar-Chip-Leiste):** Die Prompts sind jetzt direkt
+> im Keyboard antippbar. *Neu:* `DictatePromptStrip` (`dictate/ui`) – eine horizontal scrollbare Chip-Leiste,
+> die in der **Smartbar-Mitte anstelle der Wortvorschläge** erscheint, **sobald Text markiert ist** und
+> Rewording aktiv ist (kontextuell, wie im Zielbild). Jeder Chip ruft `DictateController.applyPrompt(prompt)`
+> auf der Markierung auf; Icon je Typ (Snippet `[..]` / „benötigt Auswahl" / frei). Nach dem Tippen läuft die
+> Rewording-Engine (Spinner via `UiState.Rewording`), das Ergebnis ersetzt die Markierung. *Controller:* neuer
+> `prompts`-StateFlow + `refreshPrompts(context)` (lädt `getAll()` aus der geteilten `prompts.db`); die Smartbar
+> aktualisiert beim Selektions-Start. *Smartbar:* Selektion wird als `distinctUntilChanged()`-Boolean aus
+> `editorInstance.activeContentFlow` abgeleitet (kein Recompose pro Tastendruck); Chip-Leiste in `CenterContent`
+> (SHARED/EXTENDED) **und** im `SUGGESTIONS_ONLY`-Layout verdrahtet. Chips nutzen das bestehende
+> `smartbar-action-tile`-Snygg-Element → in allen Themes gestylt, **kein** Stylesheet-Eingriff (dediziertes
+> `dictate-*`-Chip-Theming später). **Bewusst auf P4 verschoben:** Live-Prompt-Trigger (4.7), Verwaltungs-Shortcut
+> und manuelles Auslösen freier Prompts **ohne** Markierung (kommt im Dictate-Panel). Build grün (`compileDebugKotlin`).
 
 ---
 

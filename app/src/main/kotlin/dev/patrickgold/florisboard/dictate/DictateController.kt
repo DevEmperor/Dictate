@@ -85,6 +85,10 @@ object DictateController {
     private val _state = MutableStateFlow<UiState>(UiState.Idle)
     val state: StateFlow<UiState> = _state.asStateFlow()
 
+    private val _prompts = MutableStateFlow<List<PromptModel>>(emptyList())
+    /** The user's saved prompts (shared `prompts.db`), refreshed via [refreshPrompts]; drives the Smartbar prompt chips. */
+    val prompts: StateFlow<List<PromptModel>> = _prompts.asStateFlow()
+
     private var recorder: RecordingController? = null
     private var startJob: Job? = null
 
@@ -135,6 +139,17 @@ object DictateController {
     /** Sets the active dictation language explicitly (from the recording bar's language picker). */
     fun setLanguage(code: String) {
         scope.launch { prefs.dictate.activeInputLanguage.set(code) }
+    }
+
+    /**
+     * Reloads the prompt list from the shared `prompts.db` into [prompts]. Cheap and idempotent;
+     * called when the keyboard (re-)appears so the chip strip reflects edits made in the settings.
+     */
+    fun refreshPrompts(context: Context) {
+        val appContext = context.applicationContext
+        scope.launch {
+            _prompts.value = withContext(Dispatchers.IO) { promptsDb(appContext).getAll() }
+        }
     }
 
     /** Clears a transient error back to idle (the Smartbar UI calls this after showing it briefly). */
