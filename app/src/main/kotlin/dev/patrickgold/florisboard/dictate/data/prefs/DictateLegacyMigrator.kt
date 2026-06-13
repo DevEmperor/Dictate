@@ -12,6 +12,10 @@ package dev.patrickgold.florisboard.dictate.data.prefs
 
 import android.content.Context
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickAction
+import dev.patrickgold.florisboard.ime.smartbar.quickaction.keyData
+import dev.patrickgold.florisboard.ime.text.key.KeyCode
+import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
 
 /**
  * One-time import of the legacy Dictate transcription settings (provider, API key, model) into the
@@ -88,5 +92,29 @@ object DictateLegacyMigrator {
         }
 
         prefs.dictate.legacyImported.set(true)
+    }
+
+    /**
+     * Ensures the live-prompt Smartbar action ([KeyCode.DICTATE_LIVE_PROMPT]) is present in the saved
+     * action arrangement. New entries in [QuickActionArrangement.Default] do not retroactively appear
+     * for users who already persisted an arrangement (e.g. by opening the Smartbar editor) before the
+     * action shipped, so without this they could never find or place it. Idempotent via
+     * `prefs.dictate.livePromptActionMigrated`; injects the action at the front of the dynamic row so
+     * it is discoverable, exactly where the default puts it.
+     */
+    suspend fun migrateLivePromptActionIfNeeded(context: Context) {
+        val prefs by FlorisPreferenceStore
+        if (prefs.dictate.livePromptActionMigrated.get()) return
+
+        val arrangement = prefs.smartbar.actionArrangement.get()
+        val alreadyPresent = arrangement.run { dynamicActions + hiddenActions + listOfNotNull(stickyAction) }
+            .any { it.keyData().code == KeyCode.DICTATE_LIVE_PROMPT }
+        if (!alreadyPresent) {
+            val livePrompt = QuickAction.InsertKey(TextKeyData.DICTATE_LIVE_PROMPT)
+            prefs.smartbar.actionArrangement.set(
+                arrangement.copy(dynamicActions = listOf(livePrompt) + arrangement.dynamicActions),
+            )
+        }
+        prefs.dictate.livePromptActionMigrated.set(true)
     }
 }

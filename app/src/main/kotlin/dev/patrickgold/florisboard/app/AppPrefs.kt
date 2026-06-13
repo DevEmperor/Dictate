@@ -271,6 +271,12 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__legacy_imported",
             default = false,
         )
+        // Guard for the one-time injection of the live-prompt Smartbar action into arrangements that
+        // were saved before the action existed (otherwise upgrading users never see it).
+        val livePromptActionMigrated = boolean(
+            key = "dictate__live_prompt_action_migrated",
+            default = false,
+        )
 
         // --- Rewording / GPT (roadmap section 4) -------------------------------------------------
         // Master switch for the rewording feature (prompt chips, auto-apply, live prompt). Default

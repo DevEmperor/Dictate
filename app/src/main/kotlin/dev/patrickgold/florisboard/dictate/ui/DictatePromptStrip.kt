@@ -17,7 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ShortText
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.AutoFixHigh
+import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,11 +53,14 @@ fun DictatePromptStrip(
     ) {
         prompts.forEach { prompt ->
             val raw = prompt.prompt.orEmpty()
-            // A `[snippet]` prompt is inserted literally (no API call); flag it with a distinct icon.
+            // Distinct icon per prompt type, matching the management screen so users learn one set:
+            //  - `[snippet]` (inserted literally, no API call) → short-text glyph
+            //  - "requires selection" (rewrites the highlighted text) → select-all glyph
+            //  - free prompt (generates from the instruction) → sparkle glyph
             val isSnippet = raw.length >= 2 && raw.startsWith("[") && raw.endsWith("]")
             val icon = when {
                 isSnippet -> Icons.AutoMirrored.Filled.ShortText
-                prompt.requiresSelection -> Icons.Default.AutoFixHigh
+                prompt.requiresSelection -> Icons.Default.SelectAll
                 else -> Icons.Default.AutoAwesome
             }
             // Reuse the already-themed action-tile element (rounded pill, padding, ripple) so the

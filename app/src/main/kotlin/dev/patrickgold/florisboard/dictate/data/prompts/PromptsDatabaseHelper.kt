@@ -14,6 +14,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import dev.patrickgold.florisboard.R
 
 /**
  * Storage for user-defined rewording prompts.
@@ -33,12 +34,14 @@ class PromptsDatabaseHelper(
             "CREATE TABLE PROMPTS (ID INTEGER PRIMARY KEY, POS INTEGER, NAME TEXT, PROMPT TEXT, " +
                 "REQUIRES_SELECTION BOOLEAN, AUTO_APPLY BOOLEAN DEFAULT 0)"
         )
-        // Seed a few example prompts for fresh installs only (existing users skip onCreate).
-        DEFAULT_PROMPTS.forEachIndexed { index, seed ->
+        // Seed the example prompts for fresh installs only (existing users skip onCreate). These are
+        // the same defaults the legacy Dictate app shipped, resolved from string resources so they are
+        // localized (e.g. German) just like the original.
+        defaultSeeds().forEachIndexed { index, seed ->
             val cv = ContentValues().apply {
                 put("POS", index)
-                put("NAME", seed.name)
-                put("PROMPT", seed.prompt)
+                put("NAME", context.getString(seed.nameRes))
+                put("PROMPT", context.getString(seed.promptRes))
                 put("REQUIRES_SELECTION", if (seed.requiresSelection) 1 else 0)
                 put("AUTO_APPLY", 0)
             }
@@ -170,19 +173,21 @@ class PromptsDatabaseHelper(
         autoApply = getInt(getColumnIndexOrThrow("AUTO_APPLY")) == 1,
     )
 
-    private data class Seed(val name: String, val prompt: String, val requiresSelection: Boolean)
+    private data class Seed(val nameRes: Int, val promptRes: Int, val requiresSelection: Boolean)
 
     companion object {
         const val DATABASE_NAME = "prompts.db"
         const val DATABASE_VERSION = 2
 
-        // TODO(localization): move these defaults to string resources once branding is finalized.
-        private val DEFAULT_PROMPTS = listOf(
-            Seed("Translate to English", "Translate the following text to English:", true),
-            Seed("Fix grammar", "Fix the grammar and spelling of the following text:", true),
-            Seed("More formal", "Rewrite the following text in a more formal tone:", true),
-            Seed("Summarize", "Summarize the following text:", true),
-            Seed("Write an email", "Write a professional email about the following:", false),
+        // The five defaults ported 1:1 from the legacy Dictate app: the first three operate on the
+        // selection, the last two are free prompts (#5 is a literal `[snippet]`). Resolved lazily so
+        // the strings pick up the device locale at seed time.
+        private fun defaultSeeds() = listOf(
+            Seed(R.string.dictate__example_prompt_one_name, R.string.dictate__example_prompt_one_prompt, true),
+            Seed(R.string.dictate__example_prompt_two_name, R.string.dictate__example_prompt_two_prompt, true),
+            Seed(R.string.dictate__example_prompt_three_name, R.string.dictate__example_prompt_three_prompt, true),
+            Seed(R.string.dictate__example_prompt_four_name, R.string.dictate__example_prompt_four_prompt, false),
+            Seed(R.string.dictate__example_prompt_five_name, R.string.dictate__example_prompt_five_prompt, false),
         )
     }
 }

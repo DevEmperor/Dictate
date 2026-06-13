@@ -1270,8 +1270,19 @@
     <string name="dictate__prompt_requires_selection_summary" comment="Summary for the requires-selection switch">Operates on the selected text and replaces it</string>
     <string name="dictate__prompt_auto_apply_title" comment="Switch: run the prompt automatically after each transcription">Apply automatically</string>
     <string name="dictate__prompt_auto_apply_summary" comment="Summary for the auto-apply switch">Run this prompt on every transcription automatically</string>
-    <string name="dictate__prompt_badge_selection" comment="Badge in the prompt list: prompt needs a selection">Selection</string>
-    <string name="dictate__prompt_badge_auto" comment="Badge in the prompt list: prompt runs automatically">Auto</string>
+    <string name="dictate__prompt_badge_selection" comment="Accessibility label for the prompt list icon: prompt needs a selection">Requires selection</string>
+    <string name="dictate__prompt_badge_auto" comment="Accessibility label for the prompt list icon: prompt runs automatically">Applies automatically</string>
+    <!-- Default example prompts seeded on a fresh install (ported 1:1 from the legacy Dictate app). -->
+    <string name="dictate__example_prompt_one_name">French Translator</string>
+    <string name="dictate__example_prompt_one_prompt">I want you to act as a French translator. I will speak to you in any language and you will detect the language, translate it and answer in the French version of my text. I want you to only reply the correction, the improvements and nothing else, do not write explanations and don\'t write quotation marks at start and end.</string>
+    <string name="dictate__example_prompt_two_name">Summarise</string>
+    <string name="dictate__example_prompt_two_prompt">Summarise the provided text. Do not add any new information or change the writing style. Just make sure that the text is shorter. Only output the summarised text, without any further information and without inverted commas at the beginning or end. Also make sure that you retain the input language of the text.</string>
+    <string name="dictate__example_prompt_three_name">Formal Rewrite</string>
+    <string name="dictate__example_prompt_three_prompt">Rewrite the selected text in a formal, professional tone. Keep the meaning and language, add no new information, and return only the rewritten text without quotation marks.</string>
+    <string name="dictate__example_prompt_four_name">Great Quote</string>
+    <string name="dictate__example_prompt_four_prompt">Generate a short, memorable quote that would resonate with many people. Do not mention any instructions and return only the quote itself.</string>
+    <string name="dictate__example_prompt_five_name">[Dictate is great]</string>
+    <string name="dictate__example_prompt_five_prompt">[Dictate is great]</string>
     <string name="dictate__prompt_reorder_hint" comment="Hint shown above the prompt list explaining drag-to-reorder">Long-press and drag a prompt to reorder.</string>
     <string name="dictate__prompts_export" comment="Toolbar action: export prompts to a JSON file">Export prompts</string>
     <string name="dictate__prompts_import" comment="Toolbar action: import prompts from a JSON file">Import prompts</string>

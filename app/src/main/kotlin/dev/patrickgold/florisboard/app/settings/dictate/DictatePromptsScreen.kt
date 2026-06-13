@@ -26,16 +26,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.FileUpload
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -202,14 +205,6 @@ fun DictatePromptsScreen() = FlorisScreen {
             ) {
                 itemsIndexed(prompts, key = { _, it -> it.id }) { index, prompt ->
                     val isDragging = draggingId == prompt.id
-                    val tags = buildList {
-                        if (prompt.requiresSelection) add(stringRes(R.string.dictate__prompt_badge_selection))
-                        if (prompt.autoApply) add(stringRes(R.string.dictate__prompt_badge_auto))
-                    }
-                    val secondary = buildString {
-                        if (tags.isNotEmpty()) append(tags.joinToString(" · ")).append(" — ")
-                        append(prompt.prompt.orEmpty())
-                    }
                     // The whole row both edits (tap) and reorders (long-press drag); the handle is a
                     // visual affordance. Lift the dragged row above the rest via zIndex + translation.
                     Surface(
@@ -258,11 +253,24 @@ fun DictatePromptsScreen() = FlorisScreen {
                                     .weight(1f)
                                     .clickable { editorTarget = prompt.copy() },
                                 text = prompt.name.orEmpty(),
-                                secondaryText = secondary,
+                                secondaryText = prompt.prompt.orEmpty(),
                                 singleLineSecondaryText = true,
                             )
+                            // Two status indicators, mirroring the legacy app: select-all = "needs a
+                            // selection", auto-renew = "applies automatically". Tinted with the accent
+                            // when active, dimmed when not, so the prompt's type is readable at a glance.
+                            PromptStatusIcon(
+                                icon = Icons.Default.SelectAll,
+                                active = prompt.requiresSelection,
+                                contentDescription = stringRes(R.string.dictate__prompt_badge_selection),
+                            )
+                            PromptStatusIcon(
+                                icon = Icons.Default.Autorenew,
+                                active = prompt.autoApply,
+                                contentDescription = stringRes(R.string.dictate__prompt_badge_auto),
+                            )
                             Icon(
-                                modifier = Modifier.padding(end = 16.dp),
+                                modifier = Modifier.padding(start = 8.dp, end = 16.dp),
                                 imageVector = Icons.Default.DragHandle,
                                 contentDescription = null,
                             )
@@ -483,6 +491,25 @@ private fun PromptEditorDialog(
             )
         }
     }
+}
+
+/** A small prompt-type indicator: accent-tinted when [active], dimmed otherwise. */
+@Composable
+private fun PromptStatusIcon(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    active: Boolean,
+    contentDescription: String,
+) {
+    Icon(
+        modifier = Modifier.size(18.dp),
+        imageVector = icon,
+        contentDescription = if (active) contentDescription else null,
+        tint = if (active) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+        },
+    )
 }
 
 @Composable
