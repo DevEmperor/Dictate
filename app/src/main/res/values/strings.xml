@@ -1218,6 +1218,11 @@
     <string name="dictate__languages_summary" comment="Explanation on the language picker screen">Pick the languages you dictate in. Switch between them quickly from the recording bar.</string>
     <string name="dictate__language_detect" comment="Language option: let the model auto-detect the spoken language">Detect automatically</string>
 
+    <!-- Dictate file transcription (long-press the mic to pick an audio/video file) -->
+    <string name="dictate__file_preparing" comment="Toast shown while the picked file is copied to the cache">Preparing file…</string>
+    <string name="dictate__file_too_large" comment="Toast when the chosen file exceeds the provider upload limit">File is too large – the provider accepts at most 25 MB.</string>
+    <string name="dictate__file_read_error" comment="Toast when the chosen file could not be read">Could not read the selected file.</string>
+
     <!-- Dictate onboarding step -->
     <string name="dictate__setup_description" comment="Onboarding text inviting the user to set up Dictate">Set up your AI provider and API key so you can start dictating with the mic.</string>
     <string name="dictate__setup_configure_btn" comment="Onboarding button opening the Dictate settings">Configure Dictate</string>

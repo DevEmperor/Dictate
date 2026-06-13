@@ -61,8 +61,19 @@ Usage-Anzeige, Aufnahme-Komfort** fehlt noch.
 
 | # | Feature | Status | Anmerkung |
 |---|---------|--------|-----------|
-| 3.1 | **Audio/Video-Datei transkribieren** (File-Picker) | 🔲 | alt: Long-Press Record / Settings; zuletzt im alten Projekt erweitert (mehr Formate) |
-| 3.2 | 25-MB-Größenlimit-Check | 🔲 | |
+| 3.1 | **Audio/Video-Datei transkribieren** (File-Picker) | ✅ | **Long-Press auf das Mic** (nur im Idle) öffnet `FileTranscriptionActivity` (Trampolin, da der IME nicht selbst picken kann) → `ACTION_OPEN_DOCUMENT` (`audio/*`,`video/*`) → kopiert in `cacheDir/dictate_pending/`. `DictateController.consumePendingFileTranscription` (aus `onStartInputView` **und** `onWindowShown`) claimt die Datei und fügt den Text ins Feld ein (geteilte `transcribe()`-Pipeline, respektiert die aktive Sprache) |
+| 3.2 | 25-MB-Größenlimit-Check | ✅ | Provider-abhängig: OpenAI/Groq 25 MB (Client-Vorprüfung mit Toast), `custom` kein Client-Limit (Server entscheidet). 25 MB bleibt der korrekte kleinste gemeinsame Nenner; bei `gpt-4o-transcribe` ist oft die **Dauer** (~25 Min) die bindende Grenze, die serverseitig via `DictateApiException` gemeldet wird |
+
+> **Block-Notiz (2026-06-13, Abschnitt 3):** Datei-Transkription per Long-Press-Mic umgesetzt und auf
+> physischem Gerät (Samsung A55) getestet. `stopAndTranscribe` refaktoriert: gemeinsame
+> `transcribe(context, file)`-Pipeline für Aufnahme **und** Datei. Long-Press im `QuickActionButton` via
+> `AwaitPointerEventScope.withTimeout` (restricted-scope-kompatibel, **nicht** `withTimeoutOrNull`).
+> **Handoff dateibasiert** statt über eine Pref: der IME-Prozess wird gekillt, während der Picker im
+> Vordergrund ist – nur eine Cache-Datei überlebt das. Datei landet in `cacheDir/dictate_pending/`, wird
+> beim Aufgreifen *geclaimt* (herausverschoben) → kein Doppel-Trigger, idempotent über beide Hooks.
+> **Wichtige Falle:** `FileTranscriptionActivity` darf **kein** `android:noHistory` haben – sonst wird sie
+> zerstört, sobald der Picker erscheint, und das `OpenDocument`-Result kommt nie an. Sprach-Chip nutzt
+> jetzt `SnyggIconButton` (gleiche Ripple-Animation wie Cancel/Pause).
 
 ---
 

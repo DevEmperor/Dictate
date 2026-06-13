@@ -340,8 +340,14 @@ class FlorisImeService : LifecycleInputMethodService() {
             editorInstance.handleStartInputView(editorInfo, isRestart = restarting)
         }
 
+        // File transcription: if the user picked a file via the long-press mic trampoline, transcribe
+        // it now that we are back on the field. Skips instant-recording when it kicks in.
+        val startedFileTranscription =
+            dev.patrickgold.florisboard.dictate.DictateController.consumePendingFileTranscription(this)
+
         // Instant recording: optionally start dictation as soon as the keyboard opens on a field.
-        if (!restarting &&
+        if (!startedFileTranscription &&
+            !restarting &&
             prefs.dictate.instantRecording.get() &&
             dev.patrickgold.florisboard.dictate.DictateController.state.value is
                 dev.patrickgold.florisboard.dictate.DictateController.UiState.Idle &&
@@ -400,6 +406,10 @@ class FlorisImeService : LifecycleInputMethodService() {
         } else {
             flogWarning(LogTopic.IMS_EVENTS) { "Ignoring (is already shown)" }
         }
+        // Fallback for the file-transcription handoff: depending on how the user returns from the
+        // picker the keyboard may reappear without a fresh onStartInputView, so also check here. The
+        // claim mechanism makes this idempotent with the onStartInputView call.
+        dev.patrickgold.florisboard.dictate.DictateController.consumePendingFileTranscription(this)
     }
 
     override fun onWindowHidden() {

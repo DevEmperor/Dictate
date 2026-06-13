@@ -16,6 +16,7 @@
 
 package dev.patrickgold.florisboard.ime.smartbar.quickaction
 
+import android.content.Context
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -23,6 +24,7 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -33,14 +35,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventTimeoutCancellationException
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import dev.patrickgold.compose.tooltip.PlainTooltip
+import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.DictateController
 import dev.patrickgold.florisboard.ime.input.LocalInputFeedbackController
 import dev.patrickgold.florisboard.ime.keyboard.ComputingEvaluator
 import dev.patrickgold.florisboard.ime.keyboard.computeImageVector
 import dev.patrickgold.florisboard.ime.keyboard.computeLabel
+import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
 import org.florisboard.lib.snygg.SnyggSelector
@@ -62,6 +67,7 @@ fun QuickActionButton(
     type: QuickActionBarType = QuickActionBarType.INTERACTIVE_BUTTON,
 ) {
     val context = LocalContext.current
+    val prefs by FlorisPreferenceStore
     val inputFeedbackController = LocalInputFeedbackController.current
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -106,14 +112,28 @@ fun QuickActionButton(
                             inputFeedbackController.keyPress(TextKeyData.UNSPECIFIED)
                             interactionSource.tryEmit(press)
                             action.onPointerDown(context)
-                            val up = waitForUpOrCancellation()
-                            if (up != null) {
-                                up.consume()
-                                interactionSource.tryEmit(PressInteraction.Release(press))
-                                action.onPointerUp(context)
+
+                            // The idle Dictate mic supports a long-press shortcut: hold it to pick an
+                            // existing audio/video file for transcription instead of recording.
+                            val dictateIdle = action.keyData().code == KeyCode.IME_UI_MODE_DICTATE &&
+                                DictateController.state.value is DictateController.UiState.Idle
+                            if (dictateIdle) {
+                                val longPressDelay = prefs.keyboard.longPressDelay.get().toLong()
+                                try {
+                                    val up = withTimeout(longPressDelay) { waitForUpOrCancellation() }
+                                    handleUpOrCancel(up, press, interactionSource, action, context)
+                                } catch (_: PointerEventTimeoutCancellationException) {
+                                    // Held long enough: open the file picker and swallow the rest of
+                                    // the gesture so the normal tap (start recording) does not run.
+                                    interactionSource.tryEmit(PressInteraction.Cancel(press))
+                                    action.onPointerCancel(context)
+                                    DictateController.startFileTranscription(context)
+                                    waitForUpOrCancellation()?.consume()
+                                }
                             } else {
-                                interactionSource.tryEmit(PressInteraction.Cancel(press))
-                                action.onPointerCancel(context)
+                                handleUpOrCancel(
+                                    waitForUpOrCancellation(), press, interactionSource, action, context,
+                                )
                             }
                         }
                     }
@@ -170,5 +190,23 @@ fun QuickActionButton(
                 }
             }
         }
+    }
+}
+
+/** Finishes a pointer gesture: a non-null [up] is a normal release (click), null is a cancellation. */
+private fun handleUpOrCancel(
+    up: PointerInputChange?,
+    press: PressInteraction.Press,
+    interactionSource: MutableInteractionSource,
+    action: QuickAction,
+    context: Context,
+) {
+    if (up != null) {
+        up.consume()
+        interactionSource.tryEmit(PressInteraction.Release(press))
+        action.onPointerUp(context)
+    } else {
+        interactionSource.tryEmit(PressInteraction.Cancel(press))
+        action.onPointerCancel(context)
     }
 }

@@ -11,6 +11,7 @@
 package dev.patrickgold.florisboard.dictate
 
 import android.content.Context
+import android.content.Intent
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 
 /**
  * Orchestrates the dictation flow that fuses the recording, the provider layer and the editor: tap
@@ -170,10 +172,63 @@ object DictateController {
             _state.value = UiState.Error(context.getString(R.string.dictate__error_no_audio))
             return
         }
+        transcribe(context, audioFile)
+    }
 
+    /**
+     * Long-press entry point for the mic: hands off to [FileTranscriptionActivity] so the user can
+     * pick an existing audio/video file to transcribe instead of recording. The activity stashes the
+     * picked file and a pref; [consumePendingFileTranscription] finishes the job once the keyboard
+     * regains focus. No-op unless we are idle.
+     */
+    fun startFileTranscription(context: Context) {
+        if (_state.value !is UiState.Idle) return
+        val intent = Intent(context, FileTranscriptionActivity::class.java)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+    }
+
+    /**
+     * Cache directory where [FileTranscriptionActivity] drops a picked file for the IME to pick up.
+     * A dedicated directory keeps the handoff file-based (survives the IME process being killed while
+     * the file picker is foreground) and unambiguous.
+     */
+    fun pendingTranscriptionDir(context: Context): File = File(context.cacheDir, "dictate_pending")
+
+    /**
+     * Called by the IME when the keyboard (re-)appears on a field: if [FileTranscriptionActivity]
+     * stashed a picked file, transcribe it now and commit into the focused field. Returns true if a
+     * transcription was started, so the caller can skip instant-recording.
+     *
+     * Safe to call from multiple lifecycle hooks: the pending file is *claimed* (moved out of the
+     * pending dir) before transcription starts, so a second call finds nothing and is a no-op.
+     */
+    fun consumePendingFileTranscription(context: Context): Boolean {
+        if (_state.value !is UiState.Idle) return false
+        val pending = pendingTranscriptionDir(context).listFiles()?.firstOrNull { it.isFile && it.length() > 0L }
+            ?: return false
+        // Claim it: move out of the pending dir so it cannot be picked up twice, then clean the dir.
+        val claimed = File(context.cacheDir, "dictate_import_${pending.name}")
+        claimed.delete()
+        if (!pending.renameTo(claimed)) {
+            pending.copyTo(claimed, overwrite = true)
+            pending.delete()
+        }
+        pendingTranscriptionDir(context).deleteRecursively()
+        if (!claimed.exists() || claimed.length() == 0L) return false
+        transcribe(context, claimed)
+        return true
+    }
+
+    /**
+     * Shared transcription path for both recorded and picked audio: resolves provider/key/model,
+     * uploads [audioFile], commits the result and deletes the file afterwards.
+     */
+    private fun transcribe(context: Context, audioFile: File) {
         val apiKey = prefs.dictate.apiKey.get()
         if (apiKey.isBlank()) {
             _state.value = UiState.Error(context.getString(R.string.dictate__error_no_api_key))
+            audioFile.delete()
             return
         }
 

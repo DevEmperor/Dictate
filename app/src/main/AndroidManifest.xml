@@ -139,6 +139,16 @@
             </intent-filter>
         </activity>
 
+        <!-- Dictate File Transcription trampoline (long-press mic → system file picker) -->
+        <!-- NB: no android:noHistory here – a noHistory activity is destroyed when the document
+             picker comes to the foreground, so its OpenDocument result would never be delivered.
+             The activity finishes itself once the file is handled. -->
+        <activity
+            android:name="dev.patrickgold.florisboard.dictate.FileTranscriptionActivity"
+            android:theme="@style/FlorisAppTheme.Transparent"
+            android:excludeFromRecents="true"
+            android:exported="false"/>
+
         <!-- Clipboard Media File Provider -->
         <provider
             android:name="dev.patrickgold.florisboard.ime.clipboard.provider.ClipboardMediaProvider"

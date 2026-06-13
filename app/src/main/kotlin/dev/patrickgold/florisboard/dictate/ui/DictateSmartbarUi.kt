@@ -16,9 +16,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -190,7 +188,6 @@ private fun RecordingContent(state: DictateController.UiState.Recording) {
  * subset. Auto-detect is shown as a globe; any other language as its short code (DE, EN, …). The
  * choice only matters at transcription time, so switching mid-recording is fine.
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LanguageChip() {
     val prefs by FlorisPreferenceStore
@@ -200,26 +197,24 @@ private fun LanguageChip() {
     val active = remember(activeCode) { DictateLanguages.of(activeCode) }
     var menuOpen by remember { mutableStateOf(false) }
 
-    // Same footprint/look as the cancel and pause buttons – no chip background – so the bar reads
-    // as one consistent set of controls.
-    Box(
-        modifier = Modifier
-            .fillMaxHeight()
-            .aspectRatio(1f)
-            .combinedClickable(
-                onClick = { DictateController.cycleLanguage() },
-                onLongClick = { if (selection.size > 1) menuOpen = true },
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        if (active.code == DictateLanguages.DETECT) {
-            SnyggIcon(
-                imageVector = Icons.Default.Language,
-                contentDescription = stringRes(R.string.dictate__language_detect),
-                modifier = Modifier.size(20.dp),
-            )
-        } else {
-            SnyggText(text = active.shortCode)
+    // Use the same SnyggIconButton as the cancel/pause buttons so the press ripple and footprint
+    // are identical; the dropdown is anchored to the wrapping box.
+    Box(modifier = Modifier.fillMaxHeight()) {
+        SnyggIconButton(
+            elementName = FlorisImeUi.SmartbarActionKey.elementName,
+            onClick = { DictateController.cycleLanguage() },
+            onLongClick = { if (selection.size > 1) menuOpen = true },
+            modifier = Modifier.fillMaxHeight().aspectRatio(1f),
+        ) {
+            if (active.code == DictateLanguages.DETECT) {
+                SnyggIcon(
+                    imageVector = Icons.Default.Language,
+                    contentDescription = stringRes(R.string.dictate__language_detect),
+                    modifier = Modifier.size(20.dp),
+                )
+            } else {
+                SnyggText(text = active.shortCode)
+            }
         }
         DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
             selection.forEach { lang ->
