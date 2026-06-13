@@ -17,8 +17,7 @@ package dev.patrickgold.florisboard.dictate.provider
  * of truth is the live catalog via [LlmProvider.listModels] when [supportsDynamicModels] is true, so
  * users can freely pick any model the provider offers (important for OpenRouter's large catalog).
  *
- * NOTE: model ids / pricing must be re-verified against the provider when extending defaults – never
- * guessed. See also [dev.patrickgold.florisboard.dictate.data.usage.DictatePricing].
+ * NOTE: model ids must be re-verified against the provider when extending defaults – never guessed.
  */
 data class ProviderPreset(
     val id: String,
