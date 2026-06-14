@@ -74,10 +74,10 @@ fun AboutScreen() = FlorisScreen {
             FlorisCanvasIcon(
                 modifier = Modifier.requiredSize(64.dp),
                 iconId = R.mipmap.floris_app_icon,
-                contentDescription = "FlorisBoard app icon",
+                contentDescription = stringRes(R.string.app_name_full),
             )
             Text(
-                text = stringRes(R.string.floris_app_name),
+                text = stringRes(R.string.app_name_full),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(top = 16.dp),

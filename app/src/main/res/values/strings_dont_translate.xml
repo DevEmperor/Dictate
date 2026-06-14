@@ -1,5 +1,7 @@
 <resources>
     <item name="floris_app_name" translatable="false" type="string">@string/app_name</item>
+    <!-- Full product name for prose/About/Setup; launcher label stays the short app_name ("Dictate"). -->
+    <string name="app_name_full" translatable="false">Dictate Keyboard</string>
 
     <!--
         Dictate-branded URLs. Keys keep the historic `florisboard__` prefix so the many references in
