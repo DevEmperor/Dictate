@@ -111,8 +111,11 @@ fun DictateInputLayout(
                 .fillMaxWidth()
                 .weight(1f)
                 .verticalScroll(scrollState)
-                // Persistent (non-fading) scrollbar pinned to the right edge, drawn only when the
-                // prompt list actually overflows the panel – a clear, always-visible affordance.
+                // Persistent, theme-independent scrollbar pinned to the right edge. Uses the same
+                // geometry as the shared florisScrollbar (the modifier sits inside the scroll, so
+                // size.height is the content height and the offset compensates with state.value), but
+                // with a hard-coded accent color – MaterialTheme is not wired up in the IME, so the
+                // shared scrollbar's onSurface tint is effectively invisible here.
                 .dictatePanelScrollbar(scrollState)
                 .padding(8.dp),
             horizontalArrangement = Arrangement.Start,
@@ -163,35 +166,40 @@ fun DictateInputLayout(
     }
 }
 
-/** Dictate accent (theme accent default), reused for the panel scrollbar thumb. */
+/** Dictate accent (theme accent default), used for the panel scrollbar so it is visible on any theme. */
 private val DictateScrollbarAccent = Color(0xFF30B7E6)
 
 /**
- * Draws a slim, always-visible scrollbar at the right edge of a [verticalScroll]ed container, but only
- * when the content actually overflows ([ScrollState.maxValue] > 0). Unlike the shared
- * `florisVerticalScroll` helper this does not fade out, so it stays as a reliable affordance while the
- * prompt list is scrollable. Apply directly after the `verticalScroll(state)` modifier (and before any
- * inner padding) so it spans the full container width.
+ * Draws a slim, persistent scrollbar at the right edge of a [verticalScroll]ed container whenever the
+ * content overflows. Apply *after* `verticalScroll(state)` (i.e. inside the scroll), exactly like the
+ * shared `florisScrollbar`: there `size.height` is the full content height, so the geometry subtracts
+ * the scroll range to recover the viewport height and adds `state.value` to the y-offsets to keep the
+ * bar pinned to the visible area while the content scrolls underneath.
+ *
+ * Unlike the shared helper it does not fade out and uses a hard-coded accent color instead of
+ * `MaterialTheme.colorScheme.onSurface` (MaterialTheme is not provided inside the keyboard IME, so that
+ * tint renders invisible against the Snygg-themed panel).
  */
 private fun Modifier.dictatePanelScrollbar(
     state: ScrollState,
     width: Dp = 5.dp,
 ): Modifier = drawWithContent {
     drawContent()
-    val max = state.maxValue
-    if (max <= 0) return@drawWithContent
+    val scrollMax = state.maxValue.toFloat()
+    if (scrollMax <= 0f) return@drawWithContent
+    val scrollValue = state.value.toFloat()
     val barWidth = width.toPx()
-    val viewport = size.height
-    val contentHeight = viewport + max
-    // Thumb height proportional to the visible fraction, with a sensible minimum so it stays grabbable.
-    val thumbHeight = (viewport * viewport / contentHeight).coerceAtLeast(barWidth * 5f)
-    val thumbY = (viewport - thumbHeight) * (state.value.toFloat() / max)
+    // size.height is the content height here (the modifier sits inside the scroll); recover the viewport.
+    val viewport = size.height - scrollMax
+    val thumbHeight = (viewport * (viewport / size.height)).coerceAtLeast(barWidth * 5f)
     val x = size.width - barWidth
+    // +scrollValue pins the bar to the viewport (content is translated up by scrollValue).
+    val trackY = scrollValue
+    val thumbY = scrollValue + (viewport - thumbHeight) * (scrollValue / scrollMax)
     val radius = CornerRadius(barWidth / 2f, barWidth / 2f)
-    // Faint full-height track + solid accent thumb.
     drawRoundRect(
         color = DictateScrollbarAccent.copy(alpha = 0.12f),
-        topLeft = Offset(x, 0f),
+        topLeft = Offset(x, trackY),
         size = Size(barWidth, viewport),
         cornerRadius = radius,
     )
