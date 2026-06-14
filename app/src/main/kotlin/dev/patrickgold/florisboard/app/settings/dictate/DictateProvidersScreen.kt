@@ -10,8 +10,13 @@
 
 package dev.patrickgold.florisboard.app.settings.dictate
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -20,23 +25,29 @@ import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SmartToy
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.dictate.provider.OpenAiCompatibleClient
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
 import dev.patrickgold.florisboard.dictate.provider.ProviderPreset
@@ -260,6 +271,7 @@ private fun ProviderEditorDialog(
                 placeholder = stringRes(R.string.dictate__api_key_placeholder),
                 isSecret = true,
             )
+            ConnectionTestRow(preset = effectivePreset, apiKey = apiKey)
             if (showTranscription) {
                 EditorField(
                     label = stringRes(R.string.dictate__providers_field_transcription_model),
@@ -296,6 +308,66 @@ private fun ProviderEditorDialog(
             },
             onDismiss = { pickerKind = null },
         )
+    }
+}
+
+/**
+ * A "Test connection" action with an inline result. Performs a lightweight `listModels()` call against
+ * the provider's base URL with the currently entered key, so the user can verify the endpoint + key are
+ * reachable before saving. A model count on success doubles as proof the catalog loads.
+ */
+@Composable
+private fun ConnectionTestRow(preset: ProviderPreset, apiKey: String) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    var testing by remember { mutableStateOf(false) }
+    // null = not run yet; Pair(ok, message) once a test finished.
+    var result by remember { mutableStateOf<Pair<Boolean, String>?>(null) }
+    val okColor = MaterialTheme.colorScheme.primary
+    val errColor = MaterialTheme.colorScheme.error
+    val failedFallback = stringRes(R.string.dictate__providers_test_failed)
+    // Resolved here (composable scope) so the background coroutine can format without touching Compose.
+    val successTemplate = context.getString(R.string.dictate__providers_test_success)
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        result?.let { (ok, message) ->
+            Text(
+                text = message,
+                color = if (ok) okColor else errColor,
+                modifier = Modifier.weight(1f).padding(end = 8.dp),
+            )
+        } ?: Spacer(Modifier.weight(1f))
+        TextButton(
+            enabled = !testing,
+            onClick = {
+                testing = true
+                result = null
+                scope.launch {
+                    result = try {
+                        val count = OpenAiCompatibleClient
+                            .from(preset, apiKey.trim(), baseUrlOverride = preset.baseUrl)
+                            .listModels()
+                            .size
+                        true to successTemplate.replace("{count}", count.toString())
+                    } catch (e: Exception) {
+                        false to (e.message ?: failedFallback)
+                    } finally {
+                        testing = false
+                    }
+                }
+            },
+        ) {
+            if (testing) {
+                CircularProgressIndicator(modifier = Modifier.padding(end = 8.dp).size(16.dp))
+            }
+            Text(stringRes(R.string.dictate__providers_test))
+        }
     }
 }
 

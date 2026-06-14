@@ -74,9 +74,22 @@ class OpenAiCompatibleClient(
 
     /**
      * Transcribes [request]. [onRetry] is invoked with the (1-based) attempt number each time a
-     * transient failure triggers a retry, so the UI can surface a "retrying…" indicator.
+     * transient failure triggers a retry, so the UI can surface a "retrying…" indicator. Dispatches to
+     * the right wire format for the configured provider (see [TranscriptionApi]).
      */
     suspend fun transcribe(
+        request: TranscriptionRequest,
+        onRetry: (attempt: Int) -> Unit,
+    ): TranscriptionResult = when (config.transcriptionApi) {
+        TranscriptionApi.OPENAI_MULTIPART -> transcribeMultipart(request, onRetry)
+        TranscriptionApi.OPENROUTER_JSON -> transcribeOpenRouterJson(request, onRetry)
+    }
+
+    override suspend fun transcribe(request: TranscriptionRequest): TranscriptionResult =
+        transcribe(request, onRetry = {})
+
+    /** OpenAI-style `multipart/form-data` upload (OpenAI, Groq, Mistral, most custom servers). */
+    private suspend fun transcribeMultipart(
         request: TranscriptionRequest,
         onRetry: (attempt: Int) -> Unit,
     ): TranscriptionResult {
@@ -102,25 +115,31 @@ class OpenAiCompatibleClient(
         return TranscriptionResult(response.text.trim())
     }
 
-    override suspend fun transcribe(request: TranscriptionRequest): TranscriptionResult {
-        val fileBody = request.audioFile.asRequestBody(guessAudioMediaType(request.audioFile))
-        val multipart = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("file", request.audioFile.name, fileBody)
-            .addFormDataPart("model", request.model)
-            .addFormDataPart("response_format", "json")
-            .apply {
-                val lang = request.language
-                if (!lang.isNullOrEmpty() && lang != "detect") addFormDataPart("language", lang)
-                if (!request.prompt.isNullOrEmpty()) addFormDataPart("prompt", request.prompt)
-            }
-            .build()
+    /**
+     * OpenRouter's JSON transcription endpoint: the audio is base64-encoded and wrapped in an
+     * `input_audio` object instead of a multipart upload. `prompt` has no equivalent here and is
+     * ignored. See https://openrouter.ai/docs/api/api-reference/transcriptions/create-audio-transcriptions
+     */
+    private suspend fun transcribeOpenRouterJson(
+        request: TranscriptionRequest,
+        onRetry: (attempt: Int) -> Unit,
+    ): TranscriptionResult {
+        val base64 = withContext(Dispatchers.IO) {
+            android.util.Base64.encodeToString(request.audioFile.readBytes(), android.util.Base64.NO_WRAP)
+        }
+        val lang = request.language?.takeIf { it.isNotEmpty() && it != "detect" }
+        val dto = TranscriptionJsonRequestDto(
+            model = request.model,
+            inputAudio = InputAudioDto(data = base64, format = guessAudioFormat(request.audioFile)),
+            language = lang,
+        )
+        val payload = json.encodeToString(TranscriptionJsonRequestDto.serializer(), dto)
         val httpRequest = Request.Builder()
             .url(config.normalizedBaseUrl + "audio/transcriptions")
             .headers(authHeaders())
-            .post(multipart)
+            .post(payload.toRequestBody(JSON_MEDIA_TYPE))
             .build()
-        val body = executeForBody(httpRequest)
+        val body = executeForBody(httpRequest, onRetry = onRetry)
         val response = json.decodeFromString(TranscriptionResponseDto.serializer(), body)
         return TranscriptionResult(response.text.trim())
     }
@@ -224,6 +243,19 @@ class OpenAiCompatibleClient(
         return type.toMediaType()
     }
 
+    /**
+     * Maps a file to one of OpenRouter's accepted `format` strings (wav, mp3, flac, m4a, ogg, webm,
+     * aac). Dictate records m4a; other extensions come from picked files. Unknown extensions are passed
+     * through as-is so a still-valid container isn't rejected client-side.
+     */
+    private fun guessAudioFormat(file: File): String = when (val ext = file.extension.lowercase()) {
+        "mp4", "m4a", "aac" -> "m4a"
+        "mpeg", "mpga", "mp3" -> "mp3"
+        "oga", "ogg" -> "ogg"
+        "wav", "flac", "webm" -> ext
+        else -> ext
+    }
+
     @Serializable
     private data class ChatCompletionRequestDto(
         val model: String,
@@ -252,6 +284,16 @@ class OpenAiCompatibleClient(
         @SerialName("prompt_tokens") val promptTokens: Long = 0,
         @SerialName("completion_tokens") val completionTokens: Long = 0,
     )
+
+    @Serializable
+    private data class TranscriptionJsonRequestDto(
+        val model: String,
+        @SerialName("input_audio") val inputAudio: InputAudioDto,
+        val language: String? = null,
+    )
+
+    @Serializable
+    private data class InputAudioDto(val data: String, val format: String)
 
     @Serializable
     private data class TranscriptionResponseDto(val text: String = "")
@@ -284,6 +326,7 @@ class OpenAiCompatibleClient(
                 apiKey = apiKey,
                 extraHeaders = preset.extraHeaders,
                 proxy = proxy,
+                transcriptionApi = preset.transcriptionApi,
             )
         )
     }

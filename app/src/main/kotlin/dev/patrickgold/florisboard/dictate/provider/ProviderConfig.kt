@@ -27,10 +27,24 @@ data class ProviderConfig(
     val extraHeaders: Map<String, String> = emptyMap(),
     val proxy: ProxyConfig? = null,
     val timeoutSeconds: Long = 120,
+    val transcriptionApi: TranscriptionApi = TranscriptionApi.OPENAI_MULTIPART,
 ) {
     /** Base URL guaranteed to end with a single trailing slash. */
     val normalizedBaseUrl: String
         get() = if (baseUrl.endsWith("/")) baseUrl else "$baseUrl/"
+}
+
+/**
+ * Wire format of a provider's speech-to-text endpoint. Most providers (OpenAI, Groq, Mistral, …) accept
+ * the OpenAI `multipart/form-data` file upload at `audio/transcriptions`. OpenRouter instead exposes a
+ * JSON endpoint that takes base64-encoded audio in an `input_audio` object, so it needs its own path.
+ */
+enum class TranscriptionApi {
+    /** OpenAI-style `multipart/form-data` upload with a `file` part. */
+    OPENAI_MULTIPART,
+
+    /** OpenRouter-style JSON body: `{ model, input_audio: { data (base64), format } }`. */
+    OPENROUTER_JSON,
 }
 
 /**

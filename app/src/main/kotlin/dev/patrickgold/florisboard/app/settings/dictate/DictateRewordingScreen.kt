@@ -18,12 +18,10 @@ import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.material.icons.filled.ModelTraining
 import androidx.compose.material.icons.filled.Psychology
-import androidx.compose.material.icons.filled.SmartToy
 import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
@@ -32,7 +30,6 @@ import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.dictate.DictatePromptsLayout
 import dev.patrickgold.florisboard.dictate.data.prompts.DictatePromptDefaults
 import dev.patrickgold.florisboard.dictate.data.prompts.PromptsDatabaseHelper
-import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.jetpref.datastore.model.collectAsState
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
@@ -86,20 +83,6 @@ fun DictateRewordingScreen() = FlorisScreen {
             },
             enabledIf = { prefs.dictate.rewordingEnabled isEqualTo true },
         )
-
-        val rewordingProviderId by prefs.dictate.rewordingProviderId.collectAsState()
-        PreferenceGroup(title = stringRes(R.string.dictate__rewording_provider_group)) {
-            val providerName = remember(rewordingProviderId) {
-                ProviderRegistry.byId(rewordingProviderId)?.displayName ?: rewordingProviderId
-            }
-            Preference(
-                icon = Icons.Default.SmartToy,
-                title = stringRes(R.string.dictate__providers_title),
-                summary = stringRes(R.string.dictate__providers_summary, "provider" to providerName),
-                onClick = { navController.navigate(Routes.Settings.DictateProviders) },
-                enabledIf = { prefs.dictate.rewordingEnabled isEqualTo true },
-            )
-        }
 
         PreferenceGroup(title = stringRes(R.string.dictate__rewording_prompts_group)) {
             val promptCount by produceState(initialValue = -1) {

@@ -194,7 +194,8 @@ private fun ModelRow(label: String, selected: Boolean, onClick: () -> Unit) {
  */
 private fun matchesKind(id: String, kind: ModelKind): Boolean {
     val l = id.lowercase()
-    val isStt = l.contains("whisper") || l.contains("transcribe") || l.contains("stt")
+    val isStt = l.contains("whisper") || l.contains("transcribe") || l.contains("stt") ||
+        l.contains("voxtral")
     return when (kind) {
         ModelKind.TRANSCRIPTION -> isStt
         ModelKind.CHAT -> !isStt &&

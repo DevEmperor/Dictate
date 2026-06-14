@@ -38,6 +38,8 @@ data class ProviderPreset(
      */
     val curatedChatModels: List<String> = emptyList(),
     val curatedTranscriptionModels: List<String> = emptyList(),
+    /** Wire format of this provider's speech-to-text endpoint (OpenRouter differs – see [TranscriptionApi]). */
+    val transcriptionApi: TranscriptionApi = TranscriptionApi.OPENAI_MULTIPART,
 )
 
 /**
@@ -86,12 +88,20 @@ object ProviderRegistry {
         id = "openrouter",
         displayName = "OpenRouter",
         baseUrl = "https://openrouter.ai/api/v1/",
-        capabilities = CHAT_ONLY,
+        // OpenRouter routes both chat and speech-to-text (its STT endpoint fronts Whisper, Voxtral,
+        // MAI-Transcribe, …) – but via a JSON/base64 body, not the OpenAI multipart upload.
+        capabilities = CHAT_AND_STT,
+        transcriptionApi = TranscriptionApi.OPENROUTER_JSON,
         supportsDynamicModels = true,
         apiKeyUrl = "https://openrouter.ai/keys",
         // OpenRouter exposes hundreds of models (incl. Claude, Gemini, Llama …); users pick from the
         // live catalog. This is just a safe default to start with and is fully user-overridable.
         defaultChatModel = "openai/gpt-4o-mini",
+        defaultTranscriptionModel = "openai/whisper-large-v3",
+        // Verified against OpenRouter's STT docs; the live picker adds the rest (Voxtral, MAI, …).
+        curatedTranscriptionModels = listOf(
+            "openai/whisper-large-v3", "openai/whisper-1",
+        ),
         // Attribution headers recommended by OpenRouter: both are used for app ranking and some routes
         // reject requests without an HTTP-Referer. The value is a stable identifier, not a real URL.
         extraHeaders = mapOf(
@@ -122,9 +132,12 @@ object ProviderRegistry {
         id = "mistral",
         displayName = "Mistral AI",
         baseUrl = "https://api.mistral.ai/v1/",
-        capabilities = CHAT_ONLY,
+        // Voxtral transcription via the standard OpenAI multipart endpoint (/v1/audio/transcriptions).
+        capabilities = CHAT_AND_STT,
         supportsDynamicModels = true,
         apiKeyUrl = "https://console.mistral.ai/api-keys",
+        defaultTranscriptionModel = "voxtral-mini-latest",
+        curatedTranscriptionModels = listOf("voxtral-mini-latest"),
     )
 
     val XAI = ProviderPreset(
