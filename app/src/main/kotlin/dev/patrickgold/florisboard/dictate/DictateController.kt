@@ -367,6 +367,9 @@ object DictateController {
                 // Credit recorded audio towards the rate/donate gating (roadmap 9.7/9.8).
                 if (recordedSeconds > 0L) creditAudioSeconds(recordedSeconds)
                 _state.value = UiState.Idle
+                // Re-assert the rate/donate nudge: it has no auto-timeout and stays until the user
+                // accepts/declines, so if recording temporarily replaced a pending nudge, bring it back.
+                maybePromptForReview()
             } catch (c: CancellationException) {
                 // User aborted via the stop button: discard quietly (state set by cancelTranscription),
                 // never show an error. The audio is dropped in the finally block.
@@ -514,11 +517,12 @@ object DictateController {
         }
     }
 
-    /** Adds [seconds] to the cumulative audio counter that gates the nudges. */
-    private fun creditAudioSeconds(seconds: Long) {
-        scope.launch {
-            prefs.dictate.totalAudioSeconds.set(prefs.dictate.totalAudioSeconds.get() + seconds)
-        }
+    /**
+     * Adds [seconds] to the cumulative audio counter that gates the nudges. Suspends until the new value
+     * is written to the in-memory cache, so a [maybePromptForReview] called right after sees the update.
+     */
+    private suspend fun creditAudioSeconds(seconds: Long) {
+        prefs.dictate.totalAudioSeconds.set(prefs.dictate.totalAudioSeconds.get() + seconds)
     }
 
     // --- Rewording / GPT engine (roadmap section 4) ---------------------------------------------
