@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.dictate.DictateController
 import dev.patrickgold.florisboard.dictate.data.prompts.PromptModel
+import dev.patrickgold.florisboard.ime.input.LocalInputFeedbackController
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
 import org.florisboard.lib.compose.stringRes
@@ -105,15 +106,19 @@ fun DictatePromptRow(
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    val inputFeedbackController = LocalInputFeedbackController.current
     val dictateState by DictateController.state.collectAsState()
     val pending by DictateController.pendingPrompts.collectAsState()
     val isCapturing = dictateState is DictateController.UiState.Recording ||
         dictateState is DictateController.UiState.Transcribing
+    // Slightly taller than the Smartbar and with a touch of vertical padding inside each chip, so the
+    // always-on row gives the prompt buttons a more comfortable hit area than the compact Smartbar.
+    val rowChipPadding = PaddingValues(horizontal = 2.dp, vertical = 5.dp)
     SnyggRow(
         elementName = FlorisImeUi.SmartbarSharedActionsRow.elementName,
         modifier = modifier
             .fillMaxWidth()
-            .height(FlorisImeSizing.smartbarHeight)
+            .height(FlorisImeSizing.smartbarHeight * 1.25f)
             .horizontalScroll(scrollState)
             .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -121,6 +126,7 @@ fun DictatePromptRow(
         DictateLivePromptChip(
             onClick = { DictateController.startLivePrompt(context) },
             modifier = Modifier.padding(horizontal = 3.dp),
+            tapPadding = rowChipPadding,
         )
         prompts.forEach { prompt ->
             DictatePromptChip(
@@ -128,14 +134,17 @@ fun DictatePromptRow(
                 text = prompt.name.orEmpty(),
                 onClick = {
                     // While a recording/transcription is in flight, queue the prompt instead of
-                    // applying it; otherwise apply it right away.
+                    // applying it; otherwise apply it right away. Queuing is a silent state change, so
+                    // give a haptic tick to confirm the tap registered.
                     if (isCapturing) {
+                        inputFeedbackController.keyPress()
                         DictateController.togglePendingPrompt(prompt)
                     } else {
                         DictateController.applyPrompt(context, prompt)
                     }
                 },
                 modifier = Modifier.padding(horizontal = 3.dp),
+                tapPadding = rowChipPadding,
                 highlighted = pending.any { it.id == prompt.id },
             )
         }

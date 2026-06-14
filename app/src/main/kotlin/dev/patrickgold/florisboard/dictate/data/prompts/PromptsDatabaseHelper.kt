@@ -179,15 +179,21 @@ class PromptsDatabaseHelper(
         const val DATABASE_NAME = "prompts.db"
         const val DATABASE_VERSION = 2
 
-        // The five defaults ported 1:1 from the legacy Dictate app: the first three operate on the
-        // selection, the last two are free prompts (#5 is a literal `[snippet]`). Resolved lazily so
-        // the strings pick up the device locale at seed time.
+        // A useful starter set covering all three prompt types: six rewrite-the-selection editors
+        // (requiresSelection = true), two free generators and two literal `[snippet]` prompts (both
+        // requiresSelection = false). Resolved lazily so the strings pick up the device locale at seed
+        // time.
         private fun defaultSeeds() = listOf(
-            Seed(R.string.dictate__example_prompt_one_name, R.string.dictate__example_prompt_one_prompt, true),
-            Seed(R.string.dictate__example_prompt_two_name, R.string.dictate__example_prompt_two_prompt, true),
-            Seed(R.string.dictate__example_prompt_three_name, R.string.dictate__example_prompt_three_prompt, true),
-            Seed(R.string.dictate__example_prompt_four_name, R.string.dictate__example_prompt_four_prompt, false),
-            Seed(R.string.dictate__example_prompt_five_name, R.string.dictate__example_prompt_five_prompt, false),
+            Seed(R.string.dictate__example_prompt_fix_grammar_name, R.string.dictate__example_prompt_fix_grammar_prompt, true),
+            Seed(R.string.dictate__example_prompt_improve_name, R.string.dictate__example_prompt_improve_prompt, true),
+            Seed(R.string.dictate__example_prompt_formal_name, R.string.dictate__example_prompt_formal_prompt, true),
+            Seed(R.string.dictate__example_prompt_friendly_name, R.string.dictate__example_prompt_friendly_prompt, true),
+            Seed(R.string.dictate__example_prompt_shorter_name, R.string.dictate__example_prompt_shorter_prompt, true),
+            Seed(R.string.dictate__example_prompt_translate_name, R.string.dictate__example_prompt_translate_prompt, true),
+            Seed(R.string.dictate__example_prompt_quote_name, R.string.dictate__example_prompt_quote_prompt, false),
+            Seed(R.string.dictate__example_prompt_funfact_name, R.string.dictate__example_prompt_funfact_prompt, false),
+            Seed(R.string.dictate__example_prompt_shrug_name, R.string.dictate__example_prompt_shrug_prompt, false),
+            Seed(R.string.dictate__example_prompt_signoff_name, R.string.dictate__example_prompt_signoff_prompt, false),
         )
     }
 }
