@@ -83,10 +83,31 @@ object DictateController {
         data class Transcribing(val attempt: Int = 1) : UiState
         /** A rewording/GPT request is in flight (manual prompt, auto-apply, auto-format or live). */
         data class Rewording(val label: String) : UiState
-        /** [canResend] is true when the failed audio was kept so the user can retry it (roadmap 10.3). */
-        data class Error(val message: String, val canResend: Boolean = false) : UiState
+        /**
+         * A failed transcription/rewording (roadmap 1.12). [message] is the short, localized headline
+         * (derived from [kind]); [detail] is the raw provider text shown when the user taps the chip;
+         * [action] is the contextual button offered (resend the kept audio, open settings, or none).
+         */
+        data class Error(
+            val message: String,
+            val kind: DictateApiException.Kind? = null,
+            val action: ErrorAction = ErrorAction.NONE,
+            val detail: String? = null,
+        ) : UiState
         /** A one-time rate/donate nudge shown in the Smartbar after enough usage (roadmap 9.7/9.8). */
         data class Promo(val kind: PromoKind) : UiState
+    }
+
+    /** The contextual action a [UiState.Error] offers (see roadmap 1.12 keyboard design). */
+    enum class ErrorAction {
+        /** No action; the chip auto-clears after a moment. */
+        NONE,
+
+        /** Retry the same kept audio (transient failures with retained audio, roadmap 10.3). */
+        RESEND,
+
+        /** Open the Dictate provider settings (fixable errors like an invalid/missing API key). */
+        OPEN_SETTINGS,
     }
 
     /** Which one-time nudge is being shown (see [maybePromptForReview]). */
@@ -215,6 +236,52 @@ object DictateController {
     /** Clears a transient error back to idle (the Smartbar UI calls this after showing it briefly). */
     fun clearError() {
         if (_state.value is UiState.Error) _state.value = UiState.Idle
+    }
+
+    /**
+     * Opens the Dictate provider settings from the keyboard, used by the "fixable" errors (e.g. an
+     * invalid or missing API key, roadmap 1.12). Launched as a new task since an IME has no activity of
+     * its own; clears the error afterwards so the Smartbar returns to normal.
+     */
+    fun openProviderSettings(context: Context) {
+        runCatching {
+            context.startActivity(
+                Intent(Intent.ACTION_VIEW, Uri.parse("ui://florisboard/settings/dictate/providers"))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            )
+        }
+        clearError()
+    }
+
+    /** Localized one-line headline for an API error [kind] (roadmap 1.12 specific error messages). */
+    private fun errorMessageRes(kind: DictateApiException.Kind): Int = when (kind) {
+        DictateApiException.Kind.INVALID_API_KEY -> R.string.dictate__error_invalid_api_key
+        DictateApiException.Kind.QUOTA_EXCEEDED -> R.string.dictate__error_quota_exceeded
+        DictateApiException.Kind.CONTENT_SIZE_LIMIT -> R.string.dictate__error_content_size_limit
+        DictateApiException.Kind.FORMAT_NOT_SUPPORTED -> R.string.dictate__error_format_not_supported
+        DictateApiException.Kind.TIMEOUT -> R.string.dictate__error_timeout
+        DictateApiException.Kind.NETWORK -> R.string.dictate__error_network
+        DictateApiException.Kind.SERVER_ERROR -> R.string.dictate__error_server
+        DictateApiException.Kind.UNKNOWN -> R.string.dictate__error_unknown
+    }
+
+    /**
+     * Builds an [UiState.Error] from an API exception: a localized headline (per [DictateApiException.Kind]),
+     * the raw provider text kept as the tappable detail, and the contextual action — resend the kept audio
+     * for retryable failures, open settings for a bad/missing key, otherwise none.
+     */
+    private fun apiError(e: DictateApiException, context: Context, canResend: Boolean): UiState.Error {
+        val action = when {
+            canResend && e.kind.isRetryable -> ErrorAction.RESEND
+            e.kind == DictateApiException.Kind.INVALID_API_KEY -> ErrorAction.OPEN_SETTINGS
+            else -> ErrorAction.NONE
+        }
+        return UiState.Error(
+            message = context.getString(errorMessageRes(e.kind)),
+            kind = e.kind,
+            action = action,
+            detail = e.message?.takeIf { it.isNotBlank() },
+        )
     }
 
     /** Dismisses a resendable error: clears it and drops the kept audio (the resend is declined). */
@@ -348,7 +415,11 @@ object DictateController {
         val account = transcriptionAccount()
         val apiKey = account.apiKey
         if (apiKey.isBlank() && requiresKey(account)) {
-            _state.value = UiState.Error(context.getString(R.string.dictate__error_no_api_key))
+            _state.value = UiState.Error(
+                message = context.getString(R.string.dictate__error_no_api_key),
+                kind = DictateApiException.Kind.INVALID_API_KEY,
+                action = ErrorAction.OPEN_SETTINGS,
+            )
             audioFile.delete()
             return
         }
@@ -413,16 +484,15 @@ object DictateController {
             } catch (e: DictateApiException) {
                 _pendingPrompts.value = emptyList()
                 keepAudio = retainForResend(audioFile, live, recordedSeconds)
-                _state.value = UiState.Error(
-                    e.message ?: appContext.getString(R.string.dictate__error_transcription_failed),
-                    canResend = keepAudio,
-                )
+                _state.value = apiError(e, appContext, canResend = keepAudio)
             } catch (t: Throwable) {
                 _pendingPrompts.value = emptyList()
                 keepAudio = retainForResend(audioFile, live, recordedSeconds)
                 _state.value = UiState.Error(
-                    t.message ?: appContext.getString(R.string.dictate__error_unknown),
-                    canResend = keepAudio,
+                    message = appContext.getString(R.string.dictate__error_unknown),
+                    kind = DictateApiException.Kind.UNKNOWN,
+                    action = if (keepAudio) ErrorAction.RESEND else ErrorAction.NONE,
+                    detail = t.message?.takeIf { it.isNotBlank() },
                 )
             } finally {
                 if (!keepAudio) audioFile.delete()
@@ -606,7 +676,11 @@ object DictateController {
         }
 
         if (rewordingApiKey().isBlank()) {
-            _state.value = UiState.Error(appContext.getString(R.string.dictate__error_no_api_key))
+            _state.value = UiState.Error(
+                message = appContext.getString(R.string.dictate__error_no_api_key),
+                kind = DictateApiException.Kind.INVALID_API_KEY,
+                action = ErrorAction.OPEN_SETTINGS,
+            )
             return
         }
 
@@ -618,9 +692,13 @@ object DictateController {
                 editorInstance.commitText(text)
                 _state.value = UiState.Idle
             } catch (e: DictateApiException) {
-                _state.value = UiState.Error(e.message ?: appContext.getString(R.string.dictate__error_rewording_failed))
+                _state.value = apiError(e, appContext, canResend = false)
             } catch (t: Throwable) {
-                _state.value = UiState.Error(t.message ?: appContext.getString(R.string.dictate__error_rewording_failed))
+                _state.value = UiState.Error(
+                    message = appContext.getString(R.string.dictate__error_rewording_failed),
+                    kind = DictateApiException.Kind.UNKNOWN,
+                    detail = t.message?.takeIf { it.isNotBlank() },
+                )
             }
         }
     }

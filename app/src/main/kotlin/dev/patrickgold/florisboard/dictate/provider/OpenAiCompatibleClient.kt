@@ -195,17 +195,26 @@ class OpenAiCompatibleClient(
         client.newCall(request).execute().use { response ->
             val body = response.body?.string().orEmpty()
             if (!response.isSuccessful) {
-                throw DictateApiException.fromHttp(response.code, extractErrorMessage(body) ?: body.take(500))
+                val error = parseError(body)
+                throw DictateApiException.fromHttp(
+                    status = response.code,
+                    message = error?.message ?: body.take(500),
+                    code = error?.code,
+                    type = error?.type,
+                )
             }
             return body
         }
     }
 
-    private fun extractErrorMessage(body: String): String? = try {
-        json.decodeFromString(ErrorEnvelopeDto.serializer(), body).error?.message
+    /** Parsed `{ "error": { … } }` envelope, or null if the body isn't one (e.g. plain-text gateways). */
+    private fun parseError(body: String): ErrorBodyDto? = try {
+        json.decodeFromString(ErrorEnvelopeDto.serializer(), body).error
     } catch (_: Exception) {
         null
     }
+
+    private fun extractErrorMessage(body: String): String? = parseError(body)?.message
 
     private fun buildClient(): OkHttpClient {
         val timeout = Duration.ofSeconds(config.timeoutSeconds)
@@ -308,7 +317,13 @@ class OpenAiCompatibleClient(
     private data class ErrorEnvelopeDto(val error: ErrorBodyDto? = null)
 
     @Serializable
-    private data class ErrorBodyDto(val message: String? = null)
+    private data class ErrorBodyDto(
+        val message: String? = null,
+        // OpenAI-style machine-readable hints (e.g. code = "invalid_api_key", type = "insufficient_quota").
+        // Decoded as strings; providers that send a non-string code simply fall back to status/keywords.
+        val code: String? = null,
+        val type: String? = null,
+    )
 
     companion object {
         private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()

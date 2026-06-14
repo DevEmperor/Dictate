@@ -29,23 +29,42 @@ class DictateApiException(
         FORMAT_NOT_SUPPORTED,
         TIMEOUT,
         NETWORK,
+        SERVER_ERROR,
         UNKNOWN;
 
         /** Whether retrying the same request could plausibly succeed. */
         val isRetryable: Boolean
-            get() = this == TIMEOUT || this == NETWORK || this == UNKNOWN
+            get() = this == TIMEOUT || this == NETWORK || this == SERVER_ERROR || this == UNKNOWN
     }
 
     companion object {
-        /** Classifies a non-2xx HTTP response into a [Kind] using status code + error message. */
-        fun fromHttp(status: Int, message: String?): DictateApiException {
-            val msg = message?.lowercase().orEmpty()
+        /**
+         * Classifies a non-2xx HTTP response into a [Kind]. Works across all OpenAI-compatible providers
+         * by combining the HTTP status (the most reliable, standardized signal) with the machine-readable
+         * `error.code` / `error.type` from the JSON envelope and, as a last resort, keyword matching on the
+         * human message. [message] is kept verbatim as the exception message (the raw provider detail).
+         */
+        fun fromHttp(
+            status: Int,
+            message: String?,
+            code: String? = null,
+            type: String? = null,
+        ): DictateApiException {
+            // Search code + type + message together so any of the three can trigger a match.
+            val hay = listOf(code, type, message).joinToString(" ") { it.orEmpty() }.lowercase()
             val kind = when {
-                status == 401 || status == 403 || msg.contains("api key") -> Kind.INVALID_API_KEY
-                status == 429 || msg.contains("quota") -> Kind.QUOTA_EXCEEDED
-                status == 413 || msg.contains("audio duration") || msg.contains("content size limit") ->
-                    Kind.CONTENT_SIZE_LIMIT
-                msg.contains("format") -> Kind.FORMAT_NOT_SUPPORTED
+                status == 401 || status == 403 ||
+                    hay.contains("api key") || hay.contains("api_key") || hay.contains("invalid_api_key") ||
+                    hay.contains("unauthorized") || hay.contains("authentication") -> Kind.INVALID_API_KEY
+                status == 429 ||
+                    hay.contains("quota") || hay.contains("insufficient_quota") || hay.contains("billing") ||
+                    hay.contains("rate limit") || hay.contains("rate_limit") -> Kind.QUOTA_EXCEEDED
+                status == 413 ||
+                    hay.contains("audio duration") || hay.contains("content size limit") ||
+                    hay.contains("too large") || hay.contains("maximum context length") -> Kind.CONTENT_SIZE_LIMIT
+                hay.contains("format") || hay.contains("unsupported") || hay.contains("decode") ||
+                    hay.contains("could not process") -> Kind.FORMAT_NOT_SUPPORTED
+                status in 500..599 -> Kind.SERVER_ERROR
                 else -> Kind.UNKNOWN
             }
             return DictateApiException(kind, message ?: "HTTP $status", null)

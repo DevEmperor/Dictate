@@ -21,29 +21,41 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CloudOff
+import androidx.compose.material.icons.filled.DataUsage
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material.icons.filled.VpnKey
+import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -64,6 +76,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
@@ -73,6 +86,7 @@ import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.DictateController
 import dev.patrickgold.florisboard.dictate.DictateLanguages
+import dev.patrickgold.florisboard.dictate.provider.DictateApiException
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
 import dev.patrickgold.jetpref.datastore.model.collectAsState
 import kotlinx.coroutines.delay
@@ -96,7 +110,8 @@ import org.florisboard.lib.snygg.ui.SnyggText
 fun DictateSmartbarUi(state: DictateController.UiState, modifier: Modifier = Modifier) {
     val arrangement = when {
         state is DictateController.UiState.Recording -> Arrangement.SpaceBetween
-        state is DictateController.UiState.Error && state.canResend -> Arrangement.SpaceBetween
+        state is DictateController.UiState.Error &&
+            state.action != DictateController.ErrorAction.NONE -> Arrangement.SpaceBetween
         else -> Arrangement.Center
     }
     SnyggRow(
@@ -111,17 +126,7 @@ fun DictateSmartbarUi(state: DictateController.UiState, modifier: Modifier = Mod
             is DictateController.UiState.Recording -> RecordingContent(state)
             is DictateController.UiState.Transcribing -> TranscribingContent(state)
             is DictateController.UiState.Rewording -> RewordingContent(state)
-            is DictateController.UiState.Error -> {
-                if (state.canResend) {
-                    ResendErrorContent(state.message)
-                } else {
-                    SnyggText(text = state.message)
-                    LaunchedEffect(state) {
-                        delay(4000L)
-                        DictateController.clearError()
-                    }
-                }
-            }
+            is DictateController.UiState.Error -> ErrorContent(state)
             is DictateController.UiState.Promo -> PromoContent(state.kind)
             else -> {}
         }
@@ -308,29 +313,88 @@ private fun RewordingContent(state: DictateController.UiState.Rewording) {
 }
 
 /**
- * Error variant shown when the failed audio was kept (roadmap 10.3): the message plus a resend button
- * that retries the same audio and a dismiss button that drops it. Unlike the transient error, this one
- * does not auto-clear so the user has time to react.
+ * Specific-error variant (roadmap 1.12): a kind-specific icon + a short localized headline, plus the
+ * contextual action — resend the kept audio, open the provider settings (e.g. bad API key) or nothing.
+ * Tapping the icon/message reveals the full raw provider detail in a popup. Errors that offer an action
+ * stay until the user reacts; purely informational ones auto-clear after a few seconds.
  */
 @Composable
-private fun RowScope.ResendErrorContent(message: String) {
+private fun RowScope.ErrorContent(state: DictateController.UiState.Error) {
     val context = LocalContext.current
-    SnyggIcon(
-        imageVector = Icons.Default.CloudOff,
-        modifier = Modifier.size(18.dp),
-    )
-    Spacer(modifier = Modifier.width(8.dp))
-    SnyggText(text = message, modifier = Modifier.weight(1f))
-    SnyggIconButton(
-        elementName = FlorisImeUi.SmartbarActionKey.elementName,
-        onClick = { DictateController.resendLastAudio(context) },
-        modifier = Modifier.fillMaxHeight().aspectRatio(1f),
-    ) {
-        SnyggIcon(
-            imageVector = Icons.Default.Refresh,
-            contentDescription = stringRes(R.string.dictate__action_resend),
-        )
+    var detailOpen by remember(state) { mutableStateOf(false) }
+    val hasDetail = !state.detail.isNullOrBlank()
+    val hasAction = state.action != DictateController.ErrorAction.NONE
+
+    // Icon + message. Tappable when a raw provider detail is available, opening the detail popup below.
+    Box(modifier = if (hasAction) Modifier.weight(1f) else Modifier) {
+        Row(
+            modifier = Modifier
+                .fillMaxHeight()
+                .clip(RoundedCornerShape(8.dp))
+                .then(
+                    if (hasDetail) {
+                        Modifier.clickable { detailOpen = true }
+                    } else {
+                        Modifier
+                    },
+                )
+                .padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SnyggIcon(
+                imageVector = errorIcon(state.kind, state.action),
+                modifier = Modifier.size(18.dp),
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            SnyggText(text = state.message)
+        }
+        if (detailOpen && hasDetail) {
+            ErrorDetailPopup(detail = state.detail.orEmpty(), onDismiss = { detailOpen = false })
+        }
     }
+
+    when (state.action) {
+        DictateController.ErrorAction.RESEND -> {
+            SnyggIconButton(
+                elementName = FlorisImeUi.SmartbarActionKey.elementName,
+                onClick = { DictateController.resendLastAudio(context) },
+                modifier = Modifier.fillMaxHeight().aspectRatio(1f),
+            ) {
+                SnyggIcon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = stringRes(R.string.dictate__action_resend),
+                )
+            }
+            DismissButton()
+        }
+        DictateController.ErrorAction.OPEN_SETTINGS -> {
+            SnyggIconButton(
+                elementName = FlorisImeUi.SmartbarActionKey.elementName,
+                onClick = { DictateController.openProviderSettings(context) },
+                modifier = Modifier.fillMaxHeight().aspectRatio(1f),
+            ) {
+                SnyggIcon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = stringRes(R.string.dictate__action_settings),
+                )
+            }
+            DismissButton()
+        }
+        DictateController.ErrorAction.NONE -> {
+            // Purely informational: auto-clear, but pause the timer while the detail popup is open.
+            LaunchedEffect(state, detailOpen) {
+                if (!detailOpen) {
+                    delay(4000L)
+                    DictateController.clearError()
+                }
+            }
+        }
+    }
+}
+
+/** Shared dismiss (✗) button for actionable errors: clears the error and drops any kept audio. */
+@Composable
+private fun RowScope.DismissButton() {
     SnyggIconButton(
         elementName = FlorisImeUi.SmartbarActionKey.elementName,
         onClick = { DictateController.dismissResend() },
@@ -341,6 +405,39 @@ private fun RowScope.ResendErrorContent(message: String) {
             contentDescription = stringRes(R.string.dictate__action_dismiss),
         )
     }
+}
+
+/** Popup with the full, unabbreviated provider error text (tap-to-expand from the error chip). */
+@Composable
+private fun ErrorDetailPopup(detail: String, onDismiss: () -> Unit) {
+    DropdownMenu(expanded = true, onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier
+                .widthIn(max = 320.dp)
+                .heightIn(max = 200.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+        ) {
+            Text(
+                text = stringRes(R.string.dictate__error_details_title),
+                fontWeight = FontWeight.Bold,
+            )
+            Spacer(modifier = Modifier.size(6.dp))
+            Text(text = detail)
+        }
+    }
+}
+
+/** Kind-specific icon for the error chip; the open-settings action gets a key icon regardless of kind. */
+private fun errorIcon(kind: DictateApiException.Kind?, action: DictateController.ErrorAction): ImageVector = when {
+    action == DictateController.ErrorAction.OPEN_SETTINGS -> Icons.Default.VpnKey
+    kind == DictateApiException.Kind.QUOTA_EXCEEDED -> Icons.Default.DataUsage
+    kind == DictateApiException.Kind.CONTENT_SIZE_LIMIT -> Icons.Default.WarningAmber
+    kind == DictateApiException.Kind.FORMAT_NOT_SUPPORTED -> Icons.Default.GraphicEq
+    kind == DictateApiException.Kind.TIMEOUT -> Icons.Default.Schedule
+    kind == DictateApiException.Kind.NETWORK -> Icons.Default.CloudOff
+    kind == DictateApiException.Kind.SERVER_ERROR -> Icons.Default.CloudOff
+    else -> Icons.Default.ErrorOutline
 }
 
 /**
