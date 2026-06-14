@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.about
 
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Policy
 import androidx.compose.material3.Text
@@ -34,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.patrickgold.florisboard.BuildConfig
@@ -77,6 +81,12 @@ fun AboutScreen() = FlorisScreen {
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(top = 16.dp),
             )
+            Text(
+                text = stringRes(R.string.about__made_by),
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 8.dp),
+            )
         }
         Preference(
             icon = Icons.Outlined.Info,
@@ -106,6 +116,22 @@ fun AboutScreen() = FlorisScreen {
             title = stringRes(R.string.about__repository__title),
             summary = stringRes(R.string.about__repository__summary),
             onClick = { context.launchUrl(R.string.florisboard__repo_url) },
+        )
+        Preference(
+            icon = Icons.Outlined.Email,
+            title = stringRes(R.string.about__feedback__title),
+            summary = stringRes(R.string.about__feedback__summary),
+            onClick = {
+                val email = context.stringRes(R.string.about__feedback__email)
+                val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$email")).apply {
+                    putExtra(Intent.EXTRA_SUBJECT, context.stringRes(R.string.about__feedback__subject))
+                }
+                try {
+                    context.startActivity(intent)
+                } catch (e: Throwable) {
+                    Toast.makeText(context, email, Toast.LENGTH_LONG).show()
+                }
+            },
         )
         Preference(
             icon = Icons.Outlined.Policy,
