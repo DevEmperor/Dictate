@@ -324,6 +324,8 @@ private fun RowScope.ErrorContent(state: DictateController.UiState.Error) {
     var detailOpen by remember(state) { mutableStateOf(false) }
     val hasDetail = !state.detail.isNullOrBlank()
     val hasAction = state.action != DictateController.ErrorAction.NONE
+    // Errors are tinted a distinct red so they stand out from the normal (themed) Smartbar content.
+    val errorColor = Color(0xFFE53935)
 
     // Icon + message. Tappable when a raw provider detail is available, opening the detail popup below.
     Box(modifier = if (hasAction) Modifier.weight(1f) else Modifier) {
@@ -341,12 +343,18 @@ private fun RowScope.ErrorContent(state: DictateController.UiState.Error) {
                 .padding(horizontal = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            SnyggIcon(
+            Icon(
                 imageVector = errorIcon(state.kind, state.action),
+                contentDescription = null,
+                tint = errorColor,
                 modifier = Modifier.size(18.dp),
             )
             Spacer(modifier = Modifier.width(8.dp))
-            SnyggText(text = state.message)
+            Text(
+                text = state.message,
+                color = errorColor,
+                fontWeight = FontWeight.Medium,
+            )
         }
         if (detailOpen && hasDetail) {
             ErrorDetailPopup(detail = state.detail.orEmpty(), onDismiss = { detailOpen = false })
