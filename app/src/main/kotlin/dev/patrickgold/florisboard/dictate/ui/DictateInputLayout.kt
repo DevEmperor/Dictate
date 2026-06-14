@@ -13,6 +13,7 @@ package dev.patrickgold.florisboard.dictate.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -105,8 +106,15 @@ fun DictateInputLayout(
                 .padding(8.dp),
             horizontalArrangement = Arrangement.Start,
         ) {
+            // In the panel the chips are roomier and sit closer together than in the compact row, so
+            // they are easier to hit (larger icon + extra tap padding, tighter inter-chip spacing).
+            val panelChipSpacing = Modifier.padding(2.dp)
+            val panelIconSize = 22.dp
+            val panelTapPadding = PaddingValues(horizontal = 4.dp, vertical = 6.dp)
             DictateLivePromptChip(
-                modifier = Modifier.padding(4.dp),
+                modifier = panelChipSpacing,
+                iconSize = panelIconSize,
+                tapPadding = panelTapPadding,
                 onClick = {
                     DictateController.startLivePrompt(context)
                     // Return to the keyboard so the recording indicator + field stay visible.
@@ -117,7 +125,9 @@ fun DictateInputLayout(
                 DictatePromptChip(
                     icon = dictatePromptIcon(prompt),
                     text = prompt.name.orEmpty(),
-                    modifier = Modifier.padding(4.dp),
+                    modifier = panelChipSpacing,
+                    iconSize = panelIconSize,
+                    tapPadding = panelTapPadding,
                     onClick = {
                         DictateController.applyPrompt(context, prompt)
                         // Return to the keyboard so the field + the Smartbar progress are visible.

@@ -10,8 +10,11 @@
 
 package dev.patrickgold.florisboard.dictate.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,15 +23,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ShortText
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.RecordVoiceOver
 import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.dictate.DictateController
@@ -39,6 +48,12 @@ import org.florisboard.lib.compose.stringRes
 import org.florisboard.lib.snygg.ui.SnyggIcon
 import org.florisboard.lib.snygg.ui.SnyggRow
 import org.florisboard.lib.snygg.ui.SnyggText
+
+/** Dictate accent (theme accent default), used to highlight queued prompts. */
+private val DictateAccent = Color(0xFF30B7E6)
+
+/** Matches the themed `smartbar-action-tile` shape (`rounded-corner(20%)`) for the highlight ring. */
+private val ChipShape = RoundedCornerShape(percent = 20)
 
 /**
  * The contextual prompt chip strip shown in the Smartbar's center area, in place of the candidates,
@@ -76,9 +91,12 @@ fun DictatePromptStrip(
 /**
  * The always-on rewording prompt row (ROW layout mode): a horizontally scrollable strip pinned above
  * the Smartbar, so every prompt is one tap away without opening a panel. The live-prompt chip is the
- * first (leftmost) entry, followed by the user's saved prompts. Tapping a prompt reword-applies it to
- * the current selection (or selects the whole field first); tapping the live chip records a spoken
- * instruction.
+ * first (leftmost) entry, followed by the user's saved prompts.
+ *
+ * Behavior depends on the dictation state:
+ *  - idle: tapping a prompt reword-applies it immediately (live chip records a spoken instruction);
+ *  - recording/transcribing: tapping a prompt *queues* it (toggle) to be applied in tap order once the
+ *    transcript is ready, and the queued chips are highlighted in the accent color.
  */
 @Composable
 fun DictatePromptRow(
@@ -87,6 +105,10 @@ fun DictatePromptRow(
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    val dictateState by DictateController.state.collectAsState()
+    val pending by DictateController.pendingPrompts.collectAsState()
+    val isCapturing = dictateState is DictateController.UiState.Recording ||
+        dictateState is DictateController.UiState.Transcribing
     SnyggRow(
         elementName = FlorisImeUi.SmartbarSharedActionsRow.elementName,
         modifier = modifier
@@ -104,8 +126,17 @@ fun DictatePromptRow(
             DictatePromptChip(
                 icon = dictatePromptIcon(prompt),
                 text = prompt.name.orEmpty(),
-                onClick = { DictateController.applyPrompt(context, prompt) },
+                onClick = {
+                    // While a recording/transcription is in flight, queue the prompt instead of
+                    // applying it; otherwise apply it right away.
+                    if (isCapturing) {
+                        DictateController.togglePendingPrompt(prompt)
+                    } else {
+                        DictateController.applyPrompt(context, prompt)
+                    }
+                },
                 modifier = Modifier.padding(horizontal = 3.dp),
+                highlighted = pending.any { it.id == prompt.id },
             )
         }
     }
@@ -115,6 +146,10 @@ fun DictatePromptRow(
  * A single rewording prompt chip: a themed rounded pill (reusing the Smartbar action-tile element so
  * it inherits the active theme) with a small leading icon, a gap, the label and some trailing room.
  * Shared by the contextual strip, the always-on row and the prompt panel so the styling stays in sync.
+ *
+ * @param iconSize leading-icon size (the panel uses a larger one than the compact row).
+ * @param tapPadding extra padding inside the pill to enlarge the touch target (panel only).
+ * @param highlighted draws an accent tint + ring, used to mark a queued/pending prompt.
  */
 @Composable
 internal fun DictatePromptChip(
@@ -122,18 +157,34 @@ internal fun DictatePromptChip(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    iconSize: Dp = 18.dp,
+    tapPadding: PaddingValues = PaddingValues(0.dp),
+    highlighted: Boolean = false,
 ) {
     SnyggRow(
         elementName = FlorisImeUi.SmartbarActionTile.elementName,
         modifier = modifier,
-        clickAndSemanticsModifier = Modifier.clickable(onClick = onClick),
+        // Applied between the themed background and the themed padding: the accent fill/ring paint on
+        // top of the tile background (and are clipped to the tile shape by it), the ripple stays on top.
+        clickAndSemanticsModifier = Modifier
+            .then(
+                if (highlighted) {
+                    Modifier
+                        .background(DictateAccent.copy(alpha = 0.22f))
+                        .border(1.5.dp, DictateAccent, ChipShape)
+                } else {
+                    Modifier
+                },
+            )
+            .clickable(onClick = onClick)
+            .padding(tapPadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         SnyggIcon(
             elementName = "${FlorisImeUi.SmartbarActionTile.elementName}-icon",
             imageVector = icon,
             // Slightly smaller than the theme default so the icon reads as a hint, not the focus.
-            modifier = Modifier.size(18.dp),
+            modifier = Modifier.size(iconSize),
         )
         // Clear gap between the icon and the label.
         Spacer(modifier = Modifier.width(6.dp))
@@ -147,20 +198,25 @@ internal fun DictatePromptChip(
 }
 
 /**
- * The live-prompt chip (sparkle + "Live prompt"): records a spoken instruction and hands it to the
+ * The live-prompt chip (voice + "Live prompt"): records a spoken instruction and hands it to the
  * rewording model. Rendered alongside the saved-prompt chips in the panel/row so the live prompt lives
- * with the other prompts instead of as a separate Smartbar button.
+ * with the other prompts instead of as a separate Smartbar button. Uses a distinct voice icon so it is
+ * not confused with the free-prompt sparkle.
  */
 @Composable
 internal fun DictateLivePromptChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    iconSize: Dp = 18.dp,
+    tapPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     DictatePromptChip(
-        icon = Icons.Default.AutoAwesome,
+        icon = Icons.Default.RecordVoiceOver,
         text = stringRes(R.string.quick_action__dictate_live_prompt),
         onClick = onClick,
         modifier = modifier,
+        iconSize = iconSize,
+        tapPadding = tapPadding,
     )
 }
 

@@ -49,16 +49,18 @@ fun QuickActionsOverflowPanel() {
 
     val actionArrangement by prefs.smartbar.actionArrangement.collectAsState()
     val evaluator by keyboardManager.activeSmartbarEvaluator.collectAsState()
+    val promptsLayout by prefs.dictate.promptsLayout.collectAsState()
 
-    val dynamicActions = actionArrangement.dynamicActions
+    // Apply the same Dictate filtering as QuickActionsRow so the row/overflow split stays consistent.
+    val dynamicActions = actionArrangement.dynamicActions.filterDictateHidden(promptsLayout)
     val dynamicActionsCountToShow = when {
         dynamicActions.isEmpty() -> 0
         else -> {
             (dynamicActions.size - keyboardManager.smartbarVisibleDynamicActionsCount).coerceIn(dynamicActions.indices)
         }
     }
-    val visibleActions = remember(actionArrangement, dynamicActionsCountToShow) {
-        actionArrangement.dynamicActions.takeLast(dynamicActionsCountToShow)
+    val visibleActions = remember(actionArrangement, dynamicActionsCountToShow, promptsLayout) {
+        dynamicActions.takeLast(dynamicActionsCountToShow)
     }
 
     SnyggBox(

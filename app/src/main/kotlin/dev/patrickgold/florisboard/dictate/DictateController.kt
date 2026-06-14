@@ -102,6 +102,14 @@ object DictateController {
     /** The user's saved prompts (shared `prompts.db`), refreshed via [refreshPrompts]; drives the Smartbar prompt chips. */
     val prompts: StateFlow<List<PromptModel>> = _prompts.asStateFlow()
 
+    private val _pendingPrompts = MutableStateFlow<List<PromptModel>>(emptyList())
+    /**
+     * Prompts queued by tapping the always-on prompt row while recording (ROW layout). They are applied
+     * in tap order to the finished transcript before it is committed (see [applyPendingPrompts]); the UI
+     * highlights every queued prompt in the accent color. Empty whenever no recording queue is active.
+     */
+    val pendingPrompts: StateFlow<List<PromptModel>> = _pendingPrompts.asStateFlow()
+
     private var recorder: RecordingController? = null
     private var startJob: Job? = null
 
@@ -140,6 +148,23 @@ object DictateController {
             is UiState.Transcribing -> cancelTranscription()
             is UiState.Rewording -> Unit
             else -> startRecording(context)
+        }
+    }
+
+    /**
+     * Toggles a prompt in the recording-time queue (ROW layout): while a recording/transcription is in
+     * flight, tapping a prompt chip enqueues it (or removes it if already queued) instead of applying it
+     * immediately. The queue is applied in tap order to the finished transcript (see [applyPendingPrompts]).
+     * No-op outside the recording/transcribing states or for non-persisted prompts.
+     */
+    fun togglePendingPrompt(prompt: PromptModel) {
+        if (_state.value !is UiState.Recording && _state.value !is UiState.Transcribing) return
+        if (!prompt.isPersisted()) return
+        val current = _pendingPrompts.value
+        _pendingPrompts.value = if (current.any { it.id == prompt.id }) {
+            current.filterNot { it.id == prompt.id }
+        } else {
+            current + prompt
         }
     }
 
@@ -205,6 +230,7 @@ object DictateController {
         recorder = null
         cleanupAudioRouting()
         livePromptArmed = false
+        _pendingPrompts.value = emptyList()
         if (_state.value is UiState.Recording) {
             _state.value = UiState.Idle
         }
@@ -222,6 +248,7 @@ object DictateController {
         if (_state.value !is UiState.Transcribing) return
         transcribeJob?.cancel()
         transcribeJob = null
+        _pendingPrompts.value = emptyList()
         _state.value = UiState.Idle
     }
 
@@ -354,12 +381,15 @@ object DictateController {
                 val finalText = if (live) {
                     // The spoken transcript is an instruction; send it to GPT (optionally operating
                     // on the current selection) and insert the answer instead of the transcript.
+                    _pendingPrompts.value = emptyList() // a live prompt ignores any queued prompts
                     _state.value = UiState.Rewording(appContext.getString(R.string.dictate__status_rewording))
                     val selection = editorInstance.activeContent.selectedText.takeIf { it.isNotEmpty() }
                     requestReword(result.text, selection)
                 } else {
-                    // Normal dictation: auto-formatting + auto-apply prompts, then commit.
-                    postProcessTranscript(appContext, result.text)
+                    // Normal dictation: auto-formatting + auto-apply prompts, then the prompts the user
+                    // queued by tapping the prompt row while recording, in tap order; then commit.
+                    val processed = postProcessTranscript(appContext, result.text)
+                    applyPendingPrompts(appContext, processed)
                 }
                 // Output behavior (roadmap 10.1/10.2): instant or typed, then optional auto-enter.
                 commitOutput(appContext, finalText)
@@ -375,12 +405,14 @@ object DictateController {
                 // never show an error. The audio is dropped in the finally block.
                 throw c
             } catch (e: DictateApiException) {
+                _pendingPrompts.value = emptyList()
                 keepAudio = retainForResend(audioFile, live, recordedSeconds)
                 _state.value = UiState.Error(
                     e.message ?: appContext.getString(R.string.dictate__error_transcription_failed),
                     canResend = keepAudio,
                 )
             } catch (t: Throwable) {
+                _pendingPrompts.value = emptyList()
                 keepAudio = retainForResend(audioFile, live, recordedSeconds)
                 _state.value = UiState.Error(
                     t.message ?: appContext.getString(R.string.dictate__error_unknown),
@@ -639,6 +671,35 @@ object DictateController {
             }.getOrDefault(text)
         }
         return text
+    }
+
+    /**
+     * Applies the prompts the user queued by tapping the always-on prompt row while recording (ROW
+     * layout), in tap order, to the finished [text]. Each step is best-effort (a failing prompt keeps
+     * the text so far). `[snippet]` prompts are appended literally; everything else runs through the
+     * rewording model (operating on the running text when the prompt requires a selection). Clears the
+     * queue (so the highlights disappear) regardless of outcome.
+     */
+    private suspend fun applyPendingPrompts(context: Context, text: String): String {
+        val queued = _pendingPrompts.value
+        _pendingPrompts.value = emptyList()
+        if (queued.isEmpty()) return text
+        if (rewordingApiKey().isBlank()) return text
+        var result = text
+        for (p in queued) {
+            val raw = p.prompt.orEmpty()
+            if (raw.isBlank()) continue
+            // Snippet shortcut: text wrapped in [...] is appended literally (no network call).
+            if (raw.length >= 2 && raw.startsWith("[") && raw.endsWith("]")) {
+                result += raw.substring(1, raw.length - 1)
+                continue
+            }
+            _state.value = UiState.Rewording(p.name ?: context.getString(R.string.dictate__status_rewording))
+            result = runCatching {
+                requestReword(raw, if (p.requiresSelection) result else null)
+            }.getOrDefault(result)
+        }
+        return result
     }
 
     /**

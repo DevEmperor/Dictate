@@ -30,13 +30,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.dictate.DictatePromptsLayout
 import dev.patrickgold.florisboard.ime.smartbar.SmartbarLayout
+import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.jetpref.datastore.model.collectAsState
 import org.florisboard.lib.snygg.ui.SnyggRow
 
 internal val ToggleOverflowPanelAction = QuickAction.InsertKey(TextKeyData.TOGGLE_ACTIONS_OVERFLOW)
+
+/**
+ * Hides the redundant Dictate panel-opener ([KeyCode.DICTATE_PROMPTS]) from the available Smartbar
+ * actions when the always-on prompt row (ROW layout) is active: that row already shows every prompt, so
+ * opening the panel would be redundant. No-op in the PANEL layout.
+ */
+internal fun List<QuickAction>.filterDictateHidden(promptsLayout: DictatePromptsLayout): List<QuickAction> =
+    if (promptsLayout == DictatePromptsLayout.ROW) {
+        filterNot { it.keyData().code == KeyCode.DICTATE_PROMPTS }
+    } else {
+        this
+    }
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -53,15 +67,17 @@ fun QuickActionsRow(
     val smartbarLayout by prefs.smartbar.layout.collectAsState()
     val actionArrangement by prefs.smartbar.actionArrangement.collectAsState()
     val sharedActionsExpanded by prefs.smartbar.sharedActionsExpanded.collectAsState()
+    val promptsLayout by prefs.dictate.promptsLayout.collectAsState()
 
-    val dynamicActions = remember(smartbarLayout, actionArrangement) {
+    val dynamicActions = remember(smartbarLayout, actionArrangement, promptsLayout) {
+        val dynamic = actionArrangement.dynamicActions.filterDictateHidden(promptsLayout)
         if (smartbarLayout == SmartbarLayout.ACTIONS_ONLY && actionArrangement.stickyAction != null) {
             buildList {
                 add(actionArrangement.stickyAction!!)
-                addAll(actionArrangement.dynamicActions)
+                addAll(dynamic)
             }
         } else {
-            actionArrangement.dynamicActions
+            dynamic
         }
     }
     val showOverflowAction = actionArrangement.stickyAction != null ||
