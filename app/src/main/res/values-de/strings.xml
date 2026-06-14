@@ -453,6 +453,8 @@
     <string name="about__changelog__summary" comment="Preference summary">Was ist neu</string>
     <string name="about__repository__title" comment="Preference title">Repository (GitHub)</string>
     <string name="about__repository__summary" comment="Preference summary">Quellcode, Diskussionen, Probleme und Info</string>
+    <string name="about__based_on_floris__title" comment="Preference title crediting the upstream project Dictate is forked from">Basiert auf FlorisBoard</string>
+    <string name="about__based_on_floris__summary" comment="Preference summary crediting the upstream project">Ein Fork von FlorisBoard von Patrick Goldinger und Mitwirkenden, lizenziert unter Apache 2.0. Zum Öffnen des Originalprojekts tippen.</string>
     <string name="about__privacy_policy__title" comment="Preference title">Datenschutzrichtlinie</string>
     <string name="about__privacy_policy__summary" comment="Preference summary">Datenschutzrichtlinie für dieses Projekt</string>
     <string name="about__project_license__title" comment="Preference title">Projekt-Lizenz</string>

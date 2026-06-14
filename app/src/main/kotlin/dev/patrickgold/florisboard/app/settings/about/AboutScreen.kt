@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CallSplit
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.outlined.Description
@@ -116,6 +117,12 @@ fun AboutScreen() = FlorisScreen {
             title = stringRes(R.string.about__repository__title),
             summary = stringRes(R.string.about__repository__summary),
             onClick = { context.launchUrl(R.string.florisboard__repo_url) },
+        )
+        Preference(
+            icon = Icons.Default.CallSplit,
+            title = stringRes(R.string.about__based_on_floris__title),
+            summary = stringRes(R.string.about__based_on_floris__summary),
+            onClick = { context.launchUrl(R.string.florisboard__upstream_repo_url) },
         )
         Preference(
             icon = Icons.Outlined.Email,

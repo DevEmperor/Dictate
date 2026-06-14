@@ -595,6 +595,8 @@
     <string name="about__changelog__summary" comment="Preference summary">What\'s new</string>
     <string name="about__repository__title" comment="Preference title">Repository (GitHub)</string>
     <string name="about__repository__summary" comment="Preference summary">Source code, discussions, issues and info</string>
+    <string name="about__based_on_floris__title" comment="Preference title crediting the upstream project Dictate is forked from">Based on FlorisBoard</string>
+    <string name="about__based_on_floris__summary" comment="Preference summary crediting the upstream project">A fork of FlorisBoard by Patrick Goldinger and contributors, licensed under Apache 2.0. Tap to open the original project.</string>
     <string name="about__made_by" comment="Personal signature shown under the app name in the About header" translatable="false">Made with ❤️ by DevEmperor\nSoli deo gloria ✝️</string>
     <string name="about__feedback__title" comment="Preference title">Feedback &amp; support</string>
     <string name="about__feedback__summary" comment="Preference summary">Send an email with questions, bugs or ideas</string>
