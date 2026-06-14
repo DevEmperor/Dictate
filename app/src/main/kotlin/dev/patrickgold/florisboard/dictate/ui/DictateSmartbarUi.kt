@@ -13,10 +13,12 @@ package dev.patrickgold.florisboard.dictate.ui
 import android.os.SystemClock
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -29,9 +31,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Delete
@@ -44,6 +46,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -60,9 +63,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.DictateController
@@ -91,7 +97,6 @@ fun DictateSmartbarUi(state: DictateController.UiState, modifier: Modifier = Mod
     val arrangement = when {
         state is DictateController.UiState.Recording -> Arrangement.SpaceBetween
         state is DictateController.UiState.Error && state.canResend -> Arrangement.SpaceBetween
-        state is DictateController.UiState.Promo -> Arrangement.SpaceBetween
         else -> Arrangement.Center
     }
     SnyggRow(
@@ -344,37 +349,70 @@ private fun RowScope.ResendErrorContent(message: String) {
  * nudge as handled so it never reappears. Shown only when idle, replacing the normal Smartbar.
  */
 @Composable
-private fun RowScope.PromoContent(kind: DictateController.PromoKind) {
+private fun PromoContent(kind: DictateController.PromoKind) {
     val context = LocalContext.current
     val isRate = kind == DictateController.PromoKind.RATE
-    SnyggIcon(
-        imageVector = if (isRate) Icons.Default.Star else Icons.Default.Favorite,
-        modifier = Modifier.size(18.dp),
+    val accent = Color(0xFF30B7E6) // Dictate light blue (theme accent default).
+
+    // Gentle pop-in (fade + slight scale) on top of the Smartbar's own slide transition.
+    var shown by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { shown = true }
+    val appear by animateFloatAsState(
+        targetValue = if (shown) 1f else 0f,
+        animationSpec = tween(220),
+        label = "promoAppear",
     )
-    Spacer(modifier = Modifier.width(8.dp))
-    SnyggText(
-        text = stringRes(if (isRate) R.string.dictate__promo_rate_message else R.string.dictate__promo_donate_message),
-        modifier = Modifier.weight(1f),
-    )
-    SnyggIconButton(
-        elementName = FlorisImeUi.SmartbarActionKey.elementName,
-        onClick = { DictateController.acceptPromo(context) },
-        modifier = Modifier.fillMaxHeight().aspectRatio(1f),
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(horizontal = 4.dp)
+            .graphicsLayer {
+                alpha = appear
+                val s = 0.92f + 0.08f * appear
+                scaleX = s
+                scaleY = s
+            },
     ) {
-        SnyggIcon(
-            imageVector = Icons.Default.Check,
-            contentDescription = stringRes(R.string.dictate__action_yes),
+        // Tinted leading icon (star = rate, heart = donate).
+        Icon(
+            imageVector = if (isRate) Icons.Default.Star else Icons.Default.Favorite,
+            contentDescription = null,
+            tint = accent,
+            modifier = Modifier.size(20.dp),
         )
-    }
-    SnyggIconButton(
-        elementName = FlorisImeUi.SmartbarActionKey.elementName,
-        onClick = { DictateController.declinePromo() },
-        modifier = Modifier.fillMaxHeight().aspectRatio(1f),
-    ) {
-        SnyggIcon(
-            imageVector = Icons.Default.Close,
-            contentDescription = stringRes(R.string.dictate__action_no),
+        Spacer(modifier = Modifier.width(8.dp))
+        SnyggText(
+            text = stringRes(if (isRate) R.string.dictate__promo_rate_message else R.string.dictate__promo_donate_message),
         )
+        Spacer(modifier = Modifier.width(10.dp))
+        // Filled accent pill = primary action (opens Play Store / PayPal).
+        Text(
+            text = stringRes(if (isRate) R.string.dictate__promo_rate_action else R.string.dictate__promo_donate_action),
+            color = Color.White,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp,
+            modifier = Modifier
+                .clip(RoundedCornerShape(percent = 50))
+                .background(accent)
+                .clickable { DictateController.acceptPromo(context) }
+                .padding(horizontal = 14.dp, vertical = 6.dp),
+        )
+        Spacer(modifier = Modifier.width(2.dp))
+        // Subtle dismiss.
+        Box(
+            modifier = Modifier
+                .clip(CircleShape)
+                .clickable { DictateController.declinePromo() }
+                .padding(6.dp),
+        ) {
+            SnyggIcon(
+                imageVector = Icons.Default.Close,
+                contentDescription = stringRes(R.string.dictate__action_no),
+                modifier = Modifier.size(18.dp).alpha(0.6f),
+            )
+        }
     }
 }
 
