@@ -125,7 +125,7 @@ fun DictatePromptRow(
     ) {
         DictateLivePromptChip(
             onClick = { DictateController.startLivePrompt(context) },
-            modifier = Modifier.padding(horizontal = 3.dp),
+            modifier = Modifier.padding(horizontal = 1.5.dp),
             tapPadding = rowChipPadding,
         )
         prompts.forEach { prompt ->
@@ -143,7 +143,7 @@ fun DictatePromptRow(
                         DictateController.applyPrompt(context, prompt)
                     }
                 },
-                modifier = Modifier.padding(horizontal = 3.dp),
+                modifier = Modifier.padding(horizontal = 1.5.dp),
                 tapPadding = rowChipPadding,
                 highlighted = pending.any { it.id == prompt.id },
             )
