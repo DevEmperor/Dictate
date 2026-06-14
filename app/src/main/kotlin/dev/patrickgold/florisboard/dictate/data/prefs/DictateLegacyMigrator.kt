@@ -12,7 +12,10 @@ package dev.patrickgold.florisboard.dictate.data.prefs
 
 import android.content.Context
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.dictate.provider.DictateProxyType
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
+import dev.patrickgold.florisboard.dictate.provider.ProxyConfig
+import java.net.Proxy
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickAction
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.keyData
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
@@ -97,6 +100,19 @@ object DictateLegacyMigrator {
             prefs.dictate.instantOutput.set(s.instantOutput)
             prefs.dictate.outputSpeed.set(s.outputSpeed)
             prefs.dictate.resendButton.set(s.resendButton)
+
+            // --- Network proxy (roadmap 5.6): the legacy app stored one combined spec string
+            // ("socks5|http://user:pass@host:port"); split it into the new structured fields. ---
+            prefs.dictate.proxyEnabled.set(s.proxyEnabled)
+            ProxyConfig.parse(s.proxyHost)?.let { proxy ->
+                prefs.dictate.proxyType.set(
+                    if (proxy.type == Proxy.Type.SOCKS) DictateProxyType.SOCKS5 else DictateProxyType.HTTP,
+                )
+                prefs.dictate.proxyHost.set(proxy.host)
+                prefs.dictate.proxyPort.set(proxy.port.toString())
+                proxy.username?.let { prefs.dictate.proxyUsername.set(it) }
+                proxy.password?.let { prefs.dictate.proxyPassword.set(it) }
+            }
 
             // --- Rate/donate nudges (roadmap 9.7/9.8): carry over the "handled" flags so users who
             // already rated/donated in the legacy app are never asked again. The old usage DB that

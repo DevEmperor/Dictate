@@ -24,6 +24,7 @@ import dev.patrickgold.florisboard.app.settings.theme.DisplayKbdAfterDialogs
 import dev.patrickgold.florisboard.app.settings.theme.SnyggLevel
 import dev.patrickgold.florisboard.app.setup.NotificationPermissionState
 import dev.patrickgold.florisboard.dictate.DictatePromptsLayout
+import dev.patrickgold.florisboard.dictate.provider.DictateProxyType
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
 import dev.patrickgold.florisboard.ime.clipboard.CLIPBOARD_HISTORY_NUM_GRID_COLUMNS_AUTO
 import dev.patrickgold.florisboard.ime.clipboard.ClipboardSyncBehavior
@@ -237,6 +238,36 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val transcriptionProviderId = string(
             key = "dictate__transcription_provider_id",
             default = "openai",
+        )
+
+        // --- Network proxy (roadmap 5.6) ---------------------------------------------------------
+        // Optional proxy applied to *every* provider API call (transcription, rewording, model
+        // listing, connection test). Disabled by default; built into a ProxyConfig via ProxyConfig.of
+        // and forwarded to OkHttp. HTTP proxies support user/password; SOCKS5 credentials are not
+        // forwarded (JVM limitation). See dictateProxyConfig().
+        val proxyEnabled = boolean(
+            key = "dictate__proxy_enabled",
+            default = false,
+        )
+        val proxyType = enum(
+            key = "dictate__proxy_type",
+            default = DictateProxyType.HTTP,
+        )
+        val proxyHost = string(
+            key = "dictate__proxy_host",
+            default = "",
+        )
+        val proxyPort = string(
+            key = "dictate__proxy_port",
+            default = "8080",
+        )
+        val proxyUsername = string(
+            key = "dictate__proxy_username",
+            default = "",
+        )
+        val proxyPassword = string(
+            key = "dictate__proxy_password",
+            default = "",
         )
 
         // --- DEPRECATED flat credential prefs (migration source only) ----------------------------

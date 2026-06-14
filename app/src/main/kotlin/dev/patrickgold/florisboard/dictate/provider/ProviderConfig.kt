@@ -48,6 +48,18 @@ enum class TranscriptionApi {
 }
 
 /**
+ * Proxy protocol exposed in the settings UI. Maps onto the JVM [Proxy.Type] used by OkHttp; kept as a
+ * dedicated enum so it can be persisted by name as a JetPref `enum` preference and shown in a dropdown.
+ */
+enum class DictateProxyType(val javaType: Proxy.Type) {
+    /** HTTP CONNECT proxy. Supports username/password via the `Proxy-Authorization` header. */
+    HTTP(Proxy.Type.HTTP),
+
+    /** SOCKS5 proxy. Credentials are not currently forwarded (OkHttp/JVM limitation). */
+    SOCKS5(Proxy.Type.SOCKS),
+}
+
+/**
  * Parsed proxy specification. Accepts `socks5|http://user:pass@host:port` (scheme + credentials
  * optional). Ported from the original Dictate `DictateUtils.isValidProxy` / `applyProxy`.
  */
@@ -66,6 +78,31 @@ data class ProxyConfig(
     companion object {
         private val REGEX =
             Regex("^(?:(socks5|http)://)?(?:(\\w+):(\\w+)@)?([\\w.-]+):(\\d+)$")
+
+        /**
+         * Builds a config from the individual settings fields, or `null` when the proxy is disabled or
+         * incompletely/invalidly configured (in which case calls go out directly). [host] may be a
+         * hostname or IPv4 literal; [port] must be a valid TCP port. Blank credentials become `null`.
+         */
+        fun of(
+            enabled: Boolean,
+            type: DictateProxyType,
+            host: String,
+            port: Int,
+            username: String,
+            password: String,
+        ): ProxyConfig? {
+            if (!enabled) return null
+            val trimmedHost = host.trim()
+            if (trimmedHost.isEmpty() || port !in 1..65535) return null
+            return ProxyConfig(
+                type = type.javaType,
+                host = trimmedHost,
+                port = port,
+                username = username.trim().ifEmpty { null },
+                password = password.ifEmpty { null },
+            )
+        }
 
         /** Returns true if [spec] is a syntactically valid proxy string. */
         fun isValid(spec: String?): Boolean {

@@ -1250,6 +1250,24 @@
     <string name="dictate__providers_test" comment="Button that checks the provider's base URL and API key">Test connection</string>
     <string name="dictate__providers_test_success" comment="Shown after a successful connection test. {count} is the number of available models.">Connected · {count} models</string>
     <string name="dictate__providers_test_failed" comment="Generic fallback shown when a connection test fails without a specific message">Connection failed</string>
+    <string name="dictate__providers_network_group" comment="Group title for network-level provider settings (proxy)">Network</string>
+
+    <!-- Dictate network proxy -->
+    <string name="dictate__proxy_title" comment="Title of the proxy settings screen / row">Proxy</string>
+    <string name="dictate__proxy_summary_off" comment="Summary on the proxy row when no proxy is active">Off · direct connection</string>
+    <string name="dictate__proxy_enabled_title" comment="Toggle that routes all API traffic through a proxy">Use a proxy</string>
+    <string name="dictate__proxy_enabled_summary" comment="Explains what the proxy toggle does">Route all provider API connections through a proxy</string>
+    <string name="dictate__proxy_server_group" comment="Group title for the proxy server address fields">Proxy server</string>
+    <string name="dictate__proxy_type_title" comment="Label for the proxy protocol selector">Type</string>
+    <string name="dictate__proxy_type_http" comment="HTTP proxy protocol option">HTTP</string>
+    <string name="dictate__proxy_type_socks5" comment="SOCKS5 proxy protocol option">SOCKS5</string>
+    <string name="dictate__proxy_host_title" comment="Label for the proxy host field">Host</string>
+    <string name="dictate__proxy_host_placeholder" comment="Placeholder example for the proxy host field">proxy.example.com</string>
+    <string name="dictate__proxy_port_title" comment="Label for the proxy port field">Port</string>
+    <string name="dictate__proxy_port_placeholder" comment="Placeholder example for the proxy port field">8080</string>
+    <string name="dictate__proxy_auth_group" comment="Group title for optional proxy authentication (HTTP only)">Authentication (optional)</string>
+    <string name="dictate__proxy_username_title" comment="Label for the proxy username field">Username</string>
+    <string name="dictate__proxy_password_title" comment="Label for the proxy password field">Password</string>
 
     <!-- Dictate model picker -->
     <string name="dictate__model_picker_title" comment="Title of the model picker dialog">Choose a model</string>

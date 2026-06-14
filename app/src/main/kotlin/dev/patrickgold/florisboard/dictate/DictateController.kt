@@ -366,7 +366,11 @@ object DictateController {
         transcribeJob = scope.launch {
             var keepAudio = false
             try {
-                val client = OpenAiCompatibleClient.from(preset, apiKey, baseUrlOverride = baseUrlOverrideFor(account))
+                val client = OpenAiCompatibleClient.from(
+                    preset, apiKey,
+                    baseUrlOverride = baseUrlOverrideFor(account),
+                    proxy = prefs.dictate.dictateProxyConfig(),
+                )
                 val result = client.transcribe(
                     TranscriptionRequest(
                         audioFile = audioFile,
@@ -729,7 +733,11 @@ object DictateController {
         }
         val preset = presetFor(account)
         val model = account.chatModel.ifBlank { preset.defaultChatModel ?: "gpt-4o-mini" }
-        val client = OpenAiCompatibleClient.from(preset, apiKey, baseUrlOverride = baseUrlOverrideFor(account))
+        val client = OpenAiCompatibleClient.from(
+            preset, apiKey,
+            baseUrlOverride = baseUrlOverrideFor(account),
+            proxy = prefs.dictate.dictateProxyConfig(),
+        )
         return client.complete(ChatRequest.ofUser(model, userContent)).text.trim()
     }
 

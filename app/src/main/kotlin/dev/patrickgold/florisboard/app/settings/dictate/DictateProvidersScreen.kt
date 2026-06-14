@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Dns
+import androidx.compose.material.icons.filled.Lan
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SmartToy
@@ -47,6 +48,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.app.LocalNavController
+import dev.patrickgold.florisboard.app.Routes
+import dev.patrickgold.florisboard.dictate.dictateProxyConfig
 import dev.patrickgold.florisboard.dictate.provider.OpenAiCompatibleClient
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
@@ -77,6 +81,7 @@ fun DictateProvidersScreen() = FlorisScreen {
     val prefs by FlorisPreferenceStore
 
     content {
+        val navController = LocalNavController.current
         val accounts by prefs.dictate.providerAccounts.collectAsState()
         val scope = rememberCoroutineScope()
 
@@ -149,6 +154,23 @@ fun DictateProvidersScreen() = FlorisScreen {
                 title = stringRes(R.string.dictate__providers_add_custom),
                 summary = stringRes(R.string.dictate__providers_add_custom_summary),
                 onClick = { editingId = ProviderAccount.newCustomId() },
+            )
+        }
+
+        PreferenceGroup(title = stringRes(R.string.dictate__providers_network_group)) {
+            val proxyEnabled by prefs.dictate.proxyEnabled.collectAsState()
+            val proxyHost by prefs.dictate.proxyHost.collectAsState()
+            val proxyPort by prefs.dictate.proxyPort.collectAsState()
+            val proxyOff = stringRes(R.string.dictate__proxy_summary_off)
+            Preference(
+                icon = Icons.Default.Lan,
+                title = stringRes(R.string.dictate__proxy_title),
+                summary = if (proxyEnabled && proxyHost.isNotBlank()) {
+                    "$proxyHost:$proxyPort"
+                } else {
+                    proxyOff
+                },
+                onClick = { navController.navigate(Routes.Settings.DictateProxy) },
             )
         }
 
@@ -320,6 +342,7 @@ private fun ProviderEditorDialog(
 private fun ConnectionTestRow(preset: ProviderPreset, apiKey: String) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val prefs by FlorisPreferenceStore
     var testing by remember { mutableStateOf(false) }
     // null = not run yet; Pair(ok, message) once a test finished.
     var result by remember { mutableStateOf<Pair<Boolean, String>?>(null) }
@@ -351,7 +374,11 @@ private fun ConnectionTestRow(preset: ProviderPreset, apiKey: String) {
                 scope.launch {
                     result = try {
                         val count = OpenAiCompatibleClient
-                            .from(preset, apiKey.trim(), baseUrlOverride = preset.baseUrl)
+                            .from(
+                                preset, apiKey.trim(),
+                                baseUrlOverride = preset.baseUrl,
+                                proxy = prefs.dictate.dictateProxyConfig(),
+                            )
                             .listModels()
                             .size
                         true to successTemplate.replace("{count}", count.toString())
