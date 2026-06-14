@@ -21,6 +21,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Keyboard
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.ModelTraining
 import androidx.compose.material.icons.filled.Replay
@@ -104,6 +105,17 @@ fun DictateScreen() = FlorisScreen {
                     multiline = true,
                 )
             }
+
+            // Custom words (roadmap 11.12): names/jargon appended to the transcription prompt so the
+            // model spells them correctly. Works on top of any style prompt selection above.
+            TextInputPreference(
+                pref = prefs.dictate.customWords,
+                icon = Icons.Default.MenuBook,
+                title = stringRes(R.string.dictate__custom_words_title),
+                placeholder = stringRes(R.string.dictate__custom_words_placeholder),
+                multiline = true,
+                notSetSummary = stringRes(R.string.dictate__custom_words_summary_empty),
+            )
         }
 
         PreferenceGroup(title = stringRes(R.string.dictate__recording_group)) {

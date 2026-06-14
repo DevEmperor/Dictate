@@ -54,4 +54,23 @@ class DictateAutoFormattingTest : FunSpec({
                 .shouldContain("Language hint: unknown")
         }
     }
+
+    context("appendCustomWords primes the transcription prompt with user vocabulary (roadmap 11.12)") {
+        test("appends a comma/newline list onto the base style prompt, trimming blanks") {
+            DictatePromptDefaults.appendCustomWords(
+                "This sentence has capitalization and punctuation.",
+                "FlorisBoard, Kubernetes\n Renée ,, ",
+            ) shouldBe "This sentence has capitalization and punctuation. FlorisBoard, Kubernetes, Renée"
+        }
+        test("returns just the glossary when there is no usable base prompt") {
+            DictatePromptDefaults.appendCustomWords(null, "Acme, Inc") shouldBe "Acme, Inc"
+            DictatePromptDefaults.appendCustomWords("   ", "Acme") shouldBe "Acme"
+        }
+        test("returns the cleaned base unchanged when no words are given") {
+            DictatePromptDefaults.appendCustomWords("Base.", "  ,, \n ") shouldBe "Base."
+        }
+        test("returns null when both base and words are empty") {
+            DictatePromptDefaults.appendCustomWords(null, null) shouldBe null
+        }
+    }
 })

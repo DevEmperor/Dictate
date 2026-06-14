@@ -829,13 +829,20 @@ object DictateController {
         else -> ""
     }
 
-    /** Style/punctuation prompt sent with the transcription request (independent of rewording). */
-    private fun transcriptionStylePrompt(): String? = when (prefs.dictate.stylePromptSelection.get()) {
-        DictatePromptDefaults.SELECTION_PREDEFINED ->
-            DictatePromptDefaults.punctuationPromptFor(prefs.dictate.activeInputLanguage.get())
-        DictatePromptDefaults.SELECTION_CUSTOM ->
-            prefs.dictate.stylePromptCustom.get().takeIf { it.isNotBlank() }
-        else -> null
+    /**
+     * Style/punctuation prompt sent with the transcription request (independent of rewording). The
+     * user's custom words (roadmap 11.12) are appended on top of whichever style prompt is active, so
+     * names/jargon are spelled correctly even with the predefined punctuation prompt or with none.
+     */
+    private fun transcriptionStylePrompt(): String? {
+        val base = when (prefs.dictate.stylePromptSelection.get()) {
+            DictatePromptDefaults.SELECTION_PREDEFINED ->
+                DictatePromptDefaults.punctuationPromptFor(prefs.dictate.activeInputLanguage.get())
+            DictatePromptDefaults.SELECTION_CUSTOM ->
+                prefs.dictate.stylePromptCustom.get().takeIf { it.isNotBlank() }
+            else -> null
+        }
+        return DictatePromptDefaults.appendCustomWords(base, prefs.dictate.customWords.get())
     }
 
     /** The active transcription provider's stored credentials (keyring). */

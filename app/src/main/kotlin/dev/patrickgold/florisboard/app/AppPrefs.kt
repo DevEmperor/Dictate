@@ -440,6 +440,13 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__style_prompt_custom",
             default = "",
         )
+        // Custom vocabulary (roadmap 11.12): names/jargon appended to the transcription prompt so the
+        // speech model spells them correctly. Comma- or newline-separated; empty = unused. Applied on
+        // top of whatever style prompt (none/predefined/custom) is active.
+        val customWords = string(
+            key = "dictate__custom_words",
+            default = "",
+        )
         // Run the spoken-formatting-cues → Markdown pass automatically on every transcript.
         val autoFormattingEnabled = boolean(
             key = "dictate__auto_formatting_enabled",

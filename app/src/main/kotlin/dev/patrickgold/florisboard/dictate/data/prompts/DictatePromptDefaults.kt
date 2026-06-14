@@ -71,6 +71,27 @@ object DictatePromptDefaults {
             "\n\nTranscript:\n" + transcript
 
     /**
+     * Appends a user-defined vocabulary list to the transcription [base] style prompt so the speech
+     * model is primed to spell names and jargon correctly (roadmap 11.12). Whisper-style models treat
+     * the transcription `prompt` as preceding context, so simply letting the words appear — spelled
+     * the way the user wants — biases the output towards that spelling.
+     *
+     * [rawWords] may be comma- or newline-separated; surrounding whitespace and blank entries are
+     * dropped. Returns the trimmed [base] when no words are given, the bare comma-joined list when
+     * [base] is null/blank, or `"<base> <words>"` otherwise. Returns null only when both are empty.
+     */
+    fun appendCustomWords(base: String?, rawWords: String?): String? {
+        val words = rawWords.orEmpty()
+            .split(',', '\n')
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+        val baseClean = base?.trim()?.takeIf { it.isNotEmpty() }
+        if (words.isEmpty()) return baseClean
+        val glossary = words.joinToString(", ")
+        return if (baseClean == null) glossary else "$baseClean $glossary"
+    }
+
+    /**
      * Returns a short example sentence (in [languageCode]) that demonstrates capitalization and
      * punctuation. Sent as the transcription `prompt` so the model mirrors that style. Falls back to
      * the English sentence for unknown / "detect" codes (and tries the base language for `xx-YY`).
