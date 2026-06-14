@@ -28,6 +28,7 @@ import dev.patrickgold.florisboard.dictate.data.prompts.PromptsDatabaseHelper
 import dev.patrickgold.florisboard.dictate.provider.ChatRequest
 import dev.patrickgold.florisboard.dictate.provider.DictateApiException
 import dev.patrickgold.florisboard.dictate.provider.OpenAiCompatibleClient
+import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
 import dev.patrickgold.florisboard.dictate.provider.ProviderPreset
 import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
 import dev.patrickgold.florisboard.dictate.provider.TranscriptionRequest
@@ -344,15 +345,16 @@ object DictateController {
      * uploads [audioFile], commits the result and deletes the file afterwards.
      */
     private fun transcribe(context: Context, audioFile: File, recordedSeconds: Long = 0L) {
-        val apiKey = prefs.dictate.apiKey.get()
-        if (apiKey.isBlank()) {
+        val account = transcriptionAccount()
+        val apiKey = account.apiKey
+        if (apiKey.isBlank() && requiresKey(account)) {
             _state.value = UiState.Error(context.getString(R.string.dictate__error_no_api_key))
             audioFile.delete()
             return
         }
 
-        val preset = resolvePreset()
-        val model = prefs.dictate.transcriptionModel.get().takeIf { it.isNotBlank() }
+        val preset = presetFor(account)
+        val model = account.transcriptionModel.takeIf { it.isNotBlank() }
             ?: preset.defaultTranscriptionModel
             ?: "gpt-4o-mini-transcribe"
 
@@ -364,7 +366,7 @@ object DictateController {
         transcribeJob = scope.launch {
             var keepAudio = false
             try {
-                val client = OpenAiCompatibleClient.from(preset, apiKey, baseUrlOverride = baseUrlOverrideFor(preset))
+                val client = OpenAiCompatibleClient.from(preset, apiKey, baseUrlOverride = baseUrlOverrideFor(account))
                 val result = client.transcribe(
                     TranscriptionRequest(
                         audioFile = audioFile,
@@ -719,13 +721,15 @@ object DictateController {
 
     /** Low-level rewording call: sends [userContent] verbatim as a single user message. */
     private suspend fun requestRewordRaw(userContent: String): String {
-        val apiKey = rewordingApiKey()
-        if (apiKey.isBlank()) {
+        val account = rewordingAccount()
+        // Blank rewording key falls back to the transcription account's key (legacy "reuse" behavior).
+        val apiKey = account.apiKey.ifBlank { transcriptionAccount().apiKey }
+        if (apiKey.isBlank() && requiresKey(account)) {
             throw DictateApiException(DictateApiException.Kind.INVALID_API_KEY, "No API key set")
         }
-        val preset = resolveRewordingPreset()
-        val model = prefs.dictate.rewordingModel.get().ifBlank { preset.defaultChatModel ?: "gpt-4o-mini" }
-        val client = OpenAiCompatibleClient.from(preset, apiKey, baseUrlOverride = rewordingBaseUrlOverrideFor(preset))
+        val preset = presetFor(account)
+        val model = account.chatModel.ifBlank { preset.defaultChatModel ?: "gpt-4o-mini" }
+        val client = OpenAiCompatibleClient.from(preset, apiKey, baseUrlOverride = baseUrlOverrideFor(account))
         return client.complete(ChatRequest.ofUser(model, userContent)).text.trim()
     }
 
@@ -744,21 +748,21 @@ object DictateController {
         else -> null
     }
 
-    private fun resolveRewordingPreset(): ProviderPreset {
-        val id = prefs.dictate.rewordingProviderId.get()
-        return if (id == "custom") {
-            ProviderRegistry.custom(prefs.dictate.rewordingCustomBaseUrl.get())
-        } else {
-            ProviderRegistry.byId(id) ?: ProviderRegistry.OPENAI
-        }
+    /** The active transcription provider's stored credentials (keyring). */
+    private fun transcriptionAccount(): ProviderAccount {
+        val id = prefs.dictate.transcriptionProviderId.get()
+        return prefs.dictate.providerAccounts.get().getOrEmpty(id)
     }
 
-    /** Rewording key, falling back to the shared transcription key when not set separately. */
-    private fun rewordingApiKey(): String =
-        prefs.dictate.rewordingApiKey.get().ifBlank { prefs.dictate.apiKey.get() }
+    /** The active rewording provider's stored credentials (keyring). */
+    private fun rewordingAccount(): ProviderAccount {
+        val id = prefs.dictate.rewordingProviderId.get()
+        return prefs.dictate.providerAccounts.get().getOrEmpty(id)
+    }
 
-    private fun rewordingBaseUrlOverrideFor(preset: ProviderPreset): String? =
-        if (preset.isCustom) prefs.dictate.rewordingCustomBaseUrl.get().takeIf { it.isNotBlank() } else null
+    /** Effective rewording key: the rewording account's, falling back to the transcription account's. */
+    private fun rewordingApiKey(): String =
+        rewordingAccount().apiKey.ifBlank { transcriptionAccount().apiKey }
 
     private fun promptsDb(context: Context) = PromptsDatabaseHelper(context.applicationContext)
 
@@ -802,12 +806,17 @@ object DictateController {
         btRouter = null
     }
 
-    private fun resolvePreset(): ProviderPreset = when (prefs.dictate.transcriptionProviderId.get()) {
-        "groq" -> ProviderRegistry.GROQ
-        "custom" -> ProviderRegistry.custom(prefs.dictate.customBaseUrl.get())
-        else -> ProviderRegistry.OPENAI
+    /** Resolves the registry preset (base URL, defaults, headers) backing [account]. */
+    private fun presetFor(account: ProviderAccount): ProviderPreset = when {
+        account.isCustom -> ProviderRegistry.custom(account.customBaseUrl)
+        else -> ProviderRegistry.byId(account.providerId) ?: ProviderRegistry.OPENAI
     }
 
-    private fun baseUrlOverrideFor(preset: ProviderPreset): String? =
-        if (preset.isCustom) prefs.dictate.customBaseUrl.get().takeIf { it.isNotBlank() } else null
+    /** Custom endpoints carry their base URL in the account; built-ins use the preset's. */
+    private fun baseUrlOverrideFor(account: ProviderAccount): String? =
+        if (account.isCustom) account.customBaseUrl.takeIf { it.isNotBlank() } else null
+
+    /** Whether [account] needs an API key: built-in cloud providers do; custom/local servers may not. */
+    private fun requiresKey(account: ProviderAccount): Boolean =
+        !account.isCustom && presetFor(account).apiKeyUrl != null
 }

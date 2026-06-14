@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
@@ -88,47 +89,16 @@ fun DictateRewordingScreen() = FlorisScreen {
 
         val rewordingProviderId by prefs.dictate.rewordingProviderId.collectAsState()
         PreferenceGroup(title = stringRes(R.string.dictate__rewording_provider_group)) {
-            ListPreference(
-                prefs.dictate.rewordingProviderId,
-                icon = Icons.Default.SmartToy,
-                title = stringRes(R.string.dictate__rewording_provider_title),
-                entries = listPrefEntries {
-                    ProviderRegistry.presets
-                        .filter { it.capabilities.chat }
-                        .forEach { entry(key = it.id, label = it.displayName) }
-                    entry(key = "custom", label = stringRes(R.string.dictate__provider__custom))
-                },
-            )
-
-            val reuseKey = stringRes(R.string.dictate__rewording_api_key_reuse)
-            TextInputPreference(
-                pref = prefs.dictate.rewordingApiKey,
-                icon = Icons.Default.Key,
-                title = stringRes(R.string.dictate__rewording_api_key_title),
-                placeholder = stringRes(R.string.dictate__api_key_placeholder),
-                isSecret = true,
-                summaryProvider = { if (it.isBlank()) reuseKey else "••••••" + it.takeLast(4) },
-            )
-
-            val modelDefault = stringRes(R.string.dictate__model_default_summary)
-            TextInputPreference(
-                pref = prefs.dictate.rewordingModel,
-                icon = Icons.Default.ModelTraining,
-                title = stringRes(R.string.dictate__rewording_model_title),
-                placeholder = stringRes(R.string.dictate__model_placeholder),
-                summaryProvider = { it.ifBlank { modelDefault } },
-            )
-
-            if (rewordingProviderId == "custom") {
-                val baseUrlRequired = stringRes(R.string.dictate__base_url_required)
-                TextInputPreference(
-                    pref = prefs.dictate.rewordingCustomBaseUrl,
-                    icon = Icons.Default.Dns,
-                    title = stringRes(R.string.dictate__base_url_title),
-                    placeholder = stringRes(R.string.dictate__base_url_placeholder),
-                    summaryProvider = { it.ifBlank { baseUrlRequired } },
-                )
+            val providerName = remember(rewordingProviderId) {
+                ProviderRegistry.byId(rewordingProviderId)?.displayName ?: rewordingProviderId
             }
+            Preference(
+                icon = Icons.Default.SmartToy,
+                title = stringRes(R.string.dictate__providers_title),
+                summary = stringRes(R.string.dictate__providers_summary, "provider" to providerName),
+                onClick = { navController.navigate(Routes.Settings.DictateProviders) },
+                enabledIf = { prefs.dictate.rewordingEnabled isEqualTo true },
+            )
         }
 
         PreferenceGroup(title = stringRes(R.string.dictate__rewording_prompts_group)) {

@@ -1229,6 +1229,25 @@
     <string name="dictate__base_url_required" comment="Summary shown when the custom base URL is not yet set">Required for the custom provider</string>
     <string name="dictate__value_not_set" comment="Generic summary for an unset text setting">Not set</string>
 
+    <!-- Dictate AI providers manager -->
+    <string name="dictate__providers_title" comment="Title of the AI providers manager screen and the row linking to it">AI providers</string>
+    <string name="dictate__providers_summary" comment="Summary showing the active provider. {provider} is a provider name like OpenAI.">Active: {provider}</string>
+    <string name="dictate__providers_active_group" comment="Group title for the active-provider selectors">Active providers</string>
+    <string name="dictate__providers_active_transcription" comment="Selector for the active transcription provider">Transcription</string>
+    <string name="dictate__providers_active_rewording" comment="Selector for the active rewording provider">Rewording</string>
+    <string name="dictate__providers_manage_group" comment="Group title for the per-provider configuration list">Configure providers</string>
+    <string name="dictate__providers_status_key_set" comment="Status when a provider has an API key stored">Key set</string>
+    <string name="dictate__providers_status_no_key" comment="Status when a provider has no API key yet">No key</string>
+    <string name="dictate__providers_status_unconfigured" comment="Status for a custom endpoint without key or URL">Not configured</string>
+    <string name="dictate__providers_cap_stt" comment="Short label: provider can do speech-to-text">Transcription</string>
+    <string name="dictate__providers_cap_chat" comment="Short label: provider can do chat/rewording">Rewording</string>
+    <string name="dictate__providers_add_custom" comment="Button to add a user-defined OpenAI-compatible endpoint">Add custom server</string>
+    <string name="dictate__providers_add_custom_summary" comment="Summary under the add-custom-server button">Any OpenAI-compatible endpoint</string>
+    <string name="dictate__providers_custom_title" comment="Dialog title when editing a custom endpoint">Custom server</string>
+    <string name="dictate__providers_field_name" comment="Label for the custom endpoint display name field">Name</string>
+    <string name="dictate__providers_field_transcription_model" comment="Label for the transcription model field in the provider editor">Transcription model</string>
+    <string name="dictate__providers_field_chat_model" comment="Label for the chat/rewording model field in the provider editor">Rewording model</string>
+
     <!-- Dictate recording settings -->
     <string name="dictate__recording_group" comment="Group title for recording-related settings">Recording</string>
     <string name="dictate__audio_focus_title" comment="Setting: pause other apps' audio while recording">Pause other audio</string>

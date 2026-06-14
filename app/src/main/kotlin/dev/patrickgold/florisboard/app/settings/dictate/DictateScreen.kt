@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.BrightnessHigh
+import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
 import androidx.compose.material.icons.filled.Edit
@@ -36,6 +37,7 @@ import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.dictate.DictateLanguages
 import dev.patrickgold.florisboard.dictate.data.prompts.DictatePromptDefaults
+import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import org.florisboard.lib.compose.stringRes
 import dev.patrickgold.jetpref.datastore.model.collectAsState
@@ -56,50 +58,18 @@ fun DictateScreen() = FlorisScreen {
 
     content {
         val navController = LocalNavController.current
-        val providerId by prefs.dictate.transcriptionProviderId.collectAsState()
 
-        ListPreference(
-            prefs.dictate.transcriptionProviderId,
-            icon = Icons.Default.Mic,
-            title = stringRes(R.string.dictate__provider_title),
-            entries = listPrefEntries {
-                entry(key = "openai", label = stringRes(R.string.dictate__provider__openai))
-                entry(key = "groq", label = stringRes(R.string.dictate__provider__groq))
-                entry(key = "custom", label = stringRes(R.string.dictate__provider__custom))
-            },
-        )
-
-        val apiKeyNotSet = stringRes(R.string.dictate__api_key_not_set)
-        TextInputPreference(
-            pref = prefs.dictate.apiKey,
-            icon = Icons.Default.Key,
-            title = stringRes(R.string.dictate__api_key_title),
-            placeholder = stringRes(R.string.dictate__api_key_placeholder),
-            isSecret = true,
-            summaryProvider = { if (it.isBlank()) apiKeyNotSet else "••••••" + it.takeLast(4) },
-        )
-
-        val modelDefault = stringRes(R.string.dictate__model_default_summary)
-        TextInputPreference(
-            pref = prefs.dictate.transcriptionModel,
-            icon = Icons.Default.ModelTraining,
-            title = stringRes(R.string.dictate__model_title),
-            placeholder = stringRes(R.string.dictate__model_placeholder),
-            summaryProvider = { it.ifBlank { modelDefault } },
-        )
-
-        if (providerId == "custom") {
-            val baseUrlRequired = stringRes(R.string.dictate__base_url_required)
-            PreferenceGroup(title = stringRes(R.string.dictate__custom_server_title)) {
-                TextInputPreference(
-                    pref = prefs.dictate.customBaseUrl,
-                    icon = Icons.Default.Dns,
-                    title = stringRes(R.string.dictate__base_url_title),
-                    placeholder = stringRes(R.string.dictate__base_url_placeholder),
-                    summaryProvider = { it.ifBlank { baseUrlRequired } },
-                )
-            }
+        // The active transcription provider's display name, for the summary of the providers row.
+        val transcriptionProviderId by prefs.dictate.transcriptionProviderId.collectAsState()
+        val providerName = remember(transcriptionProviderId) {
+            ProviderRegistry.byId(transcriptionProviderId)?.displayName ?: transcriptionProviderId
         }
+        Preference(
+            icon = Icons.Default.Cloud,
+            title = stringRes(R.string.dictate__providers_title),
+            summary = stringRes(R.string.dictate__providers_summary, "provider" to providerName),
+            onClick = { navController.navigate(Routes.Settings.DictateProviders) },
+        )
 
         PreferenceGroup(title = stringRes(R.string.dictate__languages_group)) {
             val selectionRaw by prefs.dictate.inputLanguages.collectAsState()

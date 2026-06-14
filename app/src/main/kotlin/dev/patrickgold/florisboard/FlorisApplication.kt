@@ -111,6 +111,7 @@ class FlorisApplication : Application() {
             )
             Log.i("PREFS", result.toString())
             DictateLegacyMigrator.migrateIfNeeded(this@FlorisApplication)
+            DictateLegacyMigrator.migrateProviderKeyringIfNeeded()
             DictateLegacyMigrator.removeLivePromptActionIfNeeded(this@FlorisApplication)
             DictateLegacyMigrator.migratePromptsActionIfNeeded(this@FlorisApplication)
             preferenceStoreLoaded.value = true

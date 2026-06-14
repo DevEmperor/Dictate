@@ -12,6 +12,7 @@ package dev.patrickgold.florisboard.dictate.data.prefs
 
 import android.content.Context
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickAction
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.keyData
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
@@ -29,6 +30,7 @@ import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
  */
 object DictateLegacyMigrator {
 
+    @Suppress("DEPRECATION") // writes the deprecated flat prefs that migrateProviderKeyringIfNeeded folds in
     suspend fun migrateIfNeeded(context: Context) {
         val prefs by FlorisPreferenceStore
         if (prefs.dictate.legacyImported.get()) return
@@ -104,6 +106,72 @@ object DictateLegacyMigrator {
         }
 
         prefs.dictate.legacyImported.set(true)
+    }
+
+    /**
+     * One-time fold of the deprecated flat credential prefs (api key, models, custom base URLs) into
+     * the per-provider keyring ([ProviderAccounts]). Runs after [migrateIfNeeded], so it covers both
+     * legacy-Java upgraders (whose flat prefs were just populated above) and existing fork users (who
+     * already had flat prefs from an earlier build). Idempotent via `providerAccountsMigrated`.
+     *
+     * Each provider keeps one account holding its key plus separate transcription/chat models. If the
+     * rewording side used a *different* custom host than the transcription side, it gets its own
+     * `custom:<uuid>` account so the two base URLs don't collide.
+     */
+    @Suppress("DEPRECATION")
+    suspend fun migrateProviderKeyringIfNeeded() {
+        val prefs by FlorisPreferenceStore
+        if (prefs.dictate.providerAccountsMigrated.get()) return
+
+        var keyring = prefs.dictate.providerAccounts.get()
+
+        // --- Transcription side -> its active provider id ---
+        val tProviderId = prefs.dictate.transcriptionProviderId.get()
+        val tKey = prefs.dictate.apiKey.get()
+        val tModel = prefs.dictate.transcriptionModel.get()
+        val tBaseUrl = prefs.dictate.customBaseUrl.get()
+        keyring = keyring.edit(tProviderId) { account ->
+            account.copy(
+                apiKey = tKey.ifBlank { account.apiKey },
+                transcriptionModel = tModel.ifBlank { account.transcriptionModel },
+                customBaseUrl = tBaseUrl.ifBlank { account.customBaseUrl },
+            )
+        }
+
+        // --- Rewording side -> its active provider id (may equal the transcription one) ---
+        var rProviderId = prefs.dictate.rewordingProviderId.get()
+        val rKey = prefs.dictate.rewordingApiKey.get()
+        val rModel = prefs.dictate.rewordingModel.get()
+        val rBaseUrl = prefs.dictate.rewordingCustomBaseUrl.get()
+
+        // If both sides are "custom" but point at different hosts, split the rewording one off into its
+        // own custom account so each keeps its correct base URL.
+        if (rProviderId == "custom" && tProviderId == "custom" &&
+            rBaseUrl.isNotBlank() && tBaseUrl.isNotBlank() && rBaseUrl != tBaseUrl
+        ) {
+            val splitId = ProviderAccount.newCustomId()
+            keyring = keyring.edit(splitId) { account ->
+                account.copy(
+                    apiKey = rKey.ifBlank { keyring.getOrEmpty("custom").apiKey },
+                    chatModel = rModel.ifBlank { account.chatModel },
+                    customBaseUrl = rBaseUrl,
+                )
+            }
+            rProviderId = splitId
+            prefs.dictate.rewordingProviderId.set(splitId)
+        } else {
+            keyring = keyring.edit(rProviderId) { account ->
+                account.copy(
+                    // Blank legacy rewording key historically meant "reuse the transcription key".
+                    apiKey = rKey.ifBlank { account.apiKey.ifBlank { if (rProviderId == tProviderId) tKey else account.apiKey } },
+                    chatModel = rModel.ifBlank { account.chatModel },
+                    customBaseUrl = rBaseUrl.ifBlank { account.customBaseUrl },
+                )
+            }
+        }
+
+        prefs.dictate.providerAccounts.set(keyring)
+        prefs.dictate.providerAccountsMigrated.set(true)
     }
 
     /**

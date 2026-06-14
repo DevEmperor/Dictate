@@ -24,6 +24,7 @@ import dev.patrickgold.florisboard.app.settings.theme.DisplayKbdAfterDialogs
 import dev.patrickgold.florisboard.app.settings.theme.SnyggLevel
 import dev.patrickgold.florisboard.app.setup.NotificationPermissionState
 import dev.patrickgold.florisboard.dictate.DictatePromptsLayout
+import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
 import dev.patrickgold.florisboard.ime.clipboard.CLIPBOARD_HISTORY_NUM_GRID_COLUMNS_AUTO
 import dev.patrickgold.florisboard.ime.clipboard.ClipboardSyncBehavior
 import dev.patrickgold.florisboard.ime.core.DisplayLanguageNamesIn
@@ -215,22 +216,43 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
 
     val dictate = Dictate()
     inner class Dictate {
-        // Transcription provider id, matching ProviderRegistry ids that support speech-to-text
-        // ("openai", "groq", "custom"). Rewording providers (e.g. OpenRouter) come later.
+        // --- Provider keyring (multi-provider, roadmap section 4.x) ------------------------------
+        // Per-provider credentials (API key + chosen models + custom base URL), keyed by provider id.
+        // This is the source of truth for keys/models; transcriptionProviderId / rewordingProviderId
+        // below are just the *active* pointers into this keyring. See ProviderAccounts.
+        val providerAccounts = custom(
+            key = "dictate__provider_accounts",
+            default = ProviderAccounts.Empty,
+            serializer = ProviderAccounts.Serializer,
+        )
+        // Guard so the one-time import of the legacy flat prefs (apiKey/transcriptionModel/… below)
+        // into the keyring runs exactly once. See DictateProviderMigrator.
+        val providerAccountsMigrated = boolean(
+            key = "dictate__provider_accounts_migrated",
+            default = false,
+        )
+
+        // Active transcription provider id, matching a ProviderRegistry id that supports speech-to-text
+        // ("openai", "groq") or a "custom:<uuid>" endpoint. The actual key/model live in the keyring.
         val transcriptionProviderId = string(
             key = "dictate__transcription_provider_id",
             default = "openai",
         )
+
+        // --- DEPRECATED flat credential prefs (migration source only) ----------------------------
+        // Kept solely so DictateProviderMigrator can copy them into the keyring once. Do not read these
+        // for live calls anymore – use providerAccounts[transcriptionProviderId].
+        @Deprecated("Migrated into providerAccounts; read the keyring instead.")
         val apiKey = string(
             key = "dictate__api_key",
             default = "",
         )
-        // Empty means "use the provider preset's default transcription model".
+        @Deprecated("Migrated into providerAccounts; read the keyring instead.")
         val transcriptionModel = string(
             key = "dictate__transcription_model",
             default = "",
         )
-        // OpenAI-compatible base URL, used when transcriptionProviderId == "custom".
+        @Deprecated("Migrated into providerAccounts; read the keyring instead.")
         val customBaseUrl = string(
             key = "dictate__custom_base_url",
             default = "",
@@ -350,17 +372,19 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__rewording_provider_id",
             default = "openai",
         )
-        // Rewording API key. Blank means "reuse the transcription apiKey".
+        // --- DEPRECATED flat rewording credential prefs (migration source only) ------------------
+        // Kept solely for the one-time keyring import; live calls read providerAccounts instead.
+        @Deprecated("Migrated into providerAccounts; read the keyring instead.")
         val rewordingApiKey = string(
             key = "dictate__rewording_api_key",
             default = "",
         )
-        // Blank means "use the rewording provider preset's default chat model".
+        @Deprecated("Migrated into providerAccounts; read the keyring instead.")
         val rewordingModel = string(
             key = "dictate__rewording_model",
             default = "",
         )
-        // OpenAI-compatible base URL, used when rewordingProviderId == "custom".
+        @Deprecated("Migrated into providerAccounts; read the keyring instead.")
         val rewordingCustomBaseUrl = string(
             key = "dictate__rewording_custom_base_url",
             default = "",
