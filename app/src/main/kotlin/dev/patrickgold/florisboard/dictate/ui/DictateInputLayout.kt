@@ -10,6 +10,7 @@
 
 package dev.patrickgold.florisboard.dictate.ui
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -18,6 +19,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -25,7 +28,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.dictate.DictateController
@@ -33,7 +42,6 @@ import dev.patrickgold.florisboard.ime.ImeUiMode
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
 import dev.patrickgold.florisboard.keyboardManager
-import org.florisboard.lib.compose.florisVerticalScroll
 import org.florisboard.lib.compose.stringRes
 import org.florisboard.lib.snygg.ui.SnyggBox
 import org.florisboard.lib.snygg.ui.SnyggColumn
@@ -63,6 +71,7 @@ fun DictateInputLayout(
     val context = LocalContext.current
     val keyboardManager by context.keyboardManager()
     val prompts by DictateController.prompts.collectAsState()
+    val scrollState = rememberScrollState()
 
     SnyggColumn(
         elementName = FlorisImeUi.Media.elementName,
@@ -101,9 +110,10 @@ fun DictateInputLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                // Visible (auto-fading) scrollbar pinned to the right edge so it is clear the prompt
-                // list scrolls when it overflows the panel height.
-                .florisVerticalScroll()
+                .verticalScroll(scrollState)
+                // Persistent (non-fading) scrollbar pinned to the right edge, drawn only when the
+                // prompt list actually overflows the panel – a clear, always-visible affordance.
+                .dictatePanelScrollbar(scrollState)
                 .padding(8.dp),
             horizontalArrangement = Arrangement.Start,
         ) {
@@ -151,4 +161,44 @@ fun DictateInputLayout(
             }
         }
     }
+}
+
+/** Dictate accent (theme accent default), reused for the panel scrollbar thumb. */
+private val DictateScrollbarAccent = Color(0xFF30B7E6)
+
+/**
+ * Draws a slim, always-visible scrollbar at the right edge of a [verticalScroll]ed container, but only
+ * when the content actually overflows ([ScrollState.maxValue] > 0). Unlike the shared
+ * `florisVerticalScroll` helper this does not fade out, so it stays as a reliable affordance while the
+ * prompt list is scrollable. Apply directly after the `verticalScroll(state)` modifier (and before any
+ * inner padding) so it spans the full container width.
+ */
+private fun Modifier.dictatePanelScrollbar(
+    state: ScrollState,
+    width: Dp = 5.dp,
+): Modifier = drawWithContent {
+    drawContent()
+    val max = state.maxValue
+    if (max <= 0) return@drawWithContent
+    val barWidth = width.toPx()
+    val viewport = size.height
+    val contentHeight = viewport + max
+    // Thumb height proportional to the visible fraction, with a sensible minimum so it stays grabbable.
+    val thumbHeight = (viewport * viewport / contentHeight).coerceAtLeast(barWidth * 5f)
+    val thumbY = (viewport - thumbHeight) * (state.value.toFloat() / max)
+    val x = size.width - barWidth
+    val radius = CornerRadius(barWidth / 2f, barWidth / 2f)
+    // Faint full-height track + solid accent thumb.
+    drawRoundRect(
+        color = DictateScrollbarAccent.copy(alpha = 0.12f),
+        topLeft = Offset(x, 0f),
+        size = Size(barWidth, viewport),
+        cornerRadius = radius,
+    )
+    drawRoundRect(
+        color = DictateScrollbarAccent.copy(alpha = 0.85f),
+        topLeft = Offset(x, thumbY),
+        size = Size(barWidth, thumbHeight),
+        cornerRadius = radius,
+    )
 }
