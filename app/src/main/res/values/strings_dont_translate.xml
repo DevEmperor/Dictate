@@ -6,9 +6,6 @@
     <!--
         Dictate-branded URLs. Keys keep the historic `florisboard__` prefix so the many references in
         code stay valid; only the values point to the Dictate project now.
-        TODO(privacy): replace `florisboard__privacy_policy_url` with the real Dictate privacy policy
-        (currently points at the repo as a non-404 placeholder; the actual policy lives on the Play
-        Store listing for net.devemperor.dictate).
         TODO(wiki): the spell-checker / theme-editor help links point at the repo root for now, as the
         Dictate fork has no dedicated wiki pages yet.
     -->
@@ -16,7 +13,7 @@
     <!-- Upstream project Dictate is forked from (attribution); stays pointed at the original FlorisBoard repo. -->
     <string name="florisboard__upstream_repo_url" translatable="false">https://github.com/florisboard/florisboard</string>
     <string name="florisboard__issue_tracker_url" translatable="false">https://github.com/DevEmperor/Dictate/issues</string>
-    <string name="florisboard__privacy_policy_url" translatable="false">https://github.com/DevEmperor/Dictate</string>
+    <string name="florisboard__privacy_policy_url" translatable="false">https://github.com/DevEmperor/Dictate/blob/main/PRIVACY_POLICY.md</string>
     <string name="florisboard__changelog_url" translatable="false">https://github.com/DevEmperor/Dictate/releases</string>
     <string name="florisboard__commit_by_hash_url" translatable="false">https://github.com/DevEmperor/Dictate/commit/{hash}</string>
     <string name="florisboard__spell_checker_wiki_url" translatable="false">https://github.com/DevEmperor/Dictate</string>
