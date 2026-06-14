@@ -30,6 +30,14 @@ data class ProviderPreset(
     val defaultTranscriptionModel: String? = null,
     val extraHeaders: Map<String, String> = emptyMap(),
     val isCustom: Boolean = false,
+    /**
+     * Curated, known-good model ids used by the model picker as an offline-capable starting set (and,
+     * for transcription, to distinguish STT models since the `/models` catalog doesn't say which is
+     * which). The live [LlmProvider.listModels] catalog is merged on top. Verify ids against the
+     * provider when editing – never guessed.
+     */
+    val curatedChatModels: List<String> = emptyList(),
+    val curatedTranscriptionModels: List<String> = emptyList(),
 )
 
 /**
@@ -49,6 +57,12 @@ object ProviderRegistry {
         apiKeyUrl = "https://platform.openai.com/api-keys",
         defaultChatModel = "gpt-4o-mini",
         defaultTranscriptionModel = "gpt-4o-mini-transcribe",
+        curatedChatModels = listOf(
+            "gpt-4o-mini", "gpt-4o", "gpt-4.1-mini", "gpt-4.1", "gpt-4.1-nano",
+        ),
+        curatedTranscriptionModels = listOf(
+            "gpt-4o-mini-transcribe", "gpt-4o-transcribe", "whisper-1",
+        ),
     )
 
     val GROQ = ProviderPreset(
@@ -60,6 +74,12 @@ object ProviderRegistry {
         apiKeyUrl = "https://console.groq.com/keys",
         defaultChatModel = "llama-3.3-70b-versatile",
         defaultTranscriptionModel = "whisper-large-v3-turbo",
+        curatedChatModels = listOf(
+            "llama-3.3-70b-versatile", "llama-3.1-8b-instant", "gemma2-9b-it",
+        ),
+        curatedTranscriptionModels = listOf(
+            "whisper-large-v3-turbo", "whisper-large-v3", "distil-whisper-large-v3-en",
+        ),
     )
 
     val OPENROUTER = ProviderPreset(
@@ -72,8 +92,12 @@ object ProviderRegistry {
         // OpenRouter exposes hundreds of models (incl. Claude, Gemini, Llama …); users pick from the
         // live catalog. This is just a safe default to start with and is fully user-overridable.
         defaultChatModel = "openai/gpt-4o-mini",
-        // Optional attribution headers recommended by OpenRouter (used for app ranking).
-        extraHeaders = mapOf("X-Title" to "Dictate"),
+        // Attribution headers recommended by OpenRouter: both are used for app ranking and some routes
+        // reject requests without an HTTP-Referer. The value is a stable identifier, not a real URL.
+        extraHeaders = mapOf(
+            "HTTP-Referer" to "https://github.com/DevEmperor/Dictate",
+            "X-Title" to "Dictate",
+        ),
     )
 
     val TOGETHER = ProviderPreset(

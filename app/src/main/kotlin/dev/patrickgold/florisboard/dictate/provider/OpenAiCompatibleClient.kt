@@ -62,6 +62,12 @@ class OpenAiCompatibleClient(
         val body = executeForBody(httpRequest)
         val response = json.decodeFromString(ChatCompletionResponseDto.serializer(), body)
         val text = response.choices.firstOrNull()?.message?.content.orEmpty()
+        // Some OpenAI-compatible gateways (notably OpenRouter) report errors as HTTP 200 with an empty
+        // `choices` array and an `{ "error": { ... } }` envelope. Surface that instead of returning "".
+        if (text.isBlank() && response.choices.isEmpty()) {
+            val message = extractErrorMessage(body)
+            throw DictateApiException(DictateApiException.Kind.UNKNOWN, message ?: "Empty response from provider")
+        }
         val usage = response.usage?.let { TokenUsage(it.promptTokens, it.completionTokens) }
         return ChatResult(text, usage)
     }

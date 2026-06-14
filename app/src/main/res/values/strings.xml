@@ -1248,6 +1248,14 @@
     <string name="dictate__providers_field_transcription_model" comment="Label for the transcription model field in the provider editor">Transcription model</string>
     <string name="dictate__providers_field_chat_model" comment="Label for the chat/rewording model field in the provider editor">Rewording model</string>
 
+    <!-- Dictate model picker -->
+    <string name="dictate__model_picker_title" comment="Title of the model picker dialog">Choose a model</string>
+    <string name="dictate__model_picker_search" comment="Hint for the model search / free-text field">Search or type a model id</string>
+    <string name="dictate__model_picker_loading" comment="Status while fetching the model catalog">Loading models…</string>
+    <string name="dictate__model_picker_count" comment="Status showing how many models match. {count} is a number.">{count} models</string>
+    <string name="dictate__model_picker_refresh" comment="Button that fetches the live model catalog from the provider">Refresh</string>
+    <string name="dictate__model_picker_use_custom" comment="Option to use the typed text as a model id. {model} is the typed text.">Use “{model}”</string>
+
     <!-- Dictate recording settings -->
     <string name="dictate__recording_group" comment="Group title for recording-related settings">Recording</string>
     <string name="dictate__audio_focus_title" comment="Setting: pause other apps' audio while recording">Pause other audio</string>

@@ -18,7 +18,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SmartToy
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -203,6 +206,12 @@ private fun ProviderEditorDialog(
     var baseUrl by remember { mutableStateOf(account.customBaseUrl) }
     var transcriptionModel by remember { mutableStateOf(account.transcriptionModel) }
     var chatModel by remember { mutableStateOf(account.chatModel) }
+    // Live catalog cache, updated when the picker fetches; persisted together with the rest on confirm.
+    var cachedModels by remember { mutableStateOf(account.cachedModels) }
+    var pickerKind by remember { mutableStateOf<ModelKind?>(null) }
+
+    // Effective preset to drive the model picker (custom endpoints get a base-URL-only preset).
+    val effectivePreset = preset ?: ProviderRegistry.custom(baseUrl)
 
     JetPrefAlertDialog(
         title = preset?.displayName ?: stringRes(R.string.dictate__providers_custom_title),
@@ -217,6 +226,12 @@ private fun ProviderEditorDialog(
                     customBaseUrl = baseUrl.trim(),
                     transcriptionModel = transcriptionModel.trim(),
                     chatModel = chatModel.trim(),
+                    cachedModels = cachedModels,
+                    cachedModelsAt = if (cachedModels != account.cachedModels) {
+                        System.currentTimeMillis()
+                    } else {
+                        account.cachedModelsAt
+                    },
                 )
             )
         },
@@ -252,6 +267,7 @@ private fun ProviderEditorDialog(
                     onValueChange = { transcriptionModel = it },
                     placeholder = preset?.defaultTranscriptionModel
                         ?: stringRes(R.string.dictate__model_placeholder),
+                    onBrowse = { pickerKind = ModelKind.TRANSCRIPTION },
                 )
             }
             if (showChat) {
@@ -261,13 +277,32 @@ private fun ProviderEditorDialog(
                     onValueChange = { chatModel = it },
                     placeholder = preset?.defaultChatModel
                         ?: stringRes(R.string.dictate__model_placeholder),
+                    onBrowse = { pickerKind = ModelKind.CHAT },
                 )
             }
         }
     }
+
+    pickerKind?.let { kind ->
+        ModelPickerDialog(
+            kind = kind,
+            preset = effectivePreset,
+            apiKey = apiKey,
+            current = if (kind == ModelKind.TRANSCRIPTION) transcriptionModel else chatModel,
+            cachedModels = cachedModels,
+            onModelsFetched = { cachedModels = it },
+            onPick = { picked ->
+                if (kind == ModelKind.TRANSCRIPTION) transcriptionModel = picked else chatModel = picked
+            },
+            onDismiss = { pickerKind = null },
+        )
+    }
 }
 
-/** A single labeled text field inside the provider editor dialog. */
+/**
+ * A single labeled text field inside the provider editor dialog. When [onBrowse] is set, a trailing
+ * button opens the model picker (the field still accepts free-text input).
+ */
 @Composable
 private fun EditorField(
     label: String,
@@ -276,6 +311,7 @@ private fun EditorField(
     placeholder: String = "",
     isSecret: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
+    onBrowse: (() -> Unit)? = null,
 ) {
     OutlinedTextField(
         modifier = Modifier.padding(top = 8.dp),
@@ -288,5 +324,15 @@ private fun EditorField(
         keyboardOptions = KeyboardOptions(
             keyboardType = if (isSecret) KeyboardType.Password else keyboardType,
         ),
+        trailingIcon = onBrowse?.let {
+            {
+                IconButton(onClick = it) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringRes(R.string.dictate__model_picker_title),
+                    )
+                }
+            }
+        },
     )
 }
