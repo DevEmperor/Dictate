@@ -24,6 +24,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absoluteOffset
@@ -61,6 +62,8 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
 import dev.patrickgold.florisboard.ime.nlp.NlpInlineAutofill
 import dev.patrickgold.florisboard.dictate.DictateController
+import dev.patrickgold.florisboard.dictate.DictatePromptsLayout
+import dev.patrickgold.florisboard.dictate.ui.DictatePromptRow
 import dev.patrickgold.florisboard.dictate.ui.DictatePromptStrip
 import dev.patrickgold.florisboard.dictate.ui.DictateSmartbarUi
 import dev.patrickgold.florisboard.editorInstance
@@ -101,46 +104,63 @@ private val NoAnimationTween = tween<Float>(0)
 @Composable
 fun Smartbar() {
     val prefs by FlorisPreferenceStore
+    val context = LocalContext.current
     val smartbarEnabled by prefs.smartbar.enabled.collectAsState()
     val extendedActionsPlacement by prefs.smartbar.extendedActionsPlacement.collectAsState()
+
+    // Always-on rewording prompt row (ROW layout mode): pinned above the Smartbar so the prompts are
+    // permanently visible. The live-prompt chip is always present, so the row shows even with no saved
+    // prompts. The PANEL mode instead surfaces the prompts via a separate panel + contextual strip.
+    val dictatePromptsLayout by prefs.dictate.promptsLayout.collectAsState()
+    val dictateRewordingEnabled by prefs.dictate.rewordingEnabled.collectAsState()
+    val dictatePrompts by DictateController.prompts.collectAsState()
+    val showDictatePromptRow = dictateRewordingEnabled && dictatePromptsLayout == DictatePromptsLayout.ROW
+    LaunchedEffect(showDictatePromptRow) {
+        if (showDictatePromptRow) DictateController.refreshPrompts(context)
+    }
 
     AnimatedVisibility(
         visible = smartbarEnabled,
         enter = VerticalEnterTransition,
         exit = VerticalExitTransition,
     ) {
-        when (extendedActionsPlacement) {
-            ExtendedActionsPlacement.ABOVE_CANDIDATES -> {
-                SnyggColumn(FlorisImeUi.Smartbar.elementName) {
-                    SmartbarSecondaryRow()
-                    SmartbarMainRow()
-                }
+        Column {
+            if (showDictatePromptRow) {
+                DictatePromptRow(dictatePrompts)
             }
-
-            ExtendedActionsPlacement.BELOW_CANDIDATES -> {
-                SnyggColumn(FlorisImeUi.Smartbar.elementName) {
-                    SmartbarMainRow()
-                    SmartbarSecondaryRow()
+            when (extendedActionsPlacement) {
+                ExtendedActionsPlacement.ABOVE_CANDIDATES -> {
+                    SnyggColumn(FlorisImeUi.Smartbar.elementName) {
+                        SmartbarSecondaryRow()
+                        SmartbarMainRow()
+                    }
                 }
-            }
 
-            ExtendedActionsPlacement.OVERLAY_APP_UI -> {
-                SnyggBox(FlorisImeUi.Smartbar.elementName,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(FlorisImeSizing.smartbarHeight),
-                    allowClip = false,
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(FlorisImeSizing.smartbarHeight * 2)
-                            .absoluteOffset(y = -FlorisImeSizing.smartbarHeight),
-                        contentAlignment = Alignment.BottomStart,
-                    ) {
+                ExtendedActionsPlacement.BELOW_CANDIDATES -> {
+                    SnyggColumn(FlorisImeUi.Smartbar.elementName) {
+                        SmartbarMainRow()
                         SmartbarSecondaryRow()
                     }
-                    SmartbarMainRow()
+                }
+
+                ExtendedActionsPlacement.OVERLAY_APP_UI -> {
+                    SnyggBox(FlorisImeUi.Smartbar.elementName,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(FlorisImeSizing.smartbarHeight),
+                        allowClip = false,
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(FlorisImeSizing.smartbarHeight * 2)
+                                .absoluteOffset(y = -FlorisImeSizing.smartbarHeight),
+                            contentAlignment = Alignment.BottomStart,
+                        ) {
+                            SmartbarSecondaryRow()
+                        }
+                        SmartbarMainRow()
+                    }
                 }
             }
         }
@@ -186,7 +206,13 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
     LaunchedEffect(hasDictateSelection) {
         if (hasDictateSelection) DictateController.refreshPrompts(context)
     }
-    val showDictatePromptStrip = dictateRewordingEnabled && hasDictateSelection && dictatePrompts.isNotEmpty()
+    // The contextual on-selection strip belongs to the PANEL layout; in ROW mode the always-on prompt
+    // row above the Smartbar already shows every prompt, so the strip would be redundant.
+    val dictatePromptsLayout by prefs.dictate.promptsLayout.collectAsState()
+    val showDictatePromptStrip = dictateRewordingEnabled &&
+        dictatePromptsLayout == DictatePromptsLayout.PANEL &&
+        hasDictateSelection &&
+        dictatePrompts.isNotEmpty()
 
     @Composable
     fun SharedActionsToggle() {

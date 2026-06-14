@@ -13,7 +13,6 @@ package dev.patrickgold.florisboard.dictate.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,7 +36,6 @@ import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
 import dev.patrickgold.florisboard.keyboardManager
 import org.florisboard.lib.compose.stringRes
 import org.florisboard.lib.snygg.ui.SnyggBox
-import org.florisboard.lib.snygg.ui.SnyggChip
 import org.florisboard.lib.snygg.ui.SnyggColumn
 import org.florisboard.lib.snygg.ui.SnyggIcon
 import org.florisboard.lib.snygg.ui.SnyggIconButton
@@ -96,41 +94,49 @@ fun DictateInputLayout(
             )
         }
 
-        // Body: all saved prompts as tappable chips, or an empty-state hint.
+        // Body: the live-prompt chip plus all saved prompts, flowing from the top-left to the right and
+        // wrapping onto further lines (left-aligned, not centered). The live chip is always present, so
+        // the panel is never truly empty; a hint is shown underneath only when no saved prompts exist.
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.Start,
+        ) {
+            DictateLivePromptChip(
+                modifier = Modifier.padding(4.dp),
+                onClick = {
+                    DictateController.startLivePrompt(context)
+                    // Return to the keyboard so the recording indicator + field stay visible.
+                    keyboardManager.activeState.imeUiMode = ImeUiMode.TEXT
+                },
+            )
+            prompts.forEach { prompt ->
+                DictatePromptChip(
+                    icon = dictatePromptIcon(prompt),
+                    text = prompt.name.orEmpty(),
+                    modifier = Modifier.padding(4.dp),
+                    onClick = {
+                        DictateController.applyPrompt(context, prompt)
+                        // Return to the keyboard so the field + the Smartbar progress are visible.
+                        keyboardManager.activeState.imeUiMode = ImeUiMode.TEXT
+                    },
+                )
+            }
+        }
         if (prompts.isEmpty()) {
             SnyggBox(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .padding(horizontal = 24.dp),
+                    .padding(horizontal = 24.dp, vertical = 8.dp),
             ) {
                 SnyggText(
                     elementName = FlorisImeUi.MediaEmojiSubheader.elementName,
                     text = stringRes(R.string.dictate__panel_no_prompts),
                 )
-            }
-        } else {
-            FlowRow(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                prompts.forEach { prompt ->
-                    SnyggChip(
-                        elementName = FlorisImeUi.SmartbarActionTile.elementName,
-                        modifier = Modifier.padding(4.dp),
-                        onClick = {
-                            DictateController.applyPrompt(context, prompt)
-                            // Return to the keyboard so the field + the Smartbar progress are visible.
-                            keyboardManager.activeState.imeUiMode = ImeUiMode.TEXT
-                        },
-                        imageVector = dictatePromptIcon(prompt),
-                        text = prompt.name.orEmpty(),
-                    )
-                }
             }
         }
     }

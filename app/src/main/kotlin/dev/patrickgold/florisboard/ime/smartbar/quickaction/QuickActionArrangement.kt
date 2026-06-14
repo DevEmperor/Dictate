@@ -69,8 +69,9 @@ data class QuickActionArrangement(
             // Dictate's flagship action: the AI voice panel is always one tap away in the Smartbar.
             stickyAction = QuickAction.InsertKey(TextKeyData.IME_UI_MODE_DICTATE),
             dynamicActions = listOf(
-                // Default visible order requested by the user.
-                QuickAction.InsertKey(TextKeyData.DICTATE_LIVE_PROMPT),
+                // Default visible order requested by the user. The live prompt is no longer a Smartbar
+                // button – it lives as a chip inside the prompt panel/row – so only the panel opener
+                // (DICTATE_PROMPTS) remains here.
                 QuickAction.InsertKey(TextKeyData.DICTATE_PROMPTS),
                 QuickAction.InsertKey(TextKeyData.CLIPBOARD_SELECT_ALL),
                 QuickAction.InsertKey(TextKeyData.UNDO),

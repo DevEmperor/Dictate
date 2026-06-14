@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.material.icons.filled.ModelTraining
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.SmartToy
+import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -27,6 +28,7 @@ import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
+import dev.patrickgold.florisboard.dictate.DictatePromptsLayout
 import dev.patrickgold.florisboard.dictate.data.prompts.DictatePromptDefaults
 import dev.patrickgold.florisboard.dictate.data.prompts.PromptsDatabaseHelper
 import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
@@ -63,6 +65,25 @@ fun DictateRewordingScreen() = FlorisScreen {
             icon = Icons.Default.AutoFixHigh,
             title = stringRes(R.string.dictate__rewording_enabled_title),
             summary = stringRes(R.string.dictate__rewording_enabled_summary),
+        )
+
+        ListPreference(
+            prefs.dictate.promptsLayout,
+            icon = Icons.Default.ViewAgenda,
+            title = stringRes(R.string.dictate__prompts_layout_title),
+            entries = listPrefEntries {
+                entry(
+                    key = DictatePromptsLayout.PANEL,
+                    label = stringRes(R.string.dictate__prompts_layout_panel_label),
+                    description = stringRes(R.string.dictate__prompts_layout_panel_description),
+                )
+                entry(
+                    key = DictatePromptsLayout.ROW,
+                    label = stringRes(R.string.dictate__prompts_layout_row_label),
+                    description = stringRes(R.string.dictate__prompts_layout_row_description),
+                )
+            },
+            enabledIf = { prefs.dictate.rewordingEnabled isEqualTo true },
         )
 
         val rewordingProviderId by prefs.dictate.rewordingProviderId.collectAsState()

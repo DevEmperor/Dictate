@@ -23,6 +23,7 @@ import dev.patrickgold.florisboard.app.settings.theme.ColorPreferenceSerializer
 import dev.patrickgold.florisboard.app.settings.theme.DisplayKbdAfterDialogs
 import dev.patrickgold.florisboard.app.settings.theme.SnyggLevel
 import dev.patrickgold.florisboard.app.setup.NotificationPermissionState
+import dev.patrickgold.florisboard.dictate.DictatePromptsLayout
 import dev.patrickgold.florisboard.ime.clipboard.CLIPBOARD_HISTORY_NUM_GRID_COLUMNS_AUTO
 import dev.patrickgold.florisboard.ime.clipboard.ClipboardSyncBehavior
 import dev.patrickgold.florisboard.ime.core.DisplayLanguageNamesIn
@@ -322,6 +323,13 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__prompts_action_migrated",
             default = false,
         )
+        // Guard for the one-time *removal* of the live-prompt Smartbar action: the live prompt is now a
+        // chip inside the prompt panel/row, so it no longer ships as a separate Smartbar button. Strips
+        // any previously-injected DICTATE_LIVE_PROMPT action from saved arrangements exactly once.
+        val livePromptActionRemoved = boolean(
+            key = "dictate__live_prompt_action_removed",
+            default = false,
+        )
 
         // --- Rewording / GPT (roadmap section 4) -------------------------------------------------
         // Master switch for the rewording feature (prompt chips, auto-apply, live prompt). Default
@@ -329,6 +337,12 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val rewordingEnabled = boolean(
             key = "dictate__rewording_enabled",
             default = true,
+        )
+        // How the rewording prompt chips are surfaced: a dedicated panel (PANEL) opened from the
+        // Smartbar, or an always-on extra row pinned above the Smartbar (ROW). See DictatePromptsLayout.
+        val promptsLayout = enum(
+            key = "dictate__prompts_layout",
+            default = DictatePromptsLayout.PANEL,
         )
         // Chat (rewording) provider id – any chat-capable ProviderRegistry id ("openai", "groq",
         // "openrouter", … or "custom"). Independent from the transcription provider.

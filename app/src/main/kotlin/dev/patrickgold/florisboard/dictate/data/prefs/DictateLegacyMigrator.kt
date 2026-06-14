@@ -107,22 +107,21 @@ object DictateLegacyMigrator {
     }
 
     /**
-     * Ensures the live-prompt Smartbar action ([KeyCode.DICTATE_LIVE_PROMPT]) is present in the saved
-     * action arrangement. New entries in [QuickActionArrangement.Default] do not retroactively appear
-     * for users who already persisted an arrangement (e.g. by opening the Smartbar editor) before the
-     * action shipped, so without this they could never find or place it. Idempotent via
-     * `prefs.dictate.livePromptActionMigrated`; injects the action at the front of the dynamic row so
-     * it is discoverable, exactly where the default puts it.
+     * Removes the live-prompt Smartbar action ([KeyCode.DICTATE_LIVE_PROMPT]) from the saved action
+     * arrangement. The live prompt is now a chip inside the prompt panel/row, so it no longer ships as a
+     * separate Smartbar button; this strips the action that the earlier injection added (and that the
+     * old default placed). Idempotent via `prefs.dictate.livePromptActionRemoved`. Power users can still
+     * re-add it manually from the Smartbar editor – the action itself is left intact.
      */
-    suspend fun migrateLivePromptActionIfNeeded(context: Context) {
+    suspend fun removeLivePromptActionIfNeeded(context: Context) {
         val prefs by FlorisPreferenceStore
-        if (prefs.dictate.livePromptActionMigrated.get()) return
-        ensureActionPresent(TextKeyData.DICTATE_LIVE_PROMPT, KeyCode.DICTATE_LIVE_PROMPT)
-        prefs.dictate.livePromptActionMigrated.set(true)
+        if (prefs.dictate.livePromptActionRemoved.get()) return
+        removeActionIfPresent(KeyCode.DICTATE_LIVE_PROMPT)
+        prefs.dictate.livePromptActionRemoved.set(true)
     }
 
     /**
-     * Like [migrateLivePromptActionIfNeeded], but for the AI prompt-panel action ([KeyCode.DICTATE_PROMPTS]).
+     * Ensures the AI prompt-panel action ([KeyCode.DICTATE_PROMPTS]) is present in the saved arrangement.
      * Injected separately (own guard) so users who already ran the live-prompt migration still receive it.
      */
     suspend fun migratePromptsActionIfNeeded(context: Context) {
@@ -148,5 +147,25 @@ object DictateLegacyMigrator {
                 arrangement.copy(dynamicActions = listOf(action) + arrangement.dynamicActions),
             )
         }
+    }
+
+    /**
+     * Strips every action with [code] from the saved arrangement (sticky/dynamic/hidden). No-op if it is
+     * not present, so it is safe to run unconditionally behind a one-time guard.
+     */
+    private suspend fun removeActionIfPresent(code: Int) {
+        val prefs by FlorisPreferenceStore
+        val arrangement = prefs.smartbar.actionArrangement.get()
+        val matches = { action: QuickAction -> action.keyData().code == code }
+        val present = (arrangement.dynamicActions + arrangement.hiddenActions +
+            listOfNotNull(arrangement.stickyAction)).any(matches)
+        if (!present) return
+        prefs.smartbar.actionArrangement.set(
+            arrangement.copy(
+                stickyAction = arrangement.stickyAction?.takeUnless(matches),
+                dynamicActions = arrangement.dynamicActions.filterNot(matches),
+                hiddenActions = arrangement.hiddenActions.filterNot(matches),
+            ),
+        )
     }
 }

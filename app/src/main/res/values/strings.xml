@@ -1175,6 +1175,11 @@
     <!-- Dictate input panel (IME) -->
     <string name="dictate__panel_title" comment="Title of the Dictate AI prompt panel inside the keyboard">AI prompts</string>
     <string name="dictate__panel_no_prompts" comment="Shown in the prompt panel when no prompts exist yet">No prompts yet. Add some in the Dictate settings under Rewording.</string>
+    <string name="dictate__prompts_layout_title" comment="Setting: how the rewording prompt chips are shown on the keyboard">Prompt layout</string>
+    <string name="dictate__prompts_layout_panel_label">Separate panel</string>
+    <string name="dictate__prompts_layout_panel_description">Open the prompts in their own panel via the magic-wand button.</string>
+    <string name="dictate__prompts_layout_row_label">Always-on row</string>
+    <string name="dictate__prompts_layout_row_description">Pin the prompts in an extra row above the keyboard.</string>
     <string name="dictate__status_idle" comment="Status shown on the Dictate panel when ready to record">Tap to dictate</string>
     <string name="dictate__status_recording" comment="Status shown while recording audio">Recording – tap to stop</string>
     <string name="dictate__status_transcribing" comment="Status shown while the audio is being transcribed">Transcribing…</string>
