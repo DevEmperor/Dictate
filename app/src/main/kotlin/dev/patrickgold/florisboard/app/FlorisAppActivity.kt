@@ -123,7 +123,9 @@ class FlorisAppActivity : ComponentActivity() {
             setContent {
                 ProvideLocalizedResources(
                     resourcesContext,
-                    appName = R.string.app_name,
+                    // Settings/Setup/About/Home prose uses the full product name ("Dictate
+                    // Keyboard"); the launcher label and on-keyboard UI keep the short app_name.
+                    appName = R.string.app_name_full,
                 ) {
                     FlorisAppTheme(theme = appTheme) {
                         Surface(color = MaterialTheme.colorScheme.background) {
