@@ -1311,8 +1311,11 @@
     <string name="dictate__resend_button_title" comment="Setting: show a resend button on failure">Resend button</string>
     <string name="dictate__resend_button_summary" comment="Summary for the resend button setting">If transcription fails, show a button to retry with the same recording</string>
 
+    <!-- Dictate main screen pipeline groups -->
+    <string name="dictate__transcription_group" comment="Group title for the transcription (speech-to-text) stage on the main Dictate screen">Transcription (speech → text)</string>
+
     <!-- Dictate language selection -->
-    <string name="dictate__languages_group" comment="Group title for dictation language settings">Languages</string>
+    <string name="dictate__languages_group" comment="Group title for dictation language settings (no longer a hub group; the languages row now lives under the Transcription group)">Languages</string>
     <string name="dictate__languages_title" comment="Setting: pick which dictation languages to cycle through">Transcription languages</string>
     <string name="dictate__languages_summary" comment="Explanation on the language picker screen">Pick the languages you dictate in. Switch between them quickly from the recording bar.</string>
     <string name="dictate__language_detect" comment="Language option: let the model auto-detect the spoken language">Detect automatically</string>
@@ -1328,7 +1331,7 @@
     <string name="dictate__style_prompt_custom_placeholder" comment="Placeholder for the custom style prompt field">e.g. This sentence has capitalization and punctuation.</string>
 
     <!-- Dictate rewording (AI) settings -->
-    <string name="dictate__rewording_group" comment="Group title for the rewording entry on the main Dictate screen">Rewording</string>
+    <string name="dictate__rewording_group" comment="Group title for the rewording (AI editing) stage on the main Dictate screen">Rewording (AI editing)</string>
     <string name="dictate__rewording_title" comment="Title of the rewording settings screen">Rewording (AI)</string>
     <string name="dictate__rewording_summary_on" comment="Summary when rewording is enabled">On – reword, translate and format with AI</string>
     <string name="dictate__rewording_summary_off" comment="Summary when rewording is disabled">Off</string>
@@ -1345,7 +1348,7 @@
     <string name="dictate__manage_prompts_summary_loading" comment="Summary shown while the prompt count is loading">Add, edit and remove your prompts</string>
     <string name="dictate__auto_formatting_title" comment="Setting: turn spoken formatting cues into Markdown">Auto-formatting</string>
     <string name="dictate__auto_formatting_summary" comment="Summary for the auto-formatting setting">Turn spoken formatting cues into Markdown (headings, lists, …)</string>
-    <string name="dictate__system_prompt_title" comment="Setting: system prompt sent with every rewording request">System prompt</string>
+    <string name="dictate__system_prompt_title" comment="Setting: base instruction sent with every rewording request">Rewording instruction</string>
     <string name="dictate__system_prompt_custom_title" comment="Label for the custom system prompt field">Custom system prompt</string>
     <string name="dictate__system_prompt_custom_placeholder" comment="Placeholder for the custom system prompt field">Guidance added to every rewording request</string>
 

@@ -64,14 +64,14 @@ fun DictateScreen() = FlorisScreen {
         val providerName = remember(transcriptionProviderId) {
             ProviderRegistry.byId(transcriptionProviderId)?.displayName ?: transcriptionProviderId
         }
-        Preference(
-            icon = Icons.Default.Cloud,
-            title = stringRes(R.string.dictate__providers_title),
-            summary = stringRes(R.string.dictate__providers_summary, "provider" to providerName),
-            onClick = { navController.navigate(Routes.Settings.DictateProviders) },
-        )
+        PreferenceGroup(title = stringRes(R.string.dictate__transcription_group)) {
+            Preference(
+                icon = Icons.Default.Cloud,
+                title = stringRes(R.string.dictate__providers_title),
+                summary = stringRes(R.string.dictate__providers_summary, "provider" to providerName),
+                onClick = { navController.navigate(Routes.Settings.DictateProviders) },
+            )
 
-        PreferenceGroup(title = stringRes(R.string.dictate__languages_group)) {
             val selectionRaw by prefs.dictate.inputLanguages.collectAsState()
             val detectLabel = stringRes(R.string.dictate__language_detect)
             val summary = remember(selectionRaw, detectLabel) {
@@ -106,19 +106,6 @@ fun DictateScreen() = FlorisScreen {
             }
         }
 
-        PreferenceGroup(title = stringRes(R.string.dictate__rewording_group)) {
-            val rewordingEnabled by prefs.dictate.rewordingEnabled.collectAsState()
-            Preference(
-                icon = Icons.Default.AutoAwesome,
-                title = stringRes(R.string.dictate__rewording_title),
-                summary = stringRes(
-                    if (rewordingEnabled) R.string.dictate__rewording_summary_on
-                    else R.string.dictate__rewording_summary_off,
-                ),
-                onClick = { navController.navigate(Routes.Settings.DictateRewording) },
-            )
-        }
-
         PreferenceGroup(title = stringRes(R.string.dictate__recording_group)) {
             SwitchPreference(
                 prefs.dictate.audioFocus,
@@ -143,6 +130,19 @@ fun DictateScreen() = FlorisScreen {
                 icon = Icons.Default.Bolt,
                 title = stringRes(R.string.dictate__instant_recording_title),
                 summary = stringRes(R.string.dictate__instant_recording_summary),
+            )
+        }
+
+        PreferenceGroup(title = stringRes(R.string.dictate__rewording_group)) {
+            val rewordingEnabled by prefs.dictate.rewordingEnabled.collectAsState()
+            Preference(
+                icon = Icons.Default.AutoAwesome,
+                title = stringRes(R.string.dictate__rewording_title),
+                summary = stringRes(
+                    if (rewordingEnabled) R.string.dictate__rewording_summary_on
+                    else R.string.dictate__rewording_summary_off,
+                ),
+                onClick = { navController.navigate(Routes.Settings.DictateRewording) },
             )
         }
 
