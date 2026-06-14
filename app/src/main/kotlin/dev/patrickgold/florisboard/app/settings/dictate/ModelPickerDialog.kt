@@ -29,6 +29,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -73,6 +74,39 @@ fun ModelPickerDialog(
     // Live catalog fetched this session, merged on top of the curated/cached list.
     var fetched by remember { mutableStateOf(cachedModels) }
 
+    // Fetches the provider's full /models catalog and caches it via [onModelsFetched]. Shared by the
+    // Refresh button and the auto-load below.
+    val loadModels: suspend () -> Unit = {
+        loading = true
+        error = null
+        try {
+            val ids = OpenAiCompatibleClient
+                .from(preset, apiKey, baseUrlOverride = preset.baseUrl)
+                .listModels()
+                .map { it.id }
+            fetched = ids
+            onModelsFetched(ids)
+        } catch (e: DictateApiException) {
+            error = e.message
+        } catch (e: Exception) {
+            error = e.message
+        } finally {
+            loading = false
+        }
+    }
+
+    // Auto-load the live catalog the first time the picker opens (no cached list yet). Without this the
+    // dialog shows only the few curated ids — and nothing at all for providers that ship no curated list
+    // (xAI, DeepSeek, …) until the user manually tapped Refresh (roadmap 11.13). Gated on a usable key
+    // (or a keyless provider like Ollama) so we don't fire a guaranteed-401 request.
+    LaunchedEffect(Unit) {
+        if (cachedModels.isEmpty() && preset.supportsDynamicModels &&
+            (apiKey.isNotBlank() || preset.apiKeyUrl == null)
+        ) {
+            loadModels()
+        }
+    }
+
     val curated = when (kind) {
         ModelKind.TRANSCRIPTION -> preset.curatedTranscriptionModels
         ModelKind.CHAT -> preset.curatedChatModels
@@ -115,26 +149,7 @@ fun ModelPickerDialog(
                 Text(text = statusText, modifier = Modifier.weight(1f))
                 TextButton(
                     enabled = !loading,
-                    onClick = {
-                        loading = true
-                        error = null
-                        scope.launch {
-                            try {
-                                val ids = OpenAiCompatibleClient
-                                    .from(preset, apiKey, baseUrlOverride = preset.baseUrl)
-                                    .listModels()
-                                    .map { it.id }
-                                fetched = ids
-                                onModelsFetched(ids)
-                            } catch (e: DictateApiException) {
-                                error = e.message
-                            } catch (e: Exception) {
-                                error = e.message
-                            } finally {
-                                loading = false
-                            }
-                        }
-                    },
+                    onClick = { scope.launch { loadModels() } },
                 ) {
                     if (loading) {
                         CircularProgressIndicator(modifier = Modifier.padding(end = 8.dp).size(16.dp))
