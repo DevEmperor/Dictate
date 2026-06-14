@@ -418,6 +418,9 @@ class FlorisImeService : LifecycleInputMethodService() {
 
     override fun onWindowHidden() {
         super.onWindowHidden()
+        // Collapsing the keyboard discards any in-progress dictation recording instead of letting it
+        // run on in the background (a tap-to-record session the user walked away from).
+        dev.patrickgold.florisboard.dictate.DictateController.cancelRecording()
         if (windowController.onWindowHidden()) {
             flogInfo(LogTopic.IMS_EVENTS)
             activeState.batchEdit {
