@@ -101,6 +101,30 @@ object DictateLegacyMigrator {
             prefs.dictate.outputSpeed.set(s.outputSpeed)
             prefs.dictate.resendButton.set(s.resendButton)
 
+            // --- Recording capture toggles (roadmap 11.7). These were read from the legacy snapshot
+            // but previously never written, so an upgrading user silently lost them. ---
+            prefs.dictate.audioFocus.set(s.audioFocus)
+            prefs.dictate.useBluetoothMic.set(s.useBluetoothMic)
+            prefs.dictate.instantRecording.set(s.instantRecording)
+
+            // --- Dictation languages (roadmap 11.7). The legacy value is an *unordered* StringSet, so
+            // rebuild a stable order ("detect" first, then the rest sorted) and map the legacy active
+            // index onto it as a best effort. Previously neither the selection nor the active language
+            // was migrated, resetting the user back to the default {detect,en}. ---
+            val orderedLanguages = buildList {
+                if (s.inputLanguages.contains("detect")) add("detect")
+                addAll(s.inputLanguages.filter { it != "detect" }.sorted())
+            }
+            if (orderedLanguages.isNotEmpty()) {
+                prefs.dictate.inputLanguages.set(orderedLanguages.joinToString(","))
+                prefs.dictate.activeInputLanguage.set(
+                    orderedLanguages.getOrNull(s.inputLanguagePos) ?: orderedLanguages.first(),
+                )
+            }
+
+            // --- App UI language (roadmap 11.7): legacy "system" maps to FlorisBoard's "auto". ---
+            prefs.other.settingsLanguage.set(if (s.appLanguage == "system") "auto" else s.appLanguage)
+
             // --- Network proxy (roadmap 5.6): the legacy app stored one combined spec string
             // ("socks5|http://user:pass@host:port"); split it into the new structured fields. ---
             prefs.dictate.proxyEnabled.set(s.proxyEnabled)
