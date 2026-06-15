@@ -398,6 +398,15 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__live_prompt_action_removed",
             default = false,
         )
+        // Guard for the one-time re-engagement reset shipped with the 4.0.0 relaunch: existing users
+        // (who had already rated/donated, or whose audio counter was long past the thresholds) are
+        // given the rate & donate nudges one more time so they can react to the new app. Clears
+        // hasRated/hasDonated and resets totalAudioSeconds exactly once. See
+        // DictateLegacyMigrator.reofferRateAndDonateIfNeeded.
+        val promoReengagementDone = boolean(
+            key = "dictate__promo_reengagement_done",
+            default = false,
+        )
 
         // --- Rewording / GPT (roadmap section 4) -------------------------------------------------
         // Master switch for the rewording feature (prompt chips, auto-apply, live prompt). Default

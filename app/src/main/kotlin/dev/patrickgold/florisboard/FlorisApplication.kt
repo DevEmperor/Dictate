@@ -115,6 +115,7 @@ class FlorisApplication : Application() {
             DictateLegacyMigrator.migrateProviderKeyringIfNeeded()
             DictateLegacyMigrator.removeLivePromptActionIfNeeded(this@FlorisApplication)
             DictateLegacyMigrator.migratePromptsActionIfNeeded(this@FlorisApplication)
+            DictateLegacyMigrator.reofferRateAndDonateIfNeeded()
             preferenceStoreLoaded.value = true
         }
         extensionManager.value.init()

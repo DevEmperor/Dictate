@@ -271,6 +271,26 @@ object DictateLegacyMigrator {
     }
 
     /**
+     * One-time re-engagement reset for the 4.0.0 relaunch: re-offers the rate & donate nudges to
+     * existing users. Many of them already acted on (or were long past) these prompts in an earlier
+     * version, so the "handled" flags were set and/or their audio counter sat well beyond the
+     * thresholds – meaning the nudges would never appear again. As the app has changed substantially,
+     * we clear [Dictate.hasRated]/[Dictate.hasDonated] and reset [Dictate.totalAudioSeconds] so the
+     * rate prompt (after [DictateController] RATE threshold) and then the donate prompt (after the
+     * DONATE threshold) surface once more as the user dictates with the new version. For a brand-new
+     * install this is a no-op (everything is already at its default). Idempotent via
+     * `prefs.dictate.promoReengagementDone`, so it fires exactly once.
+     */
+    suspend fun reofferRateAndDonateIfNeeded() {
+        val prefs by FlorisPreferenceStore
+        if (prefs.dictate.promoReengagementDone.get()) return
+        prefs.dictate.hasRated.set(false)
+        prefs.dictate.hasDonated.set(false)
+        prefs.dictate.totalAudioSeconds.set(0L)
+        prefs.dictate.promoReengagementDone.set(true)
+    }
+
+    /**
      * Injects [keyData] at the front of the saved dynamic action row unless an action with [code] is
      * already present anywhere in the arrangement. New defaults do not retroactively merge into a
      * persisted arrangement, so without this an upgrading user could never see/place the action.
