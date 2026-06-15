@@ -51,7 +51,7 @@
     <string name="pref__gestures__swipe_right__label" comment="Preference title">Prevuci desno</string>
     <!-- About UI strings -->
     <string name="about__title" comment="Title of About activity">Informacije o...</string>
-    <string name="about__app_icon_content_description" comment="Content description of app icon in About">Ikonica Dictate Keyboard aplikacije</string>
+    <string name="about__app_icon_content_description" comment="Content description of app icon in About">Ikonica {app_name} aplikacije</string>
     <string name="about__view_source_code" comment="Label of View source code button in About">Izvorni kod</string>
     <!-- Setup UI strings -->
     <string name="setup__title" comment="Title of Setup">Dobrodošli!</string>

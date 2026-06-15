@@ -113,8 +113,8 @@
     <string name="settings__default" comment="General string which is used when a preference has the default value set">Por defecto</string>
     <string name="settings__system_default" comment="General string which is used when a preference has the system default value set">Predeterminado del sistema</string>
     <string name="settings__home__title" comment="Title of the Home screen">Bienvenido a {app_name}</string>
-    <string name="settings__home__ime_not_enabled" comment="Error message shown in Home fragment when Dictate Keyboard is not enabled in the system">Dictate Keyboard no está habilitado en el sistema y por lo tanto no estará disponible como método de entrada en el selector de entrada. Haga clic aquí para resolver este problema.</string>
-    <string name="settings__home__ime_not_selected" comment="Warning message shown in Home fragment when Dictate Keyboard is not selected as the default keyboard">Dictate Keyboard no está seleccionado como método de entrada predeterminado. Haga clic aquí para solucionar este problema.</string>
+    <string name="settings__home__ime_not_enabled" comment="Error message shown in Home fragment when Dictate Keyboard is not enabled in the system">{app_name} no está habilitado en el sistema y por lo tanto no estará disponible como método de entrada en el selector de entrada. Haga clic aquí para resolver este problema.</string>
+    <string name="settings__home__ime_not_selected" comment="Warning message shown in Home fragment when Dictate Keyboard is not selected as the default keyboard">{app_name} no está seleccionado como método de entrada predeterminado. Haga clic aquí para solucionar este problema.</string>
     <string name="settings__localization__title" comment="Title of languages and Layout screen">Idiomas &amp; Distribuciones</string>
     <string name="settings__localization__display_language_names_in__label" comment="Label of Display language names in preference">Muestra nombres de idiomas en</string>
     <string name="settings__localization__display_keyboard_labels_in_subtype_language" comment="Label of Display keyboard labels in subtype language preference">Mostrar las etiquetas del teclado en mismo idioma</string>
@@ -161,7 +161,7 @@
     <string name="pref__theme__theme_accent_color__label" comment="Label of accent color preference in Theme">        Color del énfasis (Temas Material You)
     </string>
     <string name="settings__theme_manager__title_manage" comment="Title of the theme manager screen for managing installed and custom themes">Gestionar temas instalados</string>
-    <string name="pref__theme__source_assets" comment="Label for the theme source field">Recursos de aplicación de Dictate Keyboard</string>
+    <string name="pref__theme__source_assets" comment="Label for the theme source field">Recursos de aplicación de {app_name}</string>
     <string name="pref__theme__source_internal" comment="Label for the theme source field">Almacenamiento interno</string>
     <string name="pref__theme__source_external" comment="Label for the theme source field">Almacenamiento externo</string>
     <string name="settings__theme_manager__title_day" comment="Title of the theme manager screen for day theme selection">Elegir tema claro</string>
@@ -522,7 +522,7 @@
     <string name="pref__other__show_app_icon__summary_atleast_q" comment="Summary of Show app icon preference in Other for Android 10+">Siempre habilitado en Android 10 y superior debido a las restricciones del sistema</string>
     <!-- About UI strings -->
     <string name="about__title" comment="Title of About activity">Acerca de</string>
-    <string name="about__app_icon_content_description" comment="Content description of app icon in About">Icono de la aplicación de Dictate Keyboard</string>
+    <string name="about__app_icon_content_description" comment="Content description of app icon in About">Icono de la aplicación de {app_name}</string>
     <string name="about__view_licenses" comment="Label of View licenses button in About">Licencias de código abierto</string>
     <string name="about__view_privacy_policy" comment="Label of View privacy policy button in About">Política de privacidad</string>
     <string name="about__view_source_code" comment="Label of View source code button in About">Código fuente</string>
@@ -537,7 +537,7 @@
     <string name="about__privacy_policy__title" comment="Preference title">Política de privacidad</string>
     <string name="about__privacy_policy__summary" comment="Preference summary">La política de privacidad para este proyecto</string>
     <string name="about__project_license__title" comment="Preference title">Licencia del proyecto</string>
-    <string name="about__project_license__summary" comment="Preference summary">Dictate Keyboard está licenciado bajo {license_name}</string>
+    <string name="about__project_license__summary" comment="Preference summary">{app_name} está licenciado bajo {license_name}</string>
     <string name="about__project_license__error_license_text_failed" comment="Error text for license text loading failure">Error: Fallo al cargar texto de licencia.\n-&gt; Razón: {error_message}</string>
     <string name="about__project_license__error_reason_asset_manager_null" comment="Error text if asset manager is null">La referencia del gestor de recursos es nula</string>
     <string name="about__third_party_licenses__title" comment="Preference title">Licencias de terceros</string>
@@ -555,7 +555,7 @@
     <string name="setup__select_ime__switch_keyboard_btn">Cambiar teclado</string>
     <string name="setup__grant_notification_permission__title">Permitir notificaciones de informes de errores</string>
     <string name="setup__grant_notification_permission__description">A partir de Android 13+, las aplicaciones deben pedir permiso para
-        enviar notificaciones. En Dictate Keyboard, esto solo se utiliza para abrir una pantalla de informe de error en caso de error.
+        enviar notificaciones. En Dictate, esto solo se utiliza para abrir una pantalla de informe de error en caso de error.
         Este permiso puede cambiarse en cualquier momento en los ajustes del sistema.
     </string>
     <string name="setup__grant_notification_permission__btn">Conceder permiso</string>
@@ -602,18 +602,18 @@
     <string name="backup_and_restore__restore__success">¡Datos restaurados exitosamente!</string>
     <string name="backup_and_restore__restore__failure">Error al restaurar datos: {error_message}</string>
     <!-- Crash Dialog strings -->
-    <string name="crash_dialog__title" comment="Title of crash dialog">Informe de errores de Dictate Keyboard</string>
-    <string name="crash_dialog__description" comment="Description of crash dialog">Lamentamos los inconvenientes, pero Dictate Keyboard se ha cerrado inesperadamente por un error.</string>
-    <string name="crash_dialog__report_instructions" comment="Issue tracker report instructions for the crash dialog. The %s placeholder is the name of the crash report template and always in English/LTR.">Si deseas reportar este fallo, primero comprueba si ya ha sido reportado en el Issue Tracker en GitHub.\nSi no, copie el log del error generado y abre un Issue. Usa la plantilla \"%s\" y rellenala con tu descripción, los pasos para reproducirlo, y pega el log generado al final. Esto ayudará a mejorar Dictate Keyboard y hacerlo más estable para todo el mundo. ¡Gracias!</string>
+    <string name="crash_dialog__title" comment="Title of crash dialog">Informe de errores de Dictate</string>
+    <string name="crash_dialog__description" comment="Description of crash dialog">Lamentamos los inconvenientes, pero Dictate se ha cerrado inesperadamente por un error.</string>
+    <string name="crash_dialog__report_instructions" comment="Issue tracker report instructions for the crash dialog. The %s placeholder is the name of the crash report template and always in English/LTR.">Si deseas reportar este fallo, primero comprueba si ya ha sido reportado en el Issue Tracker en GitHub.\nSi no, copie el log del error generado y abre un Issue. Usa la plantilla \"%s\" y rellenala con tu descripción, los pasos para reproducirlo, y pega el log generado al final. Esto ayudará a mejorar Dictate y hacerlo más estable para todo el mundo. ¡Gracias!</string>
     <string name="crash_dialog__copy_to_clipboard" comment="Label of Copy to clipboard button in crash dialog">Copiar al portapapeles del sistema</string>
     <string name="crash_dialog__copy_to_clipboard_success" comment="Label of Copy to clipboard success message in crash dialog">Copiado al portapapeles del sistema</string>
     <string name="crash_dialog__copy_to_clipboard_failure" comment="Label of Copy to clipboard failure message in crash dialog">No se puede copiar al portapapeles del sistema: Instancia del administrador de portapapeles no encontrada</string>
     <string name="crash_dialog__open_issue_tracker" comment="Label of Open issue tracker button in crash dialog">Abrir issue tracker (github.com)</string>
     <string name="crash_dialog__close" comment="Label of Close button in crash dialog">Cerrar</string>
-    <string name="crash_notification_channel__title" comment="Title of crash notification channel">Informes de errores de Dictate Keyboard</string>
-    <string name="crash_once_notification__title" comment="Title of the notification for a single crash">Dictate Keyboard ha dejado de funcionar…</string>
+    <string name="crash_notification_channel__title" comment="Title of crash notification channel">Informes de errores de Dictate</string>
+    <string name="crash_once_notification__title" comment="Title of the notification for a single crash">Dictate ha dejado de funcionar…</string>
     <string name="crash_once_notification__body" comment="Body of the notification for a single crash">Toca para ver detalles</string>
-    <string name="crash_multiple_notification__title" comment="Title of the notification for consecutive crashes">Parece que Dictate Keyboard ha dejado de funcionar repetidamente…</string>
+    <string name="crash_multiple_notification__title" comment="Title of the notification for consecutive crashes">Parece que Dictate ha dejado de funcionar repetidamente…</string>
     <string name="crash_multiple_notification__body" comment="Body of the notification for consecutive crashes">Volviendo al teclado anterior para detener el bucle de cierre infinito. Toque para ver los detalles del error</string>
     <!-- Clipboard strings -->
     <string name="clipboard__header_title">Portapapeles</string>
@@ -791,7 +791,7 @@
     <string name="ext__addon_management_box__managing_placeholder">Gestionando {extensions}</string>
     <string name="ext__addon_management_box__addon_manager_info">Todas las tareas relacionadas con la importación, exportación, creación, personalización y eliminación de extensiones pueden ser manejadas a través del administrador de complementos centralizado.</string>
     <string name="ext__addon_management_box__go_to_page">Ir a {ext_home_title}</string>
-    <string name="ext__home__info">Puede descargar e instalar extensiones de la tienda Dictate Keyboard Addons o importar cualquier archivo de extensión que haya descargado de internet.</string>
+    <string name="ext__home__info">Puede descargar e instalar extensiones de la tienda Dictate Addons o importar cualquier archivo de extensión que haya descargado de internet.</string>
     <string name="ext__home__visit_store">Visita la tienda de complementos</string>
     <string name="ext__home__manage_extensions">Administrar las extensiones instaladas</string>
     <string name="ext__list__view_details">Ver detalles</string>

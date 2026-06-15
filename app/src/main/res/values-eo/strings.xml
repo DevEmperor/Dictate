@@ -110,8 +110,8 @@
     <string name="settings__default" comment="General string which is used when a preference has the default value set">Defaŭlta</string>
     <string name="settings__system_default" comment="General string which is used when a preference has the system default value set">Sistema defaŭlta</string>
     <string name="settings__home__title" comment="Title of the Home screen">Bonvenon al {app_name}</string>
-    <string name="settings__home__ime_not_enabled" comment="Error message shown in Home fragment when Dictate Keyboard is not enabled in the system">Dictate Keyboard estas ne ebligita en la sistemo kaj sekve estos ne disponebla kiel enigmetodo en la elektilo. Klaku ĉi tie por solvi la problemon.</string>
-    <string name="settings__home__ime_not_selected" comment="Warning message shown in Home fragment when Dictate Keyboard is not selected as the default keyboard">Dictate Keyboard ne estas elektita kiel la implicita enigmetodo. Klaku ĉi tie por solvi la problemon.</string>
+    <string name="settings__home__ime_not_enabled" comment="Error message shown in Home fragment when Dictate Keyboard is not enabled in the system">{app_name} estas ne ebligita en la sistemo kaj sekve estos ne disponebla kiel enigmetodo en la elektilo. Klaku ĉi tie por solvi la problemon.</string>
+    <string name="settings__home__ime_not_selected" comment="Warning message shown in Home fragment when Dictate Keyboard is not selected as the default keyboard">{app_name} ne estas elektita kiel la implicita enigmetodo. Klaku ĉi tie por solvi la problemon.</string>
     <string name="settings__localization__title" comment="Title of languages and Layout screen">Lingvoj &amp; Aranĝoj</string>
     <string name="settings__localization__display_language_names_in__label" comment="Label of Display language names in preference">Montri lingvajn nomojn en</string>
     <string name="settings__localization__display_keyboard_labels_in_subtype_language" comment="Label of Display keyboard labels in subtype language preference">Montri klavarajn etikedojn en la subspeca lingvo</string>
@@ -158,7 +158,7 @@
     <string name="pref__theme__theme_accent_color__label" comment="Label of accent color preference in Theme">        Baza koloro (etosoj Material You)
     </string>
     <string name="settings__theme_manager__title_manage" comment="Title of the theme manager screen for managing installed and custom themes">Administri instalitajn etosojn</string>
-    <string name="pref__theme__source_assets" comment="Label for the theme source field">Rimedoj apon Dictate Keyboard</string>
+    <string name="pref__theme__source_assets" comment="Label for the theme source field">Rimedoj apon {app_name}</string>
     <string name="pref__theme__source_internal" comment="Label for the theme source field">Interna memoro</string>
     <string name="pref__theme__source_external" comment="Label for the theme source field">Ekstera provizanto</string>
     <string name="settings__theme_manager__title_day" comment="Title of the theme manager screen for day theme selection">Elekti tagan etoson</string>
@@ -355,7 +355,7 @@
     <string name="pref__other__show_app_icon__summary_atleast_q" comment="Summary of Show app icon preference in Other for Android 10+">Ĉiam ŝaltata en Android 10+ pro sistemaj restriktoj</string>
     <!-- About UI strings -->
     <string name="about__title" comment="Title of About activity">Pri</string>
-    <string name="about__app_icon_content_description" comment="Content description of app icon in About">Aplikaĵo bildeto de Dictate Keyboard</string>
+    <string name="about__app_icon_content_description" comment="Content description of app icon in About">Aplikaĵo bildeto de {app_name}</string>
     <string name="about__view_licenses" comment="Label of View licenses button in About">Malfermitkodaj permesiloj</string>
     <string name="about__view_privacy_policy" comment="Label of View privacy policy button in About">Privateca politiko</string>
     <string name="about__view_source_code" comment="Label of View source code button in About">Fontkodo</string>
@@ -414,15 +414,15 @@
     <string name="backup_and_restore__restore__success">Datumoj sukcese restaŭritaj!</string>
     <string name="backup_and_restore__restore__failure">Fiaskis restaŭri datumojn: {error_message}</string>
     <!-- Crash Dialog strings -->
-    <string name="crash_dialog__title" comment="Title of crash dialog">Erarojn raporto de Dictate Keyboard</string>
-    <string name="crash_dialog__description" comment="Description of crash dialog">Pardonu la ĝeno, Dictate Keyboard kraŝis kaŭze de neatendita eraro.</string>
+    <string name="crash_dialog__title" comment="Title of crash dialog">Erarojn raporto de Dictate</string>
+    <string name="crash_dialog__description" comment="Description of crash dialog">Pardonu la ĝeno, Dictate kraŝis kaŭze de neatendita eraro.</string>
     <string name="crash_dialog__copy_to_clipboard" comment="Label of Copy to clipboard button in crash dialog">Kopii al sistema tondujo</string>
     <string name="crash_dialog__copy_to_clipboard_success" comment="Label of Copy to clipboard success message in crash dialog">Kopiita al sistema tondujo</string>
     <string name="crash_dialog__close" comment="Label of Close button in crash dialog">Fermi</string>
-    <string name="crash_notification_channel__title" comment="Title of crash notification channel">Erarojn raportoj de Dictate Keyboard</string>
-    <string name="crash_once_notification__title" comment="Title of the notification for a single crash">Dictate Keyboard ĉesis funkcii…</string>
+    <string name="crash_notification_channel__title" comment="Title of crash notification channel">Erarojn raportoj de Dictate</string>
+    <string name="crash_once_notification__title" comment="Title of the notification for a single crash">Dictate ĉesis funkcii…</string>
     <string name="crash_once_notification__body" comment="Body of the notification for a single crash">Tuŝu tie por vidi detalojn de la eraro</string>
-    <string name="crash_multiple_notification__title" comment="Title of the notification for consecutive crashes">Dictate Keyboard ŝajnas ĉesi funkcii ripete…</string>
+    <string name="crash_multiple_notification__title" comment="Title of the notification for consecutive crashes">Dictate ŝajnas ĉesi funkcii ripete…</string>
     <!-- Clipboard strings -->
     <string name="clipboard__header_title">Tondujo</string>
     <string name="clipboard__disabled__title">Tonduja historio estas nun malŝaltita</string>
@@ -558,7 +558,7 @@
     <string name="ext__addon_management_box__managing_placeholder">Administri la {extensions}</string>
     <string name="ext__addon_management_box__addon_manager_info">Ĉiuj taskoj rilataj al importado, eksportado, kreado, personecigo, kaj forigo etendaĵojn povas esti mastrumata per la centralizita etendaĵa mastrumilo.</string>
     <string name="ext__addon_management_box__go_to_page">Iri al {ext_home_title}</string>
-    <string name="ext__home__info">Vi povas elŝuti kaj instali etendaĵojn el la Dictate Keyboard Aldonaĵejo aŭ enporti iun ajn etendaĵan dosieron ke vi elŝutis el la interreto.</string>
+    <string name="ext__home__info">Vi povas elŝuti kaj instali etendaĵojn el la Dictate Aldonaĵejo aŭ enporti iun ajn etendaĵan dosieron ke vi elŝutis el la interreto.</string>
     <string name="ext__home__visit_store">Viziti Aldonaĵejon</string>
     <string name="ext__home__manage_extensions">Administri instalitajn etendaĵojn</string>
     <string name="ext__list__view_details">Vidi detalojn</string>

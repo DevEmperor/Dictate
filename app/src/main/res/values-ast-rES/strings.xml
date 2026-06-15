@@ -179,7 +179,7 @@
     <string name="setup__select_ime__switch_keyboard_btn">Cambiar de tecláu</string>
     <string name="setup__grant_notification_permission__title">Avisos pa informar de casques</string>
     <string name="setup__grant_notification_permission__description">A partir d\'Android 13, les aplicaciones tienen de pidir
-        permisu pa unviar avisos. En Dictate Keyboard, esti permisu namás s\'usa p\'abrir la pantalla d\'informar casques al producise dalgún.
+        permisu pa unviar avisos. En Dictate, esti permisu namás s\'usa p\'abrir la pantalla d\'informar casques al producise dalgún.
         Pues camudar esti permisu cuando quieras na configuración del sistema.
     </string>
     <string name="setup__grant_notification_permission__btn">Conceder el permisu</string>
@@ -199,8 +199,8 @@
     <string name="backup_and_restore__restore__failure">La restauración de los datos falló: {error_message}</string>
     <!-- Crash Dialog strings -->
     <string name="crash_dialog__close" comment="Label of Close button in crash dialog">Zarrar</string>
-    <string name="crash_once_notification__title" comment="Title of the notification for a single crash">Dictate Keyboard dexó de funcionar…</string>
-    <string name="crash_multiple_notification__title" comment="Title of the notification for consecutive crashes">Paez que Dictate Keyboard dexa de funcionar de contino…</string>
+    <string name="crash_once_notification__title" comment="Title of the notification for a single crash">Dictate dexó de funcionar…</string>
+    <string name="crash_multiple_notification__title" comment="Title of the notification for consecutive crashes">Paez que Dictate dexa de funcionar de contino…</string>
     <!-- Clipboard strings -->
     <string name="clipboard__header_title">Cartafueyu</string>
     <string name="clipboard__disabled__message">L\'historial del cartafueyu de {app_name} permítete atroxar y acceder aína al testu y a les imáxenes que copies, cola capacidá de fixar elementos, configurar la llimpieza automática y afitar un númberu máximu d\'elementos.</string>

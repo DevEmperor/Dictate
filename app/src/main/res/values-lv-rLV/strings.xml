@@ -110,8 +110,8 @@
     <string name="settings__default" comment="General string which is used when a preference has the default value set">Noklusējums</string>
     <string name="settings__system_default" comment="General string which is used when a preference has the system default value set">Sistēmas noklusējums</string>
     <string name="settings__home__title" comment="Title of the Home screen">Laipni lūgts {app_name}</string>
-    <string name="settings__home__ime_not_enabled" comment="Error message shown in Home fragment when Dictate Keyboard is not enabled in the system">Dictate Keyboard nav iespējots sistēmas iestatījumos, tādēļ tā nebūs pieejama kā ievades avots atlasītājā. Klikšķināt šeit, lai atrisinātu to.</string>
-    <string name="settings__home__ime_not_selected" comment="Warning message shown in Home fragment when Dictate Keyboard is not selected as the default keyboard">Dictate Keyboard nav atlasīts kā noklusējuma ievades veids. Klikšķināt šeit, lai to novērstu.</string>
+    <string name="settings__home__ime_not_enabled" comment="Error message shown in Home fragment when Dictate Keyboard is not enabled in the system">{app_name} nav iespējots sistēmas iestatījumos, tādēļ tā nebūs pieejama kā ievades avots atlasītājā. Klikšķināt šeit, lai atrisinātu to.</string>
+    <string name="settings__home__ime_not_selected" comment="Warning message shown in Home fragment when Dictate Keyboard is not selected as the default keyboard">{app_name} nav atlasīts kā noklusējuma ievades veids. Klikšķināt šeit, lai to novērstu.</string>
     <string name="settings__localization__title" comment="Title of languages and Layout screen">Valodas un izkārtojumi</string>
     <string name="settings__localization__display_language_names_in__label" comment="Label of Display language names in preference">Attēlot valodu nosaukumu</string>
     <string name="settings__localization__display_keyboard_labels_in_subtype_language" comment="Label of Display keyboard labels in subtype language preference">Attēlot tastatūras iezīmes apakšveida valodā</string>
@@ -158,7 +158,7 @@
     <string name="pref__theme__theme_accent_color__label" comment="Label of accent color preference in Theme">        Uzsvara krāsa (Material You izskati)
     </string>
     <string name="settings__theme_manager__title_manage" comment="Title of the theme manager screen for managing installed and custom themes">Pārvaldīt uzstādītos izskatus</string>
-    <string name="pref__theme__source_assets" comment="Label for the theme source field">Dictate Keyboard lietotnes līdzekļi</string>
+    <string name="pref__theme__source_assets" comment="Label for the theme source field">{app_name} lietotnes līdzekļi</string>
     <string name="pref__theme__source_internal" comment="Label for the theme source field">Iekšējā krātuve</string>
     <string name="pref__theme__source_external" comment="Label for the theme source field">Ārējs avots</string>
     <string name="settings__theme_manager__title_day" comment="Title of the theme manager screen for day theme selection">Atlasīt dienas izskatu</string>
@@ -484,7 +484,7 @@
     <string name="pref__other__show_app_icon__summary_atleast_q" comment="Summary of Show app icon preference in Other for Android 10+">Vienmēr iespējots Android 10+ sistēmas ierobežojumu dēļ</string>
     <!-- About UI strings -->
     <string name="about__title" comment="Title of About activity">Par</string>
-    <string name="about__app_icon_content_description" comment="Content description of app icon in About">Dictate Keyboard lietotnes ikona</string>
+    <string name="about__app_icon_content_description" comment="Content description of app icon in About">{app_name} lietotnes ikona</string>
     <string name="about__view_licenses" comment="Label of View licenses button in About">Atvērtā pirmavota licences</string>
     <string name="about__view_privacy_policy" comment="Label of View privacy policy button in About">Privātuma nosacījumi</string>
     <string name="about__view_source_code" comment="Label of View source code button in About">Avota kods</string>
@@ -499,7 +499,7 @@
     <string name="about__privacy_policy__title" comment="Preference title">Privātuma nosacījumi</string>
     <string name="about__privacy_policy__summary" comment="Preference summary">Šī projekta privātuma nosacījumi</string>
     <string name="about__project_license__title" comment="Preference title">Projekta licence</string>
-    <string name="about__project_license__summary" comment="Preference summary">Dictate Keyboard ir licencēts ar {license_name}</string>
+    <string name="about__project_license__summary" comment="Preference summary">{app_name} ir licencēts ar {license_name}</string>
     <string name="about__project_license__error_license_text_failed" comment="Error text for license text loading failure">Kļūda: neizdevās ielādēt licences saturu.\n-&gt; Iemesls: {error_message}</string>
     <string name="about__project_license__error_reason_asset_manager_null" comment="Error text if asset manager is null">Līdzekļu pārvaldītāja atsauce ir null</string>
     <string name="about__third_party_licenses__title" comment="Preference title">Trešo pušu licences</string>
@@ -517,7 +517,7 @@
     <string name="setup__select_ime__switch_keyboard_btn">Pārslēgt tastatūru</string>
     <string name="setup__grant_notification_permission__title">Atļaut avārijas atskaišu paziņojumus</string>
     <string name="setup__grant_notification_permission__description">Sākot ar Android 13, lietotnēm ir jāprasa atļauja, lai
-        nosūtītu paziņojumus. Dictate Keyboard tā tiek izmantota tikai, lai atvērtu avārijas ziņojuma ekrānu avārijas gadījumā.
+        nosūtītu paziņojumus. Dictate tā tiek izmantota tikai, lai atvērtu avārijas ziņojuma ekrānu avārijas gadījumā.
         Šo atļauju sistēmas iestatījumos var mainīt jebkurā laikā.
     </string>
     <string name="setup__grant_notification_permission__btn">Piešķirt atļauju</string>
@@ -564,18 +564,18 @@
     <string name="backup_and_restore__restore__success">Dati veiksmīgi atjaunoti.</string>
     <string name="backup_and_restore__restore__failure">Neizdevās atjaunot datus: {error_message}</string>
     <!-- Crash Dialog strings -->
-    <string name="crash_dialog__title" comment="Title of crash dialog">Dictate Keyboard kļūdu ziņojums</string>
+    <string name="crash_dialog__title" comment="Title of crash dialog">Dictate kļūdu ziņojums</string>
     <string name="crash_dialog__description" comment="Description of crash dialog">Atvainojamies par neērtībām, bet FlorsBoard avarēja neparedzētas kļūdas dēļ.</string>
-    <string name="crash_dialog__report_instructions" comment="Issue tracker report instructions for the crash dialog. The %s placeholder is the name of the crash report template and always in English/LTR.">Ja ir vēlme ziņot par šo kļūdu, vispirms jāpārliecinās, vai GitHub pieteikumu ceļrādī par šādu avāriju jau ir ziņots.\nJa nē, starpliktuvē jāievieto izveidotais avārijas žurnāls un jāatver jauns pieteikums. Jāizmanto \"%s\" veidne un jānorāda apraksts, darbības atkārtošanai un beigās jāielīmē avārijas žurnāls. Tas palīdz padarīt Dictate Keyboard labāku un noturīgāku ikvienam. Paldies!</string>
+    <string name="crash_dialog__report_instructions" comment="Issue tracker report instructions for the crash dialog. The %s placeholder is the name of the crash report template and always in English/LTR.">Ja ir vēlme ziņot par šo kļūdu, vispirms jāpārliecinās, vai GitHub pieteikumu ceļrādī par šādu avāriju jau ir ziņots.\nJa nē, starpliktuvē jāievieto izveidotais avārijas žurnāls un jāatver jauns pieteikums. Jāizmanto \"%s\" veidne un jānorāda apraksts, darbības atkārtošanai un beigās jāielīmē avārijas žurnāls. Tas palīdz padarīt Dictate labāku un noturīgāku ikvienam. Paldies!</string>
     <string name="crash_dialog__copy_to_clipboard" comment="Label of Copy to clipboard button in crash dialog">Ievietot sistēmas starpliktuvē</string>
     <string name="crash_dialog__copy_to_clipboard_success" comment="Label of Copy to clipboard success message in crash dialog">Ievietots sistēmas starpliktuvē</string>
     <string name="crash_dialog__copy_to_clipboard_failure" comment="Label of Copy to clipboard failure message in crash dialog">Nav iespējams ievietot sistēmas starpliktuvē: nav atrasts starpliktuves pārvaldnieks</string>
     <string name="crash_dialog__open_issue_tracker" comment="Label of Open issue tracker button in crash dialog">Atvērt pieteikumu ceļrādi (GitHub.com)</string>
     <string name="crash_dialog__close" comment="Label of Close button in crash dialog">Aizvērt</string>
-    <string name="crash_notification_channel__title" comment="Title of crash notification channel">Dictate Keyboard kļūdu ziņojumi</string>
-    <string name="crash_once_notification__title" comment="Title of the notification for a single crash">Dictate Keyboard pārstāja darboties…</string>
+    <string name="crash_notification_channel__title" comment="Title of crash notification channel">Dictate kļūdu ziņojumi</string>
+    <string name="crash_once_notification__title" comment="Title of the notification for a single crash">Dictate pārstāja darboties…</string>
     <string name="crash_once_notification__body" comment="Body of the notification for a single crash">Pieskarties, lai apskatītu kļudu izklāstu</string>
-    <string name="crash_multiple_notification__title" comment="Title of the notification for consecutive crashes">Izskatās, ka Dictate Keyboard atkārtoti pārstāj darboties…</string>
+    <string name="crash_multiple_notification__title" comment="Title of the notification for consecutive crashes">Izskatās, ka Dictate atkārtoti pārstāj darboties…</string>
     <string name="crash_multiple_notification__body" comment="Body of the notification for consecutive crashes">Notiek atkāpšanāš uz iepriekšējo tastatūru, lai apturētu nebeidzamu avārijas cilpu. Piesist, lai apskatītu kļūdu izklāstu</string>
     <!-- Clipboard strings -->
     <string name="clipboard__header_title">Starpliktuve</string>
@@ -753,7 +753,7 @@
     <string name="ext__addon_management_box__managing_placeholder">Pārvalda {extensions}</string>
     <string name="ext__addon_management_box__addon_manager_info">Visi uzdevumi, kas saistīti ar paplašinājumu ievietošanu, izgūšanu, izveidošanu, pielāgošanu un noņemšanu, ir paveicami centralizētajā papildinājumu pārvaldniekā.</string>
     <string name="ext__addon_management_box__go_to_page">Doties uz {ext_home_title}</string>
-    <string name="ext__home__info">Paplašinājumus var lejupielādēt un uzstādīt no Dictate Keyboard papildinājumu glabātavas vai ievietot jebkuru paplašinājuma datni, kas ir lejupielādēta internetā.</string>
+    <string name="ext__home__info">Paplašinājumus var lejupielādēt un uzstādīt no Dictate papildinājumu glabātavas vai ievietot jebkuru paplašinājuma datni, kas ir lejupielādēta internetā.</string>
     <string name="ext__home__visit_store">Apmeklēt papildinājumu glabātavu</string>
     <string name="ext__home__manage_extensions">Pārvaldīt uzstādītos paplašinājumus</string>
     <string name="ext__list__view_details">Skatīt izvērsumu</string>
