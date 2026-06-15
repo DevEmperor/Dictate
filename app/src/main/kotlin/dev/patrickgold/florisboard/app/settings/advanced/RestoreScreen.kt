@@ -48,6 +48,8 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.cacheManager
 import dev.patrickgold.florisboard.clipboardManager
+import dev.patrickgold.florisboard.dictate.data.prompts.PromptModel
+import dev.patrickgold.florisboard.dictate.data.prompts.PromptsDatabaseHelper
 import dev.patrickgold.florisboard.ime.clipboard.provider.ClipboardFileStorage
 import dev.patrickgold.florisboard.ime.clipboard.provider.ClipboardItem
 import dev.patrickgold.florisboard.ime.clipboard.provider.ItemType
@@ -154,6 +156,20 @@ fun RestoreScreen() = FlorisScreen {
             if (file.exists()) {
                 val fileBasedStorage = FileBasedStorage(file.path)
                 FlorisPreferenceStore.import(importStrategy, fileBasedStorage).getOrThrow()
+            }
+        }
+        if (restoreFilesSelector.dictatePrompts) {
+            val promptsFile = workspace.outputDir.subDir("dictate").subFile(Backup.DICTATE_PROMPTS_JSON_NAME)
+            if (promptsFile.exists()) {
+                val prompts = promptsFile.readJson<List<PromptModel>>()
+                val db = PromptsDatabaseHelper(context.applicationContext)
+                if (shouldReset) {
+                    // Erase mode: replace the whole prompt list with the backed-up one.
+                    db.replaceAll(prompts)
+                } else {
+                    // Merge mode: append the backed-up prompts after the existing ones.
+                    db.addAll(prompts)
+                }
             }
         }
         val workspaceFilesDir = workspace.outputDir.subDir("files")

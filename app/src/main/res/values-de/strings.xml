@@ -491,6 +491,7 @@
     <string name="backup_and_restore__back_up__destination_share_intent">Drittanbieter-Apps über das Teilen-Menü</string>
     <string name="backup_and_restore__back_up__files">Auswählen, wovon eine Sicherung erstellt werden soll</string>
     <string name="backup_and_restore__back_up__files_jetpref_datastore">Einstellungen</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">Gespeicherte Umformulierungs-Prompts</string>
     <string name="backup_and_restore__back_up__files_ime_keyboard">Tastaturerweiterungen</string>
     <string name="backup_and_restore__back_up__files_ime_spelling">Rechtschreibeerweiterungen / Wörterbücher</string>
     <string name="backup_and_restore__back_up__files_ime_theme">Design-Erweiterungen</string>

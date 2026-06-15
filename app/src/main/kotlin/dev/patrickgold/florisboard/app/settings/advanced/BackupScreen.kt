@@ -47,6 +47,7 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.cacheManager
 import dev.patrickgold.florisboard.clipboardManager
+import dev.patrickgold.florisboard.dictate.data.prompts.PromptsDatabaseHelper
 import dev.patrickgold.florisboard.ime.clipboard.provider.ClipboardFileStorage
 import dev.patrickgold.florisboard.ime.clipboard.provider.ItemType
 import dev.patrickgold.florisboard.lib.cache.CacheManager
@@ -79,6 +80,9 @@ object Backup {
     const val CLIPBOARD_TEXT_ITEMS_JSON_NAME = "clipboard_text_items.json"
     const val CLIPBOARD_IMAGES_JSON_NAME = "clipboard_images.json"
     const val CLIPBOARD_VIDEO_JSON_NAME = "clipboard_video.json"
+    // Dictate-specific: the user's saved rewording prompts (the `prompts.db` table), exported as
+    // JSON rather than the raw SQLite file so the archive stays WAL-/lock-/version-independent.
+    const val DICTATE_PROMPTS_JSON_NAME = "dictate_prompts.json"
 
     fun defaultFileName(metadata: Metadata): String {
         return "backup_${metadata.packageName}_${metadata.versionCode}_${metadata.timestamp}.zip"
@@ -91,6 +95,7 @@ object Backup {
 
     class FilesSelector {
         var jetprefDatastore by mutableStateOf(true)
+        var dictatePrompts by mutableStateOf(true)
         var imeKeyboard by mutableStateOf(true)
         var imeTheme by mutableStateOf(true)
         var clipboardTextItems by mutableStateOf(false)
@@ -120,7 +125,7 @@ object Backup {
         }
 
         fun atLeastOneSelected(): Boolean {
-            return jetprefDatastore || imeKeyboard || imeTheme || clipboardTextItems || clipboardImageItems || clipboardVideoItems
+            return jetprefDatastore || dictatePrompts || imeKeyboard || imeTheme || clipboardTextItems || clipboardImageItems || clipboardVideoItems
         }
     }
 
@@ -180,6 +185,11 @@ fun BackupScreen() = FlorisScreen {
                 .subFile("${FlorisPreferenceModel.NAME}.${AndroidAppDataStorage.JETPREF_FILE_EXT}")
                 .let { FileBasedStorage(it.path) }
             FlorisPreferenceStore.export(fileBasedStorage).getOrThrow()
+        }
+        if (backupFilesSelector.dictatePrompts) {
+            val prompts = PromptsDatabaseHelper(context.applicationContext).getAll()
+            workspace.inputDir.subDir("dictate").subFile(Backup.DICTATE_PROMPTS_JSON_NAME)
+                .writeJson(prompts)
         }
         val workspaceFilesDir = workspace.inputDir.subDir("files")
         if (backupFilesSelector.imeKeyboard) {
@@ -324,6 +334,11 @@ internal fun BackupFilesSelector(
             onClick = { filesSelector.jetprefDatastore = !filesSelector.jetprefDatastore },
             checked = filesSelector.jetprefDatastore,
             text = stringRes(R.string.backup_and_restore__back_up__files_jetpref_datastore),
+        )
+        CheckboxListItem(
+            onClick = { filesSelector.dictatePrompts = !filesSelector.dictatePrompts },
+            checked = filesSelector.dictatePrompts,
+            text = stringRes(R.string.backup_and_restore__back_up__files_dictate_prompts),
         )
         CheckboxListItem(
             onClick = { filesSelector.imeKeyboard = !filesSelector.imeKeyboard },

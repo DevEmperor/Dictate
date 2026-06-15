@@ -673,6 +673,7 @@
     <string name="backup_and_restore__back_up__destination_share_intent">Third-party app via share menu</string>
     <string name="backup_and_restore__back_up__files">Select what to back up</string>
     <string name="backup_and_restore__back_up__files_jetpref_datastore">Preferences</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">Saved rewording prompts</string>
     <string name="backup_and_restore__back_up__files_ime_keyboard">Keyboard extensions</string>
     <string name="backup_and_restore__back_up__files_ime_spelling">Spelling extensions / dictionaries</string>
     <string name="backup_and_restore__back_up__files_ime_theme">Theme extensions</string>

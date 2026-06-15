@@ -10,17 +10,23 @@
 
 package dev.patrickgold.florisboard.dictate.data.prompts
 
+import kotlinx.serialization.Serializable
+
 /**
  * A single user-defined rewording prompt.
  *
  * Ported 1:1 from the original Dictate `PromptModel` so the on-disk representation in
  * `prompts.db` stays identical (see [PromptsDatabaseHelper] and `docs/COMPATIBILITY.md`).
  *
+ * [Serializable] so the prompt list can be exported to / imported from a Backup & Restore
+ * archive as JSON (see `BackupScreen`/`RestoreScreen`).
+ *
  * Special synthetic ids used by the keyboard UI (never persisted):
  *  - [ID_INSTANT_PROMPT]  (-1) live/instant prompt button
  *  - [ID_ADD_PROMPT]      (-2) "add new prompt" button
  *  - [ID_SELECT_ALL]      (-3) "select all / deselect" toggle button
  */
+@Serializable
 data class PromptModel(
     var id: Int,
     var pos: Int,
