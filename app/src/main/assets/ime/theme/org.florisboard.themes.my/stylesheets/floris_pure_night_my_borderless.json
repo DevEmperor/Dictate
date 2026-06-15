@@ -104,7 +104,7 @@
     "text-max-lines": "2"
   },
   "key[code=-11][shiftstate=`caps_lock`]": {
-    "foreground": "var(--secondary)"
+    "foreground": "dynamic-dark-color(primary)"
   },
   "key-hint": {
     "background": "transparent",

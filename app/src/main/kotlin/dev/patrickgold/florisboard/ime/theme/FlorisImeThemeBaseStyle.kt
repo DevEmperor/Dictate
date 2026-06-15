@@ -98,7 +98,9 @@ val FlorisImeThemeBaseStyle = SnyggStylesheet.v2 {
         FlorisImeUi.Attr.Code to listOf(KeyCode.SHIFT),
         FlorisImeUi.Attr.ShiftState to listOf(InputShiftState.CAPS_LOCK.toString()),
     ) {
-        foreground = rgbaColor(255, 152, 0)
+        // Mark caps-lock with the user's accent color (the dynamic primary) instead of a fixed
+        // orange, matching the bundled day/night themes. This is only the fallback base style.
+        foreground = dynamicLightColor("primary")
     }
     FlorisImeUi.KeyHint.elementName {
         background = rgbaColor(0, 0, 0, 0f)
