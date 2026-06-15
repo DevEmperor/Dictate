@@ -413,10 +413,11 @@ private fun EmojiKey(
             .aspectRatio(1f)
             .pointerInput(Unit) {
                 detectTapGestures(
-                    onPress = {
-                        inputFeedbackController.keyPress(TextKeyData.UNSPECIFIED)
-                    },
+                    // Fire the key-press haptic on the confirmed tap, not on the initial press:
+                    // the emoji grid scrolls vertically, and emitting feedback on press-down made
+                    // every emoji buzz while the user was merely scrolling the list past it.
                     onTap = {
+                        inputFeedbackController.keyPress(TextKeyData.UNSPECIFIED)
                         onEmojiInput(base)
                     },
                     onLongPress = {
