@@ -17,6 +17,7 @@
 package dev.patrickgold.florisboard.app.setup
 
 import android.Manifest
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -24,12 +25,17 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -43,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
@@ -52,6 +59,8 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceModel
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
+import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
+import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.florisboard.lib.compose.FlorisScreenScope
 import dev.patrickgold.florisboard.lib.util.InputMethodUtils
@@ -66,8 +75,12 @@ import org.florisboard.lib.android.AndroidVersion
 import org.florisboard.lib.compose.FlorisBulletSpacer
 import org.florisboard.lib.compose.FlorisStep
 import org.florisboard.lib.compose.FlorisStepLayout
+import org.florisboard.lib.compose.FlorisStepLayoutScope
 import org.florisboard.lib.compose.FlorisStepState
 import org.florisboard.lib.compose.stringRes
+
+/** The provider recommended to new (non-technical) users: fast and free for everyday dictation. */
+private const val RECOMMENDED_PROVIDER_ID = "groq"
 
 @Composable
 fun SetupScreen() = FlorisScreen {
@@ -84,6 +97,13 @@ fun SetupScreen() = FlorisScreen {
     val isFlorisBoardEnabled by InputMethodUtils.observeIsFlorisboardEnabled(foregroundOnly = true)
     val isFlorisBoardSelected by InputMethodUtils.observeIsFlorisboardSelected(foregroundOnly = true)
     val hasNotificationPermission by prefs.internal.notificationPermissionState.collectAsState()
+
+    // Dictate onboarding: the active transcription provider must have a usable key (or be keyless)
+    // before the user can dictate. This drives the new "Connect a free AI service" step.
+    val accounts by prefs.dictate.providerAccounts.collectAsState()
+    val activeProviderId by prefs.dictate.transcriptionProviderId.collectAsState()
+    val isProviderConfigured = isProviderConfigured(accounts, activeProviderId)
+    var providerSkipped by rememberSaveable { mutableStateOf(false) }
 
     val requestNotification =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -111,6 +131,10 @@ fun SetupScreen() = FlorisScreen {
         isFlorisBoardEnabled,
         isFlorisBoardSelected,
         isMicGranted,
+        isProviderConfigured,
+        providerSkipped,
+        { providerSkipped = true },
+        accounts,
         context,
         navController,
         requestNotification,
@@ -120,11 +144,36 @@ fun SetupScreen() = FlorisScreen {
     )
 }
 
+/** Reads the current clipboard text (used to paste an API key without opening the on-screen keyboard). */
+private fun readClipboardText(context: Context): String? {
+    val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager ?: return null
+    return cm.primaryClip
+        ?.takeIf { it.itemCount > 0 }
+        ?.getItemAt(0)
+        ?.coerceToText(context)
+        ?.toString()
+}
+
+/** Masks an API key for on-screen confirmation, e.g. "gsk_…AB12" (keeps the ends, hides the middle). */
+private fun maskKey(key: String): String =
+    if (key.length > 8) "${key.take(4)}…${key.takeLast(4)}" else "•".repeat(key.length)
+
+/** True once the active transcription provider has a saved key, or is a keyless endpoint (Ollama). */
+private fun isProviderConfigured(accounts: ProviderAccounts, providerId: String): Boolean {
+    if (accounts.getOrEmpty(providerId).hasKey) return true
+    val preset = ProviderRegistry.byId(providerId)
+    return preset != null && preset.apiKeyUrl == null
+}
+
 @Composable
 private fun FlorisScreenScope.content(
     isFlorisBoardEnabled: Boolean,
     isFlorisBoardSelected: Boolean,
     isMicGranted: Boolean,
+    isProviderConfigured: Boolean,
+    providerSkipped: Boolean,
+    onSkipProvider: () -> Unit,
+    accounts: ProviderAccounts,
     context: Context,
     navController: NavController,
     requestNotification: ManagedActivityResultLauncher<String, Boolean>,
@@ -133,28 +182,25 @@ private fun FlorisScreenScope.content(
     scope: CoroutineScope,
 ) {
 
+    fun targetStep(): Int = when {
+        !isFlorisBoardEnabled -> Steps.EnableIme.id
+        !isFlorisBoardSelected -> Steps.SelectIme.id
+        !isMicGranted -> Steps.GrantMicPermission.id
+        hasNotificationPermission == NotificationPermissionState.NOT_SET && AndroidVersion.ATLEAST_API33_T -> Steps.SelectNotification.id
+        !isProviderConfigured && !providerSkipped -> Steps.SetUpProvider.id
+        else -> Steps.FinishUp.id
+    }
+
     val stepState = rememberSaveable(saver = FlorisStepState.Saver) {
-        val initStep = when {
-            !isFlorisBoardEnabled -> Steps.EnableIme.id
-            !isFlorisBoardSelected -> Steps.SelectIme.id
-            !isMicGranted -> Steps.GrantMicPermission.id
-            hasNotificationPermission == NotificationPermissionState.NOT_SET && AndroidVersion.ATLEAST_API33_T -> Steps.SelectNotification.id
-            else -> Steps.FinishUp.id
-        }
-        FlorisStepState.new(init = initStep)
+        FlorisStepState.new(init = targetStep())
     }
 
     content {
-        LaunchedEffect(isFlorisBoardEnabled, isFlorisBoardSelected, isMicGranted, hasNotificationPermission) {
-            stepState.setCurrentAuto(
-                when {
-                    !isFlorisBoardEnabled -> Steps.EnableIme.id
-                    !isFlorisBoardSelected -> Steps.SelectIme.id
-                    !isMicGranted -> Steps.GrantMicPermission.id
-                    hasNotificationPermission == NotificationPermissionState.NOT_SET && AndroidVersion.ATLEAST_API33_T -> Steps.SelectNotification.id
-                    else -> Steps.FinishUp.id
-                }
-            )
+        LaunchedEffect(
+            isFlorisBoardEnabled, isFlorisBoardSelected, isMicGranted,
+            hasNotificationPermission, isProviderConfigured, providerSkipped,
+        ) {
+            stepState.setCurrentAuto(targetStep())
         }
 
         // Below block allows to return from the system IME enabler activity
@@ -188,7 +234,8 @@ private fun FlorisScreenScope.content(
                 Spacer(modifier = Modifier.height(16.dp))
             },
             steps = steps(
-                context, navController, requestNotification, requestMic, scope
+                context, navController, requestNotification, requestMic,
+                isProviderConfigured, onSkipProvider, accounts, scope,
             ),
             footer = {
                 footer(context)
@@ -224,8 +271,26 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
     navController: NavController,
     requestNotification: ManagedActivityResultLauncher<String, Boolean>,
     requestMic: ManagedActivityResultLauncher<String, Boolean>,
+    isProviderConfigured: Boolean,
+    onSkipProvider: () -> Unit,
+    accounts: ProviderAccounts,
     scope: CoroutineScope,
 ): List<FlorisStep> {
+
+    // Persists the entered key into the keyring and points the active transcription (and, where the
+    // provider also supports chat, rewording) provider at it. Done in this scope so the step composable
+    // stays free of preference plumbing.
+    fun saveKey(providerId: String, key: String) {
+        scope.launch {
+            this@steps.prefs.dictate.providerAccounts.set(
+                accounts.edit(providerId) { it.copy(apiKey = key.trim()) }
+            )
+            this@steps.prefs.dictate.transcriptionProviderId.set(providerId)
+            if (ProviderRegistry.byId(providerId)?.capabilities?.chat == true) {
+                this@steps.prefs.dictate.rewordingProviderId.set(providerId)
+            }
+        }
+    }
 
     return listOfNotNull(
         FlorisStep(
@@ -267,15 +332,26 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
             }
         } else null,
         FlorisStep(
+            id = Steps.SetUpProvider.id,
+            title = stringRes(R.string.setup__provider__title),
+        ) {
+            ProviderSetupStep(
+                onSaveKey = ::saveKey,
+                onSkip = onSkipProvider,
+            )
+        },
+        FlorisStep(
             id = Steps.FinishUp.id,
             title = stringRes(R.string.setup__finish_up__title),
         ) {
             StepText(stringRes(R.string.setup__finish_up__description_p1))
             StepText(stringRes(R.string.setup__finish_up__description_p2))
-            // Dictate onboarding: let the user set their AI provider + API key right here.
-            StepText(stringRes(R.string.dictate__setup_description))
-            StepButton(label = stringRes(R.string.dictate__setup_configure_btn)) {
-                navController.navigate(Routes.Settings.Dictate)
+            if (!isProviderConfigured) {
+                Spacer(modifier = Modifier.height(8.dp))
+                StepText(
+                    text = stringRes(R.string.setup__finish_up__add_key_hint),
+                    fontStyle = FontStyle.Italic,
+                )
             }
             StepButton(label = stringRes(R.string.setup__finish_up__finish_btn)) {
                 scope.launch { this@steps.prefs.internal.isImeSetUp.set(true) }
@@ -289,10 +365,160 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
     )
 }
 
+/**
+ * The Dictate onboarding step that gets a non-technical user from "what is an API key" to a working
+ * provider. It defaults to the recommended free provider (Groq) with a plain-language explanation and a
+ * step-by-step mini guide, lets the user open the provider's sign-up page and paste the resulting key,
+ * and offers an advanced picker for anyone who prefers a different provider. The key is saved into the
+ * keyring on confirm, which (via the parent's auto-advance) moves the flow on to the final step.
+ */
+@Composable
+private fun FlorisStepLayoutScope.ProviderSetupStep(
+    onSaveKey: (providerId: String, key: String) -> Unit,
+    onSkip: () -> Unit,
+) {
+    val context = LocalContext.current
+
+    var selectedProviderId by rememberSaveable { mutableStateOf(RECOMMENDED_PROVIDER_ID) }
+    var apiKey by rememberSaveable { mutableStateOf("") }
+    var showAdvanced by rememberSaveable { mutableStateOf(false) }
+    var showManualEntry by rememberSaveable { mutableStateOf(false) }
+    var pasteHint by remember { mutableStateOf<String?>(null) }
+    var providerMenuExpanded by remember { mutableStateOf(false) }
+
+    val selectedPreset = ProviderRegistry.byId(selectedProviderId) ?: ProviderRegistry.GROQ
+    val isRecommended = selectedProviderId == RECOMMENDED_PROVIDER_ID
+
+    StepText(stringRes(R.string.setup__provider__intro))
+    Spacer(modifier = Modifier.height(8.dp))
+    StepText(stringRes(R.string.setup__provider__what_is_key))
+
+    if (isRecommended) {
+        Spacer(modifier = Modifier.height(8.dp))
+        StepText(stringRes(R.string.setup__provider__recommended))
+    }
+
+    Spacer(modifier = Modifier.height(12.dp))
+    StepText(
+        text = if (isRecommended) {
+            stringRes(R.string.setup__provider__steps_groq)
+        } else {
+            stringRes(R.string.setup__provider__steps_generic, "provider" to selectedPreset.displayName)
+        },
+    )
+
+    StepButton(
+        label = stringRes(R.string.setup__provider__open_btn, "provider" to selectedPreset.displayName),
+    ) {
+        selectedPreset.apiKeyUrl?.let { context.launchUrl(it) }
+    }
+
+    // Paste-first: the user just copied the key on the provider page, so the common path needs no
+    // on-screen keyboard (which otherwise covers this cramped step). Manual entry stays as a fallback.
+    val clipboardEmptyMsg = stringRes(R.string.setup__provider__clipboard_empty)
+    StepButton(label = stringRes(R.string.setup__provider__paste_btn)) {
+        val pasted = readClipboardText(context)?.trim()
+        if (pasted.isNullOrBlank()) {
+            pasteHint = clipboardEmptyMsg
+        } else {
+            apiKey = pasted
+            pasteHint = null
+        }
+    }
+
+    if (apiKey.isNotBlank()) {
+        Spacer(modifier = Modifier.height(8.dp))
+        StepText(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            text = stringRes(R.string.setup__provider__key_detected, "key" to maskKey(apiKey)),
+        )
+    }
+    pasteHint?.let { hint ->
+        Spacer(modifier = Modifier.height(8.dp))
+        StepText(text = hint, fontStyle = FontStyle.Italic)
+    }
+
+    TextButton(
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(top = 4.dp),
+        onClick = { showManualEntry = !showManualEntry },
+    ) {
+        Text(stringRes(R.string.setup__provider__enter_manually))
+    }
+    if (showManualEntry) {
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
+            value = apiKey,
+            onValueChange = { apiKey = it },
+            singleLine = true,
+            label = { Text(stringRes(R.string.setup__provider__key_field)) },
+        )
+    }
+
+    if (apiKey.isNotBlank()) {
+        StepButton(label = stringRes(R.string.setup__provider__save_btn)) {
+            onSaveKey(selectedProviderId, apiKey)
+        }
+    }
+
+    // Advanced: let users pick a different transcription-capable provider than the recommended one.
+    TextButton(
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(top = 4.dp),
+        onClick = { showAdvanced = !showAdvanced },
+    ) {
+        Text(stringRes(R.string.setup__provider__other_provider))
+    }
+    if (showAdvanced) {
+        StepText(
+            text = stringRes(R.string.setup__provider__other_provider_hint),
+            fontStyle = FontStyle.Italic,
+        )
+        Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            TextButton(onClick = { providerMenuExpanded = true }) {
+                Text("${selectedPreset.displayName}  ▾")
+            }
+            DropdownMenu(
+                expanded = providerMenuExpanded,
+                onDismissRequest = { providerMenuExpanded = false },
+            ) {
+                ProviderRegistry.presets
+                    .filter { it.capabilities.transcription }
+                    .forEach { preset ->
+                        DropdownMenuItem(
+                            text = { Text(preset.displayName) },
+                            onClick = {
+                                selectedProviderId = preset.id
+                                providerMenuExpanded = false
+                            },
+                        )
+                    }
+            }
+        }
+    }
+
+    TextButton(
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(top = 4.dp),
+        onClick = onSkip,
+    ) {
+        Text(
+            text = stringRes(R.string.setup__provider__skip_btn),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
 private sealed class Steps(val id: Int) {
     data object EnableIme : Steps(id = 1)
     data object SelectIme : Steps(id = 2)
     data object GrantMicPermission : Steps(id = 3)
     data object SelectNotification : Steps(id = 4)
-    data object FinishUp : Steps(id = 5)
+    data object SetUpProvider : Steps(id = 5)
+    data object FinishUp : Steps(id = 6)
 }

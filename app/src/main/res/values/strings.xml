@@ -613,7 +613,7 @@
 
     <!-- Setup UI strings -->
     <string name="setup__title" comment="Title of Setup">Welcome!</string>
-    <string name="setup__intro_message" comment="Short intro message welcoming new users">Thanks for using {app_name}! This quick setup guides you through the required steps to use {app_name} on your device.</string>
+    <string name="setup__intro_message" comment="Short intro message welcoming new users">Welcome to {app_name}! Let\'s get you ready to dictate in just a few quick steps — no technical knowledge needed.</string>
     <string name="setup__footer__privacy_policy" comment="Privacy policy label for URL">Privacy policy</string>
     <string name="setup__footer__repository" comment="Repository label for URL">Repository</string>
 
@@ -632,10 +632,29 @@
     </string>
     <string name="setup__grant_notification_permission__btn">Grant Permission</string>
 
-    <string name="setup__finish_up__title">Finish Up</string>
-    <string name="setup__finish_up__description_p1">{app_name} is now enabled in the system and ready to be customized by you.</string>
-    <string name="setup__finish_up__description_p2">If you encounter any issues, bugs, crashes or just want to make a suggestion, check out the project repository from the about screen!</string>
-    <string name="setup__finish_up__finish_btn">Start Customizing</string>
+    <!-- Setup: connect an AI provider (Dictate onboarding for non-technical users) -->
+    <string name="setup__provider__title">Connect a free AI service</string>
+    <string name="setup__provider__intro">Dictate turns your speech into text with the help of an online AI service. To use it, you need your own personal key for such a service.</string>
+    <string name="setup__provider__what_is_key">An API key is like a personal password that lets Dictate use the service for you. Creating one is free and takes about two minutes.</string>
+    <string name="setup__provider__recommended">We recommend <b>Groq</b> — it\'s fast and free for everyday dictation.</string>
+    <string name="setup__provider__steps_groq">1. Tap the button below to open Groq.\n2. Sign in with Google or your email address.\n3. Tap “Create API Key”, give it any name, and confirm.\n4. Copy the key (it begins with “gsk_”).\n5. Come back here and tap “Paste API key” below.</string>
+    <string name="setup__provider__steps_generic">1. Tap the button below to open {provider}.\n2. Create an account if you don\'t have one yet.\n3. Create a new API key and copy it.\n4. Come back here and tap “Paste API key” below.</string>
+    <string name="setup__provider__open_btn" comment="{provider} is the provider name, e.g. Groq">Open {provider} &amp; create a key</string>
+    <string name="setup__provider__paste_btn">Paste API key</string>
+    <string name="setup__provider__clipboard_empty">Your clipboard looks empty. Copy your key on the provider\'s page first, then tap “Paste API key” again.</string>
+    <string name="setup__provider__key_detected" comment="{key} is the masked key, e.g. gsk_…AB12">Key added: {key} ✓</string>
+    <string name="setup__provider__enter_manually">Or type the key manually</string>
+    <string name="setup__provider__key_field">Paste your API key here</string>
+    <string name="setup__provider__save_btn">Save &amp; continue</string>
+    <string name="setup__provider__skip_btn">Set up later</string>
+    <string name="setup__provider__other_provider">Use a different AI provider</string>
+    <string name="setup__provider__other_provider_hint">Advanced: pick another service instead of Groq. You\'ll need an API key from that provider.</string>
+
+    <string name="setup__finish_up__title">You\'re all set!</string>
+    <string name="setup__finish_up__description_p1">{app_name} is ready. Switch to it with the keyboard switcher, tap the microphone, and start speaking.</string>
+    <string name="setup__finish_up__description_p2">You can change languages, the AI provider and everything else anytime in the settings. If you ever run into a problem or have an idea, reach out from the about screen!</string>
+    <string name="setup__finish_up__add_key_hint">Tip: you haven\'t added an AI key yet. Add one anytime in Settings → Dictate → AI providers to start dictating.</string>
+    <string name="setup__finish_up__finish_btn">Start using Dictate</string>
 
     <!-- Physical keyboard -->
     <string name="physical_keyboard__title">Physical keyboard</string>
