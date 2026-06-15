@@ -17,6 +17,7 @@
 import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.agp.application)
@@ -100,6 +101,30 @@ configure<ApplicationExtension> {
         compose = true
     }
 
+    // Release signing. Credentials live in a local, untracked `keystore.properties` at the repo root
+    // (see keystore.properties.template) so the keystore/passwords never get committed. When the file
+    // is absent (e.g. on CI without secrets, or a contributor's machine) the release build simply has
+    // no signing config attached and falls back to an unsigned build, exactly as before.
+    //
+    // IMPORTANT: For uploads to Google Play this must be the *upload key* the existing
+    // net.devemperor.dictate listing expects (the old Java app's key) — a fresh key gets rejected.
+    val keystorePropsFile = rootProject.file("keystore.properties")
+    val keystoreProps = if (keystorePropsFile.exists()) {
+        Properties().apply { keystorePropsFile.inputStream().use { load(it) } }
+    } else {
+        null
+    }
+    signingConfigs {
+        keystoreProps?.let { props ->
+            create("release") {
+                storeFile = rootProject.file(props.getProperty("storeFile"))
+                storePassword = props.getProperty("storePassword")
+                keyAlias = props.getProperty("keyAlias")
+                keyPassword = props.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         named("debug") {
             applicationIdSuffix = ".debug"
@@ -120,6 +145,10 @@ configure<ApplicationExtension> {
 
         named("release") {
             versionNameSuffix = projectVersionNameSuffix
+
+            if (keystoreProps != null) {
+                signingConfig = signingConfigs.getByName("release")
+            }
 
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             isMinifyEnabled = true
