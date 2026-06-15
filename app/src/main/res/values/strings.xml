@@ -1427,6 +1427,11 @@
     <!-- ============================== Changelog ============================== -->
     <string name="changelog__dialog_title" comment="Title of the what's-new dialog shown after an update">What\'s new</string>
     <string name="changelog__view_all" comment="Button that opens the full changelog/releases page online">View all changes</string>
-    <string name="changelog__current" comment="What's-new text shown after updating to the current version">Dictate now runs on a full Dictate Keyboard-based typing keyboard: a complete multi-language layout keyboard with a dedicated mic action that opens the Dictate voice panel. Your provider and API key are configured in Settings → Dictate, and settings from the previous Dictate app are imported automatically.</string>
+    <string name="changelog__intro" comment="Brief intro line at the top of the what's-new dialog, before the per-version notes">Dictate has been updated. Here\'s what\'s new:</string>
+    <string name="changelog__version_header" comment="Header shown above one release's notes. {version} is e.g. 4.0.0">Version {version}</string>
+    <string name="changelog__donate" comment="Tappable invitation to donate, shown at the bottom of the what's-new dialog">Enjoying Dictate? Tap here to support development ♥</string>
+    <!-- Per-release notes. To announce a new version, add a changelog__vX_Y_Z string here and a matching
+         entry in DictateChangelog.kt. changelog__current holds the notes for the initial 4.0.0 release. -->
+    <string name="changelog__current" comment="What's-new text for the 4.0.0 release. One change per line.">• Brand-new keyboard: Dictate now ships as a full multi-language layout keyboard with a dedicated mic key that opens the voice panel.\n• Bring your own AI: pick any OpenAI-compatible provider and enter your API key under Settings → Dictate.\n• Smart formatting and rewording powered by your chosen model.\n• Your settings from the previous Dictate app are imported automatically.</string>
 
 </resources>
