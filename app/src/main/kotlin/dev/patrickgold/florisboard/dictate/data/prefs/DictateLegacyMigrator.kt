@@ -11,6 +11,7 @@
 package dev.patrickgold.florisboard.dictate.data.prefs
 
 import android.content.Context
+import androidx.compose.ui.graphics.Color
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.DictateLanguages
 import dev.patrickgold.florisboard.dictate.provider.DictateProxyType
@@ -126,6 +127,15 @@ object DictateLegacyMigrator {
 
             // --- App UI language (roadmap 11.7): legacy "system" maps to FlorisBoard's "auto". ---
             prefs.other.settingsLanguage.set(if (s.appLanguage == "system") "auto" else s.appLanguage)
+
+            // --- Accent color: the legacy app had a single user-pickable accent (ARGB int, key
+            // "net.devemperor.dictate.accent_color") that tinted the keyboard prompt UI. It was read
+            // into the snapshot but never applied, so upgraders lost their familiar color. Carry it
+            // over to both new accent prefs so the look stays identical: theme.accentColor drives the
+            // keyboard (FlorisImeTheme), other.accentColor the settings app. ---
+            val legacyAccent = Color(s.accentColor)
+            prefs.theme.accentColor.set(legacyAccent)
+            prefs.other.accentColor.set(legacyAccent)
 
             // --- Network proxy (roadmap 5.6): the legacy app stored one combined spec string
             // ("socks5|http://user:pass@host:port"); split it into the new structured fields. ---
