@@ -47,6 +47,7 @@ import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.NewReleases
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
@@ -449,15 +450,30 @@ private fun errorIcon(kind: DictateApiException.Kind?, action: DictateController
 }
 
 /**
- * One-time rate/donate nudge (roadmap 9.7/9.8): a star/heart icon, a short message and accept (✓) /
- * decline (✗) buttons. Accepting opens the Play Store (rate) or PayPal (donate); both buttons mark the
- * nudge as handled so it never reappears. Shown only when idle, replacing the normal Smartbar.
+ * One-time Smartbar nudge: a tinted icon, a short message and accept (✓) / decline (✗) buttons.
+ * Accepting opens the Play Store (rate, 9.7), PayPal (donate, 9.8) or the in-app "What's new" dialog
+ * (changelog after an update, 11.9); both buttons mark the nudge as handled so it never reappears.
+ * Shown only when idle, replacing the normal Smartbar.
  */
 @Composable
 private fun PromoContent(kind: DictateController.PromoKind) {
     val context = LocalContext.current
-    val isRate = kind == DictateController.PromoKind.RATE
     val accent = Color(0xFF30B7E6) // Dictate light blue (theme accent default).
+    val leadingIcon = when (kind) {
+        DictateController.PromoKind.RATE -> Icons.Default.Star
+        DictateController.PromoKind.DONATE -> Icons.Default.Favorite
+        DictateController.PromoKind.CHANGELOG -> Icons.Default.NewReleases
+    }
+    val messageRes = when (kind) {
+        DictateController.PromoKind.RATE -> R.string.dictate__promo_rate_message
+        DictateController.PromoKind.DONATE -> R.string.dictate__promo_donate_message
+        DictateController.PromoKind.CHANGELOG -> R.string.dictate__promo_changelog_message
+    }
+    val actionRes = when (kind) {
+        DictateController.PromoKind.RATE -> R.string.dictate__promo_rate_action
+        DictateController.PromoKind.DONATE -> R.string.dictate__promo_donate_action
+        DictateController.PromoKind.CHANGELOG -> R.string.dictate__promo_changelog_action
+    }
 
     // Gentle pop-in (fade + slight scale) on top of the Smartbar's own slide transition.
     var shown by remember { mutableStateOf(false) }
@@ -480,21 +496,21 @@ private fun PromoContent(kind: DictateController.PromoKind) {
                 scaleY = s
             },
     ) {
-        // Tinted leading icon (star = rate, heart = donate).
+        // Tinted leading icon (star = rate, heart = donate, badge = update/changelog).
         Icon(
-            imageVector = if (isRate) Icons.Default.Star else Icons.Default.Favorite,
+            imageVector = leadingIcon,
             contentDescription = null,
             tint = accent,
             modifier = Modifier.size(20.dp),
         )
         Spacer(modifier = Modifier.width(8.dp))
         SnyggText(
-            text = stringRes(if (isRate) R.string.dictate__promo_rate_message else R.string.dictate__promo_donate_message),
+            text = stringRes(messageRes),
         )
         Spacer(modifier = Modifier.width(10.dp))
-        // Filled accent pill = primary action (opens Play Store / PayPal).
+        // Filled accent pill = primary action (opens Play Store / PayPal / the in-app changelog).
         Text(
-            text = stringRes(if (isRate) R.string.dictate__promo_rate_action else R.string.dictate__promo_donate_action),
+            text = stringRes(actionRes),
             color = Color.White,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,

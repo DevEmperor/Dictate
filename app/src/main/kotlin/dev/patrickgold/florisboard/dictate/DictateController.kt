@@ -18,7 +18,9 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaRecorder
 import android.os.SystemClock
+import dev.patrickgold.florisboard.BuildConfig
 import dev.patrickgold.florisboard.R
+import dev.patrickgold.florisboard.app.FlorisAppActivity
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.audio.BluetoothMicRouter
 import dev.patrickgold.florisboard.dictate.audio.RecordingController
@@ -37,6 +39,7 @@ import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.key.KeyType
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
 import dev.patrickgold.florisboard.keyboardManager
+import dev.patrickgold.florisboard.lib.util.AppVersionUtils
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -110,8 +113,19 @@ object DictateController {
         OPEN_SETTINGS,
     }
 
-    /** Which one-time nudge is being shown (see [maybePromptForReview]). */
-    enum class PromoKind { RATE, DONATE }
+    /**
+     * Which one-time nudge is being shown. RATE/DONATE are usage-gated (see [maybePromptForReview]);
+     * CHANGELOG is shown right after an app update (see [maybePromptChangelog]) and opens the in-app
+     * "What's new" dialog instead of a web page.
+     */
+    enum class PromoKind { RATE, DONATE, CHANGELOG }
+
+    /**
+     * Temporary debug switch to preview the "Dictate was updated" Smartbar nudge. When true, the nudge
+     * is offered on every keyboard open (the real version gate never triggers on debug builds, whose
+     * version name carries an unparseable suffix). MUST be false for any committed/shipped build.
+     */
+    private const val DEBUG_FORCE_CHANGELOG_NUDGE = false
 
     private val prefs by FlorisPreferenceStore
 
@@ -593,17 +607,37 @@ object DictateController {
         _state.value = UiState.Promo(kind)
     }
 
-    /** Opens the Play Store / PayPal page for the active promo and marks it done. No-op otherwise. */
+    /**
+     * Shows a one-time "Dictate was updated" nudge in the Smartbar right after an app update, so users
+     * who rarely open the settings still learn about new versions and can jump straight to the changelog.
+     * Tapping it opens the app, where the "What's new" dialog appears (it shares the same
+     * [AppVersionUtils.shouldShowChangelog] gate). A dedicated per-version flag
+     * ([dev.patrickgold.florisboard.app.AppPrefs.Dictate.changelogNudgeVersion]) keeps the keyboard nudge
+     * from reappearing without suppressing the in-app dialog, and vice versa. No-op unless idle.
+     */
+    fun maybePromptChangelog(context: Context) {
+        if (_state.value !is UiState.Idle) return
+        if (!DEBUG_FORCE_CHANGELOG_NUDGE) {
+            if (!AppVersionUtils.shouldShowChangelog(context, prefs)) return
+            if (prefs.dictate.changelogNudgeVersion.get() == BuildConfig.VERSION_NAME) return
+        }
+        _state.value = UiState.Promo(PromoKind.CHANGELOG)
+    }
+
+    /**
+     * Acts on the active promo and marks it done: RATE/DONATE open the Play Store / PayPal page,
+     * CHANGELOG opens the app (which then shows the "What's new" dialog). No-op otherwise.
+     */
     fun acceptPromo(context: Context) {
         val kind = (_state.value as? UiState.Promo)?.kind ?: return
-        val url = when (kind) {
-            PromoKind.RATE -> "https://play.google.com/store/apps/details?id=net.devemperor.dictate"
-            PromoKind.DONATE -> "https://paypal.me/DevEmperor"
-        }
         runCatching {
-            context.startActivity(
-                Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-            )
+            val intent = when (kind) {
+                PromoKind.RATE -> Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?id=net.devemperor.dictate"))
+                PromoKind.DONATE -> Intent(Intent.ACTION_VIEW, Uri.parse("https://paypal.me/DevEmperor"))
+                PromoKind.CHANGELOG -> Intent(context, FlorisAppActivity::class.java)
+            }
+            context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }
         markPromoDone(kind)
         _state.value = UiState.Idle
@@ -625,6 +659,9 @@ object DictateController {
                     prefs.dictate.hasDonated.set(true)
                     prefs.dictate.hasRated.set(true)
                 }
+                // Remember this version so the keyboard nudge shows only once per update. The in-app
+                // dialog stays governed by versionLastChangelog, so tapping/dismissing here never hides it.
+                PromoKind.CHANGELOG -> prefs.dictate.changelogNudgeVersion.set(BuildConfig.VERSION_NAME)
             }
         }
     }

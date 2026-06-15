@@ -1224,6 +1224,8 @@
     <string name="dictate__promo_donate_message" comment="Smartbar nudge asking the user to donate after enough usage. Kept short to fit the single-line Smartbar.">Support Dictate?</string>
     <string name="dictate__promo_rate_action" comment="Label of the accent pill button that opens the Play Store to rate the app">Rate</string>
     <string name="dictate__promo_donate_action" comment="Label of the accent pill button that opens PayPal to donate">Donate</string>
+    <string name="dictate__promo_changelog_message" comment="Smartbar nudge shown after an app update. Kept short to fit the single-line Smartbar.">Dictate was updated</string>
+    <string name="dictate__promo_changelog_action" comment="Label of the accent pill button that opens the app's What's new changelog dialog">What\'s new</string>
 
     <!-- Dictate settings screen -->
     <string name="dictate__title" comment="Title of the Dictate settings screen and home tile">Dictate</string>

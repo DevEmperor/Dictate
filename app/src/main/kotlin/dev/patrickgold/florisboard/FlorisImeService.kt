@@ -357,6 +357,10 @@ class FlorisImeService : LifecycleInputMethodService() {
             dev.patrickgold.florisboard.dictate.DictateController.onMicClick(this)
         }
 
+        // "Dictate was updated" nudge (roadmap 11.9): shown in the Smartbar after an app update so users
+        // who rarely open the settings still discover the changelog. Checked first so it takes priority
+        // over the rate/donate nudge; both no-op unless idle, so neither interrupts a recording above.
+        dev.patrickgold.florisboard.dictate.DictateController.maybePromptChangelog(this)
         // Rate/donate nudge (roadmap 9.7/9.8): shown in the Smartbar once enough audio was dictated.
         // Guarded internally to no-op unless idle, so it never interrupts a recording started above.
         dev.patrickgold.florisboard.dictate.DictateController.maybePromptForReview()

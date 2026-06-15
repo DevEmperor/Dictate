@@ -348,6 +348,14 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__has_donated",
             default = false,
         )
+        // The app version whose "Dictate was updated" changelog nudge has already been shown on the
+        // keyboard (Smartbar). Set when the user taps or dismisses that nudge, so it appears only once
+        // per update. Empty until the first post-update nudge. Independent of the in-app dialog's
+        // versionLastChangelog bookkeeping, so the two surfaces never suppress each other.
+        val changelogNudgeVersion = string(
+            key = "dictate__changelog_nudge_version",
+            default = "",
+        )
         // Comma-separated dictation language codes the user cycles through on the recording bar
         // (see DictateLanguages; "detect" = auto-detect). Default mirrors the legacy app.
         val inputLanguages = string(
