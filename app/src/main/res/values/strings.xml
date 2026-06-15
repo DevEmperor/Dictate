@@ -1350,6 +1350,8 @@
     <string name="dictate__style_prompt_title" comment="Setting: punctuation/style prompt for transcription">Punctuation &amp; style</string>
     <string name="dictate__style_prompt_custom_title" comment="Label for the custom style prompt field">Custom style prompt</string>
     <string name="dictate__style_prompt_custom_placeholder" comment="Placeholder for the custom style prompt field">e.g. This sentence has capitalization and punctuation.</string>
+    <string name="dictate__style_prompt_info_title" comment="Row that reveals the built-in default style prompt">View default example</string>
+    <string name="dictate__style_prompt_info_description" comment="Explanation shown above the default style prompt example">This example sentence is sent with each transcription to nudge the model towards correct capitalization and punctuation. It adapts automatically to the language you dictate in.</string>
 
     <!-- Dictate custom words / vocabulary (appended to the transcription prompt, roadmap 11.12) -->
     <string name="dictate__custom_words_title" comment="Setting: custom vocabulary added to the transcription prompt so names/jargon are spelled correctly">Custom words</string>
@@ -1368,7 +1370,6 @@
     <string name="dictate__rewording_api_key_title" comment="Label for the rewording API key field">Rewording API key</string>
     <string name="dictate__rewording_api_key_reuse" comment="Summary shown when no separate rewording key is set">Same as transcription key</string>
     <string name="dictate__rewording_model_title" comment="Label for the rewording model field">Rewording model</string>
-    <string name="dictate__rewording_prompts_group" comment="Group title for prompt management and behavior">Prompts</string>
     <string name="dictate__manage_prompts_title" comment="Setting: open the prompt management screen">Manage prompts</string>
     <string name="dictate__manage_prompts_summary" comment="Summary showing how many prompts exist. {count} is a number.">{count} prompts</string>
     <string name="dictate__manage_prompts_summary_loading" comment="Summary shown while the prompt count is loading">Add, edit and remove your prompts</string>
@@ -1377,6 +1378,8 @@
     <string name="dictate__system_prompt_title" comment="Setting: base instruction sent with every rewording request">Rewording instruction</string>
     <string name="dictate__system_prompt_custom_title" comment="Label for the custom system prompt field">Custom system prompt</string>
     <string name="dictate__system_prompt_custom_placeholder" comment="Placeholder for the custom system prompt field">Guidance added to every rewording request</string>
+    <string name="dictate__system_prompt_info_title" comment="Row that reveals the built-in default rewording instruction">View default instruction</string>
+    <string name="dictate__system_prompt_info_description" comment="Explanation shown above the default rewording instruction">This instruction is added to every rewording request so the AI returns only the result you asked for — with no extra text before or after.</string>
 
     <!-- Dictate prompt management (CRUD) -->
     <string name="dictate__prompts_title" comment="Title of the prompt management screen">Prompts</string>

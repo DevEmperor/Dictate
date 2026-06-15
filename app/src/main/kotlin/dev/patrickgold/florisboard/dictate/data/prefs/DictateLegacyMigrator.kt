@@ -12,10 +12,12 @@ package dev.patrickgold.florisboard.dictate.data.prefs
 
 import android.content.Context
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.dictate.DictateLanguages
 import dev.patrickgold.florisboard.dictate.provider.DictateProxyType
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
 import dev.patrickgold.florisboard.dictate.provider.ProxyConfig
 import java.net.Proxy
+import java.util.Locale
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickAction
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.keyData
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
@@ -146,6 +148,25 @@ object DictateLegacyMigrator {
         }
 
         prefs.dictate.legacyImported.set(true)
+    }
+
+    /**
+     * On the first run of a fresh install, adds the device's system language to the dictation language
+     * selection (on top of the default `{detect, en}`) so a non-English user can dictate in their own
+     * language straight away without digging through settings. Only an *untouched* default selection is
+     * augmented, so legacy upgraders (whose languages were already imported above) and users who have
+     * customised the list are left alone. Idempotent via `prefs.dictate.inputLanguagesSeeded`.
+     */
+    suspend fun seedDeviceLanguageIfNeeded() {
+        val prefs by FlorisPreferenceStore
+        if (prefs.dictate.inputLanguagesSeeded.get()) return
+        if (prefs.dictate.inputLanguages.get() == "detect,en") {
+            val device = DictateLanguages.matchDevice(Locale.getDefault())
+            if (device != null && device.code != "en" && device.code != DictateLanguages.DETECT) {
+                prefs.dictate.inputLanguages.set("detect,en,${device.code}")
+            }
+        }
+        prefs.dictate.inputLanguagesSeeded.set(true)
     }
 
     /**

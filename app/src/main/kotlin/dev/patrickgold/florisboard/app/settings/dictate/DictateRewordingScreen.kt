@@ -34,7 +34,6 @@ import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.jetpref.datastore.model.collectAsState
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
-import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
 import kotlinx.coroutines.Dispatchers
@@ -84,46 +83,47 @@ fun DictateRewordingScreen() = FlorisScreen {
             enabledIf = { prefs.dictate.rewordingEnabled isEqualTo true },
         )
 
-        PreferenceGroup(title = stringRes(R.string.dictate__rewording_prompts_group)) {
-            val promptCount by produceState(initialValue = -1) {
-                value = withContext(Dispatchers.IO) {
-                    PromptsDatabaseHelper(context.applicationContext).count()
-                }
+        val promptCount by produceState(initialValue = -1) {
+            value = withContext(Dispatchers.IO) {
+                PromptsDatabaseHelper(context.applicationContext).count()
             }
-            Preference(
-                icon = Icons.Default.ListAlt,
-                title = stringRes(R.string.dictate__manage_prompts_title),
-                summary = if (promptCount < 0) {
-                    stringRes(R.string.dictate__manage_prompts_summary_loading)
-                } else {
-                    stringRes(R.string.dictate__manage_prompts_summary, "count" to promptCount)
-                },
-                onClick = { navController.navigate(Routes.Settings.DictatePrompts) },
-            )
+        }
+        Preference(
+            icon = Icons.Default.ListAlt,
+            title = stringRes(R.string.dictate__manage_prompts_title),
+            summary = if (promptCount < 0) {
+                stringRes(R.string.dictate__manage_prompts_summary_loading)
+            } else {
+                stringRes(R.string.dictate__manage_prompts_summary, "count" to promptCount)
+            },
+            onClick = { navController.navigate(Routes.Settings.DictatePrompts) },
+        )
 
-            SwitchPreference(
-                prefs.dictate.autoFormattingEnabled,
-                icon = Icons.Default.AutoFixHigh,
-                title = stringRes(R.string.dictate__auto_formatting_title),
-                summary = stringRes(R.string.dictate__auto_formatting_summary),
-            )
+        SwitchPreference(
+            prefs.dictate.autoFormattingEnabled,
+            icon = Icons.Default.AutoFixHigh,
+            title = stringRes(R.string.dictate__auto_formatting_title),
+            summary = stringRes(R.string.dictate__auto_formatting_summary),
+        )
 
-            val systemSelection by prefs.dictate.systemPromptSelection.collectAsState()
-            ListPreference(
-                prefs.dictate.systemPromptSelection,
-                icon = Icons.Default.Psychology,
-                title = stringRes(R.string.dictate__system_prompt_title),
-                entries = promptSelectionEntries(),
+        val systemSelection by prefs.dictate.systemPromptSelection.collectAsState()
+        PromptSelectionPreference(
+            pref = prefs.dictate.systemPromptSelection,
+            icon = Icons.Default.Psychology,
+            title = stringRes(R.string.dictate__system_prompt_title),
+            entries = promptSelectionEntries(),
+            infoTitle = stringRes(R.string.dictate__system_prompt_info_title),
+            infoDescription = stringRes(R.string.dictate__system_prompt_info_description),
+            infoPromptText = DictatePromptDefaults.REWORDING_BE_PRECISE,
+        )
+        if (systemSelection == DictatePromptDefaults.SELECTION_CUSTOM) {
+            TextInputPreference(
+                pref = prefs.dictate.systemPromptCustom,
+                icon = Icons.Default.Edit,
+                title = stringRes(R.string.dictate__system_prompt_custom_title),
+                placeholder = stringRes(R.string.dictate__system_prompt_custom_placeholder),
+                multiline = true,
             )
-            if (systemSelection == DictatePromptDefaults.SELECTION_CUSTOM) {
-                TextInputPreference(
-                    pref = prefs.dictate.systemPromptCustom,
-                    icon = Icons.Default.Edit,
-                    title = stringRes(R.string.dictate__system_prompt_custom_title),
-                    placeholder = stringRes(R.string.dictate__system_prompt_custom_placeholder),
-                    multiline = true,
-                )
-            }
         }
     }
 }

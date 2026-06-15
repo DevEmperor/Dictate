@@ -43,7 +43,6 @@ import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import org.florisboard.lib.compose.stringRes
 import dev.patrickgold.jetpref.datastore.model.collectAsState
 import dev.patrickgold.jetpref.datastore.ui.DialogSliderPreference
-import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
@@ -90,11 +89,15 @@ fun DictateScreen() = FlorisScreen {
             // Style prompt biases the transcription model towards proper punctuation/casing in the
             // active language (roadmap 2.4 / 4.11). It is sent with the transcription request.
             val styleSelection by prefs.dictate.stylePromptSelection.collectAsState()
-            ListPreference(
-                prefs.dictate.stylePromptSelection,
+            val activeLang by prefs.dictate.activeInputLanguage.collectAsState()
+            PromptSelectionPreference(
+                pref = prefs.dictate.stylePromptSelection,
                 icon = Icons.Default.Spellcheck,
                 title = stringRes(R.string.dictate__style_prompt_title),
                 entries = promptSelectionEntries(),
+                infoTitle = stringRes(R.string.dictate__style_prompt_info_title),
+                infoDescription = stringRes(R.string.dictate__style_prompt_info_description),
+                infoPromptText = DictatePromptDefaults.punctuationPromptFor(activeLang),
             )
             if (styleSelection == DictatePromptDefaults.SELECTION_CUSTOM) {
                 TextInputPreference(

@@ -109,6 +109,22 @@ object DictateLanguages {
     fun of(code: String): DictateLanguage = byCode[code] ?: all.first()
 
     /**
+     * Finds the dictation language matching a device [locale] (e.g. the system language), or `null`
+     * when none of the supported languages correspond to it. The full BCP-47 tag is tried first so
+     * regional variants such as `zh-CN` / `zh-TW` resolve correctly, then the base language is used
+     * as a fallback. [DETECT] is never returned.
+     */
+    fun matchDevice(locale: Locale): DictateLanguage? {
+        val tag = locale.toLanguageTag().lowercase(Locale.ROOT)
+        all.firstOrNull { it.code != DETECT && it.code.lowercase(Locale.ROOT) == tag }?.let { return it }
+        val base = locale.language.lowercase(Locale.ROOT)
+        if (base.isEmpty()) return null
+        return all.firstOrNull {
+            it.code != DETECT && it.code.substringBefore('-').lowercase(Locale.ROOT) == base
+        }
+    }
+
+    /**
      * English language name for [code] (e.g. `"German"`), used as the auto-formatting *language hint*.
      * Returns `null` for [DETECT], blank, or unknown codes so the caller can substitute "unknown" – a
      * readable name guides the model far better than the bare ISO code.

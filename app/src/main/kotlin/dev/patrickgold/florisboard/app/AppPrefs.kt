@@ -368,6 +368,13 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__active_input_language",
             default = "detect",
         )
+        // Guard so the one-time seeding of the device/system dictation language (added on top of the
+        // default detect,en) runs only once on a fresh install. See
+        // DictateLegacyMigrator.seedDeviceLanguageIfNeeded.
+        val inputLanguagesSeeded = boolean(
+            key = "dictate__input_languages_seeded",
+            default = false,
+        )
         // Guard so the one-time import from the legacy Dictate SharedPreferences runs only once.
         val legacyImported = boolean(
             key = "dictate__legacy_imported",
