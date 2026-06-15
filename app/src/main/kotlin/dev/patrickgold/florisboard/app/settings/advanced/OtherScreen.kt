@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
+import dev.patrickgold.florisboard.BuildConfig
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.AppTheme
 import dev.patrickgold.florisboard.app.LocalNavController
@@ -161,11 +162,15 @@ fun OtherScreen() = FlorisScreen {
             title = stringRes(R.string.physical_keyboard__title),
             onClick = { navController.navigate(Routes.Settings.PhysicalKeyboard) },
         )
-        Preference(
-            icon = Icons.Default.Adb,
-            title = stringRes(R.string.devtools__title),
-            onClick = { navController.navigate(Routes.Devtools.Home) },
-        )
+        // Developer tools (FlorisBoard debug overlays + debug-log export) are a development-only
+        // leftover and must not ship in beta/release builds for a consumer keyboard (roadmap 11.5).
+        if (BuildConfig.DEBUG) {
+            Preference(
+                icon = Icons.Default.Adb,
+                title = stringRes(R.string.devtools__title),
+                onClick = { navController.navigate(Routes.Devtools.Home) },
+            )
+        }
 
         PreferenceGroup(title = stringRes(R.string.backup_and_restore__title)) {
             Preference(
