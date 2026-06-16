@@ -5,48 +5,60 @@
     </td>
     <td>
       <h1>Dictate Keyboard</h1>
-      <i>Speak. Transcribe. Reword. — your voice, turned into text by Whisper&nbsp;AI.</i>
+      <i>A powerful Whisper AI keyboard for reliable speech transcription</i>
     </td>
   </tr>
 </table>
 
-<p>
-  <a href="https://play.google.com/store/apps/details?id=net.devemperor.dictate">
-    <img alt="Get it on Google Play" height="60" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"/>
-  </a>
-  &nbsp;
-  <a href="https://paypal.me/DevEmperor">
-    <img alt="Donate with PayPal" height="38" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png"/>
-  </a>
-</p>
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://play.google.com/store/apps/details?id=net.devemperor.dictate">
+        <img alt="Get it on Google Play" height="48" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"/>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://paypal.me/DevEmperor">
+        <img alt="Donate with PayPal" height="48" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png"/>
+      </a>
+    </td>
+  </tr>
+</table>
 
-<p>
-  <img alt="License: Apache 2.0" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg">
-  <img alt="Status: Work in progress" src="https://img.shields.io/badge/status-work%20in%20progress-orange.svg">
-  <img alt="Built on FlorisBoard" src="https://img.shields.io/badge/built%20on-FlorisBoard-30B7E6.svg">
-</p>
+---
+
+> **Note:** This is a complete rebuild of Dictate as a full, standalone keyboard on top of
+> [**FlorisBoard**](https://github.com/florisboard/florisboard), replacing the original Java
+> app that powered Dictate v1–v3. The previous Java codebase is preserved on the
+> [`legacy-java`](https://github.com/DevEmperor/Dictate/tree/legacy-java) branch.
 
 ---
 
-> ### 🚧 Work in progress — a complete rewrite
->
-> **Dictate Keyboard is being rebuilt from the ground up.** The app you'll find in this
-> repository today is a *brand-new* keyboard built on top of the excellent
-> [**FlorisBoard**](https://github.com/florisboard/florisboard) engine — it replaces the
-> original Java app that powered Dictate v1–v3.
->
-> Why the rewrite? The original Dictate was an *overlay* on top of whatever keyboard you
-> already used. The new Dictate is a **full, standalone keyboard**: you get a complete,
-> privacy-respecting typing experience *and* one-tap Whisper dictation and GPT rewording,
-> all in one place — with proper theming, gestures, clipboard tools and more.
->
-> This means the codebase here is **not stable yet** and changes daily. If you just want to
-> *use* the app, grab the stable release from [Google Play](https://play.google.com/store/apps/details?id=net.devemperor.dictate).
->
-> The previous Java codebase is preserved on the [`legacy-java`](https://github.com/DevEmperor/Dictate/tree/legacy-java)
-> branch and tagged as [`v3.2.0-final`](https://github.com/DevEmperor/Dictate/releases/tag/v3.2.0-final).
+## 📸 Screenshots
 
----
+<img src="img/presentation_graphic_en-EN.png" alt="Dictate Keyboard" width="720">
+
+<table>
+  <tr>
+    <td><img src="img/banner_01_en-EN.png" width="220"></td>
+    <td><img src="img/banner_02_en-EN.png" width="220"></td>
+    <td><img src="img/banner_03_en-EN.png" width="220"></td>
+  </tr>
+  <tr>
+    <td><img src="img/banner_04_en-EN.png" width="220"></td>
+    <td><img src="img/banner_05_en-EN.png" width="220"></td>
+    <td><img src="img/banner_06_en-EN.png" width="220"></td>
+  </tr>
+</table>
+
+## 📲 Installation
+
+**The app is available on [Google Play](https://play.google.com/store/apps/details?id=net.devemperor.dictate)**
+(for a small fee that supports continued development), giving you easy installation and free
+lifetime updates. Just tap the badge above or [this link](https://play.google.com/store/apps/details?id=net.devemperor.dictate).
+
+> **Existing users:** the new keyboard keeps the same app identity and signing key, so your
+> settings carry over on update — no reinstall, no lost configuration.
 
 ## ✨ What is Dictate?
 
@@ -86,45 +98,11 @@ AI-rewording layer.
 Huge thanks to the FlorisBoard team. FlorisBoard is licensed under the Apache License 2.0;
 see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE) for full attribution.
 
-## 📸 Screenshots
-
-> _Coming soon — screenshots and a showcase video will be added once the rewrite is ready._
-
-## 📲 Installation
-
-**The app is available on [Google Play](https://play.google.com/store/apps/details?id=net.devemperor.dictate)**
-(for a small fee that supports continued development), giving you easy installation and free
-lifetime updates. Just tap the badge above or [this link](https://play.google.com/store/apps/details?id=net.devemperor.dictate).
-
-> **Existing users:** the new keyboard keeps the same app identity and signing key, so when
-> the rewrite ships as an update, **your settings carry over** — no reinstall, no lost
-> configuration.
-
-## 🛠️ Building from source
-
-Dictate Keyboard is a standard Gradle Android project and **requires JDK 17**:
-
-```bash
-git clone https://github.com/DevEmperor/Dictate.git
-cd Dictate
-JAVA_HOME=/path/to/jdk-17 ./gradlew :app:assembleDebug
-```
-
-The resulting APK lands in `app/build/outputs/apk/debug/`.
-
-## 🗺️ Roadmap
-
-The rewrite is being ported feature-by-feature. A public roadmap will be published once the
-foundation is stable — for now, follow along via the commit history and
-[releases](https://github.com/DevEmperor/Dictate/releases).
-
 ## 🤝 Contributing
 
-While the rewrite is in heavy flux, the repository **isn't accepting code contributions just
-yet** — the architecture is still moving and a PR today may not apply tomorrow. The best way
-to help right now is to **[open an issue](https://github.com/DevEmperor/Dictate/issues)** with
-bug reports, ideas or feedback. Full contribution and community guidelines will be published
-once things stabilise. Thank you for your patience! 🙏
+The best way to help right now is to **[open an issue](https://github.com/DevEmperor/Dictate/issues)**
+with bug reports, ideas or feedback. Full contribution and community guidelines will be
+published as the project matures. Thank you! 🙏
 
 ## 📄 License & attribution
 
