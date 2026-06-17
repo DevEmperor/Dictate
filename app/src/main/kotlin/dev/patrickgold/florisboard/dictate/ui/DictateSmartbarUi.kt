@@ -47,6 +47,7 @@ import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.NewReleases
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -81,6 +82,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.patrickgold.florisboard.R
@@ -96,6 +98,7 @@ import org.florisboard.lib.snygg.ui.SnyggIcon
 import org.florisboard.lib.snygg.ui.SnyggIconButton
 import org.florisboard.lib.snygg.ui.SnyggRow
 import org.florisboard.lib.snygg.ui.SnyggText
+import org.florisboard.lib.snygg.ui.rememberSnyggThemeQuery
 
 /**
  * Gboard-style in-Smartbar dictation indicator. Rendered in the Smartbar's center area (left of the
@@ -113,6 +116,8 @@ fun DictateSmartbarUi(state: DictateController.UiState, modifier: Modifier = Mod
         state is DictateController.UiState.Recording -> Arrangement.SpaceBetween
         state is DictateController.UiState.Error &&
             state.action != DictateController.ErrorAction.NONE -> Arrangement.SpaceBetween
+        // The interrupted-recording chip always carries send/dismiss buttons on the right.
+        state is DictateController.UiState.Interrupted -> Arrangement.SpaceBetween
         else -> Arrangement.Center
     }
     SnyggRow(
@@ -128,6 +133,7 @@ fun DictateSmartbarUi(state: DictateController.UiState, modifier: Modifier = Mod
             is DictateController.UiState.Transcribing -> TranscribingContent(state)
             is DictateController.UiState.Rewording -> RewordingContent(state)
             is DictateController.UiState.Error -> ErrorContent(state)
+            is DictateController.UiState.Interrupted -> InterruptedContent(state)
             is DictateController.UiState.Promo -> PromoContent(state.kind)
             else -> {}
         }
@@ -364,16 +370,7 @@ private fun RowScope.ErrorContent(state: DictateController.UiState.Error) {
 
     when (state.action) {
         DictateController.ErrorAction.RESEND -> {
-            SnyggIconButton(
-                elementName = FlorisImeUi.SmartbarActionKey.elementName,
-                onClick = { DictateController.resendLastAudio(context) },
-                modifier = Modifier.fillMaxHeight().aspectRatio(1f),
-            ) {
-                SnyggIcon(
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = stringRes(R.string.dictate__action_resend),
-                )
-            }
+            SendButton(onClick = { DictateController.sendRetainedAudio(context) })
             DismissButton()
         }
         DictateController.ErrorAction.OPEN_SETTINGS -> {
@@ -401,12 +398,30 @@ private fun RowScope.ErrorContent(state: DictateController.UiState.Error) {
     }
 }
 
-/** Shared dismiss (✗) button for actionable errors: clears the error and drops any kept audio. */
+/**
+ * Shared "send the kept audio" (↻) button, used by both the error-resend chip and the interrupted-
+ * recording chip (unified resend path). Both route through [DictateController.sendRetainedAudio].
+ */
+@Composable
+private fun RowScope.SendButton(onClick: () -> Unit) {
+    SnyggIconButton(
+        elementName = FlorisImeUi.SmartbarActionKey.elementName,
+        onClick = onClick,
+        modifier = Modifier.fillMaxHeight().aspectRatio(1f),
+    ) {
+        SnyggIcon(
+            imageVector = Icons.Default.Refresh,
+            contentDescription = stringRes(R.string.dictate__action_resend),
+        )
+    }
+}
+
+/** Shared dismiss (✗) button for the resend chips: drops the kept audio and returns to idle. */
 @Composable
 private fun RowScope.DismissButton() {
     SnyggIconButton(
         elementName = FlorisImeUi.SmartbarActionKey.elementName,
-        onClick = { DictateController.dismissResend() },
+        onClick = { DictateController.dismissRetainedAudio() },
         modifier = Modifier.fillMaxHeight().aspectRatio(1f),
     ) {
         SnyggIcon(
@@ -414,6 +429,55 @@ private fun RowScope.DismissButton() {
             contentDescription = stringRes(R.string.dictate__action_dismiss),
         )
     }
+}
+
+/**
+ * Interrupted-recording chip: shown on the next keyboard open after a recording was finalized because
+ * the keyboard closed mid-recording. Neutral (not an error): a mic glyph + "recording interrupted"
+ * headline with the captured length, then the shared send (↻) and dismiss (✗) buttons. Sending runs
+ * the same resend path as the error chip.
+ */
+@Composable
+private fun RowScope.InterruptedContent(state: DictateController.UiState.Interrupted) {
+    val context = LocalContext.current
+    val rowStyle = rememberSnyggThemeQuery(FlorisImeUi.SmartbarSharedActionsRow.elementName)
+    Row(
+        modifier = Modifier.weight(1f).fillMaxHeight().padding(horizontal = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = Icons.Default.GraphicEq,
+            contentDescription = null,
+            tint = rowStyle.foreground(),
+            modifier = Modifier.size(18.dp),
+        )
+        Spacer(modifier = Modifier.width(6.dp))
+        // Plain Text (not SnyggText) so we can force a single line + a slightly smaller font: the themed
+        // Smartbar font wrapped onto two lines next to the send/dismiss buttons (looked cramped).
+        Text(
+            text = stringRes(
+                R.string.dictate__interrupted_recording,
+                "time" to formatElapsed(state.seconds * 1000L),
+            ),
+            color = rowStyle.foreground(),
+            fontSize = 13.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+    // Continue (🎙) resumes recording on top of the interrupted audio; send (↻) transcribes it as-is.
+    SnyggIconButton(
+        elementName = FlorisImeUi.SmartbarActionKey.elementName,
+        onClick = { DictateController.continueInterruptedRecording(context) },
+        modifier = Modifier.fillMaxHeight().aspectRatio(1f),
+    ) {
+        SnyggIcon(
+            imageVector = Icons.Default.Mic,
+            contentDescription = stringRes(R.string.dictate__action_continue_recording),
+        )
+    }
+    SendButton(onClick = { DictateController.sendRetainedAudio(context) })
+    DismissButton()
 }
 
 /** Popup with the full, unabbreviated provider error text (tap-to-expand from the error chip). */

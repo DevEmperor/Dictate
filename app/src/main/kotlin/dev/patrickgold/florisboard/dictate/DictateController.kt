@@ -22,6 +22,7 @@ import dev.patrickgold.florisboard.BuildConfig
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisAppActivity
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.dictate.audio.AudioConcat
 import dev.patrickgold.florisboard.dictate.audio.BluetoothMicRouter
 import dev.patrickgold.florisboard.dictate.audio.RecordingController
 import dev.patrickgold.florisboard.dictate.data.prompts.DictatePromptDefaults
@@ -97,8 +98,23 @@ object DictateController {
             val action: ErrorAction = ErrorAction.NONE,
             val detail: String? = null,
         ) : UiState
+        /**
+         * Offer to send a recording that was interrupted because the keyboard closed mid-recording: the
+         * audio was finalized and persisted, so on the next keyboard open this neutral (non-error) chip
+         * offers to transcribe it or discard it. [seconds] is the captured length, shown for context.
+         */
+        data class Interrupted(val seconds: Long) : UiState
         /** A one-time rate/donate nudge shown in the Smartbar after enough usage (roadmap 9.7/9.8). */
         data class Promo(val kind: PromoKind) : UiState
+    }
+
+    /** Why an audio file is being kept for a one-tap re-send (drives the unified resend chip copy/tint). */
+    enum class RetainReason {
+        /** A transcription/rewording failed; the kept audio can be retried (in-memory, cache file). */
+        FAILED,
+
+        /** The keyboard closed mid-recording; the finalized audio was persisted to survive process death. */
+        INTERRUPTED,
     }
 
     /** The contextual action a [UiState.Error] offers (see roadmap 1.12 keyboard design). */
@@ -159,17 +175,38 @@ object DictateController {
     /** When true, the next finished recording is fed to the rewording model instead of committed. */
     private var livePromptArmed = false
 
-    /** Audio kept after a failed transcription so the resend button can retry it (roadmap 10.3). */
-    private var lastAudioFile: File? = null
+    /**
+     * A single audio file kept for a one-tap re-send, used by both the error-resend chip and the
+     * interrupted-recording chip (unified resend path). [reason] distinguishes a failed transcription
+     * (kept in cache, in-memory only) from a recording interrupted by the keyboard closing (finalized
+     * and persisted to filesDir, mirrored by the `interruptedAudio*` prefs so it survives process death).
+     */
+    private data class RetainedAudio(
+        val file: File,
+        val reason: RetainReason,
+        val wasLive: Boolean,
+        val seconds: Long,
+    )
 
-    /** Whether [lastAudioFile] was a live-prompt recording, so a resend repeats the same mode. */
-    private var lastWasLive = false
+    /** The currently kept audio (failed or interrupted), or null when there is nothing to re-send. */
+    private var retained: RetainedAudio? = null
 
-    /** Recorded seconds of [lastAudioFile], re-credited towards the nudges if a resend succeeds. */
-    private var lastAudioSeconds = 0L
+    /**
+     * A previously captured audio segment to prepend to the next finished recording, set when the user
+     * chooses to *continue* an interrupted recording (see [continueInterruptedRecording]). The new
+     * segment is recorded normally and the two are merged ([AudioConcat]) before transcription. Null
+     * unless a continuation is in progress.
+     */
+    private var carryOverAudio: File? = null
+
+    /** Recorded seconds of [carryOverAudio], so the continued recording's total length stays correct. */
+    private var carryOverSeconds = 0L
 
     /** Synthetic Enter key dispatched for auto-enter (10.1); reuses the keyboard's full enter logic. */
     private val EnterKeyData = TextKeyData(type = KeyType.ENTER_EDITING, code = KeyCode.ENTER, label = "enter")
+
+    /** Cache file name for the merged audio when a continued interrupted recording is stitched together. */
+    private const val MERGED_AUDIO_NAME = "dictate_merged.m4a"
 
     /** Cumulative recorded audio (seconds) after which the rate / donate nudges appear (roadmap 9.7/9.8). */
     private const val RATE_THRESHOLD_SECONDS = 180L   // 3 min
@@ -302,10 +339,15 @@ object DictateController {
         )
     }
 
-    /** Dismisses a resendable error: clears it and drops the kept audio (the resend is declined). */
-    fun dismissResend() {
-        discardLastAudio()
-        clearError()
+    /**
+     * Declines the kept audio (whether from a failed transcription or an interrupted recording): drops
+     * the audio and returns the Smartbar to idle. Shared dismiss (✗) for both resend chips.
+     */
+    fun dismissRetainedAudio() {
+        discardRetainedAudio()
+        if (_state.value is UiState.Error || _state.value is UiState.Interrupted) {
+            _state.value = UiState.Idle
+        }
     }
 
     /** Aborts an in-progress recording and returns to idle (cancel button / leaving the keyboard). */
@@ -317,6 +359,8 @@ object DictateController {
         cleanupAudioRouting()
         livePromptArmed = false
         _pendingPrompts.value = emptyList()
+        // Cancelling a continued recording also throws away the carried-over interrupted segment.
+        discardCarryOver()
         if (_state.value is UiState.Recording) {
             _state.value = UiState.Idle
         }
@@ -338,15 +382,27 @@ object DictateController {
         _state.value = UiState.Idle
     }
 
-    private fun startRecording(context: Context) {
+    /**
+     * Starts a recording. [seedAccumulatedMs] pre-fills the elapsed timer (and the credited length) with
+     * already-captured audio when continuing an interrupted recording, so the bar shows the running
+     * total; it is 0 for a normal recording.
+     */
+    private fun startRecording(context: Context, seedAccumulatedMs: Long = 0L) {
         if (_state.value is UiState.Recording) return
+        // Starting a fresh recording supersedes any kept audio (a failed retry or an interrupted
+        // recording the user chose not to send), so drop it instead of leaving a stale offer behind.
+        // A continuation keeps its carry-over (seeded above), so only drop it for a normal start.
+        if (seedAccumulatedMs == 0L) {
+            discardRetainedAudio()
+            discardCarryOver()
+        }
         val appContext = context.applicationContext
         startJob = scope.launch {
             try {
                 requestAudioFocusIfEnabled(appContext)
                 val audioSource = setupBluetoothIfEnabled(appContext)
                 recorder = RecordingController(appContext).also { it.start(audioSource) }
-                _state.value = UiState.Recording(SystemClock.elapsedRealtime())
+                _state.value = UiState.Recording(SystemClock.elapsedRealtime(), accumulatedMs = seedAccumulatedMs)
             } catch (t: Throwable) {
                 recorder = null
                 cleanupAudioRouting()
@@ -362,15 +418,42 @@ object DictateController {
         val activeRecorder = recorder
         recorder = null
         // Capture the recorded length before leaving the Recording state, to credit the usage counter
-        // that gates the rate/donate nudges (roadmap 9.7/9.8).
+        // that gates the rate/donate nudges (roadmap 9.7/9.8). Includes any carried-over seconds.
         val recordedSeconds = recordedSecondsOf(_state.value)
         val audioFile = activeRecorder?.stop()
         cleanupAudioRouting()
+        val carry = carryOverAudio
+        carryOverAudio = null
         if (audioFile == null || !audioFile.exists() || audioFile.length() == 0L) {
-            _state.value = UiState.Error(context.getString(R.string.dictate__error_no_audio))
+            // The new segment is unusable. If we were continuing an interrupted recording, fall back to
+            // transcribing the carried-over segment alone rather than losing it.
+            if (carry != null && carry.exists() && carry.length() > 0L) {
+                scope.launch { clearInterruptedAudioPref() }
+                transcribe(context, carry, carryOverSeconds)
+            } else {
+                carry?.delete()
+                _state.value = UiState.Error(context.getString(R.string.dictate__error_no_audio))
+            }
             return
         }
-        transcribe(context, audioFile, recordedSeconds)
+        if (carry == null) {
+            transcribe(context, audioFile, recordedSeconds)
+            return
+        }
+        // Continuation: stitch the carried-over segment and the new one into a single audio so the whole
+        // dictation is transcribed as one. The interrupted marker was already claimed when continuing.
+        scope.launch { clearInterruptedAudioPref() }
+        val merged = File(context.applicationContext.cacheDir, MERGED_AUDIO_NAME)
+        val ok = AudioConcat.concat(listOf(carry, audioFile), merged)
+        carry.delete()
+        if (ok && merged.exists() && merged.length() > 0L) {
+            audioFile.delete()
+            transcribe(context, merged, recordedSeconds)
+        } else {
+            // Merge failed (rare): transcribe at least the newly recorded segment.
+            merged.delete()
+            transcribe(context, audioFile, recordedSeconds)
+        }
     }
 
     /** Elapsed recorded seconds of a [UiState.Recording] (running + accumulated), else 0. */
@@ -488,7 +571,10 @@ object DictateController {
                 }
                 // Output behavior (roadmap 10.1/10.2): instant or typed, then optional auto-enter.
                 commitOutput(appContext, finalText)
-                discardLastAudio()
+                // Keep the committed text as the re-insert safety net (issue #111), so it can be
+                // recovered if the field is later cleared (rotation / context switch / host refresh).
+                rememberLastDictation(finalText)
+                discardRetainedAudio()
                 // Credit recorded audio towards the rate/donate gating (roadmap 9.7/9.8).
                 if (recordedSeconds > 0L) creditAudioSeconds(recordedSeconds)
                 _state.value = UiState.Idle
@@ -501,11 +587,11 @@ object DictateController {
                 throw c
             } catch (e: DictateApiException) {
                 _pendingPrompts.value = emptyList()
-                keepAudio = retainForResend(audioFile, live, recordedSeconds)
+                keepAudio = retainFailedAudio(audioFile, live, recordedSeconds)
                 _state.value = apiError(e, appContext, canResend = keepAudio)
             } catch (t: Throwable) {
                 _pendingPrompts.value = emptyList()
-                keepAudio = retainForResend(audioFile, live, recordedSeconds)
+                keepAudio = retainFailedAudio(audioFile, live, recordedSeconds)
                 _state.value = UiState.Error(
                     message = appContext.getString(R.string.dictate__error_unknown),
                     kind = DictateApiException.Kind.UNKNOWN,
@@ -551,40 +637,236 @@ object DictateController {
         keyboardManager.inputEventDispatcher.sendDownUp(EnterKeyData)
     }
 
+    // --- Retained audio + unified resend (failed transcription / interrupted recording) ---------
+
     /**
-     * Retains [audioFile] (and whether it was a live prompt) for a later resend if the resend button is
-     * enabled and the file is usable; returns true when kept. Any previously kept audio is discarded.
+     * Retains [audioFile] after a failed transcription so the error chip's resend button can retry it,
+     * if the resend button is enabled and the file is usable; returns true when kept. The file stays in
+     * the cache (a transient failure does not need to survive process death). Any previously kept audio
+     * is discarded first.
      */
-    private fun retainForResend(audioFile: File, wasLive: Boolean, recordedSeconds: Long): Boolean {
+    private fun retainFailedAudio(audioFile: File, wasLive: Boolean, recordedSeconds: Long): Boolean {
         if (!prefs.dictate.resendButton.get() || !audioFile.exists() || audioFile.length() == 0L) return false
-        if (lastAudioFile != audioFile) discardLastAudio()
-        lastAudioFile = audioFile
-        lastWasLive = wasLive
-        lastAudioSeconds = recordedSeconds
+        if (retained?.file != audioFile) discardRetainedAudio()
+        retained = RetainedAudio(audioFile, RetainReason.FAILED, wasLive, recordedSeconds)
         return true
     }
 
-    /** Deletes the kept resend audio (if any) and forgets it. */
-    private fun discardLastAudio() {
-        lastAudioFile?.takeIf { it.exists() }?.delete()
-        lastAudioFile = null
-        lastAudioSeconds = 0L
+    /** Deletes the kept audio (if any), forgets it, and clears the persisted interrupted-audio marker. */
+    fun discardRetainedAudio() {
+        retained?.file?.takeIf { it.exists() }?.delete()
+        retained = null
+        scope.launch { clearInterruptedAudioPref() }
     }
 
     /**
-     * Retries the last failed recording with the same audio (roadmap 10.3). No-op unless we are idle or
-     * showing an error and a usable kept audio exists.
+     * Re-sends the currently kept audio — used by *both* the error-resend chip and the interrupted-
+     * recording chip (unified path). Repeats the original mode (a kept live-prompt resends as a live
+     * prompt) and re-credits the recorded seconds towards the nudges. No-op unless we are idle/showing
+     * one of the resend chips and a usable file exists. Interrupted audio is claimed (its persisted
+     * marker cleared) up front, so a crash mid-transcription cannot re-offer the same recording.
      */
-    fun resendLastAudio(context: Context) {
-        if (_state.value !is UiState.Error && _state.value !is UiState.Idle) return
-        val audio = lastAudioFile
-        if (audio == null || !audio.exists() || audio.length() == 0L) {
-            lastAudioFile = null
+    fun sendRetainedAudio(context: Context) {
+        if (_state.value !is UiState.Error && _state.value !is UiState.Interrupted &&
+            _state.value !is UiState.Idle
+        ) return
+        val r = retained
+        if (r == null || !r.file.exists() || r.file.length() == 0L) {
+            discardRetainedAudio()
+            _state.value = UiState.Idle
             return
         }
-        // Repeat the original mode so a failed live prompt resends as a live prompt.
-        livePromptArmed = lastWasLive
-        transcribe(context, audio, lastAudioSeconds)
+        if (r.reason == RetainReason.INTERRUPTED) scope.launch { clearInterruptedAudioPref() }
+        livePromptArmed = r.wasLive
+        transcribe(context, r.file, r.seconds)
+    }
+
+    /**
+     * Continues an interrupted recording instead of sending it: the kept audio becomes a carry-over
+     * segment and a fresh recording starts, with the timer seeded so it shows the running total. When the
+     * user finally stops, the carry-over and the new segment are merged into one audio and transcribed
+     * together (see [stopAndTranscribe]); if the keyboard closes again first, both are merged back into
+     * the persisted interrupted file (see [stashRecordingOnHide]). No-op unless the interrupted chip is
+     * showing with a usable file.
+     */
+    fun continueInterruptedRecording(context: Context) {
+        if (_state.value !is UiState.Interrupted) return
+        val r = retained
+        if (r == null || r.reason != RetainReason.INTERRUPTED || !r.file.exists() || r.file.length() == 0L) {
+            discardRetainedAudio()
+            _state.value = UiState.Idle
+            return
+        }
+        // Claim the interrupted audio as the carry-over and clear the offer/marker, then record on top.
+        retained = null
+        carryOverAudio = r.file
+        carryOverSeconds = r.seconds
+        scope.launch { clearInterruptedAudioPref() }
+        _state.value = UiState.Idle
+        livePromptArmed = r.wasLive
+        // coerceAtLeast(1) keeps the "continuation" path (non-zero seed) so the carry-over is not dropped
+        // by the normal-start cleanup, even for a sub-second carried-over segment.
+        startRecording(context, seedAccumulatedMs = (r.seconds * 1000L).coerceAtLeast(1L))
+    }
+
+    /** Deletes the carry-over recording segment (if any) and forgets it. */
+    private fun discardCarryOver() {
+        carryOverAudio?.takeIf { it.exists() }?.delete()
+        carryOverAudio = null
+        carryOverSeconds = 0L
+    }
+
+    // --- Interrupted recording (keyboard closed mid-recording) ----------------------------------
+
+    /** Stable on-disk location for an interrupted recording: in filesDir so it survives the cache wipe. */
+    private fun interruptedAudioFile(context: Context): File =
+        File(context.applicationContext.filesDir, "dictate_interrupted.m4a")
+
+    /**
+     * Called when the keyboard window is hidden (see [FlorisImeService.onWindowHidden]). If a recording
+     * is in progress it is *finalized and kept* instead of discarded: the audio is stopped cleanly (so
+     * the m4a is valid even if the recorder/process is destroyed afterwards) and moved to [interruptedAudioFile],
+     * with its metadata mirrored to prefs. The next keyboard open then offers to send it (see
+     * [maybeOfferInterruptedRecording]). Outside the recording state this falls back to the normal
+     * teardown ([cancelRecording]).
+     */
+    fun stashRecordingOnHide(context: Context) {
+        val current = _state.value
+        val activeRecorder = recorder
+        if (current !is UiState.Recording || activeRecorder == null) {
+            // Not actively recording (e.g. a start that never got going): use the normal teardown.
+            cancelRecording()
+            return
+        }
+        recorder = null
+        val seconds = recordedSecondsOf(current)
+        val wasLive = livePromptArmed
+        val audioFile = activeRecorder.stop()
+        cleanupAudioRouting()
+        livePromptArmed = false
+        _pendingPrompts.value = emptyList()
+        _state.value = UiState.Idle
+        val carry = carryOverAudio
+        carryOverAudio = null
+        val dest = interruptedAudioFile(context)
+        val newValid = audioFile != null && audioFile.exists() && audioFile.length() > 0L
+        // Resolve the audio to keep (and its length). dest == carry for a continuation, so when both
+        // segments are present they are merged into a cache temp first and then moved onto dest.
+        val keptSeconds: Long? = when {
+            carry != null && newValid -> {
+                val merged = File(context.applicationContext.cacheDir, MERGED_AUDIO_NAME)
+                val ok = AudioConcat.concat(listOf(carry, audioFile!!), merged)
+                if (ok && merged.exists() && merged.length() > 0L) {
+                    carry.delete()
+                    audioFile.delete()
+                    runCatching {
+                        dest.delete()
+                        if (!merged.renameTo(dest)) {
+                            merged.copyTo(dest, overwrite = true)
+                            merged.delete()
+                        }
+                    }
+                    if (dest.exists() && dest.length() > 0L) seconds else null
+                } else {
+                    // Merge failed (rare): keep the carry-over (already at dest), drop the new segment.
+                    merged.delete()
+                    audioFile.delete()
+                    if (carry.exists() && carry.length() > 0L) carryOverSeconds else null
+                }
+            }
+            // Continuation, but the new segment is unusable: keep the carried-over segment alone.
+            carry != null -> if (carry.exists() && carry.length() > 0L) carryOverSeconds else null
+            // Plain recording interrupted: move the finalized segment out of the cache into filesDir.
+            newValid -> {
+                runCatching {
+                    dest.parentFile?.mkdirs()
+                    dest.delete()
+                    if (!audioFile!!.renameTo(dest)) {
+                        audioFile.copyTo(dest, overwrite = true)
+                        audioFile.delete()
+                    }
+                }
+                if (dest.exists() && dest.length() > 0L) seconds else null
+            }
+            else -> null
+        }
+        carryOverSeconds = 0L
+        if (keptSeconds == null) {
+            // Nothing usable was kept; make sure no stale offer remains.
+            scope.launch { clearInterruptedAudioPref() }
+            return
+        }
+        // Persist the marker + metadata so the offer can be restored even after a process death.
+        scope.launch {
+            prefs.dictate.interruptedAudioSeconds.set(keptSeconds)
+            prefs.dictate.interruptedAudioLive.set(wasLive)
+            prefs.dictate.interruptedAudioPending.set(true)
+        }
+    }
+
+    /**
+     * On keyboard open, restores the "recording interrupted — send it?" offer if an interrupted audio
+     * file is waiting. Returns true when the offer is now shown, so the caller can skip instant-recording.
+     * No-op unless idle. A stale marker without a usable file is cleared.
+     */
+    fun maybeOfferInterruptedRecording(context: Context): Boolean {
+        if (_state.value !is UiState.Idle) return false
+        if (!prefs.dictate.interruptedAudioPending.get()) return false
+        val file = interruptedAudioFile(context)
+        if (!file.exists() || file.length() == 0L) {
+            scope.launch { clearInterruptedAudioPref() }
+            return false
+        }
+        val seconds = prefs.dictate.interruptedAudioSeconds.get()
+        retained = RetainedAudio(file, RetainReason.INTERRUPTED, prefs.dictate.interruptedAudioLive.get(), seconds)
+        _state.value = UiState.Interrupted(seconds)
+        return true
+    }
+
+    /** Clears the persisted interrupted-audio marker (best-effort; the file itself is handled separately). */
+    private suspend fun clearInterruptedAudioPref() {
+        if (prefs.dictate.interruptedAudioPending.get()) {
+            prefs.dictate.interruptedAudioPending.set(false)
+        }
+    }
+
+    // --- Re-insert last dictation (issue #111) --------------------------------------------------
+
+    /**
+     * Persists [text] as the last successful dictation so the "Re-insert last dictation" Smartbar action
+     * can recover it after the field is cleared (rotation, context switch, host app refreshing its
+     * state). No-op when the feature is off or the text is blank. Held until the next successful
+     * dictation overwrites it; stored to a pref so it survives the IME process being killed.
+     */
+    private suspend fun rememberLastDictation(text: String) {
+        if (!prefs.dictate.rememberLastDictation.get() || text.isBlank()) return
+        prefs.dictate.lastDictation.set(text)
+    }
+
+    /**
+     * Whether a re-insertable last dictation exists (feature enabled and a non-empty cache). Read
+     * synchronously by the Smartbar action's enabled-state evaluation, so the button greys out when
+     * there is nothing to re-insert.
+     */
+    fun hasLastDictation(): Boolean =
+        prefs.dictate.rememberLastDictation.get() && prefs.dictate.lastDictation.get().isNotEmpty()
+
+    /**
+     * Re-inserts the last successful dictation into the focused field (issue #111). The cached text is
+     * committed verbatim (no auto-formatting/auto-enter, which already ran on the original) and is kept,
+     * so it can be re-inserted repeatedly until the next dictation replaces it. No-op while a
+     * recording/transcription/rewording is in flight, or when there is nothing cached.
+     */
+    fun reinsertLastDictation(context: Context) {
+        if (_state.value is UiState.Recording || _state.value is UiState.Transcribing ||
+            _state.value is UiState.Rewording
+        ) return
+        if (!prefs.dictate.rememberLastDictation.get()) return
+        val text = prefs.dictate.lastDictation.get()
+        if (text.isEmpty()) return
+        val editorInstance by context.applicationContext.editorInstance()
+        editorInstance.commitText(text)
+        clearError()
     }
 
     // --- Rate / Donate nudges (roadmap 9.7/9.8) -------------------------------------------------

@@ -356,8 +356,14 @@ class FlorisImeService : LifecycleInputMethodService() {
         val startedFileTranscription =
             dev.patrickgold.florisboard.dictate.DictateController.consumePendingFileTranscription(this)
 
+        // Interrupted recording: if a recording was finalized because the keyboard closed mid-recording,
+        // offer to send it now. Takes priority over instant-recording so we don't record over the offer.
+        val offeredInterrupted =
+            dev.patrickgold.florisboard.dictate.DictateController.maybeOfferInterruptedRecording(this)
+
         // Instant recording: optionally start dictation as soon as the keyboard opens on a field.
         if (!startedFileTranscription &&
+            !offeredInterrupted &&
             !restarting &&
             prefs.dictate.instantRecording.get() &&
             dev.patrickgold.florisboard.dictate.DictateController.state.value is
@@ -433,9 +439,10 @@ class FlorisImeService : LifecycleInputMethodService() {
 
     override fun onWindowHidden() {
         super.onWindowHidden()
-        // Collapsing the keyboard discards any in-progress dictation recording instead of letting it
-        // run on in the background (a tap-to-record session the user walked away from).
-        dev.patrickgold.florisboard.dictate.DictateController.cancelRecording()
+        // Collapsing the keyboard during a recording finalizes and keeps the audio so far (instead of
+        // discarding it): the next keyboard open then offers to send the interrupted recording. Outside
+        // an active recording this is the normal teardown.
+        dev.patrickgold.florisboard.dictate.DictateController.stashRecordingOnHide(this)
         if (windowController.onWindowHidden()) {
             flogInfo(LogTopic.IMS_EVENTS)
             activeState.batchEdit {

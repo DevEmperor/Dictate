@@ -95,6 +95,9 @@ data class QuickActionArrangement(
                 QuickAction.InsertKey(TextKeyData.LANGUAGE_SWITCH),
                 QuickAction.InsertKey(TextKeyData.FORWARD_DELETE),
                 QuickAction.InsertKey(TextKeyData.IME_HIDE_UI),
+                // Re-insert / re-send the last transcription safety net (issue #111). Placed at the end
+                // so it is present in the action list without taking a prominent spot at the top of the bar.
+                QuickAction.InsertKey(TextKeyData.DICTATE_REINSERT),
             ),
             hiddenActions = listOf(
             ),

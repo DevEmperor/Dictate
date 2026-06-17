@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.MenuBook
@@ -207,6 +208,12 @@ fun DictateScreen() = FlorisScreen {
                 icon = Icons.Default.Replay,
                 title = stringRes(R.string.dictate__resend_button_title),
                 summary = stringRes(R.string.dictate__resend_button_summary),
+            )
+            SwitchPreference(
+                prefs.dictate.rememberLastDictation,
+                icon = Icons.Default.History,
+                title = stringRes(R.string.dictate__remember_last_dictation_title),
+                summary = stringRes(R.string.dictate__remember_last_dictation_summary),
             )
         }
     }

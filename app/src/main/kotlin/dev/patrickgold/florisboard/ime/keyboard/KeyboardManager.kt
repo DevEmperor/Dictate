@@ -801,6 +801,7 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
                 dev.patrickgold.florisboard.dictate.DictateController.refreshPrompts(appContext)
                 activeState.imeUiMode = ImeUiMode.DICTATE
             }
+            KeyCode.DICTATE_REINSERT -> dev.patrickgold.florisboard.dictate.DictateController.reinsertLastDictation(appContext)
             KeyCode.KANA_SWITCHER -> handleKanaSwitch()
             KeyCode.KANA_HIRA -> handleKanaHira()
             KeyCode.KANA_KATA -> handleKanaKata()
@@ -1046,6 +1047,11 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
                 }
                 KeyCode.LANGUAGE_SWITCH -> {
                     subtypeManager.subtypes.size > 1
+                }
+                KeyCode.DICTATE_REINSERT -> {
+                    // Greyed out unless a last dictation is actually cached (and the feature is enabled),
+                    // so the button visibly reflects whether there is anything to re-insert.
+                    dev.patrickgold.florisboard.dictate.DictateController.hasLastDictation()
                 }
                 else -> true
             }

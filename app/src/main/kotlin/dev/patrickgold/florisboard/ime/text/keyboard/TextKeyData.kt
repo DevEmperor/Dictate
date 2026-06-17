@@ -136,6 +136,7 @@ data class TextKeyData(
                 IME_UI_MODE_DICTATE,
                 DICTATE_LIVE_PROMPT,
                 DICTATE_PROMPTS,
+                DICTATE_REINSERT,
                 SYSTEM_INPUT_METHOD_PICKER,
                 SYSTEM_PREV_INPUT_METHOD,
                 SYSTEM_NEXT_INPUT_METHOD,
@@ -443,6 +444,12 @@ data class TextKeyData(
             type = KeyType.SYSTEM_GUI,
             code = KeyCode.DICTATE_PROMPTS,
             label = "dictate_prompts",
+        )
+        /** Predefined key data for [KeyCode.DICTATE_REINSERT] (re-insert the last successful dictation) */
+        val DICTATE_REINSERT = TextKeyData(
+            type = KeyType.SYSTEM_GUI,
+            code = KeyCode.DICTATE_REINSERT,
+            label = "dictate_reinsert",
         )
 
         /** Predefined key data for [KeyCode.SYSTEM_INPUT_METHOD_PICKER] */

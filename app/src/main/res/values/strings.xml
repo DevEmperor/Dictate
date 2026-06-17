@@ -87,6 +87,8 @@
     <string name="quick_action__dictate_live_prompt__tooltip">Record a spoken instruction and send it to the AI</string>
     <string name="quick_action__dictate_prompts" comment="Please mind the limited available space for the quick action strings">AI prompts</string>
     <string name="quick_action__dictate_prompts__tooltip">Open the AI rewording prompts</string>
+    <string name="quick_action__dictate_reinsert" comment="Please mind the limited available space for the quick action strings">Re-insert</string>
+    <string name="quick_action__dictate_reinsert__tooltip">Insert your last dictation again</string>
     <string name="quick_action__language_switch" comment="Please mind the limited available space for the quick action strings">Switch language</string>
     <string name="quick_action__language_switch__tooltip">Perform language switch</string>
     <string name="quick_action__settings" comment="Please mind the limited available space for the quick action strings">Settings</string>
@@ -1240,6 +1242,8 @@
     <string name="dictate__action_resume" comment="Content description for the button that resumes the recording">Resume recording</string>
     <string name="dictate__action_resend" comment="Content description for the button that retries the last failed audio">Try again</string>
     <string name="dictate__action_dismiss" comment="Content description for the button that dismisses the resend error">Dismiss</string>
+    <string name="dictate__interrupted_recording" comment="Smartbar chip shown when the keyboard was closed mid-recording; {time} is the captured length like 0:42. Kept short for the single-line Smartbar.">Interrupted ({time})</string>
+    <string name="dictate__action_continue_recording" comment="Content description for the button that resumes recording on top of an interrupted recording">Continue recording</string>
     <string name="dictate__action_yes" comment="Content description for the accept button of the rate/donate nudge">Yes</string>
     <string name="dictate__action_no" comment="Content description for the decline button of the rate/donate nudge">No, thanks</string>
     <string name="dictate__promo_rate_message" comment="Smartbar nudge asking the user to rate the app after enough usage. Kept short to fit the single-line Smartbar.">Enjoying Dictate?</string>
@@ -1335,6 +1339,8 @@
     <string name="dictate__output_speed_value" comment="Value label for the typing speed slider">{v}</string>
     <string name="dictate__resend_button_title" comment="Setting: show a resend button on failure">Resend button</string>
     <string name="dictate__resend_button_summary" comment="Summary for the resend button setting">If transcription fails, show a button to retry with the same recording</string>
+    <string name="dictate__remember_last_dictation_title" comment="Setting: keep the last dictation so it can be re-inserted">Remember last dictation</string>
+    <string name="dictate__remember_last_dictation_summary" comment="Summary explaining the re-insert safety net">Keep your last successful dictation so you can insert it again with the \"Re-insert\" Smartbar button — a safety net if the text field is cleared by a screen rotation or app switch. Add the button via the Smartbar editor. Stored only on this device until your next dictation.</string>
 
     <!-- Dictate main screen pipeline groups -->
     <string name="dictate__transcription_group" comment="Group title for the transcription (speech-to-text) stage on the main Dictate screen">Transcription (speech → text)</string>

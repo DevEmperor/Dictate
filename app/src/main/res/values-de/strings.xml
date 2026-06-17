@@ -1016,6 +1016,8 @@
     <string name="dictate__action_resume">Aufnahme fortsetzen</string>
     <string name="dictate__action_resend">Erneut versuchen</string>
     <string name="dictate__action_dismiss">Verwerfen</string>
+    <string name="dictate__interrupted_recording">Unterbrochen ({time})</string>
+    <string name="dictate__action_continue_recording">Weiter aufnehmen</string>
     <string name="dictate__action_yes">Ja</string>
     <string name="dictate__action_no">Nein, danke</string>
     <string name="dictate__promo_rate_message">Gefällt dir Dictate?</string>

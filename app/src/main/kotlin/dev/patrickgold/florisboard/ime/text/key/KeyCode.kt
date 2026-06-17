@@ -96,6 +96,8 @@ object KeyCode {
     const val DICTATE_LIVE_PROMPT =         -215
     // Dictate: open the AI prompt panel (always-available list of rewording prompts).
     const val DICTATE_PROMPTS =             -216
+    // Dictate: re-insert the last successful dictation (safety net after a field clear, e.g. rotation).
+    const val DICTATE_REINSERT =            -217
 
     const val SYSTEM_INPUT_METHOD_PICKER =  -221
     const val SYSTEM_PREV_INPUT_METHOD =    -222

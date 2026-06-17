@@ -42,6 +42,7 @@ import androidx.compose.material.icons.filled.KeyboardVoice
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.AutoFixHigh
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MoreHoriz
@@ -291,6 +292,10 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
                 is dev.patrickgold.florisboard.dictate.DictateController.UiState.Rewording -> Icons.Default.HourglassEmpty
                 else -> Icons.Default.AutoFixHigh
             }
+        }
+        KeyCode.DICTATE_REINSERT -> {
+            // Re-inserts the last successful dictation; a history glyph signals "bring the last one back".
+            Icons.Default.History
         }
         KeyCode.LANGUAGE_SWITCH -> {
             Icons.Default.Language

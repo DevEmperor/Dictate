@@ -329,6 +329,39 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__resend_button",
             default = true,
         )
+        // Safety net (issue #111): keep the last successful dictation around so it can be re-inserted
+        // via the "Re-insert last dictation" Smartbar action after the field is cleared (rotation,
+        // context switch, host app refreshing its state). When off, nothing is cached and the action
+        // stays disabled. The text is stored locally (see lastDictation) until the next dictation.
+        val rememberLastDictation = boolean(
+            key = "dictate__remember_last_dictation",
+            default = true,
+        )
+        // The last successfully committed dictation text, persisted so it survives the IME process being
+        // killed. Overwritten by the next successful dictation; never shown directly in the UI. Empty
+        // means there is nothing to re-insert. Only populated while rememberLastDictation is on.
+        val lastDictation = string(
+            key = "dictate__last_dictation",
+            default = "",
+        )
+        // Interrupted recording (keyboard closed mid-recording): the audio is finalized and moved to a
+        // file in filesDir so it survives the recorder/process being destroyed; these prefs are the
+        // persisted marker + metadata so the "recording interrupted — send it?" offer can be restored on
+        // the next keyboard open. pending=true means an interrupted-audio file is waiting.
+        val interruptedAudioPending = boolean(
+            key = "dictate__interrupted_audio_pending",
+            default = false,
+        )
+        // Recorded seconds of the interrupted audio, re-credited towards the rate/donate nudges on send.
+        val interruptedAudioSeconds = long(
+            key = "dictate__interrupted_audio_seconds",
+            default = 0L,
+        )
+        // Whether the interrupted recording was a live-prompt session, so sending it repeats that mode.
+        val interruptedAudioLive = boolean(
+            key = "dictate__interrupted_audio_live",
+            default = false,
+        )
         // --- Rate / Donate nudges (roadmap 9.7/9.8) ----------------------------------------------
         // Cumulative seconds of successfully transcribed *recorded* audio, used to gate the one-time
         // rate/donate prompts. Replaces the legacy usage DB (which was dropped); only this counter
