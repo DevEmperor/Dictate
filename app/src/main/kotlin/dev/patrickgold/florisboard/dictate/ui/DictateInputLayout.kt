@@ -147,6 +147,7 @@ fun DictateInputLayout(
                         // Return to the keyboard so the field + the Smartbar progress are visible.
                         keyboardManager.activeState.imeUiMode = ImeUiMode.TEXT
                     },
+                    onLongClick = { editPromptInSettings(prompt) },
                 )
             }
         }

@@ -10,9 +10,10 @@
 
 package dev.patrickgold.florisboard.dictate.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -39,6 +40,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.patrickgold.florisboard.FlorisImeService
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.dictate.DictateController
 import dev.patrickgold.florisboard.dictate.data.prompts.PromptModel
@@ -83,6 +85,7 @@ fun DictatePromptStrip(
                 icon = dictatePromptIcon(prompt),
                 text = prompt.name.orEmpty(),
                 onClick = { DictateController.applyPrompt(context, prompt) },
+                onLongClick = { editPromptInSettings(prompt) },
                 modifier = Modifier.padding(horizontal = 3.dp),
             )
         }
@@ -143,12 +146,22 @@ fun DictatePromptRow(
                         DictateController.applyPrompt(context, prompt)
                     }
                 },
+                onLongClick = { editPromptInSettings(prompt) },
                 modifier = Modifier.padding(horizontal = 1.5.dp),
                 tapPadding = rowChipPadding,
                 highlighted = pending.any { it.id == prompt.id },
             )
         }
     }
+}
+
+/**
+ * Long-pressing a saved prompt chip jumps straight to that prompt's editor in the settings app by
+ * deep-linking to the prompts screen with the prompt id as a route argument, so the screen opens that
+ * prompt's editor directly.
+ */
+internal fun editPromptInSettings(prompt: PromptModel) {
+    FlorisImeService.launchSettings("settings/dictate/prompts?editPromptId=${prompt.id}")
 }
 
 /**
@@ -159,7 +172,9 @@ fun DictatePromptRow(
  * @param iconSize leading-icon size (the panel uses a larger one than the compact row).
  * @param tapPadding extra padding inside the pill to enlarge the touch target (panel only).
  * @param highlighted draws an accent tint + ring, used to mark a queued/pending prompt.
+ * @param onLongClick optional long-press handler (e.g. jump to the prompt's edit screen).
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun DictatePromptChip(
     icon: ImageVector,
@@ -169,6 +184,7 @@ internal fun DictatePromptChip(
     iconSize: Dp = 18.dp,
     tapPadding: PaddingValues = PaddingValues(0.dp),
     highlighted: Boolean = false,
+    onLongClick: (() -> Unit)? = null,
 ) {
     SnyggRow(
         elementName = FlorisImeUi.SmartbarActionTile.elementName,
@@ -185,7 +201,7 @@ internal fun DictatePromptChip(
                     Modifier
                 },
             )
-            .clickable(onClick = onClick)
+            .combinedClickable(onClick = onClick, onLongClick = onLongClick)
             .padding(tapPadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {

@@ -96,7 +96,7 @@ fun DictateRewordingScreen() = FlorisScreen {
             } else {
                 stringRes(R.string.dictate__manage_prompts_summary, "count" to promptCount)
             },
-            onClick = { navController.navigate(Routes.Settings.DictatePrompts) },
+            onClick = { navController.navigate(Routes.Settings.DictatePrompts()) },
         )
 
         SwitchPreference(

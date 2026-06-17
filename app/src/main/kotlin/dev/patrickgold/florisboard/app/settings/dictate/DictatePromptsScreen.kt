@@ -66,6 +66,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dev.patrickgold.florisboard.R
+import dev.patrickgold.florisboard.dictate.DictateController
 import dev.patrickgold.florisboard.dictate.data.prompts.PromptModel
 import dev.patrickgold.florisboard.dictate.data.prompts.PromptsDatabaseHelper
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
@@ -89,7 +90,11 @@ import org.json.JSONObject
  * their prompt collections across.
  */
 @Composable
-fun DictatePromptsScreen() = FlorisScreen {
+fun DictatePromptsScreen(
+    // When deep-linked from a long-pressed prompt chip on the keyboard, the id of the prompt whose
+    // editor should open automatically once the list has loaded (-1 = none, the normal entry).
+    editPromptId: Int = -1,
+) = FlorisScreen {
     title = stringRes(R.string.dictate__prompts_title)
     scrollable = false
 
@@ -109,6 +114,9 @@ fun DictatePromptsScreen() = FlorisScreen {
         val all = withContext(Dispatchers.IO) { db.getAll() }
         prompts.clear()
         prompts.addAll(all)
+        // Push the change into the live keyboard's prompt flow too (same process, shared singleton),
+        // so the Smartbar prompt row/panel reflects adds/edits/deletes/reorders without a reopen.
+        DictateController.refreshPrompts(context)
     }
 
     // Persist the current in-memory order (POS = list index), preserving ids so auto-apply and the
@@ -184,6 +192,17 @@ fun DictatePromptsScreen() = FlorisScreen {
 
     content {
         LaunchedEffect(Unit) { reload() }
+
+        // Deep-linked from a long-pressed prompt chip on the keyboard: open that prompt's editor once
+        // the list has loaded. Guarded so it fires a single time (and not again after the user closes
+        // the editor, even though the route arg stays put).
+        var deepLinkEditHandled by remember { mutableStateOf(false) }
+        LaunchedEffect(editPromptId, prompts.size) {
+            if (editPromptId < 0 || deepLinkEditHandled) return@LaunchedEffect
+            val target = prompts.firstOrNull { it.id == editPromptId } ?: return@LaunchedEffect
+            editorTarget = target.copy()
+            deepLinkEditHandled = true
+        }
 
         val listState = rememberLazyListState()
         // Id of the prompt being dragged, plus its current finger offset (px) for the lift effect.

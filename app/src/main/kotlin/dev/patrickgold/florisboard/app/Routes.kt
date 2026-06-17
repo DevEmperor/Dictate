@@ -136,7 +136,7 @@ object Routes {
 
         @Serializable
         @Deeplink("settings/dictate/prompts")
-        object DictatePrompts
+        data class DictatePrompts(val editPromptId: Int = -1)
 
         @Serializable
         @Deeplink("settings/localization")
@@ -312,7 +312,10 @@ object Routes {
             composableWithDeepLink(Settings.DictateProviders::class) { DictateProvidersScreen() }
             composableWithDeepLink(Settings.DictateProxy::class) { DictateProxyScreen() }
             composableWithDeepLink(Settings.DictateRewording::class) { DictateRewordingScreen() }
-            composableWithDeepLink(Settings.DictatePrompts::class) { DictatePromptsScreen() }
+            composableWithDeepLink(Settings.DictatePrompts::class) { navBackStack ->
+                val payload = navBackStack.toRoute<Settings.DictatePrompts>()
+                DictatePromptsScreen(editPromptId = payload.editPromptId)
+            }
 
             composableWithDeepLink(Settings.Localization::class) { LocalizationScreen() }
             composableWithDeepLink(Settings.SelectLocale::class) { SelectLocaleScreen() }

@@ -19,6 +19,7 @@ package dev.patrickgold.florisboard
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.content.res.Configuration
 import android.inputmethodservice.ExtractEditText
 import android.os.Build
@@ -100,15 +101,22 @@ class FlorisImeService : LifecycleInputMethodService() {
         }
 
         /**
-         * Hides the IME and launches [FlorisAppActivity].
+         * Hides the IME and launches [FlorisAppActivity]. When [deepLinkPath] is given (e.g.
+         * `"settings/dictate/prompts"`), the activity opens directly on that screen via the same
+         * `ui://florisboard/...` deep-link mechanism used for external links.
          */
-        fun launchSettings() {
+        fun launchSettings(deepLinkPath: String? = null) {
             val ims = FlorisImeServiceReference.get() ?: return
             ims.requestHideSelf(0)
             ims.launchActivity(FlorisAppActivity::class) {
                 it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED or
                     Intent.FLAG_ACTIVITY_CLEAR_TOP
+                if (deepLinkPath != null) {
+                    it.action = Intent.ACTION_VIEW
+                    it.addCategory(Intent.CATEGORY_BROWSABLE)
+                    it.data = Uri.parse("ui://florisboard/$deepLinkPath")
+                }
             }
         }
 
