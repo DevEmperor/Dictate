@@ -83,6 +83,7 @@ class OpenAiCompatibleClient(
     ): TranscriptionResult = when (config.transcriptionApi) {
         TranscriptionApi.OPENAI_MULTIPART -> transcribeMultipart(request, onRetry)
         TranscriptionApi.OPENROUTER_JSON -> transcribeOpenRouterJson(request, onRetry)
+        TranscriptionApi.SONIOX_ASYNC -> transcribeSonioxAsync(request, onRetry)
     }
 
     override suspend fun transcribe(request: TranscriptionRequest): TranscriptionResult =
@@ -144,6 +145,128 @@ class OpenAiCompatibleClient(
         return TranscriptionResult(response.text.trim())
     }
 
+    /**
+     * Soniox async transcription. Unlike the OpenAI/OpenRouter one-shot endpoints this is a multi-step
+     * REST flow (see [TranscriptionApi.SONIOX_ASYNC]):
+     *   1. upload the audio (`POST /files`) → `file_id`
+     *   2. create a job (`POST /transcriptions` with `file_id`) → transcription id
+     *   3. poll `GET /transcriptions/{id}` until `status == completed` (or `error`)
+     *   4. fetch `GET /transcriptions/{id}/transcript` → the assembled `text`
+     * The uploaded file and the transcription are deleted afterwards (best-effort) because Soniox caps the
+     * number of stored files/transcriptions per organization. [onRetry] only covers transient per-request
+     * network retries; the polling itself is normal operation and does not report a retry.
+     */
+    private suspend fun transcribeSonioxAsync(
+        request: TranscriptionRequest,
+        onRetry: (attempt: Int) -> Unit,
+    ): TranscriptionResult {
+        val base = config.normalizedBaseUrl
+
+        // 1. Upload the audio file.
+        val fileBody = request.audioFile.asRequestBody(guessAudioMediaType(request.audioFile))
+        val uploadBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("file", request.audioFile.name, fileBody)
+            .build()
+        val uploadRequest = Request.Builder()
+            .url(base + "files")
+            .headers(authHeaders())
+            .post(uploadBody)
+            .build()
+        val fileId = json.decodeFromString(
+            SonioxFileDto.serializer(),
+            executeForBody(uploadRequest, onRetry = onRetry),
+        ).id
+
+        var transcriptionId: String? = null
+        try {
+            // 2. Create the transcription job referencing the uploaded file.
+            val lang = request.language?.takeIf { it.isNotEmpty() && it != "detect" }
+            val createDto = SonioxCreateDto(
+                model = request.model,
+                fileId = fileId,
+                languageHints = lang?.let { listOf(it) },
+                // The style/punctuation prompt maps onto Soniox's free-text `context` field.
+                context = request.prompt?.takeIf { it.isNotBlank() },
+            )
+            val createRequest = Request.Builder()
+                .url(base + "transcriptions")
+                .headers(authHeaders())
+                .post(json.encodeToString(SonioxCreateDto.serializer(), createDto).toRequestBody(JSON_MEDIA_TYPE))
+                .build()
+            val id = json.decodeFromString(
+                SonioxTranscriptionDto.serializer(),
+                executeForBody(createRequest, onRetry = onRetry),
+            ).id
+            transcriptionId = id
+
+            // 3. Poll until the job completes or fails (or we exceed the overall budget).
+            val statusUrl = base + "transcriptions/" + id
+            var waitedMs = 0L
+            while (true) {
+                val statusRequest = Request.Builder()
+                    .url(statusUrl)
+                    .headers(authHeaders())
+                    .get()
+                    .build()
+                val status = json.decodeFromString(
+                    SonioxTranscriptionDto.serializer(),
+                    executeForBody(statusRequest, maxRetries = 2, onRetry = onRetry),
+                )
+                when (status.status) {
+                    "completed" -> break
+                    "error", "failed" -> {
+                        // Soniox reports billing/quota problems as a job error (not an HTTP 402), so run the
+                        // message through the same classifier — a balance/quota issue must not look like a
+                        // transient "try again" server error. The 502 default keeps genuine processing
+                        // failures retryable.
+                        throw DictateApiException.fromHttp(
+                            status = 502,
+                            message = status.errorMessage ?: "Soniox transcription failed",
+                        )
+                    }
+                    // queued / processing / downloading → keep waiting
+                    else -> {
+                        if (waitedMs >= SONIOX_POLL_TIMEOUT_MS) {
+                            throw DictateApiException(
+                                DictateApiException.Kind.TIMEOUT,
+                                "Soniox transcription timed out",
+                            )
+                        }
+                        delay(SONIOX_POLL_INTERVAL_MS)
+                        waitedMs += SONIOX_POLL_INTERVAL_MS
+                    }
+                }
+            }
+
+            // 4. Fetch the finished transcript (the top-level `text` is already fully assembled).
+            val transcriptRequest = Request.Builder()
+                .url(statusUrl + "/transcript")
+                .headers(authHeaders())
+                .get()
+                .build()
+            val transcript = json.decodeFromString(
+                SonioxTranscriptDto.serializer(),
+                executeForBody(transcriptRequest, onRetry = onRetry),
+            )
+            return TranscriptionResult(transcript.text.trim())
+        } finally {
+            // Best-effort cleanup so we don't pile up against Soniox's stored-object limits.
+            transcriptionId?.let { sonioxDelete(base + "transcriptions/" + it) }
+            sonioxDelete(base + "files/" + fileId)
+        }
+    }
+
+    /** Fire-and-forget DELETE used to clean up Soniox files/transcriptions; failures are ignored. */
+    private suspend fun sonioxDelete(url: String) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                val request = Request.Builder().url(url).headers(authHeaders()).delete().build()
+                client.newCall(request).execute().use { /* ignore body/status */ }
+            }
+        }
+    }
+
     override suspend fun listModels(): List<ModelInfo> {
         val httpRequest = Request.Builder()
             .url(config.normalizedBaseUrl + "models")
@@ -151,6 +274,15 @@ class OpenAiCompatibleClient(
             .get()
             .build()
         val body = executeForBody(httpRequest, maxRetries = 1)
+        // Soniox returns `{ models: [ { id, transcription_mode, … } ] }` instead of OpenAI's `{ data: [...] }`,
+        // and lists both async and real-time models; only the async ones work with our SONIOX_ASYNC flow.
+        if (config.transcriptionApi == TranscriptionApi.SONIOX_ASYNC) {
+            val response = json.decodeFromString(SonioxModelsDto.serializer(), body)
+            return response.models
+                .filter { it.transcriptionMode == "async" }
+                .map { ModelInfo(it.id) }
+                .sortedBy { it.id.lowercase() }
+        }
         val response = json.decodeFromString(ModelsResponseDto.serializer(), body)
         return response.data.map { ModelInfo(it.id) }.sortedBy { it.id.lowercase() }
     }
@@ -207,11 +339,22 @@ class OpenAiCompatibleClient(
         }
     }
 
-    /** Parsed `{ "error": { … } }` envelope, or null if the body isn't one (e.g. plain-text gateways). */
-    private fun parseError(body: String): ErrorBodyDto? = try {
-        json.decodeFromString(ErrorEnvelopeDto.serializer(), body).error
-    } catch (_: Exception) {
-        null
+    /**
+     * Extracts the error detail from a non-2xx body. Tries the OpenAI-style `{ "error": { … } }` envelope
+     * first, then falls back to Soniox's flat `{ error_type, message, status_code }` shape; null if the body
+     * is neither (e.g. plain-text gateways).
+     */
+    private fun parseError(body: String): ErrorBodyDto? {
+        runCatching { json.decodeFromString(ErrorEnvelopeDto.serializer(), body).error }
+            .getOrNull()?.let { return it }
+        return runCatching {
+            val soniox = json.decodeFromString(SonioxErrorDto.serializer(), body)
+            if (soniox.message.isNullOrBlank() && soniox.errorType.isNullOrBlank()) {
+                null
+            } else {
+                ErrorBodyDto(message = soniox.message, code = soniox.errorType, type = soniox.errorType)
+            }
+        }.getOrNull()
     }
 
     private fun extractErrorMessage(body: String): String? = parseError(body)?.message
@@ -313,6 +456,44 @@ class OpenAiCompatibleClient(
     @Serializable
     private data class ModelEntryDto(val id: String)
 
+    // --- Soniox async REST DTOs (see transcribeSonioxAsync) ---
+
+    @Serializable
+    private data class SonioxFileDto(val id: String)
+
+    @Serializable
+    private data class SonioxCreateDto(
+        val model: String,
+        @SerialName("file_id") val fileId: String,
+        @SerialName("language_hints") val languageHints: List<String>? = null,
+        val context: String? = null,
+    )
+
+    @Serializable
+    private data class SonioxTranscriptionDto(
+        val id: String = "",
+        val status: String = "",
+        @SerialName("error_message") val errorMessage: String? = null,
+    )
+
+    @Serializable
+    private data class SonioxTranscriptDto(val text: String = "")
+
+    @Serializable
+    private data class SonioxModelsDto(val models: List<SonioxModelDto> = emptyList())
+
+    @Serializable
+    private data class SonioxModelDto(
+        val id: String,
+        @SerialName("transcription_mode") val transcriptionMode: String = "",
+    )
+
+    @Serializable
+    private data class SonioxErrorDto(
+        @SerialName("error_type") val errorType: String? = null,
+        val message: String? = null,
+    )
+
     @Serializable
     private data class ErrorEnvelopeDto(val error: ErrorBodyDto? = null)
 
@@ -328,6 +509,10 @@ class OpenAiCompatibleClient(
     companion object {
         private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
         private const val RETRY_DELAY_MS = 3000L
+
+        /** Soniox async polling: interval between status checks and the overall budget before giving up. */
+        private const val SONIOX_POLL_INTERVAL_MS = 1500L
+        private const val SONIOX_POLL_TIMEOUT_MS = 300_000L
 
         /** Builds a client from a registry [preset] plus the user's key/proxy. */
         fun from(

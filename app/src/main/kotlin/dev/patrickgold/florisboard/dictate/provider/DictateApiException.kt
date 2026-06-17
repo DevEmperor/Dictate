@@ -56,9 +56,11 @@ class DictateApiException(
                 status == 401 || status == 403 ||
                     hay.contains("api key") || hay.contains("api_key") || hay.contains("invalid_api_key") ||
                     hay.contains("unauthorized") || hay.contains("authentication") -> Kind.INVALID_API_KEY
-                status == 429 ||
+                status == 429 || status == 402 ||
                     hay.contains("quota") || hay.contains("insufficient_quota") || hay.contains("billing") ||
-                    hay.contains("rate limit") || hay.contains("rate_limit") -> Kind.QUOTA_EXCEEDED
+                    hay.contains("rate limit") || hay.contains("rate_limit") ||
+                    // Soniox 402 billing signals: balance/budget exhausted.
+                    hay.contains("exhausted") || hay.contains("balance") || hay.contains("budget") -> Kind.QUOTA_EXCEEDED
                 status == 413 ||
                     hay.contains("audio duration") || hay.contains("content size limit") ||
                     hay.contains("too large") || hay.contains("maximum context length") -> Kind.CONTENT_SIZE_LIMIT

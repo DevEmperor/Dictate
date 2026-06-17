@@ -49,6 +49,7 @@ object ProviderRegistry {
 
     private val CHAT_ONLY = ProviderCapabilities(chat = true, transcription = false)
     private val CHAT_AND_STT = ProviderCapabilities(chat = true, transcription = true)
+    private val STT_ONLY = ProviderCapabilities(chat = false, transcription = true)
 
     val OPENAI = ProviderPreset(
         id = "openai",
@@ -140,6 +141,22 @@ object ProviderRegistry {
         curatedTranscriptionModels = listOf("voxtral-mini-latest"),
     )
 
+    val SONIOX = ProviderPreset(
+        id = "soniox",
+        displayName = "Soniox",
+        // Soniox is transcription-only and does NOT speak the OpenAI wire format: it uses a multi-step
+        // async REST flow (see TranscriptionApi.SONIOX_ASYNC). Very accurate, strong multilingual/German.
+        baseUrl = "https://api.soniox.com/v1/",
+        capabilities = STT_ONLY,
+        transcriptionApi = TranscriptionApi.SONIOX_ASYNC,
+        // /v1/models is supported and returns transcription_mode per model; the client filters to async.
+        supportsDynamicModels = true,
+        apiKeyUrl = "https://console.soniox.com",
+        defaultTranscriptionModel = "stt-async-v5",
+        // Verified against Soniox's model catalog; the live picker adds any newer async models.
+        curatedTranscriptionModels = listOf("stt-async-v5"),
+    )
+
     val XAI = ProviderPreset(
         id = "xai",
         displayName = "xAI (Grok)",
@@ -170,7 +187,7 @@ object ProviderRegistry {
 
     /** All built-in presets in display order. The custom option is added by the UI on top of these. */
     val presets: List<ProviderPreset> = listOf(
-        OPENAI, GROQ, OPENROUTER, TOGETHER, DEEPINFRA, MISTRAL, XAI, DEEPSEEK, OLLAMA,
+        OPENAI, GROQ, OPENROUTER, TOGETHER, DEEPINFRA, MISTRAL, SONIOX, XAI, DEEPSEEK, OLLAMA,
     )
 
     fun byId(id: String): ProviderPreset? = presets.firstOrNull { it.id == id }

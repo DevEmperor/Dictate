@@ -38,6 +38,7 @@ data class ProviderConfig(
  * Wire format of a provider's speech-to-text endpoint. Most providers (OpenAI, Groq, Mistral, …) accept
  * the OpenAI `multipart/form-data` file upload at `audio/transcriptions`. OpenRouter instead exposes a
  * JSON endpoint that takes base64-encoded audio in an `input_audio` object, so it needs its own path.
+ * Soniox uses a multi-step async REST flow (upload → create job → poll → fetch transcript).
  */
 enum class TranscriptionApi {
     /** OpenAI-style `multipart/form-data` upload with a `file` part. */
@@ -45,6 +46,13 @@ enum class TranscriptionApi {
 
     /** OpenRouter-style JSON body: `{ model, input_audio: { data (base64), format } }`. */
     OPENROUTER_JSON,
+
+    /**
+     * Soniox async flow against `api.soniox.com/v1/`: upload the file (`POST /files`), create a
+     * transcription job (`POST /transcriptions` with `file_id`), poll `GET /transcriptions/{id}` until
+     * `status == completed`, then fetch `GET /transcriptions/{id}/transcript`. See [OpenAiCompatibleClient].
+     */
+    SONIOX_ASYNC,
 }
 
 /**
