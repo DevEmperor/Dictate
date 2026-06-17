@@ -522,6 +522,7 @@ private fun errorIcon(kind: DictateApiException.Kind?, action: DictateController
 @Composable
 private fun PromoContent(kind: DictateController.PromoKind) {
     val context = LocalContext.current
+    val rowStyle = rememberSnyggThemeQuery(FlorisImeUi.SmartbarSharedActionsRow.elementName)
     val accent = Color(0xFF30B7E6) // Dictate light blue (theme accent default).
     val leadingIcon = when (kind) {
         DictateController.PromoKind.RATE -> Icons.Default.Star
@@ -568,8 +569,17 @@ private fun PromoContent(kind: DictateController.PromoKind) {
             modifier = Modifier.size(20.dp),
         )
         Spacer(modifier = Modifier.width(8.dp))
-        SnyggText(
+        // Plain Text (not SnyggText) constrained with weight + single line + ellipsis: long localized
+        // messages (e.g. German "Dictate unterstützen?") must shrink/ellipsize instead of wrapping and
+        // pushing the accept/dismiss controls off-screen, which would leave the nudge un-dismissable.
+        // fill = false keeps the row compact and centered for short locales.
+        Text(
             text = stringRes(messageRes),
+            color = rowStyle.foreground(),
+            fontSize = 14.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f, fill = false),
         )
         Spacer(modifier = Modifier.width(10.dp))
         // Filled accent pill = primary action (opens Play Store / PayPal / the in-app changelog).
