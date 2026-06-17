@@ -19,6 +19,7 @@ package dev.patrickgold.florisboard.ime.text
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,6 +30,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
+import dev.patrickgold.florisboard.ime.media.emoji.EmojiSearchPanel
 import dev.patrickgold.florisboard.ime.smartbar.IncognitoDisplayMode
 import dev.patrickgold.florisboard.ime.smartbar.InlineSuggestionsStyleCache
 import dev.patrickgold.florisboard.ime.smartbar.Smartbar
@@ -50,6 +53,7 @@ fun TextInputLayout(
 
     val state by keyboardManager.activeState.collectAsState()
     val evaluator by keyboardManager.activeEvaluator.collectAsState()
+    val emojiSearchActive by keyboardManager.emojiSearchQuery.collectAsState()
 
     InlineSuggestionsStyleCache()
 
@@ -58,7 +62,19 @@ fun TextInputLayout(
             .fillMaxWidth()
             .wrapContentHeight(),
     ) {
-        Smartbar()
+        // While an emoji search is running (issue #110), the search panel takes the Smartbar's slot so the
+        // keyboard layout below stays available for typing the query.
+        if (emojiSearchActive != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(FlorisImeSizing.smartbarHeight),
+            ) {
+                EmojiSearchPanel()
+            }
+        } else {
+            Smartbar()
+        }
         if (state.isActionsOverflowVisible) {
             QuickActionsOverflowPanel()
         } else {

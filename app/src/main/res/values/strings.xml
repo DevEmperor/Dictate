@@ -52,6 +52,8 @@
     <string name="emoji__history__removal_success_message" comment="Toast message if user has used the delete action on an emoji in the emoji history">Removed {emoji} from emoji history</string>
     <string name="emoji__history__pinned">Pinned</string>
     <string name="emoji__history__recent">Recent</string>
+    <string name="emoji__search__hint" comment="Placeholder shown in the emoji search field before the user types a query">Search emoji</string>
+    <string name="emoji__search__no_results" comment="Shown in the emoji search strip when the typed query matches no emoji">No matching emoji</string>
 
     <!-- Quick action strings -->
     <string name="quick_action__arrow_up" comment="Please mind the limited available space for the quick action strings">Arrow up</string>

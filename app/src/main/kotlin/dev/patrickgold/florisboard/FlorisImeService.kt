@@ -341,6 +341,9 @@ class FlorisImeService : LifecycleInputMethodService() {
         if (info == null) return
         val editorInfo = FlorisEditorInfo.wrap(info)
         activeState.batchEdit {
+            // A new editor field invalidates any in-progress emoji search (issue #110); drop it so we
+            // don't reappear on an unrelated field. imeUiMode is reset to TEXT just below anyway.
+            keyboardManager.closeEmojiSearch(returnToMedia = false)
             if (activeState.imeUiMode != ImeUiMode.CLIPBOARD || prefs.clipboard.historyHideOnNextTextField.get()) {
                 activeState.imeUiMode = ImeUiMode.TEXT
             }

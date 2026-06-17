@@ -24,12 +24,16 @@ import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Backspace
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -44,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.ime.input.InputEventDispatcher
 import dev.patrickgold.florisboard.ime.input.LocalInputFeedbackController
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
@@ -96,6 +101,30 @@ fun MediaInputLayout(
                 Text(
                     text = "ABC",
                     fontWeight = FontWeight.Bold,
+                )
+            }
+            // Opens the in-keyboard emoji search (issue #110): switches to the text keyboard with the
+            // search panel so the user can type a term and filter emojis live.
+            val inputFeedbackController = LocalInputFeedbackController.current
+            SnyggBox(
+                elementName = FlorisImeUi.MediaBottomRowButton.elementName,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(1f)
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                                inputFeedbackController.keyPress(TextKeyData.UNSPECIFIED)
+                                keyboardManager.activateEmojiSearch()
+                            },
+                        )
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null,
+                    modifier = Modifier.size(34.dp),
                 )
             }
             Spacer(modifier = Modifier.weight(1f))

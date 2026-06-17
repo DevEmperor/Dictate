@@ -101,6 +101,14 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
     var smartbarVisibleDynamicActionsCount by mutableIntStateOf(0)
     private var lastToastReference = WeakReference<Toast>(null)
 
+    /**
+     * Holds the live query of the in-keyboard emoji search (issue #110), or `null` when no search is
+     * active. While non-null, the search panel replaces the Smartbar (see [TextInputLayout]) and the
+     * user's own keyboard layout is used to type the query — character/space/delete keystrokes are
+     * intercepted in [onInputKeyUp] and folded into this query instead of being committed to the editor.
+     */
+    val emojiSearchQuery = MutableStateFlow<String?>(null)
+
     private val activeEvaluatorGuard = Mutex(locked = false)
     private var activeEvaluatorVersion = AtomicInteger(0)
     val activeEvaluator: StateFlow<ComputingEvaluator>
@@ -673,6 +681,50 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
         activeState.isCharHalfWidth = true
     }
 
+    /**
+     * Opens the in-keyboard emoji search (issue #110): switches to the text keyboard so the user can type
+     * a query using their own selected layout, while the search panel is shown in place of the Smartbar.
+     */
+    fun activateEmojiSearch() {
+        emojiSearchQuery.value = ""
+        activeState.imeUiMode = ImeUiMode.TEXT
+    }
+
+    /**
+     * Closes the emoji search. When [returnToMedia] is set the user is taken back to the emoji palette,
+     * which is the natural "back" destination since search is launched from there.
+     */
+    fun closeEmojiSearch(returnToMedia: Boolean = true) {
+        if (emojiSearchQuery.value == null) return
+        emojiSearchQuery.value = null
+        if (returnToMedia) activeState.imeUiMode = ImeUiMode.MEDIA
+    }
+
+    /**
+     * While an emoji search is active, folds typing-related keys into the search query instead of letting
+     * them reach the editor. Returns `true` when the key was consumed. A backspace on an empty query exits
+     * the search (a common "back out" gesture), and Enter is swallowed so it never inserts a newline.
+     */
+    private fun handleEmojiSearchKey(data: KeyData): Boolean {
+        val current = emojiSearchQuery.value ?: return false
+        when (data.code) {
+            KeyCode.SPACE -> emojiSearchQuery.value = "$current "
+            KeyCode.ENTER -> { /* swallow: keep the query, never commit a newline */ }
+            KeyCode.DELETE, KeyCode.DELETE_WORD -> {
+                if (current.isEmpty()) {
+                    closeEmojiSearch()
+                } else {
+                    emojiSearchQuery.value = current.dropLast(1)
+                }
+            }
+            else -> {
+                if (data.type != KeyType.CHARACTER) return false
+                emojiSearchQuery.value = current + data.asString(isForDisplay = false)
+            }
+        }
+        return true
+    }
+
     override fun onInputKeyDown(data: KeyData) {
         val windowController = FlorisImeService.windowControllerOrNull()
         windowController?.editor?.disableIfNoGestureInProgress()
@@ -693,6 +745,9 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
 
     override fun onInputKeyUp(data: KeyData) = activeState.batchEdit {
         val windowController = FlorisImeService.windowControllerOrNull() ?: return@batchEdit
+        if (emojiSearchQuery.value != null && handleEmojiSearchKey(data)) {
+            return@batchEdit
+        }
         when (data.code) {
             KeyCode.ARROW_DOWN,
             KeyCode.ARROW_LEFT,
@@ -737,9 +792,9 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
             KeyCode.IME_HIDE_UI -> FlorisImeService.hideUi()
             KeyCode.IME_PREV_SUBTYPE -> subtypeManager.switchToPrevSubtype()
             KeyCode.IME_NEXT_SUBTYPE -> subtypeManager.switchToNextSubtype()
-            KeyCode.IME_UI_MODE_TEXT -> activeState.imeUiMode = ImeUiMode.TEXT
-            KeyCode.IME_UI_MODE_MEDIA -> activeState.imeUiMode = ImeUiMode.MEDIA
-            KeyCode.IME_UI_MODE_CLIPBOARD -> activeState.imeUiMode = ImeUiMode.CLIPBOARD
+            KeyCode.IME_UI_MODE_TEXT -> { closeEmojiSearch(returnToMedia = false); activeState.imeUiMode = ImeUiMode.TEXT }
+            KeyCode.IME_UI_MODE_MEDIA -> { closeEmojiSearch(returnToMedia = false); activeState.imeUiMode = ImeUiMode.MEDIA }
+            KeyCode.IME_UI_MODE_CLIPBOARD -> { closeEmojiSearch(returnToMedia = false); activeState.imeUiMode = ImeUiMode.CLIPBOARD }
             KeyCode.IME_UI_MODE_DICTATE -> dev.patrickgold.florisboard.dictate.DictateController.onMicClick(appContext)
             KeyCode.DICTATE_LIVE_PROMPT -> dev.patrickgold.florisboard.dictate.DictateController.startLivePrompt(appContext)
             KeyCode.DICTATE_PROMPTS -> {
