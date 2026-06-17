@@ -153,10 +153,11 @@
   "smartbar-action-key[code=-214]": {
     "background": "var(--primary)",
     "shape": "circle()",
-    "margin": "6dp"
+    "margin": "4dp"
   },
   "smartbar-action-key-icon[code=-214]": {
-    "foreground": "var(--on-primary)"
+    "foreground": "var(--on-primary)",
+    "font-size": "24sp"
   },
   "smartbar-action-key": {
     "background": "transparent",

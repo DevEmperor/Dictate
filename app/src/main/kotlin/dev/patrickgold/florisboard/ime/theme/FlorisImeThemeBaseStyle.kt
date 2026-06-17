@@ -149,6 +149,19 @@ val FlorisImeThemeBaseStyle = SnyggStylesheet.v2 {
     FlorisImeUi.SmartbarActionKey.elementName(selector = SnyggSelector.DISABLED) {
         foreground = `var`("--on-background-disabled")
     }
+    // Dictate's record/mic sticky action: give it a filled accent circle and a larger glyph so it
+    // reads as a clear, prominent tap target (issue #115). Footprint stays the smartbar-height square
+    // it always was — the circular accent fill just makes that existing touch area easy to find/hit.
+    FlorisImeUi.SmartbarActionKey.elementName(FlorisImeUi.Attr.Code to listOf(KeyCode.IME_UI_MODE_DICTATE)) {
+        background = `var`("--primary")
+        foreground = `var`("--on-primary")
+        margin = padding(4.dp)
+        shape = circleShape()
+    }
+    "${FlorisImeUi.SmartbarActionKey.elementName}-icon"(FlorisImeUi.Attr.Code to listOf(KeyCode.IME_UI_MODE_DICTATE)) {
+        foreground = `var`("--on-primary")
+        fontSize = fontSize(24.sp)
+    }
 
     FlorisImeUi.SmartbarActionsOverflow.elementName {
         margin = padding(4.dp)
