@@ -188,18 +188,31 @@ fun BackupScreen() = FlorisScreen {
         }
         if (backupFilesSelector.dictatePrompts) {
             val prompts = PromptsDatabaseHelper(context.applicationContext).getAll()
-            workspace.inputDir.subDir("dictate").subFile(Backup.DICTATE_PROMPTS_JSON_NAME)
-                .writeJson(prompts)
+            // subDir() only builds a File handle, it does not create the directory. Without this mkdirs()
+            // the writeJson() below throws FileNotFoundException (no such dir), which aborted the whole
+            // backup whenever the prompts component was selected (issue #112). The clipboard branch below
+            // already creates its dir for the same reason.
+            workspace.inputDir.subDir("dictate").let { dir ->
+                dir.mkdirs()
+                dir.subFile(Backup.DICTATE_PROMPTS_JSON_NAME).writeJson(prompts)
+            }
         }
         val workspaceFilesDir = workspace.inputDir.subDir("files")
         if (backupFilesSelector.imeKeyboard) {
+            // copyRecursively() throws NoSuchFileException if the source dir is absent (e.g. no custom
+            // keyboard extension was ever imported), which would likewise abort the entire backup. Only
+            // copy when the dir actually exists.
             context.filesDir.subDir(ExtensionManager.IME_KEYBOARD_PATH).let { dir ->
-                dir.copyRecursively(workspaceFilesDir.subDir(ExtensionManager.IME_KEYBOARD_PATH))
+                if (dir.exists()) {
+                    dir.copyRecursively(workspaceFilesDir.subDir(ExtensionManager.IME_KEYBOARD_PATH))
+                }
             }
         }
         if (backupFilesSelector.imeTheme) {
             context.filesDir.subDir(ExtensionManager.IME_THEME_PATH).let { dir ->
-                dir.copyRecursively(workspaceFilesDir.subDir(ExtensionManager.IME_THEME_PATH))
+                if (dir.exists()) {
+                    dir.copyRecursively(workspaceFilesDir.subDir(ExtensionManager.IME_THEME_PATH))
+                }
             }
         }
 
