@@ -38,6 +38,7 @@ import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.dictate.DictateLanguages
 import dev.patrickgold.florisboard.dictate.data.prompts.DictatePromptDefaults
+import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
 import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import org.florisboard.lib.compose.stringRes
@@ -59,16 +60,32 @@ fun DictateScreen() = FlorisScreen {
     content {
         val navController = LocalNavController.current
 
-        // The active transcription provider's display name, for the summary of the providers row.
+        // The active providers' display names, for the summary of the providers row. Show both the
+        // transcription and (when rewording is on) the rewording provider, since they are configured
+        // independently and often differ — the row previously surfaced only the transcription one.
         val transcriptionProviderId by prefs.dictate.transcriptionProviderId.collectAsState()
-        val providerName = remember(transcriptionProviderId) {
-            ProviderRegistry.byId(transcriptionProviderId)?.displayName ?: transcriptionProviderId
+        val rewordingProviderId by prefs.dictate.rewordingProviderId.collectAsState()
+        val rewordingEnabled by prefs.dictate.rewordingEnabled.collectAsState()
+        val accounts by prefs.dictate.providerAccounts.collectAsState()
+        val transcriptionName = remember(transcriptionProviderId, accounts) {
+            providerDisplayName(transcriptionProviderId, accounts)
+        }
+        val rewordingName = remember(rewordingProviderId, accounts) {
+            providerDisplayName(rewordingProviderId, accounts)
         }
         PreferenceGroup(title = stringRes(R.string.dictate__transcription_group)) {
             Preference(
                 icon = Icons.Default.Cloud,
                 title = stringRes(R.string.dictate__providers_title),
-                summary = stringRes(R.string.dictate__providers_summary, "provider" to providerName),
+                summary = if (rewordingEnabled && transcriptionName != rewordingName) {
+                    stringRes(
+                        R.string.dictate__providers_summary_both,
+                        "transcription" to transcriptionName,
+                        "rewording" to rewordingName,
+                    )
+                } else {
+                    stringRes(R.string.dictate__providers_summary, "provider" to transcriptionName)
+                },
                 onClick = { navController.navigate(Routes.Settings.DictateProviders) },
             )
 
@@ -193,4 +210,14 @@ fun DictateScreen() = FlorisScreen {
             )
         }
     }
+}
+
+/**
+ * Resolves a provider id to a human-readable name for the providers-row summary: built-ins come from
+ * the [ProviderRegistry], user-defined endpoints from their stored display name in the keyring, falling
+ * back to the raw id if neither is available.
+ */
+private fun providerDisplayName(id: String, accounts: ProviderAccounts): String {
+    ProviderRegistry.byId(id)?.let { return it.displayName }
+    return accounts[id]?.displayName?.takeIf { it.isNotBlank() } ?: id
 }
