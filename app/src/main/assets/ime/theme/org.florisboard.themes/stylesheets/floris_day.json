@@ -211,7 +211,7 @@
     "shape": "circle()"
   },
   "smartbar-actions-editor-subheader": {
-    "foreground": "var(--secondary)",
+    "foreground": "dynamic-light-color(primary)",
     "font-size": "16sp",
     "font-weight": "bold",
     "padding": "12dp 16dp 12dp 8dp",

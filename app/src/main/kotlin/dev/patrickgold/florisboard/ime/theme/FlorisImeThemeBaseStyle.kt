@@ -196,7 +196,9 @@ val FlorisImeThemeBaseStyle = SnyggStylesheet.v2 {
         shape = circleShape()
     }
     FlorisImeUi.SmartbarActionsEditorSubheader.elementName {
-        foreground = `var`("--secondary")
+        // Use the user's accent color (the dynamic primary) instead of the old fixed orange
+        // (var(--secondary)), matching the bundled themes. This is only the fallback base style.
+        foreground = dynamicLightColor("primary")
         fontSize = fontSize(16.sp)
         fontWeight = fontWeight(FontWeight.Bold)
         padding = padding(12.dp, 16.dp, 12.dp, 8.dp)
