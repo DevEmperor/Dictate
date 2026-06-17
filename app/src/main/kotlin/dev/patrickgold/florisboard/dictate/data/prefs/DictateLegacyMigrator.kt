@@ -16,6 +16,7 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.DictateLanguages
 import dev.patrickgold.florisboard.dictate.provider.DictateProxyType
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
+import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
 import dev.patrickgold.florisboard.dictate.provider.ProxyConfig
 import java.net.Proxy
 import java.util.Locale
@@ -92,6 +93,36 @@ object DictateLegacyMigrator {
 
             s.rewordingCustomHost?.takeIf { it.isNotBlank() }
                 ?.let { prefs.dictate.rewordingCustomBaseUrl.set(it) }
+
+            // --- Per-provider credential carry-over. The legacy app stored a *separate* API key (and
+            // model) for each provider, but the imports above only fold the *active* provider's key into
+            // the flat prefs. Seed the keyring directly from every stored provider key so a user who had
+            // configured e.g. both an OpenAI and a Groq key keeps both after the update. The transcription
+            // key takes precedence over the rewording one for the same provider; the per-provider keys are
+            // never cross-filled with the old global `api_key`, which belonged to a single configured
+            // provider. The keyring migration that runs next ([migrateProviderKeyringIfNeeded]) refines the
+            // *active* accounts (models, custom-host split) on top of this seed.
+            var keyring = prefs.dictate.providerAccounts.get()
+            keyring = keyring.seedAccount(
+                providerId = "openai",
+                apiKey = s.transcriptionApiKeyOpenai ?: s.rewordingApiKeyOpenai,
+                transcriptionModel = s.transcriptionOpenaiModel,
+                chatModel = s.rewordingOpenaiModel,
+            )
+            keyring = keyring.seedAccount(
+                providerId = "groq",
+                apiKey = s.transcriptionApiKeyGroq ?: s.rewordingApiKeyGroq,
+                transcriptionModel = s.transcriptionGroqModel,
+                chatModel = s.rewordingGroqModel,
+            )
+            keyring = keyring.seedAccount(
+                providerId = ProviderAccount.LEGACY_CUSTOM_ID,
+                apiKey = s.transcriptionApiKeyCustom ?: s.rewordingApiKeyCustom,
+                transcriptionModel = s.transcriptionCustomModel,
+                chatModel = s.rewordingCustomModel,
+                customBaseUrl = s.transcriptionCustomHost ?: s.rewordingCustomHost,
+            )
+            prefs.dictate.providerAccounts.set(keyring)
 
             prefs.dictate.systemPromptSelection.set(s.systemPromptSelection)
             s.systemPromptCustomText?.let { prefs.dictate.systemPromptCustom.set(it) }
@@ -326,5 +357,29 @@ object DictateLegacyMigrator {
                 hiddenActions = arrangement.hiddenActions.filterNot(matches),
             ),
         )
+    }
+
+    /**
+     * Folds a single legacy provider's stored credentials into [this] keyring. No-op (returns the keyring
+     * unchanged) when there is no usable key, so providers the user never configured don't create empty
+     * accounts. Existing non-blank fields are never overwritten, making it safe to run before the active
+     * provider's flat prefs are folded in by [migrateProviderKeyringIfNeeded].
+     */
+    private fun ProviderAccounts.seedAccount(
+        providerId: String,
+        apiKey: String?,
+        transcriptionModel: String? = null,
+        chatModel: String? = null,
+        customBaseUrl: String? = null,
+    ): ProviderAccounts {
+        val key = apiKey?.takeIf { it.isNotBlank() && it != "NO_API_KEY" } ?: return this
+        return edit(providerId) { account ->
+            account.copy(
+                apiKey = account.apiKey.ifBlank { key },
+                transcriptionModel = account.transcriptionModel.ifBlank { transcriptionModel.orEmpty() },
+                chatModel = account.chatModel.ifBlank { chatModel.orEmpty() },
+                customBaseUrl = account.customBaseUrl.ifBlank { customBaseUrl.orEmpty() },
+            )
+        }
     }
 }
