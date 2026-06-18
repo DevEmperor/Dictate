@@ -35,11 +35,6 @@ import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
 import dev.patrickgold.florisboard.dictate.provider.ProviderPreset
 import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
 import dev.patrickgold.florisboard.dictate.provider.TranscriptionRequest
-import dev.patrickgold.florisboard.editorInstance
-import dev.patrickgold.florisboard.ime.text.key.KeyCode
-import dev.patrickgold.florisboard.ime.text.key.KeyType
-import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
-import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.lib.util.AppVersionUtils
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -201,9 +196,6 @@ object DictateController {
 
     /** Recorded seconds of [carryOverAudio], so the continued recording's total length stays correct. */
     private var carryOverSeconds = 0L
-
-    /** Synthetic Enter key dispatched for auto-enter (10.1); reuses the keyboard's full enter logic. */
-    private val EnterKeyData = TextKeyData(type = KeyType.ENTER_EDITING, code = KeyCode.ENTER, label = "enter")
 
     /** Cache file name for the merged audio when a continued interrupted recording is stitched together. */
     private const val MERGED_AUDIO_NAME = "dictate_merged.m4a"
@@ -555,13 +547,12 @@ object DictateController {
                     ),
                     onRetry = { attempt -> _state.value = UiState.Transcribing(attempt) },
                 )
-                val editorInstance by appContext.editorInstance()
                 val finalText = if (live) {
                     // The spoken transcript is an instruction; send it to GPT (optionally operating
                     // on the current selection) and insert the answer instead of the transcript.
                     _pendingPrompts.value = emptyList() // a live prompt ignores any queued prompts
                     _state.value = UiState.Rewording(appContext.getString(R.string.dictate__status_rewording))
-                    val selection = editorInstance.activeContent.selectedText.takeIf { it.isNotEmpty() }
+                    val selection = sink(appContext).selectedText().takeIf { it.isNotEmpty() }
                     requestReword(result.text, selection)
                 } else {
                     // Normal dictation: auto-formatting + auto-apply prompts, then the prompts the user
@@ -607,35 +598,37 @@ object DictateController {
     // --- Output behavior + resend (roadmap section 10) ------------------------------------------
 
     /**
+     * Resolves the output sink for the current dictation: where the finished text is written and how the
+     * focused field is read. Today this is always the keyboard's own editor ([ImeDictationSink]); the
+     * floating overlay (issue #88) is the single seam that will swap in an accessibility-backed sink for
+     * the active dictation, so the rest of the engine stays editor-agnostic.
+     */
+    private fun sink(context: Context): DictationSink = ImeDictationSink(context)
+
+    /**
      * Commits [text] into the focused field honoring the output prefs: either all at once
      * ([prefs.dictate.instantOutput]) or "typed" character by character at the configured speed, then
      * an optional auto-enter (10.1). Runs on the caller's (Main) coroutine, so the typewriter delay
      * suspends rather than blocks.
      */
     private suspend fun commitOutput(context: Context, text: String) {
-        val editorInstance by context.editorInstance()
+        val sink = sink(context)
         if (prefs.dictate.instantOutput.get()) {
-            editorInstance.commitText(text)
+            sink.commitText(text)
         } else if (text.isNotEmpty()) {
             val perChar = perCharDelayMs(prefs.dictate.outputSpeed.get())
             text.forEach { ch ->
-                editorInstance.commitText(ch.toString())
+                sink.commitText(ch.toString())
                 delay(perChar)
             }
         }
         if (prefs.dictate.autoEnter.get()) {
-            performAutoEnter(context)
+            sink.performEnter()
         }
     }
 
     /** Per-character delay for the typewriter output: speed 1 → 100 ms … 5 → 20 ms … 10 → 10 ms (legacy mapping). */
     private fun perCharDelayMs(speed: Int): Long = (100L / speed.coerceIn(1, 10)).coerceAtLeast(1L)
-
-    /** Presses Enter / triggers the editor action by dispatching a real [KeyCode.ENTER] key event. */
-    private fun performAutoEnter(context: Context) {
-        val keyboardManager by context.keyboardManager()
-        keyboardManager.inputEventDispatcher.sendDownUp(EnterKeyData)
-    }
 
     // --- Retained audio + unified resend (failed transcription / interrupted recording) ---------
 
@@ -864,8 +857,7 @@ object DictateController {
         if (!prefs.dictate.rememberLastDictation.get()) return
         val text = prefs.dictate.lastDictation.get()
         if (text.isEmpty()) return
-        val editorInstance by context.applicationContext.editorInstance()
-        editorInstance.commitText(text)
+        sink(context).commitText(text)
         clearError()
     }
 
@@ -969,12 +961,12 @@ object DictateController {
     fun applyPrompt(context: Context, prompt: PromptModel, selectionOverride: String? = null) {
         if (_state.value !is UiState.Idle && _state.value !is UiState.Error) return
         val appContext = context.applicationContext
-        val editorInstance by appContext.editorInstance()
+        val sink = sink(appContext)
         val raw = prompt.prompt.orEmpty()
 
         // Snippet shortcut: text wrapped in [...] is inserted literally (no network call).
         if (raw.length >= 2 && raw.startsWith("[") && raw.endsWith("]")) {
-            editorInstance.commitText(raw.substring(1, raw.length - 1))
+            sink.commitText(raw.substring(1, raw.length - 1))
             return
         }
 
@@ -982,17 +974,16 @@ object DictateController {
             selectionOverride != null -> selectionOverride
             !prompt.requiresSelection -> null
             else -> {
-                val content = editorInstance.activeContent
-                val selected = content.selectedText
+                val selected = sink.selectedText()
                 if (selected.isNotEmpty()) {
                     selected
                 } else {
                     // Nothing selected: select the whole field (so the user sees what gets reworded)
                     // and operate on its full text. The reworded result then replaces the now-selected
                     // content via commitText. Matches the "tap a prompt with no selection" flow.
-                    val whole = content.text
+                    val whole = sink.fullText()
                     if (whole.isBlank()) return // empty field – nothing to operate on
-                    editorInstance.performClipboardSelectAll()
+                    sink.selectAll()
                     whole
                 }
             }
@@ -1012,7 +1003,7 @@ object DictateController {
             try {
                 val text = requestReword(raw, input)
                 // commitText replaces the active selection if any, else inserts at the cursor.
-                editorInstance.commitText(text)
+                sink.commitText(text)
                 _state.value = UiState.Idle
             } catch (e: DictateApiException) {
                 _state.value = apiError(e, appContext, canResend = false)
