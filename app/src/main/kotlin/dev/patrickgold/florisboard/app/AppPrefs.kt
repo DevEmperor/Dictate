@@ -308,6 +308,14 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__instant_recording",
             default = false,
         )
+        // Floating dictation button (issue #88): the in-app master toggle. The bubble only shows when
+        // this is on AND the DictateAccessibilityService is enabled in the system accessibility settings
+        // (the latter is the actual permission; this lets the user hide the bubble without digging into
+        // system settings). Default off — opt-in feature.
+        val floatingButtonEnabled = boolean(
+            key = "dictate__floating_button_enabled",
+            default = false,
+        )
         // --- Output behavior (roadmap section 10) ------------------------------------------------
         // Press Enter / trigger the editor action automatically after committing a transcription.
         val autoEnter = boolean(

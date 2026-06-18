@@ -1205,6 +1205,18 @@
     <string name="dictate__overlay_notification_channel" comment="Name of the notification channel for the floating-button recording notification">Floating dictation button</string>
     <string name="dictate__overlay_notification_recording" comment="Text of the ongoing notification shown while the floating button is recording">Recording — tap the floating button to transcribe</string>
     <string name="dictate__overlay_notification_working" comment="Text shown in the notification while the floating-button dictation is being transcribed">Transcribing…</string>
+    <string name="dictate__floating_button_title" comment="Title of the floating-button settings screen">Floating button</string>
+    <string name="dictate__floating_button_enable_title" comment="Master toggle for the floating dictation button">Floating dictation button</string>
+    <string name="dictate__floating_button_enable_summary" comment="Summary under the floating-button master toggle">Show a floating button to dictate into any app, even when another keyboard is active.</string>
+    <string name="dictate__floating_button_permission_group" comment="Group title for the accessibility-permission setup">Setup</string>
+    <string name="dictate__floating_button_service_title" comment="Row that leads to the system accessibility settings">Accessibility service</string>
+    <string name="dictate__floating_button_service_enabled" comment="Status when the accessibility service is on">Enabled · tap to open system settings</string>
+    <string name="dictate__floating_button_service_disabled" comment="Status when the accessibility service is off">Not enabled yet · tap to set up</string>
+    <string name="dictate__floating_button_disclosure_title" comment="Title of the prominent-disclosure dialog before enabling the accessibility service">Enable the floating button</string>
+    <string name="dictate__floating_button_disclosure_message" comment="Prominent disclosure shown before sending the user to the accessibility settings">To show the floating button, Dictate needs the accessibility service. It detects when a text field is focused in any app — so the button can appear — and inserts your transcribed speech into that field. Dictate only reads the focused field to place your text; it does not collect, store or share other screen content.\n\nOn the next screen, find “Dictate floating button” and turn it on.</string>
+    <string name="dictate__floating_button_disclosure_continue" comment="Confirm button that opens the system accessibility settings">Open settings</string>
+    <string name="dictate__floating_button_mic_title" comment="Row to grant the microphone permission for the floating button">Microphone access</string>
+    <string name="dictate__floating_button_mic_summary" comment="Summary of the microphone row when the permission is missing">Required to record your voice · tap to grant</string>
 
     <!-- Dictate input panel (IME) -->
     <string name="dictate__panel_title" comment="Title of the Dictate AI prompt panel inside the keyboard">AI prompts</string>

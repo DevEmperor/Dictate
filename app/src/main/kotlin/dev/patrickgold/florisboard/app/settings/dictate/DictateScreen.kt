@@ -11,6 +11,7 @@
 package dev.patrickgold.florisboard.app.settings.dictate
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Adjust
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Bolt
@@ -140,6 +141,12 @@ fun DictateScreen() = FlorisScreen {
         }
 
         PreferenceGroup(title = stringRes(R.string.dictate__recording_group)) {
+            Preference(
+                icon = Icons.Default.Adjust,
+                title = stringRes(R.string.dictate__floating_button_enable_title),
+                summary = stringRes(R.string.dictate__floating_button_enable_summary),
+                onClick = { navController.navigate(Routes.Settings.DictateFloatingButton) },
+            )
             SwitchPreference(
                 prefs.dictate.audioFocus,
                 icon = Icons.Default.VolumeOff,

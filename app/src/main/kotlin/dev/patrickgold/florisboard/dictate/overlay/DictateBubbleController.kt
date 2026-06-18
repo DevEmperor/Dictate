@@ -23,6 +23,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import dev.patrickgold.florisboard.R
+import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.DictateController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +49,7 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
     private val context: Context get() = service
     private val windowManager = service.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val scope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
+    private val prefs by FlorisPreferenceStore
 
     private var rootView: FrameLayout? = null
     private var iconView: ImageView? = null
@@ -58,13 +60,17 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
     private val bubbleSize = dp(56)
     private val iconInset = dp(15)
 
-    /** Starts observing focus + dictation state to show/hide and animate the bubble. */
+    /** Starts observing the feature toggle + focus + dictation state to show/hide and animate the bubble. */
     fun start() {
         scope.launch {
-            combine(DictateAccessibilityService.editableFocused, DictateController.state) { f, s -> f to s }
-                .collect { (focused, state) ->
+            combine(
+                prefs.dictate.floatingButtonEnabled.asFlow(),
+                DictateAccessibilityService.editableFocused,
+                DictateController.state,
+            ) { enabled, focused, state -> Triple(enabled, focused, state) }
+                .collect { (enabled, focused, state) ->
                     val active = state !is DictateController.UiState.Idle
-                    if (focused || active) ensureShown() else hide()
+                    if (enabled && (focused || active)) ensureShown() else hide()
                     applyState(state)
                     manageForeground(state)
                 }
