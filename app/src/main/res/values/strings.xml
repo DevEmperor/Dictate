@@ -1198,6 +1198,11 @@
     <!-- ============================== Dictate ============================== -->
     <!-- Strings for the Dictate AI voice features (panel, settings, onboarding). -->
 
+    <!-- Dictate floating button / accessibility service (issue #88) -->
+    <string name="dictate__accessibility_service_label" comment="Name of the Dictate accessibility service, shown in the system accessibility settings list">Dictate floating button</string>
+    <string name="dictate__accessibility_service_summary" comment="Short one-line summary of the accessibility service in the system settings">Show a floating button to dictate into any text field.</string>
+    <string name="dictate__accessibility_service_description" comment="Full disclosure shown in the system accessibility settings explaining what the service does and why">Dictate uses this service to power the floating dictation button. When enabled, it detects when a text field is focused in any app — so the button can appear — and inserts your transcribed speech into that field. Dictate only reads the focused field to place your text at the cursor; it does not collect, store or share other screen content.</string>
+
     <!-- Dictate input panel (IME) -->
     <string name="dictate__panel_title" comment="Title of the Dictate AI prompt panel inside the keyboard">AI prompts</string>
     <string name="dictate__panel_no_prompts" comment="Shown in the prompt panel when no prompts exist yet">No prompts yet. Add some in the Dictate settings under Rewording.</string>

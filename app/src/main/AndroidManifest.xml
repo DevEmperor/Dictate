@@ -59,6 +59,23 @@
             <meta-data android:name="android.view.im" android:resource="@xml/method"/>
         </service>
 
+        <!-- Dictate floating-overlay accessibility service (issue #88): optional, user-enabled. Detects
+             when a text field is focused in any app so the floating dictation button can appear, and
+             injects the transcribed text into that field (no InputConnection available from an overlay).
+             Bound only by the system via the BIND_ACCESSIBILITY_SERVICE permission. -->
+        <service
+            android:name="dev.patrickgold.florisboard.dictate.overlay.DictateAccessibilityService"
+            android:label="@string/dictate__accessibility_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config"/>
+        </service>
+
         <!-- Spellchecker service -->
         <service
             android:name="dev.patrickgold.florisboard.FlorisSpellCheckerService"

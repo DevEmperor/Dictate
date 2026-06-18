@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Configuration for DictateAccessibilityService (issue #88, floating dictation button).
+
+  canRetrieveWindowContent is required to read the focused field (to detect that it is editable and
+  to insert the transcribed text at the cursor). The event types are limited to focus/selection/window
+  changes so the service only wakes up when the input focus might have moved. The description is shown
+  verbatim in the system Accessibility settings and serves as the user-facing disclosure.
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeViewFocused|typeViewClicked|typeViewTextSelectionChanged|typeWindowStateChanged|typeWindowContentChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagDefault|flagRetrieveInteractiveWindows|flagReportViewIds"
+    android:canRetrieveWindowContent="true"
+    android:notificationTimeout="100"
+    android:description="@string/dictate__accessibility_service_description"
+    android:summary="@string/dictate__accessibility_service_summary" />
