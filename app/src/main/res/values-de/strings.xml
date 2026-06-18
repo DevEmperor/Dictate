@@ -981,6 +981,29 @@
     <string name="unit__percent__symbol">{v} %</string>
     <string name="unit__display_pixel__symbol">{v} dp</string>
     <string name="unit__display_pixel_per_seconds__symbol">{v} dp/s</string>
+    <!-- Dictate floating button / accessibility service (issue #88) -->
+    <string name="dictate__accessibility_service_label">Dictate Floating-Button</string>
+    <string name="dictate__accessibility_service_summary">Zeigt einen schwebenden Button, um in jedes Textfeld zu diktieren.</string>
+    <string name="dictate__accessibility_service_description">Dictate nutzt diesen Dienst für den schwebenden Diktier-Button. Wenn er aktiviert ist, erkennt er, wann in einer beliebigen App ein Textfeld fokussiert wird – damit der Button erscheinen kann – und fügt deine transkribierte Sprache in dieses Feld ein. Dictate liest nur das fokussierte Feld, um deinen Text an der Cursorposition einzufügen; es sammelt, speichert oder teilt keine anderen Bildschirminhalte.</string>
+    <string name="dictate__overlay_notification_channel">Schwebender Diktier-Button</string>
+    <string name="dictate__overlay_notification_recording">Aufnahme – tippe auf den schwebenden Button, um zu transkribieren</string>
+    <string name="dictate__overlay_notification_working">Transkribiere…</string>
+    <string name="dictate__floating_button_title">Floating-Button</string>
+    <string name="dictate__floating_button_enable_title">Schwebender Diktier-Button</string>
+    <string name="dictate__floating_button_enable_summary">Zeigt einen schwebenden Button, um in jede App zu diktieren – auch wenn eine andere Tastatur aktiv ist.</string>
+    <string name="dictate__floating_button_permission_group">Einrichtung</string>
+    <string name="dictate__floating_button_service_title">Bedienungshilfe-Dienst</string>
+    <string name="dictate__floating_button_service_enabled">Aktiviert · tippen, um die Systemeinstellungen zu öffnen</string>
+    <string name="dictate__floating_button_service_disabled">Noch nicht aktiviert · tippen, um einzurichten</string>
+    <string name="dictate__floating_button_disclosure_title">Floating-Button aktivieren</string>
+    <string name="dictate__floating_button_disclosure_message">Um den schwebenden Button anzuzeigen, benötigt Dictate den Bedienungshilfe-Dienst. Er erkennt, wann in einer beliebigen App ein Textfeld fokussiert wird – damit der Button erscheinen kann – und fügt deine transkribierte Sprache in dieses Feld ein. Dictate liest nur das fokussierte Feld, um deinen Text einzufügen; es sammelt, speichert oder teilt keine anderen Bildschirminhalte.\n\nSuche auf dem nächsten Bildschirm „Dictate Floating-Button\" und schalte ihn ein.</string>
+    <string name="dictate__floating_button_disclosure_continue">Einstellungen öffnen</string>
+    <string name="dictate__floating_button_mic_title">Mikrofon-Zugriff</string>
+    <string name="dictate__floating_button_mic_summary">Nötig, um deine Stimme aufzunehmen · tippen, um zu erlauben</string>
+    <string name="dictate__floating_button_show_with_keyboard_title">Mit Dictate-Tastatur anzeigen</string>
+    <string name="dictate__floating_button_show_with_keyboard_summary_on">Der Button erscheint auch, während die Dictate-Tastatur aktiv ist.</string>
+    <string name="dictate__floating_button_show_with_keyboard_summary_off">Ausgeblendet, während die Dictate-Tastatur aktiv ist, da diese bereits eine Mikrofontaste hat.</string>
+
     <string name="dictate__panel_title">KI-Prompts</string>
     <string name="dictate__panel_no_prompts">Noch keine Prompts. Füge welche in den Dictate-Einstellungen unter „Umformulieren\" hinzu.</string>
     <string name="dictate__prompts_layout_title">Prompt-Layout</string>

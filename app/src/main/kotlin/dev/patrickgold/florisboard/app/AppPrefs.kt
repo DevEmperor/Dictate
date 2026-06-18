@@ -316,6 +316,13 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__floating_button_enabled",
             default = false,
         )
+        // Whether the floating button also shows while the Dictate keyboard itself is the active input
+        // method. Default off: when our own keyboard is up it already has a mic key, so the bubble would
+        // be redundant; turning this on shows it everywhere regardless of the active keyboard.
+        val floatingButtonShowWithDictateKeyboard = boolean(
+            key = "dictate__floating_button_show_with_dictate_keyboard",
+            default = false,
+        )
         // --- Output behavior (roadmap section 10) ------------------------------------------------
         // Press Enter / trigger the editor action automatically after committing a transcription.
         val autoEnter = boolean(

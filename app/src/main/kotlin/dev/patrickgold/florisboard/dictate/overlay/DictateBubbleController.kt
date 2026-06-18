@@ -68,17 +68,34 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
     private val bubbleSize = dp(56)
     private val iconInset = dp(15)
 
+    /** Inputs that decide whether the bubble is shown and how it looks, combined from prefs + service. */
+    private data class Inputs(
+        val enabled: Boolean,
+        val showWithDictateKeyboard: Boolean,
+        val focused: Boolean,
+        val dictateKeyboardActive: Boolean,
+        val state: DictateController.UiState,
+    )
+
     /** Starts observing the feature toggle + focus + dictation state to show/hide and animate the bubble. */
     fun start() {
         scope.launch {
             combine(
                 prefs.dictate.floatingButtonEnabled.asFlow(),
+                prefs.dictate.floatingButtonShowWithDictateKeyboard.asFlow(),
                 DictateAccessibilityService.editableFocused,
+                DictateAccessibilityService.dictateKeyboardActive,
                 DictateController.state,
-            ) { enabled, focused, state -> Triple(enabled, focused, state) }
-                .collect { (enabled, focused, state) ->
+            ) { enabled, showWithKeyboard, focused, dictateKeyboard, state ->
+                Inputs(enabled, showWithKeyboard, focused, dictateKeyboard, state)
+            }
+                .collect { (enabled, showWithKeyboard, focused, dictateKeyboard, state) ->
                     val active = state !is DictateController.UiState.Idle
-                    if (enabled && (focused || active)) ensureShown() else hide()
+                    // When our own keyboard is up it already has a mic key, so hide the bubble unless the
+                    // user opted to show it everywhere — but never hide mid-dictation.
+                    val hiddenByOwnKeyboard = dictateKeyboard && !showWithKeyboard && !active
+                    val show = enabled && (focused || active) && !hiddenByOwnKeyboard
+                    if (show) ensureShown() else hide()
                     applyState(state)
                     manageForeground(state)
                     reportTerminalState(state)

@@ -17,6 +17,7 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
+import android.provider.Settings
 import android.os.Bundle
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -93,6 +94,20 @@ class DictateAccessibilityService : AccessibilityService() {
             _editableFocused.value = focused
             flogDebug { "editable field focused = $focused" }
         }
+        val dictateKeyboard = isDictateKeyboardActive()
+        if (_dictateKeyboardActive.value != dictateKeyboard) {
+            _dictateKeyboardActive.value = dictateKeyboard
+            flogDebug { "Dictate keyboard active = $dictateKeyboard" }
+        }
+    }
+
+    /** Whether the Dictate keyboard itself is the currently selected input method (handles .debug). */
+    private fun isDictateKeyboardActive(): Boolean {
+        val current = Settings.Secure.getString(
+            contentResolver, Settings.Secure.DEFAULT_INPUT_METHOD,
+        ) ?: return false
+        // DEFAULT_INPUT_METHOD is "<package>/<service-class>"; the package is our applicationId.
+        return current.substringBefore('/') == packageName
     }
 
     /**
@@ -161,16 +176,21 @@ class DictateAccessibilityService : AccessibilityService() {
 
     /**
      * The field's real text, treating a shown hint/placeholder (e.g. WhatsApp's "Message") as empty so
-     * the injected text never gets prepended to the placeholder. [AccessibilityNodeInfo.getText] returns
-     * the hint verbatim for an empty field, which is only distinguishable via [isShowingHintText].
+     * the injected text never gets prepended to the placeholder.
      *
-     * TODO(#88): [isShowingHintText] is not reliable across apps — WhatsApp's compose field returns the
-     *  "Message" placeholder as text *without* setting the flag, so the injected text still gets the
-     *  placeholder prepended. Needs a more robust empty-field heuristic (e.g. compare against hintText,
-     *  or prefer ACTION_SET_SELECTION + paste over rebuilding the text). Deferred.
+     * [AccessibilityNodeInfo.getText] returns the hint verbatim for an empty field. The documented way to
+     * tell them apart is [isShowingHintText], but it is not reliable across apps — WhatsApp's compose field
+     * returns its "Message" placeholder as `text` *without* setting the flag. So we additionally treat the
+     * text as empty when it is identical to the node's declared [getHintText]; the (self-correcting) cost
+     * is that a field whose real content exactly equals its placeholder is seen as empty.
      */
-    private fun AccessibilityNodeInfo.editableText(): String =
-        if (isShowingHintText) "" else text?.toString() ?: ""
+    private fun AccessibilityNodeInfo.editableText(): String {
+        if (isShowingHintText) return ""
+        val raw = text?.toString() ?: ""
+        val hint = hintText?.toString()
+        if (!hint.isNullOrEmpty() && raw == hint) return ""
+        return raw
+    }
 
     /**
      * Presses the editor action / Enter on the focused field (auto-enter). Uses the proper IME-enter
@@ -194,6 +214,7 @@ class DictateAccessibilityService : AccessibilityService() {
         if (instance === this) {
             instance = null
             _editableFocused.value = false
+            _dictateKeyboardActive.value = false
             bubble?.destroy()
             bubble = null
             stopMicForeground()
@@ -263,6 +284,11 @@ class DictateAccessibilityService : AccessibilityService() {
 
         /** Whether an editable text field currently holds input focus anywhere on screen. */
         val editableFocused: StateFlow<Boolean> = _editableFocused.asStateFlow()
+
+        private val _dictateKeyboardActive = MutableStateFlow(false)
+
+        /** Whether the Dictate keyboard is the currently selected input method. */
+        val dictateKeyboardActive: StateFlow<Boolean> = _dictateKeyboardActive.asStateFlow()
 
         /**
          * Inserts [text] into the focused editable field via the running service, returning true on

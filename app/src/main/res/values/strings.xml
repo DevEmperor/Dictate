@@ -1217,6 +1217,9 @@
     <string name="dictate__floating_button_disclosure_continue" comment="Confirm button that opens the system accessibility settings">Open settings</string>
     <string name="dictate__floating_button_mic_title" comment="Row to grant the microphone permission for the floating button">Microphone access</string>
     <string name="dictate__floating_button_mic_summary" comment="Summary of the microphone row when the permission is missing">Required to record your voice · tap to grant</string>
+    <string name="dictate__floating_button_show_with_keyboard_title" comment="Toggle: whether to also show the floating button while the Dictate keyboard itself is active">Show with Dictate keyboard</string>
+    <string name="dictate__floating_button_show_with_keyboard_summary_on" comment="Summary when the floating button is shown even with the Dictate keyboard active">The button also appears while the Dictate keyboard is active.</string>
+    <string name="dictate__floating_button_show_with_keyboard_summary_off" comment="Summary when the floating button is hidden while the Dictate keyboard is active">Hidden while the Dictate keyboard is active, since it already has a mic key.</string>
 
     <!-- Dictate input panel (IME) -->
     <string name="dictate__panel_title" comment="Title of the Dictate AI prompt panel inside the keyboard">AI prompts</string>

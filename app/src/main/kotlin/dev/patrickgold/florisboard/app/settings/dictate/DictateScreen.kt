@@ -30,10 +30,18 @@ import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Spellcheck
 import androidx.compose.material.icons.filled.Translate
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.VolumeOff
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.app.LocalNavController
@@ -141,12 +149,53 @@ fun DictateScreen() = FlorisScreen {
         }
 
         PreferenceGroup(title = stringRes(R.string.dictate__recording_group)) {
-            Preference(
+            // Floating dictation button (issue #88): the master toggle lives here on the main page; the
+            // dedicated screen below holds the setup (accessibility service, mic) and display options.
+            val context = LocalContext.current
+            val floatingEnabled by prefs.dictate.floatingButtonEnabled.collectAsState()
+            var prevFloatingEnabled by remember { mutableStateOf(floatingEnabled) }
+            var showFloatingDisclosure by remember { mutableStateOf(false) }
+            LaunchedEffect(floatingEnabled) {
+                // Just switched on and the service isn't set up yet → show the disclosure and send the
+                // user to the system accessibility settings (same first-run flow as the dedicated screen).
+                if (floatingEnabled && !prevFloatingEnabled && !isOverlayServiceEnabled(context)) {
+                    showFloatingDisclosure = true
+                }
+                prevFloatingEnabled = floatingEnabled
+            }
+            SwitchPreference(
+                prefs.dictate.floatingButtonEnabled,
                 icon = Icons.Default.Adjust,
                 title = stringRes(R.string.dictate__floating_button_enable_title),
                 summary = stringRes(R.string.dictate__floating_button_enable_summary),
-                onClick = { navController.navigate(Routes.Settings.DictateFloatingButton) },
             )
+            if (floatingEnabled) {
+                Preference(
+                    icon = Icons.Default.Tune,
+                    title = stringRes(R.string.dictate__floating_button_title),
+                    onClick = { navController.navigate(Routes.Settings.DictateFloatingButton) },
+                )
+            }
+            if (showFloatingDisclosure) {
+                AlertDialog(
+                    onDismissRequest = { showFloatingDisclosure = false },
+                    title = { Text(stringRes(R.string.dictate__floating_button_disclosure_title)) },
+                    text = { Text(stringRes(R.string.dictate__floating_button_disclosure_message)) },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            showFloatingDisclosure = false
+                            openAccessibilitySettings(context)
+                        }) {
+                            Text(stringRes(R.string.dictate__floating_button_disclosure_continue))
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showFloatingDisclosure = false }) {
+                            Text(stringRes(android.R.string.cancel))
+                        }
+                    },
+                )
+            }
             SwitchPreference(
                 prefs.dictate.audioFocus,
                 icon = Icons.Default.VolumeOff,

@@ -21,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Adjust
+import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -93,6 +94,14 @@ fun DictateFloatingButtonScreen() = FlorisScreen {
         )
 
         if (enabled) {
+            SwitchPreference(
+                prefs.dictate.floatingButtonShowWithDictateKeyboard,
+                icon = Icons.Default.Keyboard,
+                title = stringRes(R.string.dictate__floating_button_show_with_keyboard_title),
+                summaryOn = stringRes(R.string.dictate__floating_button_show_with_keyboard_summary_on),
+                summaryOff = stringRes(R.string.dictate__floating_button_show_with_keyboard_summary_off),
+            )
+
             PreferenceGroup(title = stringRes(R.string.dictate__floating_button_permission_group)) {
                 Preference(
                     icon = Icons.Default.Accessibility,
@@ -148,7 +157,7 @@ fun DictateFloatingButtonScreen() = FlorisScreen {
 }
 
 /** Whether the Dictate accessibility service is currently enabled in the system accessibility settings. */
-private fun isOverlayServiceEnabled(context: Context): Boolean {
+internal fun isOverlayServiceEnabled(context: Context): Boolean {
     val flattened = Settings.Secure.getString(
         context.contentResolver,
         Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES,
@@ -162,7 +171,7 @@ private fun isMicGranted(context: Context): Boolean =
     ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
         PackageManager.PERMISSION_GRANTED
 
-private fun openAccessibilitySettings(context: Context) {
+internal fun openAccessibilitySettings(context: Context) {
     runCatching {
         context.startActivity(
             Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
