@@ -160,7 +160,7 @@ val FlorisImeThemeBaseStyle = SnyggStylesheet.v2 {
     }
     "${FlorisImeUi.SmartbarActionKey.elementName}-icon"(FlorisImeUi.Attr.Code to listOf(KeyCode.IME_UI_MODE_DICTATE)) {
         foreground = `var`("--on-primary")
-        fontSize = fontSize(24.sp)
+        fontSize = fontSize(20.sp)
     }
 
     FlorisImeUi.SmartbarActionsOverflow.elementName {

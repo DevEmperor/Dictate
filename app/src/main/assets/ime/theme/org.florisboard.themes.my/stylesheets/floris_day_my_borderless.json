@@ -157,7 +157,7 @@
   },
   "smartbar-action-key-icon[code=-214]": {
     "foreground": "var(--on-primary)",
-    "font-size": "24sp"
+    "font-size": "20sp"
   },
   "smartbar-action-key": {
     "background": "transparent",
