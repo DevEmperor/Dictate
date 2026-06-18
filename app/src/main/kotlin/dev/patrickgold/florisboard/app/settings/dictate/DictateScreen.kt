@@ -10,6 +10,10 @@
 
 package dev.patrickgold.florisboard.app.settings.dictate
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Adjust
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -30,9 +34,10 @@ import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Spellcheck
 import androidx.compose.material.icons.filled.Translate
-import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.VolumeOff
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -40,8 +45,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalViewConfiguration
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.app.LocalNavController
@@ -58,6 +72,7 @@ import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
+import kotlinx.coroutines.launch
 
 @Composable
 fun DictateScreen() = FlorisScreen {
@@ -148,6 +163,19 @@ fun DictateScreen() = FlorisScreen {
             )
         }
 
+        PreferenceGroup(title = stringRes(R.string.dictate__rewording_group)) {
+            val rewordingEnabled by prefs.dictate.rewordingEnabled.collectAsState()
+            Preference(
+                icon = Icons.Default.AutoAwesome,
+                title = stringRes(R.string.dictate__rewording_title),
+                summary = stringRes(
+                    if (rewordingEnabled) R.string.dictate__rewording_summary_on
+                    else R.string.dictate__rewording_summary_off,
+                ),
+                onClick = { navController.navigate(Routes.Settings.DictateRewording) },
+            )
+        }
+
         PreferenceGroup(title = stringRes(R.string.dictate__recording_group)) {
             // Floating dictation button (issue #88): the master toggle lives here on the main page; the
             // dedicated screen below holds the setup (accessibility service, mic) and display options.
@@ -163,19 +191,46 @@ fun DictateScreen() = FlorisScreen {
                 }
                 prevFloatingEnabled = floatingEnabled
             }
-            SwitchPreference(
-                prefs.dictate.floatingButtonEnabled,
+            // One two-target row: tapping the body opens the setup/options sub screen, while the
+            // trailing switch toggles the feature independently (like a "switch + chevron" item).
+            val floatingScope = rememberCoroutineScope()
+            Preference(
                 icon = Icons.Default.Adjust,
                 title = stringRes(R.string.dictate__floating_button_enable_title),
                 summary = stringRes(R.string.dictate__floating_button_enable_summary),
+                onClick = { navController.navigate(Routes.Settings.DictateFloatingButton) },
+                trailing = {
+                    // Same trailing as JetPref's ListPreference-with-switch: a divider line drawn on the
+                    // box's left edge separates the navigable body from the independently toggleable switch.
+                    val dividerColor = MaterialTheme.colorScheme.outlineVariant
+                    Box(
+                        modifier = Modifier
+                            .size(LocalViewConfiguration.current.minimumTouchTargetSize + DpSize(8.dp, 0.dp))
+                            .toggleable(
+                                value = floatingEnabled,
+                                role = Role.Switch,
+                                onValueChange = { checked ->
+                                    floatingScope.launch { prefs.dictate.floatingButtonEnabled.set(checked) }
+                                },
+                            )
+                            .drawBehind {
+                                drawLine(
+                                    color = dividerColor,
+                                    start = Offset(0f, size.height * 0.1f),
+                                    end = Offset(0f, size.height * 0.9f),
+                                    strokeWidth = 2f,
+                                )
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Switch(
+                            modifier = Modifier.padding(start = 8.dp),
+                            checked = floatingEnabled,
+                            onCheckedChange = null,
+                        )
+                    }
+                },
             )
-            if (floatingEnabled) {
-                Preference(
-                    icon = Icons.Default.Tune,
-                    title = stringRes(R.string.dictate__floating_button_title),
-                    onClick = { navController.navigate(Routes.Settings.DictateFloatingButton) },
-                )
-            }
             if (showFloatingDisclosure) {
                 AlertDialog(
                     onDismissRequest = { showFloatingDisclosure = false },
@@ -219,19 +274,6 @@ fun DictateScreen() = FlorisScreen {
                 icon = Icons.Default.Bolt,
                 title = stringRes(R.string.dictate__instant_recording_title),
                 summary = stringRes(R.string.dictate__instant_recording_summary),
-            )
-        }
-
-        PreferenceGroup(title = stringRes(R.string.dictate__rewording_group)) {
-            val rewordingEnabled by prefs.dictate.rewordingEnabled.collectAsState()
-            Preference(
-                icon = Icons.Default.AutoAwesome,
-                title = stringRes(R.string.dictate__rewording_title),
-                summary = stringRes(
-                    if (rewordingEnabled) R.string.dictate__rewording_summary_on
-                    else R.string.dictate__rewording_summary_off,
-                ),
-                onClick = { navController.navigate(Routes.Settings.DictateRewording) },
             )
         }
 
