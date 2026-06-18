@@ -1,8 +1,8 @@
 {
   "$schema": "https://schemas.florisboard.org/snygg/v2/stylesheet",
   "@defines": {
-    "--primary": "dynamic-dark-color(primary)",
-    "--primary-variant": "dynamic-dark-color(inversePrimary)",
+    "--primary": "#30b7e6",
+    "--primary-variant": "#1c7eab",
     "--secondary": "#f57c00",
     "--secondary-variant": "#e65100",
     "--background": "#212121",
@@ -16,7 +16,7 @@
     "--one-hand-background": "#1b5e20",
     "--one-hand-foreground": "#eeeeee",
     "--incognito-icon-color": "#ffffff11",
-    "--on-primary": "dynamic-dark-color(onPrimary)",
+    "--on-primary": "#f0f0f0",
     "--on-background": "#dcdcdc",
     "--on-background-disabled": "#dcdcdc48",
     "--on-surface": "#ffffff",
@@ -99,7 +99,7 @@
     "text-max-lines": "2"
   },
   "key[code=-11][shiftstate=`caps_lock`]": {
-    "foreground": "dynamic-dark-color(primary)"
+    "foreground": "var(--primary)"
   },
   "key-hint": {
     "background": "transparent",

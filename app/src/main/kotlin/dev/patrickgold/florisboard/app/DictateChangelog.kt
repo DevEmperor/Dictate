@@ -29,6 +29,7 @@ object DictateChangelog {
 
     /** All releases, newest first. */
     val entries: List<Entry> = listOf(
+        Entry("4.1.1", R.string.changelog__v4_1_1),
         Entry("4.1.0", R.string.changelog__v4_1_0),
         Entry("4.0.0", R.string.changelog__current),
     )

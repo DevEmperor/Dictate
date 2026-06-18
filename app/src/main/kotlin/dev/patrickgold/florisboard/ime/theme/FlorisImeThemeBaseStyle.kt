@@ -29,8 +29,8 @@ import org.florisboard.lib.snygg.SnyggStylesheet
 
 val FlorisImeThemeBaseStyle = SnyggStylesheet.v2 {
     defines {
-        "--primary" to rgbaColor(76, 175, 80)
-        "--primary-variant" to rgbaColor(56, 142, 60)
+        "--primary" to rgbaColor(48, 183, 230)
+        "--primary-variant" to rgbaColor(28, 126, 171)
         "--secondary" to rgbaColor(245, 124, 0)
         "--secondary-variant" to rgbaColor(230, 81, 0)
         "--background" to rgbaColor(33, 33, 33)
@@ -98,9 +98,9 @@ val FlorisImeThemeBaseStyle = SnyggStylesheet.v2 {
         FlorisImeUi.Attr.Code to listOf(KeyCode.SHIFT),
         FlorisImeUi.Attr.ShiftState to listOf(InputShiftState.CAPS_LOCK.toString()),
     ) {
-        // Mark caps-lock with the user's accent color (the dynamic primary) instead of a fixed
-        // orange, matching the bundled day/night themes. This is only the fallback base style.
-        foreground = dynamicLightColor("primary")
+        // Mark caps-lock with the user's accent color (--primary) instead of a fixed orange,
+        // matching the bundled day/night themes. This is only the fallback base style.
+        foreground = `var`("--primary")
     }
     FlorisImeUi.KeyHint.elementName {
         background = rgbaColor(0, 0, 0, 0f)
@@ -209,9 +209,9 @@ val FlorisImeThemeBaseStyle = SnyggStylesheet.v2 {
         shape = circleShape()
     }
     FlorisImeUi.SmartbarActionsEditorSubheader.elementName {
-        // Use the user's accent color (the dynamic primary) instead of the old fixed orange
+        // Use the user's accent color (--primary) instead of the old fixed orange
         // (var(--secondary)), matching the bundled themes. This is only the fallback base style.
-        foreground = dynamicLightColor("primary")
+        foreground = `var`("--primary")
         fontSize = fontSize(16.sp)
         fontWeight = fontWeight(FontWeight.Bold)
         padding = padding(12.dp, 16.dp, 12.dp, 8.dp)
