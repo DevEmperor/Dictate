@@ -21,6 +21,7 @@ import android.view.ViewConfiguration
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
@@ -57,6 +58,13 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
     private var pulse: ValueAnimator? = null
     private var added = false
 
+    /**
+     * Whether the bubble started the in-flight dictation. Used to attribute a terminal Error state to the
+     * overlay (so its message is surfaced via a toast) without reacting to errors from a keyboard-driven
+     * dictation that happens while the bubble is also visible.
+     */
+    private var weStartedDictation = false
+
     private val bubbleSize = dp(56)
     private val iconInset = dp(15)
 
@@ -73,6 +81,7 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
                     if (enabled && (focused || active)) ensureShown() else hide()
                     applyState(state)
                     manageForeground(state)
+                    reportTerminalState(state)
                 }
         }
     }
@@ -177,8 +186,28 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
         // capture is allowed while the app is in the background (Android 14+). Demoted again when the
         // dictation finishes (see manageForeground).
         val starting = DictateController.state.value is DictateController.UiState.Idle
-        if (starting) service.startMicForeground()
+        if (starting) {
+            service.startMicForeground()
+            weStartedDictation = true
+        }
         DictateController.onMicClick(context, DictateController.OutputTarget.OVERLAY)
+    }
+
+    /**
+     * Surfaces a failed bubble dictation: the overlay has no inline error UI, so when an overlay-started
+     * dictation ends in an [DictateController.UiState.Error], show its message as a toast and clear the
+     * error so the keyboard's own chip does not also fire. Successful/aborted ends just reset the flag.
+     */
+    private fun reportTerminalState(state: DictateController.UiState) {
+        when (state) {
+            is DictateController.UiState.Error -> if (weStartedDictation) {
+                weStartedDictation = false
+                Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
+                DictateController.clearError()
+            }
+            is DictateController.UiState.Idle -> weStartedDictation = false
+            else -> Unit // recording / transcribing / rewording still in flight
+        }
     }
 
     // --- Appearance per state --------------------------------------------------------------------
