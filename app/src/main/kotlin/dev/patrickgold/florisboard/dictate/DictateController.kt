@@ -35,6 +35,7 @@ import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
 import dev.patrickgold.florisboard.dictate.provider.ProviderPreset
 import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
 import dev.patrickgold.florisboard.dictate.provider.TranscriptionRequest
+import dev.patrickgold.florisboard.dictate.overlay.AccessibilitySink
 import dev.patrickgold.florisboard.lib.util.AppVersionUtils
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -132,6 +133,13 @@ object DictateController {
     enum class PromoKind { RATE, DONATE, CHANGELOG }
 
     /**
+     * Where the active dictation's output goes: the keyboard editor ([OutputTarget.IME]) or the
+     * accessibility-injected field of the floating button ([OutputTarget.OVERLAY], issue #88). Set when a
+     * dictation starts (the mic-tap entry points carry their source); the two never drive concurrently.
+     */
+    enum class OutputTarget { IME, OVERLAY }
+
+    /**
      * Temporary debug switch to preview the "Dictate was updated" Smartbar nudge. When true, the nudge
      * is offered on every keyboard open (the real version gate never triggers on debug builds, whose
      * version name carries an unparseable suffix). MUST be false for any committed/shipped build.
@@ -170,6 +178,9 @@ object DictateController {
     /** When true, the next finished recording is fed to the rewording model instead of committed. */
     private var livePromptArmed = false
 
+    /** Output destination of the in-flight dictation; see [OutputTarget]. Reset to IME when idle. */
+    private var outputTarget = OutputTarget.IME
+
     /**
      * A single audio file kept for a one-tap re-send, used by both the error-resend chip and the
      * interrupted-recording chip (unified resend path). [reason] distinguishes a failed transcription
@@ -204,15 +215,23 @@ object DictateController {
     private const val RATE_THRESHOLD_SECONDS = 180L   // 3 min
     private const val DONATE_THRESHOLD_SECONDS = 300L // 5 min (user choice; legacy used 10 min)
 
-    /** Single entry point for the mic button: starts recording, or stops and transcribes. */
-    fun onMicClick(context: Context) {
+    /**
+     * Single entry point for the mic button: starts recording, or stops and transcribes. [target]
+     * selects where the finished text goes — the keyboard editor for the in-keyboard mic (default), or
+     * the accessibility-injected field for the floating button (issue #88). It is latched when a fresh
+     * recording starts, so the stop tap from the same source uses the same destination.
+     */
+    fun onMicClick(context: Context, target: OutputTarget = OutputTarget.IME) {
         when (_state.value) {
             is UiState.Recording -> stopAndTranscribe(context)
             // Tapping the mic while transcribing aborts it (the button shows a stop icon, see the
             // ComputingEvaluator). Rewording stays a no-op.
             is UiState.Transcribing -> cancelTranscription()
             is UiState.Rewording -> Unit
-            else -> startRecording(context)
+            else -> {
+                outputTarget = target
+                startRecording(context)
+            }
         }
     }
 
@@ -599,11 +618,15 @@ object DictateController {
 
     /**
      * Resolves the output sink for the current dictation: where the finished text is written and how the
-     * focused field is read. Today this is always the keyboard's own editor ([ImeDictationSink]); the
-     * floating overlay (issue #88) is the single seam that will swap in an accessibility-backed sink for
-     * the active dictation, so the rest of the engine stays editor-agnostic.
+     * focused field is read. The keyboard's own editor ([ImeDictationSink]) for in-keyboard dictation, or
+     * an accessibility-backed sink ([dev.patrickgold.florisboard.dictate.overlay.AccessibilitySink]) when
+     * the dictation was started from the floating button (issue #88) and must inject into another app.
+     * This single seam keeps the rest of the engine editor-agnostic.
      */
-    private fun sink(context: Context): DictationSink = ImeDictationSink(context)
+    private fun sink(context: Context): DictationSink = when (outputTarget) {
+        OutputTarget.IME -> ImeDictationSink(context)
+        OutputTarget.OVERLAY -> AccessibilitySink()
+    }
 
     /**
      * Commits [text] into the focused field honoring the output prefs: either all at once

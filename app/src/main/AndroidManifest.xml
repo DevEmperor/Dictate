@@ -17,6 +17,11 @@
     <!-- Permission needed to create notifications on devices running Android 13+ -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
+    <!-- Permissions for the floating dictation button (issue #88): the accessibility service promotes
+         itself to a microphone foreground service while recording so background mic capture is allowed -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+
     <!-- Android 11+ only: Define that FlorisBoard requests to see all apps that
           ship with an IME or Spell Check service. This is used to guide the user
           in the Settings Ui why FlorisBoard may not be working.
@@ -67,6 +72,7 @@
             android:name="dev.patrickgold.florisboard.dictate.overlay.DictateAccessibilityService"
             android:label="@string/dictate__accessibility_service_label"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:foregroundServiceType="microphone"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService"/>
