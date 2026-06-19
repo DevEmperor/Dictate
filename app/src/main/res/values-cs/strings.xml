@@ -1278,6 +1278,8 @@
     <string name="dictate__keep_screen_awake_summary">Zabránit vypnutí obrazovky během nahrávání</string>
     <string name="dictate__instant_recording_title">Okamžité nahrávání</string>
     <string name="dictate__instant_recording_summary">Automaticky spustit nahrávání při otevření klávesnice</string>
+    <string name="dictate__instant_recording_info_title">Upozornění</string>
+    <string name="dictate__instant_recording_info_message">Když je zapnuté okamžité nahrávání, obnovení přerušeného nahrávání je vypnuté — při každém otevření klávesnice se místo toho spustí nové nahrávání. Okamžité nahrávání vypněte, abyste obnovení získali zpět.</string>
     <string name="dictate__output_group">Výstup</string>
     <string name="dictate__auto_enter_title">Automatický Enter</string>
     <string name="dictate__auto_enter_summary">Po vložení přepisu automaticky stisknout Enter</string>

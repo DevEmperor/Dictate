@@ -1279,6 +1279,8 @@
     <string name="dictate__keep_screen_awake_summary">Zapobiegaj wyłączaniu ekranu podczas nagrywania</string>
     <string name="dictate__instant_recording_title">Natychmiastowe nagrywanie</string>
     <string name="dictate__instant_recording_summary">Automatycznie rozpoczynaj nagrywanie po otwarciu klawiatury</string>
+    <string name="dictate__instant_recording_info_title">Uwaga</string>
+    <string name="dictate__instant_recording_info_message">Gdy natychmiastowe nagrywanie jest włączone, przywracanie przerwanego nagrania jest wyłączone — przy każdym otwarciu klawiatury rozpoczyna się nowe nagranie. Wyłącz natychmiastowe nagrywanie, aby przywrócić tę funkcję.</string>
     <string name="dictate__output_group">Wyjście</string>
     <string name="dictate__auto_enter_title">Automatyczny Enter</string>
     <string name="dictate__auto_enter_summary">Automatycznie naciskaj Enter po wstawieniu transkrypcji</string>

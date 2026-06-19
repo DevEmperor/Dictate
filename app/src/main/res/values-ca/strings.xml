@@ -1137,6 +1137,8 @@
     <string name="dictate__keep_screen_awake_summary">Evita que la pantalla s\'apagui durant la gravació</string>
     <string name="dictate__instant_recording_title">Gravació instantània</string>
     <string name="dictate__instant_recording_summary">Comença a gravar automàticament en obrir el teclat</string>
+    <string name="dictate__instant_recording_info_title">Atenció</string>
+    <string name="dictate__instant_recording_info_message">Mentre l’enregistrament instantani estigui activat, la recuperació d’un enregistrament interromput està desactivada: cada cop que s’obre el teclat comença un enregistrament nou. Desactiva l’enregistrament instantani per recuperar l’opció de restauració.</string>
     <string name="dictate__output_group">Sortida</string>
     <string name="dictate__auto_enter_title">Retorn automàtic</string>
     <string name="dictate__auto_enter_summary">Prem Retorn automàticament després d\'inserir una transcripció</string>

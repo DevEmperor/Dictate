@@ -1045,6 +1045,8 @@
     <string name="dictate__keep_screen_awake_summary">Impedisci che lo schermo si spenga durante la registrazione</string>
     <string name="dictate__instant_recording_title">Registrazione istantanea</string>
     <string name="dictate__instant_recording_summary">Avvia la registrazione automaticamente all\'apertura della tastiera</string>
+    <string name="dictate__instant_recording_info_title">Avviso</string>
+    <string name="dictate__instant_recording_info_message">Mentre la registrazione istantanea è attiva, il ripristino di una registrazione interrotta è disattivato: ogni volta che si apre la tastiera viene avviata una nuova registrazione. Disattiva la registrazione istantanea per riavere il ripristino.</string>
     <string name="dictate__output_group">Output</string>
     <string name="dictate__auto_enter_title">Invio automatico</string>
     <string name="dictate__auto_enter_summary">Premi automaticamente Invio dopo l\'inserimento di una trascrizione</string>

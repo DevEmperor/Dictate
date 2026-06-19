@@ -1163,6 +1163,8 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="dictate__keep_screen_awake_summary">Voorkomen dat het scherm uitgaat tijdens het opnemen</string>
     <string name="dictate__instant_recording_title">Direct opnemen</string>
     <string name="dictate__instant_recording_summary">Automatisch beginnen met opnemen wanneer het toetsenbord wordt geopend</string>
+    <string name="dictate__instant_recording_info_title">Let op</string>
+    <string name="dictate__instant_recording_info_message">Zolang direct opnemen aanstaat, is het herstellen van een onderbroken opname uitgeschakeld — telkens als het toetsenbord opent, start er een nieuwe opname. Zet direct opnemen weer uit om het herstel terug te krijgen.</string>
     <string name="dictate__output_group">Uitvoer</string>
     <string name="dictate__auto_enter_title">Automatisch Enter</string>
     <string name="dictate__auto_enter_summary">Automatisch op Enter drukken nadat een transcriptie is ingevoegd</string>

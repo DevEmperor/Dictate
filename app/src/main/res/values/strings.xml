@@ -1389,6 +1389,8 @@
     <string name="dictate__keep_screen_awake_summary" comment="Summary for the keep-screen-awake setting">Prevent the screen from turning off while recording</string>
     <string name="dictate__instant_recording_title" comment="Setting: start recording when the keyboard opens">Instant recording</string>
     <string name="dictate__instant_recording_summary" comment="Summary for the instant recording setting">Start recording automatically when the keyboard opens</string>
+    <string name="dictate__instant_recording_info_title" comment="Title of the dialog shown when enabling instant recording">Heads up</string>
+    <string name="dictate__instant_recording_info_message" comment="Message of the dialog shown when enabling instant recording, explaining the trade-off with interrupted-recording recovery">While instant recording is on, recovering an interrupted recording is turned off — every time the keyboard opens it starts a fresh recording instead. Turn instant recording off again to get the recovery prompt back.</string>
     <string name="dictate__output_group" comment="Group title for output-behavior settings">Output</string>
     <string name="dictate__auto_enter_title" comment="Setting: press Enter after a transcription">Auto-enter</string>
     <string name="dictate__auto_enter_summary" comment="Summary for the auto-enter setting">Press Enter automatically after a transcription is inserted</string>

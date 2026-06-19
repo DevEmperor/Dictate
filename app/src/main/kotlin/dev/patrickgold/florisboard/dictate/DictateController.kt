@@ -768,6 +768,18 @@ object DictateController {
         livePromptArmed = false
         _pendingPrompts.value = emptyList()
         _state.value = UiState.Idle
+
+        // Interrupted-recording recovery is disabled while instant recording is on (issue #120): every
+        // keyboard open auto-starts a recording, so a stashed segment would only block the next open.
+        // Discard the finalized audio instead of keeping it (the user is told about this trade-off when
+        // enabling instant recording, and the whole feature only applies with instant recording off).
+        if (prefs.dictate.instantRecording.get()) {
+            audioFile?.takeIf { it.exists() }?.delete()
+            discardCarryOver()
+            scope.launch { clearInterruptedAudioPref() }
+            return
+        }
+
         val carry = carryOverAudio
         carryOverAudio = null
         val dest = interruptedAudioFile(context)

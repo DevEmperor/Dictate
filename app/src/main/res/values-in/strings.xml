@@ -1216,6 +1216,8 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="dictate__keep_screen_awake_summary">Cegah layar mati saat merekam</string>
     <string name="dictate__instant_recording_title">Perekaman instan</string>
     <string name="dictate__instant_recording_summary">Mulai merekam secara otomatis saat papan ketik terbuka</string>
+    <string name="dictate__instant_recording_info_title">Perhatian</string>
+    <string name="dictate__instant_recording_info_message">Saat perekaman instan aktif, pemulihan rekaman yang terputus dinonaktifkan — setiap kali keyboard dibuka, rekaman baru langsung dimulai. Matikan perekaman instan untuk mengembalikan opsi pemulihan.</string>
     <string name="dictate__output_group">Keluaran</string>
     <string name="dictate__auto_enter_title">Enter otomatis</string>
     <string name="dictate__auto_enter_summary">Tekan Enter secara otomatis setelah transkripsi disisipkan</string>

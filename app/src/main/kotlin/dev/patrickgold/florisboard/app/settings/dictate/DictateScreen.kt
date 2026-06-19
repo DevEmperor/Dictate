@@ -219,6 +219,30 @@ fun DictateScreen() = FlorisScreen {
                 title = stringRes(R.string.dictate__instant_recording_title),
                 summary = stringRes(R.string.dictate__instant_recording_summary),
             )
+            // Inform the user once, when they switch instant recording on, that it disables the
+            // interrupted-recording recovery (the two are mutually exclusive — see issue #120). Purely
+            // informational: an OK button, the toggle itself stays on.
+            val instantRecordingEnabled by prefs.dictate.instantRecording.collectAsState()
+            var showInstantRecordingInfo by remember { mutableStateOf(false) }
+            var prevInstantRecording by remember { mutableStateOf(instantRecordingEnabled) }
+            LaunchedEffect(instantRecordingEnabled) {
+                if (instantRecordingEnabled && !prevInstantRecording) {
+                    showInstantRecordingInfo = true
+                }
+                prevInstantRecording = instantRecordingEnabled
+            }
+            if (showInstantRecordingInfo) {
+                AlertDialog(
+                    onDismissRequest = { showInstantRecordingInfo = false },
+                    title = { Text(stringRes(R.string.dictate__instant_recording_info_title)) },
+                    text = { Text(stringRes(R.string.dictate__instant_recording_info_message)) },
+                    confirmButton = {
+                        TextButton(onClick = { showInstantRecordingInfo = false }) {
+                            Text(stringRes(R.string.action__ok))
+                        }
+                    },
+                )
+            }
         }
 
         PreferenceGroup(title = stringRes(R.string.dictate__output_group)) {

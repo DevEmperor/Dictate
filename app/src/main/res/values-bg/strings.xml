@@ -1263,6 +1263,8 @@
     <string name="dictate__keep_screen_awake_summary">Предотврати изключването на екрана по време на запис</string>
     <string name="dictate__instant_recording_title">Незабавен запис</string>
     <string name="dictate__instant_recording_summary">Започвай записа автоматично при отваряне на клавиатурата</string>
+    <string name="dictate__instant_recording_info_title">Внимание</string>
+    <string name="dictate__instant_recording_info_message">Докато моменталното записване е включено, възстановяването на прекъснат запис е изключено — при всяко отваряне на клавиатурата започва нов запис. Изключете моменталното записване, за да върнете възможността за възстановяване.</string>
     <string name="dictate__output_group">Изход</string>
     <string name="dictate__auto_enter_title">Автоматичен Enter</string>
     <string name="dictate__auto_enter_summary">Натискай Enter автоматично след вмъкване на транскрипция</string>

@@ -1193,6 +1193,8 @@
     <string name="dictate__keep_screen_awake_summary">録音中に画面が消えないようにします</string>
     <string name="dictate__instant_recording_title">即時録音</string>
     <string name="dictate__instant_recording_summary">キーボードを開いたときに自動的に録音を開始します</string>
+    <string name="dictate__instant_recording_info_title">お知らせ</string>
+    <string name="dictate__instant_recording_info_message">即時録音が有効な間は、中断した録音の復元は無効になります。キーボードを開くたびに新しい録音が始まります。復元を再び使うには、即時録音をオフにしてください。</string>
     <string name="dictate__output_group">出力</string>
     <string name="dictate__auto_enter_title">自動Enter</string>
     <string name="dictate__auto_enter_summary">文字起こしの挿入後に自動的にEnterを押します</string>

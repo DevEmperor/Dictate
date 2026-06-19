@@ -1243,6 +1243,8 @@
     <string name="dictate__keep_screen_awake_summary">Impedir que o ecrã se desligue durante a gravação</string>
     <string name="dictate__instant_recording_title">Gravação instantânea</string>
     <string name="dictate__instant_recording_summary">Começar a gravar automaticamente ao abrir o teclado</string>
+    <string name="dictate__instant_recording_info_title">Aviso</string>
+    <string name="dictate__instant_recording_info_message">Enquanto a gravação instantânea estiver ativada, a recuperação de uma gravação interrompida fica desativada — sempre que o teclado abre, é iniciada uma nova gravação. Desative a gravação instantânea para recuperar essa opção.</string>
     <string name="dictate__output_group">Saída</string>
     <string name="dictate__auto_enter_title">Enter automático</string>
     <string name="dictate__auto_enter_summary">Premir Enter automaticamente após inserir uma transcrição</string>

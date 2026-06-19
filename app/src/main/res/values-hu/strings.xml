@@ -1261,6 +1261,8 @@
     <string name="dictate__keep_screen_awake_summary">A képernyő kikapcsolásának megakadályozása felvétel közben</string>
     <string name="dictate__instant_recording_title">Azonnali felvétel</string>
     <string name="dictate__instant_recording_summary">A felvétel automatikus indítása a billentyűzet megnyitásakor</string>
+    <string name="dictate__instant_recording_info_title">Figyelem</string>
+    <string name="dictate__instant_recording_info_message">Amíg az azonnali felvétel be van kapcsolva, a megszakított felvétel visszaállítása ki van kapcsolva — a billentyűzet megnyitásakor mindig új felvétel indul. Kapcsold ki az azonnali felvételt, hogy visszakapd a visszaállítást.</string>
     <string name="dictate__output_group">Kimenet</string>
     <string name="dictate__auto_enter_title">Automatikus Enter</string>
     <string name="dictate__auto_enter_summary">Enter automatikus megnyomása az átírás beillesztése után</string>

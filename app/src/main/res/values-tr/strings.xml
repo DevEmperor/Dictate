@@ -1241,6 +1241,8 @@
     <string name="dictate__keep_screen_awake_summary">Kayıt sırasında ekranın kapanmasını engelle</string>
     <string name="dictate__instant_recording_title">Anında kayıt</string>
     <string name="dictate__instant_recording_summary">Klavye açıldığında kaydı otomatik olarak başlat</string>
+    <string name="dictate__instant_recording_info_title">Bilgi</string>
+    <string name="dictate__instant_recording_info_message">Anlık kayıt açıkken, kesilen bir kaydı geri yükleme devre dışıdır — klavye her açıldığında bunun yerine yeni bir kayıt başlar. Geri yüklemeyi geri almak için anlık kaydı kapatın.</string>
     <string name="dictate__output_group">Çıkış</string>
     <string name="dictate__auto_enter_title">Otomatik Enter</string>
     <string name="dictate__auto_enter_summary">Bir metin eklendikten sonra otomatik olarak Enter\'a bas</string>

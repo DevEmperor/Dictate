@@ -105,6 +105,14 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
     /** Whether the bubble is currently anchored to the right edge (drives which way the pill expands). */
     private var anchoredToRight = false
 
+    /**
+     * Set until the bubble has been placed at its default spot (right edge, vertically centered) once the
+     * view is first measured. The window params can't compute that before the bubble's size is known, so
+     * the default placement is finalized in the first layout pass — with a margin regardless of the
+     * snap-to-edge setting (unlike snapping, which only adds the margin when enabled).
+     */
+    private var needsInitialPlacement = true
+
     /** Per-app saved positions (in-memory for the service's lifetime) and the current foreground app. */
     private val positions = HashMap<String, Pair<Int, Int>>()
     private var currentPackage: String? = null
@@ -442,7 +450,12 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
         // fight the drag — pulling the bubble back to the edge mid-drag (flicker). The width check ignores
         // those, so dragging is smooth and it only snaps back on release (via snapToEdge).
         root.addOnLayoutChangeListener { _, left, _, right, _, oldLeft, _, oldRight, _ ->
-            if (right - left != oldRight - oldLeft) {
+            if (needsInitialPlacement && right - left > 0) {
+                // First time the bubble has a real size: drop it at the default spot (right edge + margin,
+                // vertically centered). Independent of snap-to-edge so the margin is always there.
+                needsInitialPlacement = false
+                applyInitialPlacement()
+            } else if (right - left != oldRight - oldLeft) {
                 repositionForSize()
                 if (cancelAdded) positionCancel() // keep the cancel button beside the (resized) pill
             }
@@ -472,8 +485,12 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
             PixelFormat.TRANSLUCENT,
         ).apply {
             gravity = Gravity.TOP or Gravity.START
-            x = dp(8)
-            y = dp(220)
+            // Rough seed for the right edge near mid-height, just to avoid a left-edge flash before the
+            // bubble is measured. The exact default (right edge + margin, vertically centered) is applied
+            // in applyInitialPlacement once we know the bubble's size.
+            anchoredToRight = true
+            x = screenWidth()
+            y = (screenHeight() * 2 / 5 - dp(28)).coerceAtLeast(0)
         }
     }
 
@@ -600,6 +617,21 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
             lp.y = ny
             runCatching { windowManager.updateViewLayout(v, lp) }
         }
+    }
+
+    /** Places the bubble at its default spot — right edge with a margin, ~60% up from the bottom — once it
+     *  has been measured. Used for the first show; the margin is applied whether or not snap-to-edge is on. */
+    private fun applyInitialPlacement() {
+        val lp = params ?: return
+        val v = rootView ?: return
+        val maxX = (screenWidth() - v.width).coerceAtLeast(0)
+        val maxY = (screenHeight() - v.height).coerceAtLeast(0)
+        val margin = dp(8).coerceAtMost(maxX / 2)
+        anchoredToRight = true
+        lp.x = (maxX - margin).coerceAtLeast(0)
+        // Vertically center the bubble at ~60% up from the bottom edge (≈40% down from the top).
+        lp.y = (screenHeight() * 2 / 5 - v.height / 2).coerceIn(0, maxY)
+        if (added) runCatching { windowManager.updateViewLayout(v, lp) }
     }
 
     private fun screenWidth(): Int = context.resources.displayMetrics.widthPixels

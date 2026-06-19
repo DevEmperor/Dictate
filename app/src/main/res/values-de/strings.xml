@@ -1155,6 +1155,8 @@
     <string name="dictate__keep_screen_awake_summary">Verhindern, dass sich der Bildschirm während der Aufnahme ausschaltet</string>
     <string name="dictate__instant_recording_title">Sofortaufnahme</string>
     <string name="dictate__instant_recording_summary">Aufnahme automatisch starten, wenn die Tastatur geöffnet wird</string>
+    <string name="dictate__instant_recording_info_title">Hinweis</string>
+    <string name="dictate__instant_recording_info_message">Solange die Sofortaufnahme aktiv ist, kann eine unterbrochene Aufnahme nicht wiederhergestellt werden – beim Öffnen der Tastatur startet stattdessen jedes Mal eine neue Aufnahme. Schalte die Sofortaufnahme wieder aus, um die Wiederherstellung zurückzubekommen.</string>
     <string name="dictate__output_group">Ausgabe</string>
     <string name="dictate__auto_enter_title">Auto-Enter</string>
     <string name="dictate__auto_enter_summary">Nach dem Einfügen einer Transkription automatisch Enter drücken</string>

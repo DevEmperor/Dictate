@@ -1118,6 +1118,8 @@
     <string name="dictate__keep_screen_awake_summary">منع إيقاف تشغيل الشاشة أثناء التسجيل</string>
     <string name="dictate__instant_recording_title">تسجيل فوري</string>
     <string name="dictate__instant_recording_summary">بدء التسجيل تلقائيًا عند فتح لوحة المفاتيح</string>
+    <string name="dictate__instant_recording_info_title">تنبيه</string>
+    <string name="dictate__instant_recording_info_message">أثناء تفعيل التسجيل الفوري، يتم إيقاف استعادة التسجيل المتوقّف — إذ تبدأ لوحة المفاتيح تسجيلاً جديداً في كل مرة تُفتح فيها. أوقف التسجيل الفوري لاستعادة خيار الاسترجاع.</string>
     <string name="dictate__output_group">الإخراج</string>
     <string name="dictate__auto_enter_title">إدخال تلقائي</string>
     <string name="dictate__auto_enter_summary">الضغط على Enter تلقائيًا بعد إدراج التفريغ النصي</string>

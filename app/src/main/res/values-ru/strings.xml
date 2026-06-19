@@ -1267,6 +1267,8 @@
     <string name="dictate__keep_screen_awake_summary">Не давать экрану выключаться во время записи</string>
     <string name="dictate__instant_recording_title">Мгновенная запись</string>
     <string name="dictate__instant_recording_summary">Автоматически начинать запись при открытии клавиатуры</string>
+    <string name="dictate__instant_recording_info_title">Обратите внимание</string>
+    <string name="dictate__instant_recording_info_message">Пока включена мгновенная запись, восстановление прерванной записи отключено — при каждом открытии клавиатуры начинается новая запись. Отключите мгновенную запись, чтобы вернуть восстановление.</string>
     <string name="dictate__output_group">Вывод</string>
     <string name="dictate__auto_enter_title">Автоматический Enter</string>
     <string name="dictate__auto_enter_summary">Автоматически нажимать Enter после вставки транскрипции</string>

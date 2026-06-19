@@ -1139,6 +1139,8 @@
     <string name="dictate__keep_screen_awake_summary">Empêcher l\'écran de s\'éteindre pendant l\'enregistrement</string>
     <string name="dictate__instant_recording_title">Enregistrement instantané</string>
     <string name="dictate__instant_recording_summary">Démarrer l\'enregistrement automatiquement à l\'ouverture du clavier</string>
+    <string name="dictate__instant_recording_info_title">Information</string>
+    <string name="dictate__instant_recording_info_message">Lorsque l’enregistrement instantané est activé, la récupération d’un enregistrement interrompu est désactivée — à chaque ouverture du clavier, un nouvel enregistrement démarre. Désactivez l’enregistrement instantané pour retrouver la récupération.</string>
     <string name="dictate__output_group">Sortie</string>
     <string name="dictate__auto_enter_title">Entrée automatique</string>
     <string name="dictate__auto_enter_summary">Appuyer automatiquement sur Entrée après l\'insertion d\'une transcription</string>

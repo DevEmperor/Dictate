@@ -1207,6 +1207,8 @@
     <string name="dictate__keep_screen_awake_summary">Neļaut ekrānam izslēgties ierakstīšanas laikā</string>
     <string name="dictate__instant_recording_title">Tūlītēja ierakstīšana</string>
     <string name="dictate__instant_recording_summary">Sākt ierakstīšanu automātiski, kad tiek atvērta tastatūra</string>
+    <string name="dictate__instant_recording_info_title">Ievērībai</string>
+    <string name="dictate__instant_recording_info_message">Kamēr tūlītējā ierakstīšana ir ieslēgta, pārtraukta ieraksta atjaunošana ir izslēgta — katru reizi, atverot tastatūru, tiek sākts jauns ieraksts. Izslēdziet tūlītējo ierakstīšanu, lai atgūtu atjaunošanu.</string>
     <string name="dictate__output_group">Izvade</string>
     <string name="dictate__auto_enter_title">Automātisks Enter</string>
     <string name="dictate__auto_enter_summary">Automātiski nospiest Enter pēc transkripcijas ievietošanas</string>

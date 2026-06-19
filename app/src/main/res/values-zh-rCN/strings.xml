@@ -1258,6 +1258,8 @@
     <string name="dictate__keep_screen_awake_summary">录音时防止屏幕关闭</string>
     <string name="dictate__instant_recording_title">即时录音</string>
     <string name="dictate__instant_recording_summary">打开键盘时自动开始录音</string>
+    <string name="dictate__instant_recording_info_title">提示</string>
+    <string name="dictate__instant_recording_info_message">开启即时录音后，恢复中断的录音功能将被关闭——每次打开键盘都会直接开始新的录音。关闭即时录音即可重新启用恢复功能。</string>
     <string name="dictate__output_group">输出</string>
     <string name="dictate__auto_enter_title">自动回车</string>
     <string name="dictate__auto_enter_summary">插入转录文本后自动按回车</string>
