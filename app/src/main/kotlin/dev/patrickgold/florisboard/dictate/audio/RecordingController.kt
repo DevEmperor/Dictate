@@ -88,6 +88,12 @@ class RecordingController(private val context: Context) {
         }
     }
 
+    /**
+     * The peak microphone amplitude (0..32767) since the previous call, or 0 when not recording.
+     * Backed by [MediaRecorder.getMaxAmplitude]; used to drive the floating-button waveform.
+     */
+    fun maxAmplitude(): Int = runCatching { recorder?.maxAmplitude ?: 0 }.getOrDefault(0)
+
     /** Pauses the in-progress recording. No-op if nothing is recording. */
     fun pause() {
         runCatching { recorder?.pause() }

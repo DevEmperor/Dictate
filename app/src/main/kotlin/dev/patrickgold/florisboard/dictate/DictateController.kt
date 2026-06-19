@@ -168,6 +168,9 @@ object DictateController {
     private var recorder: RecordingController? = null
     private var startJob: Job? = null
 
+    /** Peak mic amplitude (0..32767) since the previous call, or 0 when idle. Drives the overlay waveform. */
+    fun currentAmplitude(): Int = recorder?.maxAmplitude() ?: 0
+
     /** The in-flight transcription coroutine, cancellable via the stop button (see [cancelTranscription]). */
     private var transcribeJob: Job? = null
 
@@ -981,8 +984,16 @@ object DictateController {
      *  - a free prompt generates from the instruction alone and inserts at the cursor.
      * No-op unless idle (or recovering from a transient error).
      */
-    fun applyPrompt(context: Context, prompt: PromptModel, selectionOverride: String? = null) {
+    fun applyPrompt(
+        context: Context,
+        prompt: PromptModel,
+        selectionOverride: String? = null,
+        target: OutputTarget? = null,
+    ) {
         if (_state.value !is UiState.Idle && _state.value !is UiState.Error) return
+        // The floating overlay passes OVERLAY so the result is injected into the focused field via the
+        // accessibility sink rather than the keyboard's editor.
+        if (target != null) outputTarget = target
         val appContext = context.applicationContext
         val sink = sink(appContext)
         val raw = prompt.prompt.orEmpty()
