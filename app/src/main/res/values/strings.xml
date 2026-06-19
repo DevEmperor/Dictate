@@ -1220,6 +1220,31 @@
     <string name="dictate__floating_button_show_with_keyboard_title" comment="Toggle: whether to also show the floating button while the Dictate keyboard itself is active">Show with Dictate keyboard</string>
     <string name="dictate__floating_button_show_with_keyboard_summary_on" comment="Summary when the floating button is shown even with the Dictate keyboard active">The button also appears while the Dictate keyboard is active.</string>
     <string name="dictate__floating_button_show_with_keyboard_summary_off" comment="Summary when the floating button is hidden while the Dictate keyboard is active">Hidden while the Dictate keyboard is active, since it already has a mic key.</string>
+    <string name="dictate__floating_button_design_title" comment="Title of the floating-button visual style picker">Button style</string>
+    <string name="dictate__floating_button_design_ring" comment="Floating-button style option: compact ring">Ring</string>
+    <string name="dictate__floating_button_design_ring_summary" comment="Description of the ring floating-button style">Compact circle with a ring that animates while recording and transcribing.</string>
+    <string name="dictate__floating_button_design_pill" comment="Floating-button style option: expanding pill">Pill</string>
+    <string name="dictate__floating_button_design_pill_summary" comment="Description of the pill floating-button style">Expands while active to show a timer and a live waveform.</string>
+    <string name="dictate__floating_button_design_orb" comment="Floating-button style option: glowing orb">Orb</string>
+    <string name="dictate__floating_button_design_orb_summary" comment="Description of the orb floating-button style">A solid orb that glows and pulses with your voice while recording.</string>
+    <string name="dictate__floating_button_size_title" comment="Title of the floating-button size picker">Button size</string>
+    <string name="dictate__floating_button_size_small" comment="Floating-button size option">Small</string>
+    <string name="dictate__floating_button_size_medium" comment="Floating-button size option">Medium</string>
+    <string name="dictate__floating_button_size_large" comment="Floating-button size option">Large</string>
+    <string name="dictate__floating_button_snap_title" comment="Toggle: snap the floating button to the screen edge after dragging">Snap to edge</string>
+    <string name="dictate__floating_button_snap_summary_on" comment="Summary when edge-snapping is on">The button snaps to the nearest side after you drag it.</string>
+    <string name="dictate__floating_button_snap_summary_off" comment="Summary when edge-snapping is off">The button stays wherever you drop it.</string>
+    <string name="dictate__floating_button_color_title" comment="Title of the floating-button color picker">Button color</string>
+    <string name="dictate__floating_button_auto_dim_title" comment="Toggle: fade the floating button to a dot when idle">Fade when idle</string>
+    <string name="dictate__floating_button_auto_dim_summary_on" comment="Summary when idle-fade is on">Shrinks to a small dot after a few seconds; tap to restore.</string>
+    <string name="dictate__floating_button_auto_dim_summary_off" comment="Summary when idle-fade is off">Always stays fully visible.</string>
+    <string name="dictate__floating_button_remember_position_title" comment="Toggle: remember the floating button position per app">Remember position per app</string>
+    <string name="dictate__floating_button_remember_position_summary_on" comment="Summary when per-app position memory is on">Each app keeps its own button position.</string>
+    <string name="dictate__floating_button_remember_position_summary_off" comment="Summary when per-app position memory is off">One shared position for all apps.</string>
+    <string name="dictate__floating_button_haptic_title" comment="Toggle: vibrate when the floating button is tapped">Vibrate on tap</string>
+    <string name="dictate__floating_button_haptic_summary_on" comment="Summary when tap vibration is on">A short buzz when you tap the button.</string>
+    <string name="dictate__floating_button_haptic_summary_off" comment="Summary when tap vibration is off">No vibration on tap.</string>
+    <string name="dictate__floating_button_no_prompts" comment="Toast when long-pressing the floating button but no rewording prompts exist">No rewording prompts yet — add some in Dictate settings.</string>
 
     <!-- Dictate input panel (IME) -->
     <string name="dictate__panel_title" comment="Title of the Dictate AI prompt panel inside the keyboard">AI prompts</string>

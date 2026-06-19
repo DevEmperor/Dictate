@@ -10,37 +10,68 @@
 
 package dev.patrickgold.florisboard.dictate.overlay
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.PixelFormat
+import android.graphics.RadialGradient
+import android.graphics.RectF
+import android.graphics.Shader
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
+import android.os.SystemClock
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.WindowManager
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.ContextCompat
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.DictateController
+import dev.patrickgold.florisboard.dictate.DictateFloatingButtonDesign
+import dev.patrickgold.florisboard.dictate.DictateFloatingButtonSize
+import dev.patrickgold.florisboard.dictate.data.prompts.PromptModel
+import dev.patrickgold.florisboard.dictate.data.prompts.PromptsDatabaseHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.hypot
 
 /**
  * Owns the floating dictation button (issue #88): a small draggable bubble shown over other apps via a
  * [WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY] window (no draw-over-apps permission needed —
  * the window is hosted by the accessibility service). The bubble appears whenever an editable field is
- * focused (or a dictation is in flight), toggles recording on tap, animates while recording/transcribing,
- * and routes the result through [DictateController] with [DictateController.OutputTarget.OVERLAY] so the
- * text is injected into the focused field.
+ * focused (or a dictation is in flight), toggles recording on tap, snaps to the nearest screen edge when
+ * dragged, and routes the result through [DictateController] with [DictateController.OutputTarget.OVERLAY]
+ * so the text is injected into the focused field.
+ *
+ * The visuals are provided by a [BubbleSkin] — either the compact [RingSkin] or the expanding [PillSkin],
+ * selected by the `floatingButtonDesign` preference. While recording, a level ticker polls the mic
+ * amplitude and feeds a live waveform.
  *
  * Created and owned by [DictateAccessibilityService], which also provides the foreground-microphone
  * promotion the recording needs while the app is in the background.
@@ -52,21 +83,62 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
     private val scope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
     private val prefs by FlorisPreferenceStore
 
-    private var rootView: FrameLayout? = null
-    private var iconView: ImageView? = null
+    private var rootView: View? = null
+    private var skin: BubbleSkin? = null
     private var params: WindowManager.LayoutParams? = null
-    private var pulse: ValueAnimator? = null
     private var added = false
 
+    /** Secondary cancel button shown beside the bubble while recording. */
+    private var cancelView: View? = null
+    private var cancelParams: WindowManager.LayoutParams? = null
+    private var cancelAdded = false
+    private val cancelSize get() = sdp(34)
+
+    /** Long-press rewording menu window. */
+    private var menuView: View? = null
+    private var menuAdded = false
+
+    private var currentDesign = DictateFloatingButtonDesign.PILL
+    private var sizeScale = DictateFloatingButtonSize.MEDIUM.scale
+    private var accentColor = 0xFF30B7E6.toInt()
+
+    /** Whether the bubble is currently anchored to the right edge (drives which way the pill expands). */
+    private var anchoredToRight = false
+
+    /** Per-app saved positions (in-memory for the service's lifetime) and the current foreground app. */
+    private val positions = HashMap<String, Pair<Int, Int>>()
+    private var currentPackage: String? = null
+
+    /** While true a transient error/success flash owns the visuals; live-state updates are suppressed. */
+    private var holding = false
+    private var holdJob: Job? = null
+
+    /** Polls the mic level while recording to drive the waveform. */
+    private var tickerJob: Job? = null
+
+    /** Animates the horizontal snap-to-edge after a drag. */
+    private var snapAnim: ValueAnimator? = null
+
+    /** Idle auto-dim: shrinks/fades the bubble to a small dot after a while; restored on touch. */
+    private var dimJob: Job? = null
+    private var dimmed = false
+    private var idleShownPrev = false
+
+    /** The state of the previous emission, used to tell a successful finish (busy → idle) from a cancel. */
+    private var prevState: DictateController.UiState = DictateController.UiState.Idle
+
+    /** The latest Recording state (timer source for the ticker), or null when not recording. */
+    private var recordingState: DictateController.UiState.Recording? = null
+
+    /** The last state pushed to the skin; lets us skip redundant re-applies (combine re-emits on focus). */
+    private var lastAppliedState: DictateController.UiState? = null
+
     /**
-     * Whether the bubble started the in-flight dictation. Used to attribute a terminal Error state to the
-     * overlay (so its message is surfaced via a toast) without reacting to errors from a keyboard-driven
-     * dictation that happens while the bubble is also visible.
+     * Whether the bubble started the in-flight dictation. Used to attribute a terminal Error/success state
+     * to the overlay (so it is surfaced here) without reacting to a keyboard-driven dictation that happens
+     * while the bubble is also visible.
      */
     private var weStartedDictation = false
-
-    private val bubbleSize = dp(56)
-    private val iconInset = dp(15)
 
     /** Inputs that decide whether the bubble is shown and how it looks, combined from prefs + service. */
     private data class Inputs(
@@ -77,10 +149,22 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
         val state: DictateController.UiState,
     )
 
-    /** Starts observing the feature toggle + focus + dictation state to show/hide and animate the bubble. */
+    /** [Inputs] plus the design/size/color prefs and the IME-visible signal; one combined emission. */
+    private data class Emission(
+        val inputs: Inputs,
+        val design: DictateFloatingButtonDesign,
+        val size: DictateFloatingButtonSize,
+        val imeVisible: Boolean,
+        val accentColor: Int,
+    )
+
+    /** Starts observing the feature toggle + focus + design + dictation state to drive the bubble. */
     fun start() {
         scope.launch {
-            combine(
+            DictateAccessibilityService.foregroundPackage.collect { pkg -> onForegroundPackageChanged(pkg) }
+        }
+        scope.launch {
+            val base = combine(
                 prefs.dictate.floatingButtonEnabled.asFlow(),
                 prefs.dictate.floatingButtonShowWithDictateKeyboard.asFlow(),
                 DictateAccessibilityService.editableFocused,
@@ -89,25 +173,60 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
             ) { enabled, showWithKeyboard, focused, dictateKeyboard, state ->
                 Inputs(enabled, showWithKeyboard, focused, dictateKeyboard, state)
             }
-                .collect { (enabled, showWithKeyboard, focused, dictateKeyboard, state) ->
-                    val active = state !is DictateController.UiState.Idle
-                    // When our own keyboard is up it already has a mic key, so hide the bubble unless the
-                    // user opted to show it everywhere — but never hide mid-dictation.
-                    val hiddenByOwnKeyboard = dictateKeyboard && !showWithKeyboard && !active
-                    val show = enabled && (focused || active) && !hiddenByOwnKeyboard
-                    if (show) ensureShown() else hide()
-                    applyState(state)
-                    manageForeground(state)
-                    reportTerminalState(state)
+            combine(
+                base,
+                prefs.dictate.floatingButtonDesign.asFlow(),
+                prefs.dictate.floatingButtonSize.asFlow(),
+                DictateAccessibilityService.imeVisible,
+                prefs.dictate.floatingButtonColor.asFlow(),
+            ) { inputs, design, size, imeVisible, color ->
+                Emission(inputs, design, size, imeVisible, color.toArgb())
+            }.collect { (inputs, design, size, imeVisible, accent) ->
+                val (enabled, showWithKeyboard, focused, dictateKeyboard, state) = inputs
+                if (design != currentDesign || size.scale != sizeScale || accent != accentColor) {
+                    currentDesign = design
+                    sizeScale = size.scale
+                    accentColor = accent
+                    rebuildSkin()
                 }
+                val active = state !is DictateController.UiState.Idle
+                // The Dictate keyboard is on screen when it is the selected IME *and* an IME window is
+                // visible. While it is up it already has its own mic, so hide the bubble (unless the user
+                // opted in). Using the IME-visible signal (not the dictation state) means a keyboard-driven
+                // dictation keeps the bubble hidden, while a bubble-driven one — which opens no IME window —
+                // still keeps it shown.
+                val dictateKeyboardShown = dictateKeyboard && imeVisible
+                val hiddenByOwnKeyboard = dictateKeyboardShown && !showWithKeyboard
+                val show = enabled && (focused || active) && !hiddenByOwnKeyboard
+                if (show) ensureShown() else hide()
+                recordingState = state as? DictateController.UiState.Recording
+                applyState(state)
+                manageForeground(state)
+                manageTicker(state)
+                manageCancel(state, show)
+                reportTerminalState(state)
+                // Auto-dim only while idle and shown; restore (and stop the timer) otherwise.
+                val idleShown = state is DictateController.UiState.Idle && show
+                if (idleShown && !idleShownPrev) scheduleDim()
+                if (!idleShown) {
+                    cancelDim()
+                    applyDim(false)
+                }
+                idleShownPrev = idleShown
+                prevState = state
+            }
         }
     }
 
     /** Tears everything down: stops observing, removes the window and drops the foreground state. */
     fun destroy() {
         scope.cancel()
-        stopPulse()
+        stopTicker()
+        cancelDim()
+        snapAnim?.cancel()
+        hidePromptMenu()
         hide()
+        skin?.destroy()
         service.stopMicForeground()
     }
 
@@ -117,6 +236,9 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
         if (added) return
         val view = rootView ?: createView().also { rootView = it }
         val lp = params ?: createParams().also { params = it }
+        // Pin the window height for skins that want it fixed (the pill), so the width-only expand animation
+        // never makes the bubble appear to grow vertically; ring uses content size (a fixed square).
+        lp.height = skin?.fixedHeight ?: WindowManager.LayoutParams.WRAP_CONTENT
         runCatching {
             windowManager.addView(view, lp)
             added = true
@@ -127,20 +249,217 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
         val view = rootView
         if (added && view != null) runCatching { windowManager.removeView(view) }
         added = false
+        // Reset the dim so a re-shown bubble starts fully visible.
+        cancelDim()
+        dimmed = false
+        idleShownPrev = false
+        view?.apply {
+            alpha = 1f
+            scaleX = 1f
+            scaleY = 1f
+        }
+        hideCancel()
     }
 
-    private fun createView(): FrameLayout {
-        val icon = ImageView(context).apply {
-            setImageResource(R.drawable.ic_dictate_overlay_mic)
-            setPadding(iconInset, iconInset, iconInset, iconInset)
-            background = circle(R.color.dictate_overlay_accent)
-            elevation = dp(6).toFloat()
+    // --- Cancel button (shown while recording) ---------------------------------------------------
+
+    private fun manageCancel(state: DictateController.UiState, shown: Boolean) {
+        if (shown && state is DictateController.UiState.Recording) showCancel() else hideCancel()
+    }
+
+    private fun showCancel() {
+        if (cancelAdded) return
+        val v = cancelView ?: createCancelView().also { cancelView = it }
+        val lp = cancelParams ?: createCancelParams().also { cancelParams = it }
+        runCatching {
+            windowManager.addView(v, lp)
+            cancelAdded = true
+            positionCancel()
         }
-        iconView = icon
-        val root = FrameLayout(context)
-        root.addView(icon, FrameLayout.LayoutParams(bubbleSize, bubbleSize))
+    }
+
+    private fun hideCancel() {
+        val v = cancelView
+        if (cancelAdded && v != null) runCatching { windowManager.removeView(v) }
+        cancelAdded = false
+    }
+
+    private fun createCancelView(): View {
+        val size = cancelSize
+        val pad = sdp(7)
+        val icon = ImageView(context).apply {
+            setImageResource(R.drawable.ic_dictate_overlay_close)
+            setPadding(pad, pad, pad, pad)
+            background = circle(R.color.dictate_overlay_cancel)
+            elevation = sdpf(6f)
+        }
+        return FrameLayout(context).apply {
+            addView(icon, FrameLayout.LayoutParams(size, size))
+            setOnClickListener {
+                if (prefs.dictate.floatingButtonHaptic.get()) vibrateTap()
+                DictateController.cancelRecording()
+            }
+        }
+    }
+
+    private fun createCancelParams(): WindowManager.LayoutParams {
+        return WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            PixelFormat.TRANSLUCENT,
+        ).apply { gravity = Gravity.TOP or Gravity.START }
+    }
+
+    // --- Long-press rewording menu ---------------------------------------------------------------
+
+    private fun onLongPress() {
+        val state = DictateController.state.value
+        // Rewording only makes sense when not already recording/transcribing.
+        if (state !is DictateController.UiState.Idle && state !is DictateController.UiState.Error) return
+        if (prefs.dictate.floatingButtonHaptic.get()) vibrateTap()
+        cancelDim()
+        applyDim(false)
+        showPromptMenu()
+    }
+
+    private fun showPromptMenu() {
+        if (menuAdded) return
+        scope.launch {
+            val prompts = withContext(Dispatchers.IO) {
+                runCatching { PromptsDatabaseHelper(context).getAll() }.getOrDefault(emptyList())
+            }.filter { !it.name.isNullOrBlank() }
+            if (menuAdded) return@launch
+            if (prompts.isEmpty()) {
+                Toast.makeText(context, context.getString(R.string.dictate__floating_button_no_prompts), Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+            addPromptMenu(prompts)
+        }
+    }
+
+    private fun addPromptMenu(prompts: List<PromptModel>) {
+        val card = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            background = roundedRect(color(R.color.dictate_overlay_menu_surface), dpf(16f))
+            val p = dp(8)
+            setPadding(p, p, p, p)
+            isClickable = true // swallow taps so they don't dismiss via the scrim
+            elevation = dpf(8f)
+        }
+        prompts.forEach { prompt ->
+            val item = TextView(context).apply {
+                text = prompt.name
+                setTextColor(color(R.color.dictate_overlay_icon))
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                val hz = dp(20)
+                val vt = dp(12)
+                setPadding(hz, vt, hz, vt)
+                setOnClickListener {
+                    hidePromptMenu()
+                    DictateController.applyPrompt(
+                        context, prompt, target = DictateController.OutputTarget.OVERLAY,
+                    )
+                }
+            }
+            card.addView(item, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+            ))
+        }
+        val scroll = ScrollView(context).apply {
+            addView(card)
+            val m = dp(24)
+            setPadding(m, m, m, m)
+            clipToPadding = false
+        }
+        val scrim = FrameLayout(context).apply {
+            setBackgroundColor(0x66000000.toInt())
+            setOnClickListener { hidePromptMenu() }
+            addView(scroll, FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.CENTER,
+            ))
+        }
+        val lp = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT,
+        )
+        menuView = scrim
+        runCatching {
+            windowManager.addView(scrim, lp)
+            menuAdded = true
+        }
+    }
+
+    private fun hidePromptMenu() {
+        val v = menuView
+        if (menuAdded && v != null) runCatching { windowManager.removeView(v) }
+        menuAdded = false
+        menuView = null
+    }
+
+    private fun roundedRect(colorInt: Int, radius: Float): GradientDrawable = GradientDrawable().apply {
+        shape = GradientDrawable.RECTANGLE
+        cornerRadius = radius
+        setColor(colorInt)
+    }
+
+    /** Places the cancel button on the inward side of the bubble, vertically centered, tracking its position. */
+    private fun positionCancel() {
+        val clp = cancelParams ?: return
+        val cancel = cancelView ?: return
+        val blp = params ?: return
+        val bubble = rootView ?: return
+        val cw = cancelSize
+        val gap = sdp(6)
+        clp.y = (blp.y + (bubble.height - cw) / 2).coerceIn(0, (screenHeight() - cw).coerceAtLeast(0))
+        // Put the cancel button on the side that has more room (the inward side), based on the bubble's
+        // *current* center — so it follows during a drag and flips when crossing the middle of the screen.
+        val onRight = blp.x + bubble.width / 2 >= screenWidth() / 2
+        val rawX = if (onRight) blp.x - gap - cw else blp.x + bubble.width + gap
+        clp.x = rawX.coerceIn(0, (screenWidth() - cw).coerceAtLeast(0))
+        if (cancelAdded) runCatching { windowManager.updateViewLayout(cancel, clp) }
+    }
+
+    private fun createView(): View {
+        val newSkin = when (currentDesign) {
+            DictateFloatingButtonDesign.RING -> RingSkin(context)
+            DictateFloatingButtonDesign.PILL -> PillSkin(context)
+            DictateFloatingButtonDesign.ORB -> OrbSkin(context)
+        }
+        skin = newSkin
+        val root = newSkin.root
         attachTouch(root)
+        // Reposition only when the view's *width* changes (the pill expanding/collapsing). A plain
+        // position change from dragging/snapping also fires this listener, and repositioning then would
+        // fight the drag — pulling the bubble back to the edge mid-drag (flicker). The width check ignores
+        // those, so dragging is smooth and it only snaps back on release (via snapToEdge).
+        root.addOnLayoutChangeListener { _, left, _, right, _, oldLeft, _, oldRight, _ ->
+            if (right - left != oldRight - oldLeft) {
+                repositionForSize()
+                if (cancelAdded) positionCancel() // keep the cancel button beside the (resized) pill
+            }
+        }
+        newSkin.applyState(DictateController.state.value)
         return root
+    }
+
+    /** Rebuilds the view with the currently selected skin, preserving whether it was shown. */
+    private fun rebuildSkin() {
+        val wasShown = added
+        hide()
+        skin?.destroy()
+        skin = null
+        rootView = null
+        lastAppliedState = null // fresh skin starts blank; force the next applyState to paint it
+        if (wasShown) ensureShown()
     }
 
     private fun createParams(): WindowManager.LayoutParams {
@@ -153,21 +472,29 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
             PixelFormat.TRANSLUCENT,
         ).apply {
             gravity = Gravity.TOP or Gravity.START
-            x = dp(16)
+            x = dp(8)
             y = dp(220)
         }
     }
 
-    // --- Touch: tap toggles dictation, drag repositions ------------------------------------------
+    // --- Touch: tap toggles dictation, drag repositions + snaps to the edge ----------------------
 
     private fun attachTouch(view: View) {
         val slop = ViewConfiguration.get(context).scaledTouchSlop
+        val longPressTimeout = ViewConfiguration.getLongPressTimeout().toLong()
         var downX = 0f
         var downY = 0f
         var startX = 0
         var startY = 0
         var moved = false
-        view.setOnTouchListener { _, e ->
+        var longPressFired = false
+        val longPress = Runnable {
+            if (!moved) {
+                longPressFired = true
+                onLongPress()
+            }
+        }
+        view.setOnTouchListener { v, e ->
             val lp = params ?: return@setOnTouchListener false
             when (e.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -176,21 +503,45 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
                     startX = lp.x
                     startY = lp.y
                     moved = false
+                    longPressFired = false
+                    snapAnim?.cancel()
+                    cancelDim()
+                    applyDim(false) // wake the bubble on touch
+                    v.postDelayed(longPress, longPressTimeout)
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
                     val dx = e.rawX - downX
                     val dy = e.rawY - downY
-                    if (!moved && hypot(dx, dy) > slop) moved = true
+                    if (!moved && hypot(dx, dy) > slop) {
+                        moved = true
+                        v.removeCallbacks(longPress) // a drag cancels the pending long-press
+                    }
                     if (moved) {
-                        lp.x = startX + dx.toInt()
-                        lp.y = startY + dy.toInt()
-                        runCatching { windowManager.updateViewLayout(view, lp) }
+                        val maxX = (screenWidth() - v.width).coerceAtLeast(0)
+                        val maxY = (screenHeight() - v.height).coerceAtLeast(0)
+                        lp.x = (startX + dx.toInt()).coerceIn(0, maxX)
+                        lp.y = (startY + dy.toInt()).coerceIn(0, maxY)
+                        runCatching { windowManager.updateViewLayout(v, lp) }
+                        if (cancelAdded) positionCancel() // keep the cancel button following the bubble
                     }
                     true
                 }
                 MotionEvent.ACTION_UP -> {
-                    if (!moved) onTap()
+                    v.removeCallbacks(longPress)
+                    when {
+                        longPressFired -> Unit // handled by the long-press (prompt menu)
+                        !moved -> onTap()
+                        // When snapping is off the bubble stays where it was dropped (already clamped within
+                        // the screen by ACTION_MOVE); otherwise it animates to the nearer side edge.
+                        prefs.dictate.floatingButtonSnapToEdge.get() -> snapToEdge()
+                    }
+                    if (moved) saveCurrentPosition()
+                    scheduleDim() // restart the idle timer after the interaction
+                    true
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    v.removeCallbacks(longPress)
                     true
                 }
                 else -> false
@@ -198,7 +549,139 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
         }
     }
 
+    /** Animates the bubble to whichever side edge is nearer, clamping the vertical position on screen. */
+    private fun snapToEdge() {
+        val lp = params ?: return
+        val v = rootView ?: return
+        val maxX = (screenWidth() - v.width).coerceAtLeast(0)
+        val margin = dp(8).coerceAtMost(maxX / 2)
+        anchoredToRight = lp.x + v.width / 2 >= screenWidth() / 2
+        val targetX = if (anchoredToRight) maxX - margin else margin
+        lp.y = lp.y.coerceIn(0, (screenHeight() - v.height).coerceAtLeast(0))
+        snapAnim?.cancel()
+        snapAnim = ValueAnimator.ofInt(lp.x, targetX).apply {
+            duration = 180
+            interpolator = DecelerateInterpolator()
+            addUpdateListener {
+                lp.x = it.animatedValue as Int
+                runCatching { windowManager.updateViewLayout(v, lp) }
+                if (cancelAdded) positionCancel() // let the cancel button ride along to the edge
+            }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    saveCurrentPosition() // persist the final snapped position for this app
+                }
+            })
+            start()
+        }
+    }
+
+    /**
+     * Repositions the window after a size change (e.g. the pill expanding/collapsing). When snapping is on,
+     * the bubble stays pinned to its anchored edge with the margin — so the pill grows *inward* from the
+     * right edge instead of off-screen, and returns to the edge when it collapses. When snapping is off it
+     * is just clamped within the screen bounds.
+     */
+    private fun repositionForSize() {
+        val lp = params ?: return
+        val v = rootView ?: return
+        if (!added) return
+        val maxX = (screenWidth() - v.width).coerceAtLeast(0)
+        val maxY = (screenHeight() - v.height).coerceAtLeast(0)
+        val margin = dp(8).coerceAtMost(maxX / 2)
+        val nx = when {
+            !prefs.dictate.floatingButtonSnapToEdge.get() -> lp.x.coerceIn(0, maxX)
+            anchoredToRight -> maxX - margin
+            else -> margin
+        }
+        val ny = lp.y.coerceIn(0, maxY)
+        if (nx != lp.x || ny != lp.y) {
+            lp.x = nx
+            lp.y = ny
+            runCatching { windowManager.updateViewLayout(v, lp) }
+        }
+    }
+
+    private fun screenWidth(): Int = context.resources.displayMetrics.widthPixels
+    private fun screenHeight(): Int = context.resources.displayMetrics.heightPixels
+
+    /** Saves the bubble position for the leaving app and restores the position saved for the new app. */
+    private fun onForegroundPackageChanged(pkg: String?) {
+        if (!prefs.dictate.floatingButtonRememberPosition.get()) {
+            currentPackage = pkg
+            return
+        }
+        saveCurrentPosition()
+        currentPackage = pkg
+        val saved = pkg?.let { positions[it] } ?: return
+        val lp = params ?: return
+        val v = rootView
+        val w = v?.width ?: 0
+        val maxX = (screenWidth() - w).coerceAtLeast(0)
+        val maxY = (screenHeight() - (v?.height ?: 0)).coerceAtLeast(0)
+        lp.x = saved.first.coerceIn(0, maxX)
+        lp.y = saved.second.coerceIn(0, maxY)
+        anchoredToRight = lp.x + w / 2 >= screenWidth() / 2
+        if (added && v != null) runCatching { windowManager.updateViewLayout(v, lp) }
+    }
+
+    private fun saveCurrentPosition() {
+        if (!prefs.dictate.floatingButtonRememberPosition.get()) return
+        val lp = params ?: return
+        val pkg = currentPackage ?: return
+        positions[pkg] = lp.x to lp.y
+    }
+
+    private fun scheduleDim() {
+        cancelDim()
+        if (!prefs.dictate.floatingButtonAutoDim.get()) return
+        dimJob = scope.launch {
+            delay(AUTO_DIM_DELAY_MS)
+            if (added && DictateController.state.value is DictateController.UiState.Idle) applyDim(true)
+        }
+    }
+
+    private fun cancelDim() {
+        dimJob?.cancel()
+        dimJob = null
+    }
+
+    /** Fades + shrinks the bubble to a small dot (or restores it), pivoting toward the anchored edge. */
+    private fun applyDim(dim: Boolean) {
+        if (dimmed == dim) return
+        dimmed = dim
+        val view = rootView ?: return
+        // Shrink toward the nearer screen edge based on the *current* position (anchoredToRight can be
+        // stale), so the dimmed dot stays put instead of appearing to drift toward the middle.
+        val onRight = (params?.x ?: 0) + view.width / 2 >= screenWidth() / 2
+        view.pivotX = if (onRight) view.width.toFloat() else 0f
+        view.pivotY = view.height / 2f
+        view.animate()
+            .alpha(if (dim) 0.45f else 1f)
+            .scaleX(if (dim) 0.5f else 1f)
+            .scaleY(if (dim) 0.5f else 1f)
+            .setDuration(200)
+            .start()
+    }
+
+    private fun vibrateTap() {
+        runCatching {
+            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator
+            } else {
+                @Suppress("DEPRECATION")
+                context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK))
+            } else {
+                vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+            }
+        }
+    }
+
     private fun onTap() {
+        if (prefs.dictate.floatingButtonHaptic.get()) vibrateTap()
         // Promote the service to a microphone foreground service *before* recording starts, so the mic
         // capture is allowed while the app is in the background (Android 14+). Demoted again when the
         // dictation finishes (see manageForeground).
@@ -210,73 +693,82 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
         DictateController.onMicClick(context, DictateController.OutputTarget.OVERLAY)
     }
 
+    // --- State → visuals -------------------------------------------------------------------------
+
+    private fun applyState(state: DictateController.UiState) {
+        if (holding) return // a transient error/success flash is currently shown
+        if (state == lastAppliedState) return // combine re-emits on focus/window churn; ignore no-op repeats
+        skin?.applyState(state)
+        lastAppliedState = state
+    }
+
     /**
-     * Surfaces a failed bubble dictation: the overlay has no inline error UI, so when an overlay-started
-     * dictation ends in an [DictateController.UiState.Error], show its message as a toast and clear the
-     * error so the keyboard's own chip does not also fire. Successful/aborted ends just reset the flag.
+     * Reacts to a finished bubble dictation. On [DictateController.UiState.Error] it flashes the error
+     * indicator on the button and shows the message as a toast (there is no inline text), then clears the
+     * error so the keyboard's own chip does not also fire. A clean finish (a busy state returning to idle)
+     * flashes a brief success check; a plain cancel just resets the flag.
      */
     private fun reportTerminalState(state: DictateController.UiState) {
         when (state) {
             is DictateController.UiState.Error -> if (weStartedDictation) {
                 weStartedDictation = false
                 Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
-                DictateController.clearError()
+                holdVisual(ERROR_HOLD_MS, FlashKind.ERROR)
             }
-            is DictateController.UiState.Idle -> weStartedDictation = false
+            is DictateController.UiState.Idle -> {
+                val finishedWork = prevState is DictateController.UiState.Transcribing ||
+                    prevState is DictateController.UiState.Rewording
+                if (weStartedDictation && finishedWork) holdVisual(SUCCESS_HOLD_MS, FlashKind.SUCCESS)
+                weStartedDictation = false
+            }
             else -> Unit // recording / transcribing / rewording still in flight
         }
     }
 
-    // --- Appearance per state --------------------------------------------------------------------
+    /** Applies a transient flash for [durationMs], suppressing live-state updates, then restores them. */
+    private fun holdVisual(durationMs: Long, kind: FlashKind) {
+        stopTicker()
+        skin?.showFlash(kind)
+        lastAppliedState = null // the flash overwrote the visuals; force a re-apply when it ends
+        holding = true
+        holdJob?.cancel()
+        holdJob = scope.launch {
+            delay(durationMs)
+            holding = false
+            applyState(DictateController.state.value)
+        }
+    }
 
-    private fun applyState(state: DictateController.UiState) {
-        val icon = iconView ?: return
-        when (state) {
-            is DictateController.UiState.Recording -> {
-                icon.alpha = 1f
-                icon.setImageResource(R.drawable.ic_dictate_overlay_stop)
-                icon.background = circle(R.color.dictate_overlay_recording)
-                startPulse()
-            }
-            is DictateController.UiState.Transcribing, is DictateController.UiState.Rewording -> {
-                stopPulse()
-                icon.setImageResource(R.drawable.ic_dictate_overlay_mic)
-                icon.background = circle(R.color.dictate_overlay_accent)
-                icon.alpha = 0.55f // simple "busy" hint until the transcription returns
-            }
-            else -> {
-                stopPulse()
-                icon.alpha = 1f
-                icon.setImageResource(R.drawable.ic_dictate_overlay_mic)
-                icon.background = circle(R.color.dictate_overlay_accent)
+    // --- Recording level ticker ------------------------------------------------------------------
+
+    private fun manageTicker(state: DictateController.UiState) {
+        if (!holding && state is DictateController.UiState.Recording) startTicker() else stopTicker()
+    }
+
+    private fun startTicker() {
+        if (tickerJob?.isActive == true) return
+        tickerJob = scope.launch {
+            while (isActive) {
+                val rec = recordingState
+                val level = if (rec?.paused == true) {
+                    0f
+                } else {
+                    (DictateController.currentAmplitude() / AMP_FULL).coerceIn(0f, 1f)
+                }
+                val elapsed = rec?.let { elapsedOf(it) } ?: 0L
+                skin?.onRecordingTick(level, elapsed)
+                delay(TICK_MS)
             }
         }
     }
 
-    private fun startPulse() {
-        if (pulse != null) return
-        val icon = iconView ?: return
-        pulse = ValueAnimator.ofFloat(1f, 1.18f).apply {
-            duration = 600
-            repeatMode = ValueAnimator.REVERSE
-            repeatCount = ValueAnimator.INFINITE
-            addUpdateListener {
-                val s = it.animatedValue as Float
-                icon.scaleX = s
-                icon.scaleY = s
-            }
-            start()
-        }
+    private fun stopTicker() {
+        tickerJob?.cancel()
+        tickerJob = null
     }
 
-    private fun stopPulse() {
-        pulse?.cancel()
-        pulse = null
-        iconView?.apply {
-            scaleX = 1f
-            scaleY = 1f
-        }
-    }
+    private fun elapsedOf(rec: DictateController.UiState.Recording): Long =
+        rec.accumulatedMs + if (rec.paused) 0L else SystemClock.elapsedRealtime() - rec.startedAtMs
 
     private fun manageForeground(state: DictateController.UiState) {
         when (state) {
@@ -288,11 +780,616 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
         }
     }
 
+    // --- Shared drawing helpers ------------------------------------------------------------------
+
     private fun circle(colorRes: Int): GradientDrawable = GradientDrawable().apply {
         shape = GradientDrawable.OVAL
-        setColor(ContextCompat.getColor(context, colorRes))
+        setColor(color(colorRes))
     }
+
+    /**
+     * Resolves a color resource — except the accent, which is overridden by the user's chosen button color
+     * so every skin's idle/accent visuals follow the preference without each call site needing to change.
+     */
+    private fun color(colorRes: Int): Int =
+        if (colorRes == R.color.dictate_overlay_accent) accentColor
+        else ContextCompat.getColor(context, colorRes)
 
     private fun dp(value: Int): Int =
         (value * context.resources.displayMetrics.density).toInt()
+
+    private fun dpf(value: Float): Float = value * context.resources.displayMetrics.density
+
+    /** Like [dp]/[dpf] but scaled by the user's chosen button size; used for the skin dimensions. */
+    private fun sdp(value: Int): Int = (value * sizeScale * context.resources.displayMetrics.density).toInt()
+
+    private fun sdpf(value: Float): Float = value * sizeScale * context.resources.displayMetrics.density
+
+    /** A transient, non-state flash shown briefly on the button. */
+    private enum class FlashKind { ERROR, SUCCESS }
+
+    /** Strategy that renders the bubble for a given design; owned by the controller. */
+    private interface BubbleSkin {
+        val root: View
+        /** A fixed window height in px, or null to size to the content. Pinning it stops the pill from
+         *  appearing to grow vertically while its width animates. */
+        val fixedHeight: Int?
+        fun applyState(state: DictateController.UiState)
+        fun showFlash(kind: FlashKind)
+        fun onRecordingTick(level: Float, elapsedMs: Long)
+        fun destroy()
+    }
+
+    // --- Waveform --------------------------------------------------------------------------------
+
+    /** A small rolling bar waveform fed normalized 0..1 mic levels. */
+    private inner class WaveformView(context: Context, barCount: Int = WAVE_BARS) : View(context) {
+        var barColor: Int = color(R.color.dictate_overlay_icon)
+        private val levels = FloatArray(barCount)
+        private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
+
+        fun push(level: Float) {
+            for (i in 0 until levels.size - 1) levels[i] = levels[i + 1]
+            levels[levels.size - 1] = level.coerceIn(0f, 1f)
+            invalidate()
+        }
+
+        fun reset() {
+            levels.fill(0f)
+            invalidate()
+        }
+
+        override fun onDraw(canvas: Canvas) {
+            val n = levels.size
+            val gap = dpf(2f)
+            val barW = (width - gap * (n - 1)) / n
+            val radius = barW / 2f
+            val cy = height / 2f
+            val minH = dpf(4f)
+            val maxH = height - dpf(2f)
+            paint.color = barColor
+            for (i in 0 until n) {
+                val h = (minH + levels[i] * (maxH - minH)).coerceIn(minH, height.toFloat())
+                val left = i * (barW + gap)
+                canvas.drawRoundRect(left, cy - h / 2f, left + barW, cy + h / 2f, radius, radius, paint)
+            }
+        }
+    }
+
+    // --- Ring skin (design 1) --------------------------------------------------------------------
+
+    private enum class RingMode { SOLID, SPIN, PULSE }
+
+    private inner class RingSkin(context: Context) : BubbleSkin {
+        // Filled core with the ring set a touch outside it: a small transparent gap so the ring reads as a
+        // ring, but not so wide that it looks detached (a middle ground between the two earlier extremes).
+        private val viewSize = sdp(64)
+        private val coreSize = sdp(40)
+        private val iconInset = sdp(10)
+        private val ringStrokePx = sdpf(3f)
+        private val ringRadiusPx = sdpf(25f)
+
+        private val ring = RingView(context)
+        private val core = View(context).apply {
+            background = circle(R.color.dictate_overlay_accent)
+            elevation = sdpf(6f)
+        }
+        private val icon = ImageView(context).apply {
+            setImageResource(R.drawable.ic_dictate_overlay_mic)
+            setPadding(iconInset, iconInset, iconInset, iconInset)
+            elevation = sdpf(6f)
+        }
+        private val wave = WaveformView(context).apply {
+            visibility = View.GONE
+            elevation = sdpf(6f)
+        }
+        private var ringAnim: ValueAnimator? = null
+
+        override val fixedHeight: Int? = null
+
+        override val root: View = FrameLayout(context).apply {
+            addView(ring, FrameLayout.LayoutParams(viewSize, viewSize))
+            addView(core, FrameLayout.LayoutParams(coreSize, coreSize, Gravity.CENTER))
+            addView(icon, FrameLayout.LayoutParams(coreSize, coreSize, Gravity.CENTER))
+            addView(wave, FrameLayout.LayoutParams(sdp(24), sdp(16), Gravity.CENTER))
+        }
+
+        override fun applyState(state: DictateController.UiState) {
+            when (state) {
+                is DictateController.UiState.Recording -> {
+                    setCore(R.color.dictate_overlay_recording)
+                    showWave(true)
+                    pulseRing(R.color.dictate_overlay_recording)
+                }
+                is DictateController.UiState.Transcribing -> {
+                    setCore(R.color.dictate_overlay_accent)
+                    showGlyph(R.drawable.ic_dictate_overlay_mic)
+                    spinRing(R.color.dictate_overlay_accent)
+                }
+                is DictateController.UiState.Rewording -> {
+                    setCore(R.color.dictate_overlay_accent)
+                    showGlyph(R.drawable.ic_dictate_overlay_mic)
+                    spinRing(R.color.dictate_overlay_rewording)
+                }
+                else -> {
+                    setCore(R.color.dictate_overlay_accent)
+                    showGlyph(R.drawable.ic_dictate_overlay_mic)
+                    setSolidRing(R.color.dictate_overlay_accent)
+                }
+            }
+        }
+
+        override fun showFlash(kind: FlashKind) {
+            when (kind) {
+                FlashKind.ERROR -> {
+                    setCore(R.color.dictate_overlay_recording)
+                    showGlyph(R.drawable.ic_dictate_overlay_error)
+                    setSolidRing(R.color.dictate_overlay_recording)
+                }
+                FlashKind.SUCCESS -> {
+                    setCore(R.color.dictate_overlay_success)
+                    showGlyph(R.drawable.ic_dictate_overlay_check)
+                    setSolidRing(R.color.dictate_overlay_success)
+                }
+            }
+        }
+
+        override fun onRecordingTick(level: Float, elapsedMs: Long) {
+            wave.push(level)
+        }
+
+        override fun destroy() {
+            ringAnim?.cancel()
+            ringAnim = null
+        }
+
+        private fun setCore(colorRes: Int) {
+            core.background = circle(colorRes)
+        }
+
+        private fun showGlyph(resId: Int) {
+            icon.setImageResource(resId)
+            icon.alpha = 1f
+            icon.visibility = View.VISIBLE
+            wave.visibility = View.GONE
+        }
+
+        private fun showWave(show: Boolean) {
+            wave.visibility = if (show) View.VISIBLE else View.GONE
+            icon.visibility = if (show) View.GONE else View.VISIBLE
+            if (show) wave.reset()
+        }
+
+        private fun setSolidRing(colorRes: Int) {
+            ringAnim?.cancel()
+            ringAnim = null
+            ring.ringColor = color(colorRes)
+            ring.mode = RingMode.SOLID
+            ring.invalidate()
+        }
+
+        private fun spinRing(colorRes: Int) {
+            ring.ringColor = color(colorRes)
+            ring.mode = RingMode.SPIN
+            ringAnim?.cancel()
+            ringAnim = ValueAnimator.ofFloat(0f, 360f).apply {
+                duration = 900
+                repeatCount = ValueAnimator.INFINITE
+                repeatMode = ValueAnimator.RESTART
+                interpolator = LinearInterpolator()
+                addUpdateListener {
+                    ring.spinDeg = it.animatedValue as Float
+                    ring.invalidate()
+                }
+                start()
+            }
+        }
+
+        private fun pulseRing(colorRes: Int) {
+            ring.ringColor = color(colorRes)
+            ring.mode = RingMode.PULSE
+            ringAnim?.cancel()
+            ringAnim = ValueAnimator.ofFloat(0f, 1f).apply {
+                duration = 480
+                repeatCount = ValueAnimator.INFINITE
+                repeatMode = ValueAnimator.REVERSE
+                addUpdateListener {
+                    ring.pulse = it.animatedValue as Float
+                    ring.invalidate()
+                }
+                start()
+            }
+        }
+
+        private inner class RingView(context: Context) : View(context) {
+            var ringColor: Int = color(R.color.dictate_overlay_accent)
+            var mode: RingMode = RingMode.SOLID
+            var spinDeg: Float = 0f
+            var pulse: Float = 0f
+
+            private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                style = Paint.Style.STROKE
+                strokeCap = Paint.Cap.ROUND
+            }
+            private val oval = RectF()
+
+            override fun onDraw(canvas: Canvas) {
+                val cx = width / 2f
+                val cy = height / 2f
+                val r = ringRadiusPx
+                paint.color = ringColor
+                paint.alpha = 255
+                paint.strokeWidth = ringStrokePx
+                when (mode) {
+                    RingMode.SOLID -> canvas.drawCircle(cx, cy, r, paint)
+                    RingMode.SPIN -> {
+                        oval.set(cx - r, cy - r, cx + r, cy + r)
+                        canvas.drawArc(oval, spinDeg, 270f, false, paint)
+                    }
+                    RingMode.PULSE -> {
+                        // A strong heartbeat: the ring grows and thickens and brightens with the pulse.
+                        paint.strokeWidth = ringStrokePx + pulse * sdpf(4f)
+                        paint.alpha = (170 + pulse * 85f).toInt().coerceIn(0, 255)
+                        canvas.drawCircle(cx, cy, r + pulse * sdpf(3f), paint)
+                    }
+                }
+            }
+        }
+    }
+
+    // --- Pill skin (design 2) --------------------------------------------------------------------
+
+    private inner class PillSkin(context: Context) : BubbleSkin {
+        // Match the ring design's overall footprint, scaled by the chosen size.
+        private val pillHeight = sdp(48)
+        private val iconSize = sdp(24)
+        private val pad = sdp(12)
+
+        private val bg = GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = pillHeight / 2f
+            setColor(color(R.color.dictate_overlay_accent))
+        }
+        private val icon = ImageView(context).apply {
+            setImageResource(R.drawable.ic_dictate_overlay_mic)
+        }
+        private val timer = TextView(context).apply {
+            setTextColor(color(R.color.dictate_overlay_icon))
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, sdpf(14f))
+        }
+        // Thinner bars: more bars across a similar width than the ring's waveform.
+        private val wave = WaveformView(context, barCount = 13)
+
+        // The timer + waveform live in this container, which grows from 0 width (circle) to its content
+        // width (pill) when recording starts, so the circle→pill transition animates instead of jumping.
+        private val expand = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            clipChildren = false
+            visibility = View.GONE
+            addView(timer, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+            ).apply { marginStart = sdp(8) })
+            addView(wave, LinearLayout.LayoutParams(sdp(48), sdp(20)).apply {
+                marginStart = sdp(8)
+                marginEnd = sdp(2)
+            })
+        }
+
+        private var spinAnim: ValueAnimator? = null
+        private var expandAnim: ValueAnimator? = null
+
+        override val fixedHeight: Int = pillHeight
+
+        override val root: View = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            background = bg
+            elevation = sdpf(6f)
+            minimumHeight = pillHeight
+            minimumWidth = pillHeight
+            setPadding(pad, 0, pad, 0)
+            addView(icon, LinearLayout.LayoutParams(iconSize, iconSize))
+            addView(expand, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT))
+        }
+
+        override fun applyState(state: DictateController.UiState) {
+            stopSpin()
+            when (state) {
+                is DictateController.UiState.Recording -> {
+                    setColor(R.color.dictate_overlay_recording)
+                    icon.alpha = 1f
+                    icon.rotation = 0f
+                    icon.setImageResource(R.drawable.ic_dictate_overlay_stop)
+                    wave.reset()
+                    timer.text = formatElapsed(0)
+                    setExpanded(true)
+                }
+                is DictateController.UiState.Transcribing -> busySpinner(R.color.dictate_overlay_accent)
+                is DictateController.UiState.Rewording -> busySpinner(R.color.dictate_overlay_rewording)
+                else -> {
+                    setColor(R.color.dictate_overlay_accent)
+                    icon.alpha = 1f
+                    icon.rotation = 0f
+                    icon.setImageResource(R.drawable.ic_dictate_overlay_mic)
+                    setExpanded(false)
+                }
+            }
+        }
+
+        override fun showFlash(kind: FlashKind) {
+            stopSpin()
+            icon.alpha = 1f
+            icon.rotation = 0f
+            setExpanded(false)
+            when (kind) {
+                FlashKind.ERROR -> {
+                    setColor(R.color.dictate_overlay_recording)
+                    icon.setImageResource(R.drawable.ic_dictate_overlay_error)
+                }
+                FlashKind.SUCCESS -> {
+                    setColor(R.color.dictate_overlay_success)
+                    icon.setImageResource(R.drawable.ic_dictate_overlay_check)
+                }
+            }
+        }
+
+        override fun onRecordingTick(level: Float, elapsedMs: Long) {
+            wave.push(level)
+            timer.text = formatElapsed(elapsedMs)
+        }
+
+        override fun destroy() {
+            stopSpin()
+            expandAnim?.cancel()
+        }
+
+        private fun busySpinner(colorRes: Int) {
+            setColor(colorRes)
+            setExpanded(false)
+            icon.alpha = 1f
+            icon.setImageResource(R.drawable.ic_dictate_overlay_spinner)
+            spinAnim?.cancel()
+            spinAnim = ValueAnimator.ofFloat(0f, 360f).apply {
+                duration = 900
+                repeatCount = ValueAnimator.INFINITE
+                repeatMode = ValueAnimator.RESTART
+                interpolator = LinearInterpolator()
+                addUpdateListener { icon.rotation = it.animatedValue as Float }
+                start()
+            }
+        }
+
+        /** Animates the expand container open (pill) or closed (circle). */
+        private fun setExpanded(expanded: Boolean) {
+            expandAnim?.cancel()
+            if (expanded) {
+                expand.visibility = View.VISIBLE
+                expand.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                )
+                val target = expand.measuredWidth
+                expandAnim = ValueAnimator.ofInt(expand.width, target).apply {
+                    duration = 240
+                    interpolator = DecelerateInterpolator()
+                    addUpdateListener {
+                        val w = it.animatedValue as Int
+                        setExpandWidth(w)
+                        expand.alpha = if (target > 0) (w.toFloat() / target).coerceIn(0f, 1f) else 1f
+                    }
+                    addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            // Let the timer text changes resize the pill naturally once fully open.
+                            setExpandWidth(LinearLayout.LayoutParams.WRAP_CONTENT)
+                            expand.alpha = 1f
+                        }
+                    })
+                    start()
+                }
+            } else {
+                val start = if (expand.width > 0) expand.width else 0
+                if (start == 0 || expand.visibility != View.VISIBLE) {
+                    setExpandWidth(0)
+                    expand.visibility = View.GONE
+                    return
+                }
+                expandAnim = ValueAnimator.ofInt(start, 0).apply {
+                    duration = 200
+                    interpolator = DecelerateInterpolator()
+                    addUpdateListener {
+                        val w = it.animatedValue as Int
+                        setExpandWidth(w)
+                        expand.alpha = (w.toFloat() / start).coerceIn(0f, 1f)
+                    }
+                    addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            expand.visibility = View.GONE
+                        }
+                    })
+                    start()
+                }
+            }
+        }
+
+        private fun setExpandWidth(w: Int) {
+            val lp = expand.layoutParams
+            lp.width = w
+            expand.layoutParams = lp
+        }
+
+        private fun stopSpin() {
+            spinAnim?.cancel()
+            spinAnim = null
+            icon.rotation = 0f
+        }
+
+        private fun setColor(colorRes: Int) {
+            bg.setColor(color(colorRes))
+        }
+
+        private fun formatElapsed(ms: Long): String {
+            val totalSec = (ms / 1000).toInt()
+            return "%d:%02d".format(totalSec / 60, totalSec % 60)
+        }
+    }
+
+    // --- Orb skin (design 3) ---------------------------------------------------------------------
+
+    private inner class OrbSkin(context: Context) : BubbleSkin {
+        private val viewSize = sdp(64)
+        private val coreSize = sdp(44)
+        private val iconInset = sdp(11)
+        private val coreRadiusPx = coreSize / 2f
+        private val minGlowPx = sdpf(2f)
+        private val maxGlowPx = sdpf(8f)
+
+        private val glow = GlowView(context)
+        private val core = View(context).apply {
+            background = circle(R.color.dictate_overlay_accent)
+            elevation = sdpf(6f)
+        }
+        private val icon = ImageView(context).apply {
+            setImageResource(R.drawable.ic_dictate_overlay_mic)
+            setPadding(iconInset, iconInset, iconInset, iconInset)
+            elevation = sdpf(6f)
+        }
+        private var breatheAnim: ValueAnimator? = null
+        private var smoothed = 0f
+
+        override val fixedHeight: Int? = null
+
+        override val root: View = FrameLayout(context).apply {
+            addView(glow, FrameLayout.LayoutParams(viewSize, viewSize))
+            addView(core, FrameLayout.LayoutParams(coreSize, coreSize, Gravity.CENTER))
+            addView(icon, FrameLayout.LayoutParams(coreSize, coreSize, Gravity.CENTER))
+        }
+
+        override fun applyState(state: DictateController.UiState) {
+            stopBreathe()
+            when (state) {
+                is DictateController.UiState.Recording -> {
+                    setCore(R.color.dictate_overlay_recording)
+                    setGlyph(R.drawable.ic_dictate_overlay_stop)
+                    glow.glowColor = color(R.color.dictate_overlay_recording)
+                    smoothed = 0f
+                    setGlow(0f) // the ticker drives it from the live amplitude
+                }
+                is DictateController.UiState.Transcribing -> {
+                    setCore(R.color.dictate_overlay_accent)
+                    setGlyph(R.drawable.ic_dictate_overlay_mic)
+                    startBreathe(R.color.dictate_overlay_accent)
+                }
+                is DictateController.UiState.Rewording -> {
+                    setCore(R.color.dictate_overlay_accent)
+                    setGlyph(R.drawable.ic_dictate_overlay_mic)
+                    startBreathe(R.color.dictate_overlay_rewording)
+                }
+                else -> {
+                    setCore(R.color.dictate_overlay_accent)
+                    setGlyph(R.drawable.ic_dictate_overlay_mic)
+                    setGlow(0f)
+                }
+            }
+        }
+
+        override fun showFlash(kind: FlashKind) {
+            stopBreathe()
+            setGlow(0f)
+            when (kind) {
+                FlashKind.ERROR -> {
+                    setCore(R.color.dictate_overlay_recording)
+                    setGlyph(R.drawable.ic_dictate_overlay_error)
+                }
+                FlashKind.SUCCESS -> {
+                    setCore(R.color.dictate_overlay_success)
+                    setGlyph(R.drawable.ic_dictate_overlay_check)
+                }
+            }
+        }
+
+        override fun onRecordingTick(level: Float, elapsedMs: Long) {
+            smoothed += (level - smoothed) * 0.35f
+            setGlow(smoothed)
+        }
+
+        override fun destroy() {
+            stopBreathe()
+        }
+
+        private fun setCore(colorRes: Int) {
+            core.background = circle(colorRes)
+        }
+
+        private fun setGlyph(resId: Int) {
+            icon.setImageResource(resId)
+            icon.alpha = 1f
+        }
+
+        /** Drives the glow radius/alpha and a subtle orb scale from a 0..1 level. */
+        private fun setGlow(level: Float) {
+            val l = level.coerceIn(0f, 1f)
+            glow.level = l
+            glow.invalidate()
+            val s = 1f + l * 0.08f
+            core.scaleX = s
+            core.scaleY = s
+            icon.scaleX = s
+            icon.scaleY = s
+        }
+
+        private fun startBreathe(colorRes: Int) {
+            glow.glowColor = color(colorRes)
+            breatheAnim?.cancel()
+            breatheAnim = ValueAnimator.ofFloat(0f, 1f).apply {
+                duration = 1100
+                repeatCount = ValueAnimator.INFINITE
+                repeatMode = ValueAnimator.REVERSE
+                addUpdateListener { setGlow(0.2f + 0.5f * (it.animatedValue as Float)) }
+                start()
+            }
+        }
+
+        private fun stopBreathe() {
+            breatheAnim?.cancel()
+            breatheAnim = null
+        }
+
+        private inner class GlowView(context: Context) : View(context) {
+            var glowColor: Int = color(R.color.dictate_overlay_accent)
+            var level: Float = 0f
+            private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+            override fun onDraw(canvas: Canvas) {
+                if (level <= 0.01f || width == 0) return
+                val cx = width / 2f
+                val cy = height / 2f
+                val glowR = coreRadiusPx + minGlowPx + level * maxGlowPx
+                if (glowR <= coreRadiusPx) return
+                val inner = (coreRadiusPx / glowR).coerceIn(0f, 0.95f)
+                val a = (50 + level * 150f).toInt().coerceIn(0, 255)
+                val rgb = glowColor and 0x00FFFFFF
+                val cIn = rgb or (a shl 24)
+                paint.shader = RadialGradient(
+                    cx, cy, glowR,
+                    intArrayOf(cIn, cIn, rgb),
+                    floatArrayOf(0f, inner, 1f),
+                    Shader.TileMode.CLAMP,
+                )
+                canvas.drawCircle(cx, cy, glowR, paint)
+            }
+        }
+    }
+
+    private companion object {
+        private const val ERROR_HOLD_MS = 1800L
+        private const val SUCCESS_HOLD_MS = 1700L
+        private const val TICK_MS = 50L
+        private const val AUTO_DIM_DELAY_MS = 3500L
+        private const val WAVE_BARS = 7
+        // MediaRecorder.getMaxAmplitude tops out at 32767; speech rarely peaks there, so normalize to a
+        // lower full-scale to keep the waveform lively without constantly clipping at the top.
+        private const val AMP_FULL = 16000f
+    }
 }

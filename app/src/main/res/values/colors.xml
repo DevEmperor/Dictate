@@ -23,6 +23,13 @@
 
     <!-- Dictate floating button (issue #88): idle blue (matches the keyboard accent) and recording red -->
     <color name="dictate_overlay_accent">#30B7E6</color>
-    <color name="dictate_overlay_recording">#E53935</color>
+    <color name="dictate_overlay_recording">#EC6A5E</color>
     <color name="dictate_overlay_icon">#FFFFFF</color>
+    <!-- Rewording (AI) ring tint and the brief success-flash green -->
+    <color name="dictate_overlay_rewording">#7C4DFF</color>
+    <color name="dictate_overlay_success">#43A047</color>
+    <!-- Neutral background for the secondary cancel button shown while recording -->
+    <color name="dictate_overlay_cancel">#4A4A4A</color>
+    <!-- Surface of the long-press rewording menu -->
+    <color name="dictate_overlay_menu_surface">#2D2D2D</color>
 </resources>

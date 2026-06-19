@@ -77,7 +77,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun DictateScreen() = FlorisScreen {
     title = stringRes(R.string.dictate__title)
-    previewFieldVisible = false
+    previewFieldVisible = true
     iconSpaceReserved = true
 
     val prefs by FlorisPreferenceStore
@@ -177,80 +177,14 @@ fun DictateScreen() = FlorisScreen {
         }
 
         PreferenceGroup(title = stringRes(R.string.dictate__recording_group)) {
-            // Floating dictation button (issue #88): the master toggle lives here on the main page; the
-            // dedicated screen below holds the setup (accessibility service, mic) and display options.
-            val context = LocalContext.current
-            val floatingEnabled by prefs.dictate.floatingButtonEnabled.collectAsState()
-            var prevFloatingEnabled by remember { mutableStateOf(floatingEnabled) }
-            var showFloatingDisclosure by remember { mutableStateOf(false) }
-            LaunchedEffect(floatingEnabled) {
-                // Just switched on and the service isn't set up yet → show the disclosure and send the
-                // user to the system accessibility settings (same first-run flow as the dedicated screen).
-                if (floatingEnabled && !prevFloatingEnabled && !isOverlayServiceEnabled(context)) {
-                    showFloatingDisclosure = true
-                }
-                prevFloatingEnabled = floatingEnabled
-            }
-            // One two-target row: tapping the body opens the setup/options sub screen, while the
-            // trailing switch toggles the feature independently (like a "switch + chevron" item).
-            val floatingScope = rememberCoroutineScope()
+            // Floating dictation button (issue #88): this row just opens the dedicated screen, which holds
+            // the enable toggle, the setup (accessibility service, mic) and all display/behavior options.
             Preference(
                 icon = Icons.Default.Adjust,
                 title = stringRes(R.string.dictate__floating_button_enable_title),
                 summary = stringRes(R.string.dictate__floating_button_enable_summary),
                 onClick = { navController.navigate(Routes.Settings.DictateFloatingButton) },
-                trailing = {
-                    // Same trailing as JetPref's ListPreference-with-switch: a divider line drawn on the
-                    // box's left edge separates the navigable body from the independently toggleable switch.
-                    val dividerColor = MaterialTheme.colorScheme.outlineVariant
-                    Box(
-                        modifier = Modifier
-                            .size(LocalViewConfiguration.current.minimumTouchTargetSize + DpSize(8.dp, 0.dp))
-                            .toggleable(
-                                value = floatingEnabled,
-                                role = Role.Switch,
-                                onValueChange = { checked ->
-                                    floatingScope.launch { prefs.dictate.floatingButtonEnabled.set(checked) }
-                                },
-                            )
-                            .drawBehind {
-                                drawLine(
-                                    color = dividerColor,
-                                    start = Offset(0f, size.height * 0.1f),
-                                    end = Offset(0f, size.height * 0.9f),
-                                    strokeWidth = 2f,
-                                )
-                            },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Switch(
-                            modifier = Modifier.padding(start = 8.dp),
-                            checked = floatingEnabled,
-                            onCheckedChange = null,
-                        )
-                    }
-                },
             )
-            if (showFloatingDisclosure) {
-                AlertDialog(
-                    onDismissRequest = { showFloatingDisclosure = false },
-                    title = { Text(stringRes(R.string.dictate__floating_button_disclosure_title)) },
-                    text = { Text(stringRes(R.string.dictate__floating_button_disclosure_message)) },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            showFloatingDisclosure = false
-                            openAccessibilitySettings(context)
-                        }) {
-                            Text(stringRes(R.string.dictate__floating_button_disclosure_continue))
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = { showFloatingDisclosure = false }) {
-                            Text(stringRes(android.R.string.cancel))
-                        }
-                    },
-                )
-            }
             SwitchPreference(
                 prefs.dictate.audioFocus,
                 icon = Icons.Default.VolumeOff,

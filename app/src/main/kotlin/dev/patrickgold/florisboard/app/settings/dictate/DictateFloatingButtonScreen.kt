@@ -21,8 +21,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Adjust
+import androidx.compose.material.icons.filled.Brush
+import androidx.compose.material.icons.filled.BlurOn
+import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.Keyboard
+import androidx.compose.material.icons.filled.PinDrop
+import androidx.compose.material.icons.filled.Vibration
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.PhotoSizeSelectSmall
+import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -42,9 +49,15 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.overlay.DictateAccessibilityService
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.jetpref.datastore.model.collectAsState
+import dev.patrickgold.florisboard.dictate.DictateFloatingButtonDesign
+import dev.patrickgold.florisboard.dictate.DictateFloatingButtonSize
+import org.florisboard.lib.color.ColorMappings
+import dev.patrickgold.jetpref.datastore.ui.ColorPickerPreference
+import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
+import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
 import org.florisboard.lib.compose.stringRes
 
 /**
@@ -58,7 +71,7 @@ import org.florisboard.lib.compose.stringRes
 @Composable
 fun DictateFloatingButtonScreen() = FlorisScreen {
     title = stringRes(R.string.dictate__floating_button_title)
-    previewFieldVisible = false
+    previewFieldVisible = true
     iconSpaceReserved = true
 
     val prefs by FlorisPreferenceStore
@@ -100,6 +113,90 @@ fun DictateFloatingButtonScreen() = FlorisScreen {
                 title = stringRes(R.string.dictate__floating_button_show_with_keyboard_title),
                 summaryOn = stringRes(R.string.dictate__floating_button_show_with_keyboard_summary_on),
                 summaryOff = stringRes(R.string.dictate__floating_button_show_with_keyboard_summary_off),
+            )
+
+            ListPreference(
+                prefs.dictate.floatingButtonDesign,
+                icon = Icons.Default.Brush,
+                title = stringRes(R.string.dictate__floating_button_design_title),
+                entries = listPrefEntries {
+                    entry(
+                        DictateFloatingButtonDesign.PILL,
+                        stringRes(R.string.dictate__floating_button_design_pill),
+                        stringRes(R.string.dictate__floating_button_design_pill_summary),
+                    )
+                    entry(
+                        DictateFloatingButtonDesign.RING,
+                        stringRes(R.string.dictate__floating_button_design_ring),
+                        stringRes(R.string.dictate__floating_button_design_ring_summary),
+                    )
+                    entry(
+                        DictateFloatingButtonDesign.ORB,
+                        stringRes(R.string.dictate__floating_button_design_orb),
+                        stringRes(R.string.dictate__floating_button_design_orb_summary),
+                    )
+                },
+            )
+
+            ListPreference(
+                prefs.dictate.floatingButtonSize,
+                icon = Icons.Default.PhotoSizeSelectSmall,
+                title = stringRes(R.string.dictate__floating_button_size_title),
+                entries = listPrefEntries {
+                    entry(
+                        DictateFloatingButtonSize.SMALL,
+                        stringRes(R.string.dictate__floating_button_size_small),
+                    )
+                    entry(
+                        DictateFloatingButtonSize.MEDIUM,
+                        stringRes(R.string.dictate__floating_button_size_medium),
+                    )
+                    entry(
+                        DictateFloatingButtonSize.LARGE,
+                        stringRes(R.string.dictate__floating_button_size_large),
+                    )
+                },
+            )
+
+            SwitchPreference(
+                prefs.dictate.floatingButtonSnapToEdge,
+                icon = Icons.Default.PushPin,
+                title = stringRes(R.string.dictate__floating_button_snap_title),
+                summaryOn = stringRes(R.string.dictate__floating_button_snap_summary_on),
+                summaryOff = stringRes(R.string.dictate__floating_button_snap_summary_off),
+            )
+
+            ColorPickerPreference(
+                prefs.dictate.floatingButtonColor,
+                icon = Icons.Default.ColorLens,
+                title = stringRes(R.string.dictate__floating_button_color_title),
+                defaultValueLabel = stringRes(R.string.action__default),
+                showAlphaSlider = false,
+                defaultColors = ColorMappings.colors,
+            )
+
+            SwitchPreference(
+                prefs.dictate.floatingButtonAutoDim,
+                icon = Icons.Default.BlurOn,
+                title = stringRes(R.string.dictate__floating_button_auto_dim_title),
+                summaryOn = stringRes(R.string.dictate__floating_button_auto_dim_summary_on),
+                summaryOff = stringRes(R.string.dictate__floating_button_auto_dim_summary_off),
+            )
+
+            SwitchPreference(
+                prefs.dictate.floatingButtonRememberPosition,
+                icon = Icons.Default.PinDrop,
+                title = stringRes(R.string.dictate__floating_button_remember_position_title),
+                summaryOn = stringRes(R.string.dictate__floating_button_remember_position_summary_on),
+                summaryOff = stringRes(R.string.dictate__floating_button_remember_position_summary_off),
+            )
+
+            SwitchPreference(
+                prefs.dictate.floatingButtonHaptic,
+                icon = Icons.Default.Vibration,
+                title = stringRes(R.string.dictate__floating_button_haptic_title),
+                summaryOn = stringRes(R.string.dictate__floating_button_haptic_summary_on),
+                summaryOff = stringRes(R.string.dictate__floating_button_haptic_summary_off),
             )
 
             PreferenceGroup(title = stringRes(R.string.dictate__floating_button_permission_group)) {

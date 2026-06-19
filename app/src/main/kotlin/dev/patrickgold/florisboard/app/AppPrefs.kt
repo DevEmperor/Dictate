@@ -23,6 +23,8 @@ import dev.patrickgold.florisboard.app.settings.theme.ColorPreferenceSerializer
 import dev.patrickgold.florisboard.app.settings.theme.DisplayKbdAfterDialogs
 import dev.patrickgold.florisboard.app.settings.theme.SnyggLevel
 import dev.patrickgold.florisboard.app.setup.NotificationPermissionState
+import dev.patrickgold.florisboard.dictate.DictateFloatingButtonDesign
+import dev.patrickgold.florisboard.dictate.DictateFloatingButtonSize
 import dev.patrickgold.florisboard.dictate.DictatePromptsLayout
 import dev.patrickgold.florisboard.dictate.provider.DictateProxyType
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
@@ -322,6 +324,44 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val floatingButtonShowWithDictateKeyboard = boolean(
             key = "dictate__floating_button_show_with_dictate_keyboard",
             default = false,
+        )
+        // Visual style of the floating button: a compact ring (RING) or a bubble that expands into a pill
+        // with a timer + live waveform while active (PILL). See DictateFloatingButtonDesign.
+        val floatingButtonDesign = enum(
+            key = "dictate__floating_button_design",
+            default = DictateFloatingButtonDesign.PILL,
+        )
+        // Overall size of the floating button (scales the skin dimensions).
+        val floatingButtonSize = enum(
+            key = "dictate__floating_button_size",
+            default = DictateFloatingButtonSize.MEDIUM,
+        )
+        // Whether the floating button snaps to the nearest screen edge after being dragged. Default on;
+        // turn off to leave it wherever it is dropped (still kept within the screen bounds).
+        val floatingButtonSnapToEdge = boolean(
+            key = "dictate__floating_button_snap_to_edge",
+            default = true,
+        )
+        // Accent color of the floating button (idle/transcribing visuals). Defaults to the Dictate light blue.
+        val floatingButtonColor = custom(
+            key = "dictate__floating_button_color",
+            default = Color(0xFF30B7E6),
+            serializer = ColorPreferenceSerializer,
+        )
+        // Fade + shrink the button to a small dot after a few seconds of inactivity; tap to restore.
+        val floatingButtonAutoDim = boolean(
+            key = "dictate__floating_button_auto_dim",
+            default = true,
+        )
+        // Remember the button's position separately per app.
+        val floatingButtonRememberPosition = boolean(
+            key = "dictate__floating_button_remember_position",
+            default = true,
+        )
+        // Vibrate briefly when the button is tapped.
+        val floatingButtonHaptic = boolean(
+            key = "dictate__floating_button_haptic",
+            default = true,
         )
         // --- Output behavior (roadmap section 10) ------------------------------------------------
         // Press Enter / trigger the editor action automatically after committing a transcription.
