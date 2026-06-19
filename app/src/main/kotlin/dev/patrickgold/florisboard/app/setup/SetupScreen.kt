@@ -104,6 +104,9 @@ fun SetupScreen() = FlorisScreen {
     val activeProviderId by prefs.dictate.transcriptionProviderId.collectAsState()
     val isProviderConfigured = isProviderConfigured(accounts, activeProviderId)
     var providerSkipped by rememberSaveable { mutableStateOf(false) }
+    // The floating-button step is optional and has no completion signal of its own, so (like the
+    // provider step) a flag lets the user move past it to the final page once they've decided.
+    var floatingButtonStepPassed by rememberSaveable { mutableStateOf(false) }
 
     val requestNotification =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -134,6 +137,8 @@ fun SetupScreen() = FlorisScreen {
         isProviderConfigured,
         providerSkipped,
         { providerSkipped = true },
+        floatingButtonStepPassed,
+        { floatingButtonStepPassed = true },
         accounts,
         context,
         navController,
@@ -173,6 +178,8 @@ private fun FlorisScreenScope.content(
     isProviderConfigured: Boolean,
     providerSkipped: Boolean,
     onSkipProvider: () -> Unit,
+    floatingButtonStepPassed: Boolean,
+    onPassFloatingButton: () -> Unit,
     accounts: ProviderAccounts,
     context: Context,
     navController: NavController,
@@ -188,6 +195,9 @@ private fun FlorisScreenScope.content(
         !isMicGranted -> Steps.GrantMicPermission.id
         hasNotificationPermission == NotificationPermissionState.NOT_SET && AndroidVersion.ATLEAST_API33_T -> Steps.SelectNotification.id
         !isProviderConfigured && !providerSkipped -> Steps.SetUpProvider.id
+        // Land on the optional floating-button step first, only moving on to the final page once the
+        // user has explicitly decided to skip it or set it up.
+        !floatingButtonStepPassed -> Steps.FloatingButton.id
         else -> Steps.FinishUp.id
     }
 
@@ -199,6 +209,7 @@ private fun FlorisScreenScope.content(
         LaunchedEffect(
             isFlorisBoardEnabled, isFlorisBoardSelected, isMicGranted,
             hasNotificationPermission, isProviderConfigured, providerSkipped,
+            floatingButtonStepPassed,
         ) {
             stepState.setCurrentAuto(targetStep())
         }
@@ -229,13 +240,15 @@ private fun FlorisScreenScope.content(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp),
             stepState = stepState,
+            backLabel = stringRes(R.string.setup__nav_back),
+            nextLabel = stringRes(R.string.setup__nav_next),
             header = {
                 StepText(stringRes(R.string.setup__intro_message))
                 Spacer(modifier = Modifier.height(16.dp))
             },
             steps = steps(
                 context, navController, requestNotification, requestMic,
-                isProviderConfigured, onSkipProvider, accounts, scope,
+                isProviderConfigured, onSkipProvider, onPassFloatingButton, accounts, scope,
             ),
             footer = {
                 footer(context)
@@ -273,6 +286,7 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
     requestMic: ManagedActivityResultLauncher<String, Boolean>,
     isProviderConfigured: Boolean,
     onSkipProvider: () -> Unit,
+    onPassFloatingButton: () -> Unit,
     accounts: ProviderAccounts,
     scope: CoroutineScope,
 ): List<FlorisStep> {
@@ -341,6 +355,41 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
             )
         },
         FlorisStep(
+            id = Steps.FloatingButton.id,
+            title = stringRes(R.string.setup__floating_button__title),
+        ) {
+            StepText(stringRes(R.string.setup__floating_button__intro))
+            Spacer(modifier = Modifier.height(8.dp))
+            StepText(stringRes(R.string.setup__floating_button__accessibility_note))
+            Spacer(modifier = Modifier.height(8.dp))
+            StepText(
+                text = stringRes(R.string.setup__floating_button__optional_note),
+                fontStyle = FontStyle.Italic,
+            )
+            StepButton(label = stringRes(R.string.setup__floating_button__btn)) {
+                // Finishing setup flips isImeSetUp, which resets the nav back stack to Home; the flag
+                // makes FlorisAppActivity continue on to the floating-button settings afterwards.
+                scope.launch {
+                    this@steps.prefs.internal.openFloatingButtonAfterSetup.set(true)
+                    this@steps.prefs.internal.isImeSetUp.set(true)
+                }
+                navController.navigate(Routes.Settings.Home) {
+                    popUpTo(Routes.Setup.Screen) { inclusive = true }
+                }
+            }
+            TextButton(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 4.dp),
+                onClick = onPassFloatingButton,
+            ) {
+                Text(
+                    text = stringRes(R.string.setup__floating_button__skip_btn),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        },
+        FlorisStep(
             id = Steps.FinishUp.id,
             title = stringRes(R.string.setup__finish_up__title),
         ) {
@@ -352,18 +401,6 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
                     text = stringRes(R.string.setup__finish_up__add_key_hint),
                     fontStyle = FontStyle.Italic,
                 )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            StepText(
-                text = stringRes(R.string.setup__floating_button__description),
-                fontStyle = FontStyle.Italic,
-            )
-            StepButton(label = stringRes(R.string.setup__floating_button__btn)) {
-                scope.launch { this@steps.prefs.internal.isImeSetUp.set(true) }
-                navController.navigate(Routes.Settings.Home) {
-                    popUpTo(Routes.Setup.Screen) { inclusive = true }
-                }
-                navController.navigate(Routes.Settings.DictateFloatingButton)
             }
             StepButton(label = stringRes(R.string.setup__finish_up__finish_btn)) {
                 scope.launch { this@steps.prefs.internal.isImeSetUp.set(true) }
@@ -532,5 +569,6 @@ private sealed class Steps(val id: Int) {
     data object GrantMicPermission : Steps(id = 3)
     data object SelectNotification : Steps(id = 4)
     data object SetUpProvider : Steps(id = 5)
-    data object FinishUp : Steps(id = 6)
+    data object FloatingButton : Steps(id = 6)
+    data object FinishUp : Steps(id = 7)
 }

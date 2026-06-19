@@ -620,6 +620,8 @@
     <string name="setup__intro_message" comment="Short intro message welcoming new users">Welcome to {app_name}! Let\'s get you ready to dictate in just a few quick steps — no technical knowledge needed.</string>
     <string name="setup__footer__privacy_policy" comment="Privacy policy label for URL">Privacy policy</string>
     <string name="setup__footer__repository" comment="Repository label for URL">Repository</string>
+    <string name="setup__nav_back" comment="Setup wizard: go to the previous step">Back</string>
+    <string name="setup__nav_next" comment="Setup wizard: go to the next, already-reached step">Next</string>
 
     <string name="setup__enable_ime__title">Enable {app_name}</string>
     <string name="setup__enable_ime__description">Android requires that every custom keyboard is separately enabled before you can use it. Open the System <i>Language &amp; Input</i> Settings, there enable "{app_name}".</string>
@@ -661,6 +663,11 @@
     <string name="setup__finish_up__finish_btn">Start using Dictate</string>
     <string name="setup__floating_button__description" comment="Onboarding hint introducing the floating dictation button">Tip: with the floating button you can dictate into any app — even with another keyboard active.</string>
     <string name="setup__floating_button__btn" comment="Onboarding button that opens the floating-button settings">Set up the floating button</string>
+    <string name="setup__floating_button__title" comment="Title of the optional floating-button onboarding step">Dictate anywhere (optional)</string>
+    <string name="setup__floating_button__intro" comment="Explanation on the optional floating-button onboarding step">The floating button puts a small dictation bubble over any app, so you can speak into any text field without switching keyboards.</string>
+    <string name="setup__floating_button__accessibility_note" comment="Transparency note about the accessibility service the floating button relies on">To do this, {app_name} uses Android\'s accessibility settings — that\'s how the bubble can show over other apps and insert the transcribed text for you. The next screen guides you through enabling it.</string>
+    <string name="setup__floating_button__optional_note" comment="Reassurance that the floating button is optional">This is completely optional — skip it if you just want to use {app_name} as a full keyboard. You can always set it up later in the settings.</string>
+    <string name="setup__floating_button__skip_btn" comment="Button to skip the optional floating-button step">Skip — I\'ll use the keyboard</string>
 
     <!-- Physical keyboard -->
     <string name="physical_keyboard__title">Physical keyboard</string>

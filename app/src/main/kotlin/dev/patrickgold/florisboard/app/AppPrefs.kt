@@ -816,6 +816,13 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "internal__is_ime_set_up",
             default = false,
         )
+        // One-shot signal set by the onboarding's optional floating-button step: completing setup flips
+        // [isImeSetUp], which rebuilds the nav graph and resets the back stack to Home; this flag lets
+        // FlorisAppActivity then navigate on to the floating-button settings once that reset has settled.
+        val openFloatingButtonAfterSetup = boolean(
+            key = "internal__open_floating_button_after_setup",
+            default = false,
+        )
         val versionOnInstall = string(
             key = "internal__version_on_install",
             default = VersionName.DEFAULT_RAW,

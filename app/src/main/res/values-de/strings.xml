@@ -483,6 +483,13 @@
     <string name="setup__finish_up__finish_btn">Anpassung beginnen</string>
     <string name="setup__floating_button__description">Tipp: Mit dem Floating Button kannst du in jeder App diktieren — auch wenn eine andere Tastatur aktiv ist.</string>
     <string name="setup__floating_button__btn">Floating Button einrichten</string>
+    <string name="setup__nav_back">Zurück</string>
+    <string name="setup__nav_next">Weiter</string>
+    <string name="setup__floating_button__title">Überall diktieren (optional)</string>
+    <string name="setup__floating_button__intro">Der Floating Button legt eine kleine Diktier-Blase über jede App, sodass du in jedes Textfeld sprechen kannst, ohne die Tastatur zu wechseln.</string>
+    <string name="setup__floating_button__accessibility_note">Dafür nutzt {app_name} Androids Bedienungshilfen — so kann die Blase über anderen Apps erscheinen und den transkribierten Text für dich einfügen. Der nächste Bildschirm führt dich durch die Aktivierung.</string>
+    <string name="setup__floating_button__optional_note">Das ist völlig optional — überspring es, wenn du {app_name} einfach als vollwertige Tastatur nutzen willst. Du kannst es jederzeit später in den Einstellungen einrichten.</string>
+    <string name="setup__floating_button__skip_btn">Überspringen — ich nutze die Tastatur</string>
     <!-- Physical keyboard -->
     <!-- Back up & Restore -->
     <string name="backup_and_restore__title">Sichern &amp; Wiederherstellen</string>

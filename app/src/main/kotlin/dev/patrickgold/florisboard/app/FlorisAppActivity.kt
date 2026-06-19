@@ -33,6 +33,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
@@ -178,6 +179,23 @@ class FlorisAppActivity : ComponentActivity() {
 
         val isImeSetUp by prefs.internal.isImeSetUp.collectAsState()
 
+        // The NavHost start destination is captured once: recomputing it when isImeSetUp later flips
+        // would rebuild the graph and reset the back stack (which is why finishing setup used to drop
+        // any onward navigation). Completing setup navigates explicitly instead.
+        val startDestination = remember {
+            if (isImeSetUp) Routes.Settings.Home::class else Routes.Setup.Screen::class
+        }
+
+        // After the onboarding's optional floating-button step finishes setup, jump on to the
+        // floating-button settings so the user lands exactly where the step pointed them. One-shot.
+        val openFloatingButtonAfterSetup by prefs.internal.openFloatingButtonAfterSetup.collectAsState()
+        LaunchedEffect(isImeSetUp, openFloatingButtonAfterSetup) {
+            if (isImeSetUp && openFloatingButtonAfterSetup) {
+                prefs.internal.openFloatingButtonAfterSetup.set(false)
+                navController.navigate(Routes.Settings.DictateFloatingButton)
+            }
+        }
+
         CompositionLocalProvider(
             LocalNavController provides navController,
             LocalPreviewFieldController provides previewFieldController,
@@ -199,7 +217,7 @@ class FlorisAppActivity : ComponentActivity() {
                     Routes.AppNavHost(
                         modifier = Modifier.weight(1.0f),
                         navController = navController,
-                        startDestination = if (isImeSetUp) Routes.Settings.Home::class else Routes.Setup.Screen::class,
+                        startDestination = startDestination,
                     )
                     PreviewKeyboardField(previewFieldController)
                 }
