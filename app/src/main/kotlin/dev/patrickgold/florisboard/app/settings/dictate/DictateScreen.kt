@@ -10,10 +10,12 @@
 
 package dev.patrickgold.florisboard.app.settings.dictate
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Adjust
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -49,6 +51,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
@@ -179,11 +182,18 @@ fun DictateScreen() = FlorisScreen {
         PreferenceGroup(title = stringRes(R.string.dictate__recording_group)) {
             // Floating dictation button (issue #88): this row just opens the dedicated screen, which holds
             // the enable toggle, the setup (accessibility service, mic) and all display/behavior options.
+            // A "New" badge points users to the feature until they have opened its screen once.
+            val floatingHintSeen by prefs.dictate.floatingButtonHintSeen.collectAsState()
             Preference(
                 icon = Icons.Default.Adjust,
                 title = stringRes(R.string.dictate__floating_button_enable_title),
                 summary = stringRes(R.string.dictate__floating_button_enable_summary),
                 onClick = { navController.navigate(Routes.Settings.DictateFloatingButton) },
+                trailing = if (!floatingHintSeen) {
+                    { NewBadge() }
+                } else {
+                    null
+                },
             )
             SwitchPreference(
                 prefs.dictate.audioFocus,
@@ -259,4 +269,21 @@ fun DictateScreen() = FlorisScreen {
 private fun providerDisplayName(id: String, accounts: ProviderAccounts): String {
     ProviderRegistry.byId(id)?.let { return it.displayName }
     return accounts[id]?.displayName?.takeIf { it.isNotBlank() } ?: id
+}
+
+/** A small accent "New" pill used to point users at a recently added settings entry. */
+@Composable
+private fun NewBadge() {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(percent = 50))
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(horizontal = 8.dp, vertical = 2.dp),
+    ) {
+        Text(
+            text = stringRes(R.string.dictate__floating_button_badge_new),
+            color = MaterialTheme.colorScheme.onPrimary,
+            style = MaterialTheme.typography.labelSmall,
+        )
+    }
 }

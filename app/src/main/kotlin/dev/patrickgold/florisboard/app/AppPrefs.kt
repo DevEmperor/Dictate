@@ -363,6 +363,16 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__floating_button_haptic",
             default = true,
         )
+        // Whether the user has opened the floating-button screen at least once (clears the "New" badge).
+        val floatingButtonHintSeen = boolean(
+            key = "dictate__floating_button_hint_seen",
+            default = false,
+        )
+        // App version whose one-time floating-button Smartbar spotlight has already been shown.
+        val floatingButtonSpotlightVersion = string(
+            key = "dictate__floating_button_spotlight_version",
+            default = "",
+        )
         // --- Output behavior (roadmap section 10) ------------------------------------------------
         // Press Enter / trigger the editor action automatically after committing a transcription.
         val autoEnter = boolean(

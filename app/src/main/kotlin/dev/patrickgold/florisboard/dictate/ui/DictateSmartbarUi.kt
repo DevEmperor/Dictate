@@ -38,6 +38,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Adjust
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CloudOff
@@ -528,16 +529,19 @@ private fun PromoContent(kind: DictateController.PromoKind) {
         DictateController.PromoKind.RATE -> Icons.Default.Star
         DictateController.PromoKind.DONATE -> Icons.Default.Favorite
         DictateController.PromoKind.CHANGELOG -> Icons.Default.NewReleases
+        DictateController.PromoKind.FLOATING_BUTTON -> Icons.Default.Adjust
     }
     val messageRes = when (kind) {
         DictateController.PromoKind.RATE -> R.string.dictate__promo_rate_message
         DictateController.PromoKind.DONATE -> R.string.dictate__promo_donate_message
         DictateController.PromoKind.CHANGELOG -> R.string.dictate__promo_changelog_message
+        DictateController.PromoKind.FLOATING_BUTTON -> R.string.dictate__promo_floating_button_message
     }
     val actionRes = when (kind) {
         DictateController.PromoKind.RATE -> R.string.dictate__promo_rate_action
         DictateController.PromoKind.DONATE -> R.string.dictate__promo_donate_action
         DictateController.PromoKind.CHANGELOG -> R.string.dictate__promo_changelog_action
+        DictateController.PromoKind.FLOATING_BUTTON -> R.string.dictate__promo_floating_button_action
     }
 
     // Gentle pop-in (fade + slight scale) on top of the Smartbar's own slide transition.

@@ -378,6 +378,9 @@ class FlorisImeService : LifecycleInputMethodService() {
         // who rarely open the settings still discover the changelog. Checked first so it takes priority
         // over the rate/donate nudge; both no-op unless idle, so neither interrupts a recording above.
         dev.patrickgold.florisboard.dictate.DictateController.maybePromptChangelog(this)
+        // Floating-button spotlight: one-time nudge for users who have not enabled it yet. After the
+        // changelog nudge so it does not compete on the same update; all no-op unless idle.
+        dev.patrickgold.florisboard.dictate.DictateController.maybePromptFloatingButton(this)
         // Rate/donate nudge (roadmap 9.7/9.8): shown in the Smartbar once enough audio was dictated.
         // Guarded internally to no-op unless idle, so it never interrupts a recording started above.
         dev.patrickgold.florisboard.dictate.DictateController.maybePromptForReview()

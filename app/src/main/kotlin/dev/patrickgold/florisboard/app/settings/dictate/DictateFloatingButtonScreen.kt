@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -81,6 +82,9 @@ fun DictateFloatingButtonScreen() = FlorisScreen {
         val lifecycleOwner = LocalLifecycleOwner.current
         val enabled by prefs.dictate.floatingButtonEnabled.collectAsState()
 
+        // Opening this screen clears the "New" badge on the Dictate settings entry.
+        LaunchedEffect(Unit) { prefs.dictate.floatingButtonHintSeen.set(true) }
+
         var serviceEnabled by remember { mutableStateOf(isOverlayServiceEnabled(context)) }
         var micGranted by remember { mutableStateOf(isMicGranted(context)) }
         DisposableEffect(lifecycleOwner) {
@@ -107,6 +111,40 @@ fun DictateFloatingButtonScreen() = FlorisScreen {
         )
 
         if (enabled) {
+            // Setup first, right under the master toggle: the accessibility service (and mic) must be on
+            // before any of the display/behavior options matter, so those are only shown once it is enabled.
+            PreferenceGroup(title = stringRes(R.string.dictate__floating_button_permission_group)) {
+                Preference(
+                    icon = Icons.Default.Accessibility,
+                    title = stringRes(R.string.dictate__floating_button_service_title),
+                    summary = if (serviceEnabled) {
+                        stringRes(R.string.dictate__floating_button_service_enabled)
+                    } else {
+                        stringRes(R.string.dictate__floating_button_service_disabled)
+                    },
+                    onClick = {
+                        if (serviceEnabled) {
+                            openAccessibilitySettings(context)
+                        } else {
+                            showDisclosure = true
+                        }
+                    },
+                )
+                // The bubble records through the same pipeline as the keyboard, so it needs the mic
+                // permission. Usually already granted via the keyboard onboarding, but surface it here in
+                // case the user enabled the bubble without ever recording.
+                if (!micGranted) {
+                    Preference(
+                        icon = Icons.Default.Mic,
+                        title = stringRes(R.string.dictate__floating_button_mic_title),
+                        summary = stringRes(R.string.dictate__floating_button_mic_summary),
+                        onClick = { requestMic.launch(Manifest.permission.RECORD_AUDIO) },
+                    )
+                }
+            }
+        }
+
+        if (enabled && serviceEnabled) {
             SwitchPreference(
                 prefs.dictate.floatingButtonShowWithDictateKeyboard,
                 icon = Icons.Default.Keyboard,
@@ -198,36 +236,6 @@ fun DictateFloatingButtonScreen() = FlorisScreen {
                 summaryOn = stringRes(R.string.dictate__floating_button_haptic_summary_on),
                 summaryOff = stringRes(R.string.dictate__floating_button_haptic_summary_off),
             )
-
-            PreferenceGroup(title = stringRes(R.string.dictate__floating_button_permission_group)) {
-                Preference(
-                    icon = Icons.Default.Accessibility,
-                    title = stringRes(R.string.dictate__floating_button_service_title),
-                    summary = if (serviceEnabled) {
-                        stringRes(R.string.dictate__floating_button_service_enabled)
-                    } else {
-                        stringRes(R.string.dictate__floating_button_service_disabled)
-                    },
-                    onClick = {
-                        if (serviceEnabled) {
-                            openAccessibilitySettings(context)
-                        } else {
-                            showDisclosure = true
-                        }
-                    },
-                )
-                // The bubble records through the same pipeline as the keyboard, so it needs the mic
-                // permission. Usually already granted via the keyboard onboarding, but surface it here in
-                // case the user enabled the bubble without ever recording.
-                if (!micGranted) {
-                    Preference(
-                        icon = Icons.Default.Mic,
-                        title = stringRes(R.string.dictate__floating_button_mic_title),
-                        summary = stringRes(R.string.dictate__floating_button_mic_summary),
-                        onClick = { requestMic.launch(Manifest.permission.RECORD_AUDIO) },
-                    )
-                }
-            }
         }
 
         if (showDisclosure) {

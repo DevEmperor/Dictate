@@ -130,7 +130,7 @@ object DictateController {
      * CHANGELOG is shown right after an app update (see [maybePromptChangelog]) and opens the in-app
      * "What's new" dialog instead of a web page.
      */
-    enum class PromoKind { RATE, DONATE, CHANGELOG }
+    enum class PromoKind { RATE, DONATE, CHANGELOG, FLOATING_BUTTON }
 
     /**
      * Where the active dictation's output goes: the keyboard editor ([OutputTarget.IME]) or the
@@ -145,6 +145,9 @@ object DictateController {
      * version name carries an unparseable suffix). MUST be false for any committed/shipped build.
      */
     private const val DEBUG_FORCE_CHANGELOG_NUDGE = false
+
+    /** Forces the floating-button spotlight regardless of gates (testing only). MUST be false for shipped builds. */
+    private const val DEBUG_FORCE_FB_SPOTLIGHT = false
 
     private val prefs by FlorisPreferenceStore
 
@@ -925,8 +928,24 @@ object DictateController {
     }
 
     /**
+     * Shows a one-time Smartbar spotlight for the floating dictation button to users who have not enabled
+     * it yet, so existing users discover the feature. Tapping it deep-links straight to the floating-button
+     * settings screen (where the accessibility opt-in + disclosure live — it is never auto-enabled).
+     * Gated by a per-version flag; skipped once the user has enabled it or opened its screen. No-op unless idle.
+     */
+    fun maybePromptFloatingButton(context: Context) {
+        if (_state.value !is UiState.Idle) return
+        if (!DEBUG_FORCE_FB_SPOTLIGHT) {
+            if (prefs.dictate.floatingButtonEnabled.get() || prefs.dictate.floatingButtonHintSeen.get()) return
+            if (prefs.dictate.floatingButtonSpotlightVersion.get() == BuildConfig.VERSION_NAME) return
+        }
+        _state.value = UiState.Promo(PromoKind.FLOATING_BUTTON)
+    }
+
+    /**
      * Acts on the active promo and marks it done: RATE/DONATE open the Play Store / PayPal page,
-     * CHANGELOG opens the app (which then shows the "What's new" dialog). No-op otherwise.
+     * CHANGELOG opens the app (which then shows the "What's new" dialog), FLOATING_BUTTON deep-links to its
+     * settings screen. No-op otherwise.
      */
     fun acceptPromo(context: Context) {
         val kind = (_state.value as? UiState.Promo)?.kind ?: return
@@ -936,6 +955,12 @@ object DictateController {
                     Uri.parse("https://play.google.com/store/apps/details?id=net.devemperor.dictate"))
                 PromoKind.DONATE -> Intent(Intent.ACTION_VIEW, Uri.parse("https://paypal.me/DevEmperor"))
                 PromoKind.CHANGELOG -> Intent(context, FlorisAppActivity::class.java)
+                PromoKind.FLOATING_BUTTON -> Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("ui://florisboard/settings/dictate/floating-button"),
+                    context,
+                    FlorisAppActivity::class.java,
+                ).addCategory(Intent.CATEGORY_BROWSABLE)
             }
             context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }
@@ -962,6 +987,8 @@ object DictateController {
                 // Remember this version so the keyboard nudge shows only once per update. The in-app
                 // dialog stays governed by versionLastChangelog, so tapping/dismissing here never hides it.
                 PromoKind.CHANGELOG -> prefs.dictate.changelogNudgeVersion.set(BuildConfig.VERSION_NAME)
+                // Show the floating-button spotlight only once per version.
+                PromoKind.FLOATING_BUTTON -> prefs.dictate.floatingButtonSpotlightVersion.set(BuildConfig.VERSION_NAME)
             }
         }
     }

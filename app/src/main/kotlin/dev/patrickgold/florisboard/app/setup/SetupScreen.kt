@@ -353,6 +353,18 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
                     fontStyle = FontStyle.Italic,
                 )
             }
+            Spacer(modifier = Modifier.height(8.dp))
+            StepText(
+                text = stringRes(R.string.setup__floating_button__description),
+                fontStyle = FontStyle.Italic,
+            )
+            StepButton(label = stringRes(R.string.setup__floating_button__btn)) {
+                scope.launch { this@steps.prefs.internal.isImeSetUp.set(true) }
+                navController.navigate(Routes.Settings.Home) {
+                    popUpTo(Routes.Setup.Screen) { inclusive = true }
+                }
+                navController.navigate(Routes.Settings.DictateFloatingButton)
+            }
             StepButton(label = stringRes(R.string.setup__finish_up__finish_btn)) {
                 scope.launch { this@steps.prefs.internal.isImeSetUp.set(true) }
                 navController.navigate(Routes.Settings.Home) {
