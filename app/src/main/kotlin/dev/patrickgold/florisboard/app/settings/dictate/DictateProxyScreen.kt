@@ -39,7 +39,7 @@ import org.florisboard.lib.compose.stringRes
 @Composable
 fun DictateProxyScreen() = FlorisScreen {
     title = stringRes(R.string.dictate__proxy_title)
-    previewFieldVisible = false
+    previewFieldVisible = true
     iconSpaceReserved = true
 
     val prefs by FlorisPreferenceStore

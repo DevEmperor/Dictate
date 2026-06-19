@@ -75,7 +75,7 @@ import org.florisboard.lib.compose.stringRes
 @Composable
 fun DictateProvidersScreen() = FlorisScreen {
     title = stringRes(R.string.dictate__providers_title)
-    previewFieldVisible = false
+    previewFieldVisible = true
     iconSpaceReserved = true
 
     val prefs by FlorisPreferenceStore

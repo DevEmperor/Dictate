@@ -96,6 +96,7 @@ fun DictatePromptsScreen(
     editPromptId: Int = -1,
 ) = FlorisScreen {
     title = stringRes(R.string.dictate__prompts_title)
+    previewFieldVisible = true
     scrollable = false
 
     val context = LocalContext.current

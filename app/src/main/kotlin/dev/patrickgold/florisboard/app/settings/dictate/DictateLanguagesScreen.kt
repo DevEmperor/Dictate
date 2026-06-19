@@ -44,6 +44,7 @@ import org.florisboard.lib.compose.stringRes
 @Composable
 fun DictateLanguagesScreen() = FlorisScreen {
     title = stringRes(R.string.dictate__languages_title)
+    previewFieldVisible = true
     scrollable = false
 
     val prefs by FlorisPreferenceStore
