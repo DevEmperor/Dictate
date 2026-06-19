@@ -481,7 +481,6 @@
     <string name="setup__finish_up__description_p1">{app_name} ist nun im System aktiviert und bereit von dir angepasst zu werden.</string>
     <string name="setup__finish_up__description_p2">Falls dir irgendwelche Probleme, Bugs oder Abstürze begegnen, oder du einfach einen Vorschlag machen möchtest, besuche einfach die GitHub Seite des Projekts (zu finden im About \"Über die App\" Screen)!</string>
     <string name="setup__finish_up__finish_btn">Anpassung beginnen</string>
-    <string name="setup__floating_button__description">Tipp: Mit dem Floating Button kannst du in jeder App diktieren — auch wenn eine andere Tastatur aktiv ist.</string>
     <string name="setup__floating_button__btn">Floating Button einrichten</string>
     <string name="setup__nav_back">Zurück</string>
     <string name="setup__nav_next">Weiter</string>

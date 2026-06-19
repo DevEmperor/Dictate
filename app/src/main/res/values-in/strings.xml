@@ -1097,7 +1097,6 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="changelog__v4_2_0">• BARU: tombol dikte mengambang — dikte langsung ke aplikasi apa pun, bahkan saat keyboard lain aktif. Pilih dari tiga gaya (Pil, Cincin, Bola), lihat gelombang langsung saat Anda berbicara, seret ke mana saja dengan pengancingan tepi, atur warna dan ukurannya, dan tekan lama untuk menyusun ulang. Aktifkan di Setelan ▸ Dictate ▸ Tombol mengambang.\n• Penyisipan teks yang lebih andal di seluruh aplikasi, termasuk peramban dan keyboard lain.</string>
     <string name="dictate__promo_floating_button_message">Baru: dikte di app mana pun</string>
     <string name="dictate__promo_floating_button_action">Coba</string>
-    <string name="setup__floating_button__description">Tip: dengan tombol mengambang Anda bisa mendikte di aplikasi apa pun — bahkan saat keyboard lain aktif.</string>
     <string name="setup__floating_button__btn">Siapkan tombol mengambang</string>
     <string name="setup__nav_back">Kembali</string>
     <string name="setup__nav_next">Berikutnya</string>

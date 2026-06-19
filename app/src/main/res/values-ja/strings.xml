@@ -1074,7 +1074,6 @@
     <string name="changelog__v4_2_0">• 新機能: フローティング音声入力ボタン — 別のキーボードが有効でも、どのアプリにも直接音声入力できます。3つのスタイル（ピル、リング、オーブ）から選び、話すとライブ波形が表示され、端に吸着させながらどこへでもドラッグでき、色とサイズを設定し、長押しで言い換えられます。設定 ▸ Dictate ▸ フローティングボタンでオンにできます。\n• ブラウザーや他のキーボードを含む、アプリ全体でのより確実なテキスト挿入。</string>
     <string name="dictate__promo_floating_button_message">新機能：どのアプリでも音声入力</string>
     <string name="dictate__promo_floating_button_action">試す</string>
-    <string name="setup__floating_button__description">ヒント: フローティングボタンなら、別のキーボードが有効でもどのアプリにも音声入力できます。</string>
     <string name="setup__floating_button__btn">フローティングボタンを設定</string>
     <string name="setup__nav_back">戻る</string>
     <string name="setup__nav_next">次へ</string>

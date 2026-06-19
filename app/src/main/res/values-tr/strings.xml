@@ -1122,7 +1122,6 @@
     <string name="changelog__v4_2_0">• YENİ: kayan dikte düğmesi — başka bir klavye etkin olsa bile herhangi bir uygulamaya doğrudan dikte edin. Üç stilden birini seçin (Hap, Halka, Küre), konuşurken canlı dalga biçimini izleyin, kenara yapışmayla istediğiniz yere sürükleyin, rengini ve boyutunu ayarlayın ve yeniden ifade etmek için basılı tutun. Ayarlar ▸ Dictate ▸ Kayan düğme bölümünden açın.\n• Tarayıcılar ve diğer klavyeler dahil uygulamalar arası daha güvenilir metin ekleme.</string>
     <string name="dictate__promo_floating_button_message">Yeni: her yerde dikte et</string>
     <string name="dictate__promo_floating_button_action">Deneyin</string>
-    <string name="setup__floating_button__description">İpucu: kayan düğmeyle herhangi bir uygulamaya dikte edebilirsiniz — başka bir klavye etkin olsa bile.</string>
     <string name="setup__floating_button__btn">Kayan düğmeyi ayarla</string>
     <string name="setup__nav_back">Geri</string>
     <string name="setup__nav_next">İleri</string>

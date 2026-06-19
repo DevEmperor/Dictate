@@ -1020,7 +1020,6 @@
     <string name="changelog__v4_2_0">• NOUVEAU : bouton de dictée flottant — dictez directement dans n’importe quelle appli, même avec un autre clavier actif. Choisissez parmi trois styles (Pilule, Anneau, Sphère), regardez une forme d’onde en direct pendant que vous parlez, déplacez-le partout avec l’alignement sur les bords, définissez sa couleur et sa taille, et appuyez longuement pour reformuler. Activez-le dans Réglages ▸ Dictate ▸ Bouton flottant.\n• Insertion de texte plus fiable dans les applis, y compris les navigateurs et autres claviers.</string>
     <string name="dictate__promo_floating_button_message">Nouveau : dicter partout</string>
     <string name="dictate__promo_floating_button_action">Essayer</string>
-    <string name="setup__floating_button__description">Astuce : avec le bouton flottant, vous pouvez dicter dans n’importe quelle appli — même avec un autre clavier actif.</string>
     <string name="setup__floating_button__btn">Configurer le bouton flottant</string>
     <string name="setup__nav_back">Retour</string>
     <string name="setup__nav_next">Suivant</string>

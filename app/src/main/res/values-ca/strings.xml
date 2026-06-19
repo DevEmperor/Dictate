@@ -1018,7 +1018,6 @@
     <string name="changelog__v4_2_0">• NOU: botó de dictat flotant — dicta directament a qualsevol app, fins i tot amb un altre teclat actiu. Tria entre tres estils (Píndola, Anella, Esfera), mira una forma d’ona en directe mentre parles, arrossega’l on vulguis amb ajust a les vores, defineix-ne el color i la mida i mantén premut per reformular. Activa’l a Configuració ▸ Dictate ▸ Botó flotant.\n• Inserció de text més fiable entre apps, inclosos navegadors i altres teclats.</string>
     <string name="dictate__promo_floating_button_message">Nou: dicta a qualsevol app</string>
     <string name="dictate__promo_floating_button_action">Prova-ho</string>
-    <string name="setup__floating_button__description">Consell: amb el botó flotant pots dictar a qualsevol app, fins i tot amb un altre teclat actiu.</string>
     <string name="setup__floating_button__btn">Configura el botó flotant</string>
     <string name="setup__nav_back">Enrere</string>
     <string name="setup__nav_next">Següent</string>

@@ -1044,7 +1044,6 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="changelog__v4_2_0">• NIEUW: zwevende dicteerknop — dicteer rechtstreeks in elke app, zelfs met een ander toetsenbord actief. Kies uit drie stijlen (Pil, Ring, Bol), zie een live golfvorm terwijl je praat, sleep hem overal heen met randmagnetisme, stel kleur en grootte in en houd ingedrukt om te herformuleren. Schakel hem in via Instellingen ▸ Dictate ▸ Zwevende knop.\n• Betrouwbaardere tekstinvoer in apps, inclusief browsers en andere toetsenborden.</string>
     <string name="dictate__promo_floating_button_message">Nieuw: overal dicteren</string>
     <string name="dictate__promo_floating_button_action">Proberen</string>
-    <string name="setup__floating_button__description">Tip: met de zwevende knop kun je in elke app dicteren — zelfs met een ander toetsenbord actief.</string>
     <string name="setup__floating_button__btn">Zwevende knop instellen</string>
     <string name="setup__nav_back">Terug</string>
     <string name="setup__nav_next">Volgende</string>

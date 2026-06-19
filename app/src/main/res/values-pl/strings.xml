@@ -1160,7 +1160,6 @@
     <string name="changelog__v4_2_0">• NOWOŚĆ: pływający przycisk dyktowania — dyktuj bezpośrednio w dowolnej aplikacji, nawet gdy aktywna jest inna klawiatura. Wybierz spośród trzech stylów (Pigułka, Pierścień, Kula), patrz na wykres dźwięku na żywo, gdy mówisz, przeciągaj go gdziekolwiek z przyciąganiem do krawędzi, ustaw kolor i rozmiar oraz przytrzymaj, aby przeredagować. Włącz go w Ustawieniach ▸ Dictate ▸ Pływający przycisk.\n• Bardziej niezawodne wstawianie tekstu w aplikacjach, w tym w przeglądarkach i innych klawiaturach.</string>
     <string name="dictate__promo_floating_button_message">Nowość: dyktuj wszędzie</string>
     <string name="dictate__promo_floating_button_action">Wypróbuj</string>
-    <string name="setup__floating_button__description">Wskazówka: pływającym przyciskiem możesz dyktować w dowolnej aplikacji — nawet gdy aktywna jest inna klawiatura.</string>
     <string name="setup__floating_button__btn">Skonfiguruj pływający przycisk</string>
     <string name="setup__nav_back">Wstecz</string>
     <string name="setup__nav_next">Dalej</string>

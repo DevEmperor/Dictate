@@ -999,7 +999,6 @@
     <string name="changelog__v4_2_0">• جديد: زر إملاء عائم — أملِ مباشرةً في أي تطبيق، حتى عندما تكون لوحة مفاتيح أخرى نشطة. اختر من بين ثلاثة أنماط (كبسولة، حلقة، كرة)، وشاهد موجة صوتية حية أثناء التحدث، واسحبه إلى أي مكان مع الالتصاق بالحواف، واضبط لونه وحجمه، واضغط مطولاً لإعادة الصياغة. فعّله من الإعدادات ▸ Dictate ▸ الزر العائم.\n• إدراج نص أكثر موثوقية عبر التطبيقات، بما في ذلك المتصفحات ولوحات المفاتيح الأخرى.</string>
     <string name="dictate__promo_floating_button_message">جديد: أملِ في أي تطبيق</string>
     <string name="dictate__promo_floating_button_action">جرّبه</string>
-    <string name="setup__floating_button__description">نصيحة: باستخدام الزر العائم يمكنك الإملاء في أي تطبيق — حتى عندما تكون لوحة مفاتيح أخرى نشطة.</string>
     <string name="setup__floating_button__btn">إعداد الزر العائم</string>
     <string name="setup__nav_back">رجوع</string>
     <string name="setup__nav_next">التالي</string>

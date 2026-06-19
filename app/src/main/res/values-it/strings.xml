@@ -926,7 +926,6 @@
     <string name="changelog__v4_2_0">• NOVITÀ: pulsante di dettatura flottante — detta direttamente in qualsiasi app, anche con un’altra tastiera attiva. Scegli tra tre stili (Pillola, Anello, Sfera), guarda una forma d’onda in tempo reale mentre parli, trascinalo ovunque con l’aggancio ai bordi, imposta colore e dimensione e tieni premuto per riformulare. Attivalo in Impostazioni ▸ Dictate ▸ Pulsante flottante.\n• Inserimento del testo più affidabile tra le app, inclusi browser e altre tastiere.</string>
     <string name="dictate__promo_floating_button_message">Novità: detta ovunque</string>
     <string name="dictate__promo_floating_button_action">Prova</string>
-    <string name="setup__floating_button__description">Suggerimento: con il pulsante flottante puoi dettare in qualsiasi app, anche con un’altra tastiera attiva.</string>
     <string name="setup__floating_button__btn">Configura il pulsante flottante</string>
     <string name="setup__nav_back">Indietro</string>
     <string name="setup__nav_next">Avanti</string>

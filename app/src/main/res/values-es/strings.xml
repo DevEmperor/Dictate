@@ -1126,7 +1126,6 @@
     <string name="changelog__v4_2_0">• NUEVO: Botón de dictado flotante — dicta directamente en cualquier app, incluso con otro teclado activo. Elige entre tres estilos (Píldora, Anillo, Esfera), ve una onda en vivo mientras hablas, arrástralo a cualquier sitio con ajuste a los bordes, define su color y tamaño, y mantén pulsado para reformular. Actívalo en Ajustes ▸ Dictate ▸ Botón flotante.\n• Inserción de texto más fiable entre apps, incluidos navegadores y otros teclados.</string>
     <string name="dictate__promo_floating_button_message">Nuevo: dicta en cualquier app</string>
     <string name="dictate__promo_floating_button_action">Probar</string>
-    <string name="setup__floating_button__description">Consejo: con el botón flotante puedes dictar en cualquier app, incluso con otro teclado activo.</string>
     <string name="setup__floating_button__btn">Configurar el botón flotante</string>
     <string name="setup__nav_back">Atrás</string>
     <string name="setup__nav_next">Siguiente</string>

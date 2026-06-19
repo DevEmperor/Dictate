@@ -951,7 +951,6 @@
     <string name="changelog__v4_2_0">• NOVO: botão de ditado flutuante — dite diretamente em qualquer app, mesmo com outro teclado ativo. Escolha entre três estilos (Cápsula, Anel, Esfera), veja uma forma de onda ao vivo enquanto fala, arraste-o para qualquer lugar com encaixe nas bordas, defina a cor e o tamanho e mantenha pressionado para reformular. Ative em Configurações ▸ Dictate ▸ Botão flutuante.\n• Inserção de texto mais confiável entre apps, incluindo navegadores e outros teclados.</string>
     <string name="dictate__promo_floating_button_message">Novo: dite em qualquer app</string>
     <string name="dictate__promo_floating_button_action">Experimentar</string>
-    <string name="setup__floating_button__description">Dica: com o botão flutuante você pode ditar em qualquer app — mesmo com outro teclado ativo.</string>
     <string name="setup__floating_button__btn">Configurar o botão flutuante</string>
     <string name="setup__nav_back">Voltar</string>
     <string name="setup__nav_next">Avançar</string>

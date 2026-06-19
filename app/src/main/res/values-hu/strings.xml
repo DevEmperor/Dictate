@@ -1142,7 +1142,6 @@
     <string name="changelog__v4_2_0">• ÚJ: lebegő diktálógomb — diktáljon közvetlenül bármelyik appba, akkor is, ha másik billentyűzet aktív. Válasszon a három stílus közül (Pirula, Gyűrű, Gömb), nézze az élő hullámformát beszéd közben, húzza bárhová a szélhez illesztéssel, állítsa be a színét és méretét, és tartsa lenyomva az átfogalmazáshoz. Kapcsolja be a Beállítások ▸ Dictate ▸ Lebegő gomb alatt.\n• Megbízhatóbb szövegbeszúrás az appokban, beleértve a böngészőket és más billentyűzeteket.</string>
     <string name="dictate__promo_floating_button_message">Új: diktálj bárhol</string>
     <string name="dictate__promo_floating_button_action">Kipróbálom</string>
-    <string name="setup__floating_button__description">Tipp: a lebegő gombbal bármelyik appba diktálhat — akkor is, ha másik billentyűzet aktív.</string>
     <string name="setup__floating_button__btn">Lebegő gomb beállítása</string>
     <string name="setup__nav_back">Vissza</string>
     <string name="setup__nav_next">Tovább</string>
