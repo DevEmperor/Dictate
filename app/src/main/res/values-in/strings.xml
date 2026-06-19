@@ -1094,6 +1094,12 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="dictate__providers_summary_both">Transkripsi: {transcription} · Penyusunan ulang: {rewording}</string>
     <string name="dictate__remember_last_dictation_summary">Menyimpan dikte terakhir Anda yang berhasil agar dapat disisipkan lagi dengan tombol „Sisipkan ulang” di Smartbar — jaring pengaman jika kolom teks terhapus karena rotasi layar atau pergantian aplikasi. Tambahkan tombol melalui editor Smartbar. Disimpan hanya di perangkat ini hingga dikte berikutnya.</string>
     <string name="dictate__remember_last_dictation_title">Ingat dikte terakhir</string>
+    <string name="changelog__v4_2_0">• BARU: tombol dikte mengambang — dikte langsung ke aplikasi apa pun, bahkan saat keyboard lain aktif. Pilih dari tiga gaya (Pil, Cincin, Bola), lihat gelombang langsung saat Anda berbicara, seret ke mana saja dengan pengancingan tepi, atur warna dan ukurannya, dan tekan lama untuk menyusun ulang. Aktifkan di Setelan ▸ Dictate ▸ Tombol mengambang.\n• Penyisipan teks yang lebih andal di seluruh aplikasi, termasuk peramban dan keyboard lain.</string>
+    <string name="dictate__promo_floating_button_message">Baru: dikte di app mana pun</string>
+    <string name="dictate__promo_floating_button_action">Coba</string>
+    <string name="setup__floating_button__description">Tip: dengan tombol mengambang Anda bisa mendikte di aplikasi apa pun — bahkan saat keyboard lain aktif.</string>
+    <string name="setup__floating_button__btn">Siapkan tombol mengambang</string>
+    <string name="dictate__floating_button_badge_new">Baru</string>
     <string name="dictate__panel_title">Perintah AI</string>
     <string name="dictate__panel_no_prompts">Belum ada perintah. Tambahkan beberapa di pengaturan Dictate pada bagian Penyusunan ulang.</string>
     <string name="dictate__prompts_layout_title">Tata letak perintah</string>

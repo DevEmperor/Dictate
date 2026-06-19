@@ -985,6 +985,12 @@
     <string name="dictate__providers_summary_both">Транскрипція: {transcription} · Переформулювання: {rewording}</string>
     <string name="dictate__remember_last_dictation_summary">Зберігає ваше останнє успішне диктування, щоб його можна було знову вставити кнопкою «Вставити знову» на Smartbar — підстрахування, якщо текстове поле очиститься через поворот екрана або перемикання застосунку. Додайте кнопку через редактор Smartbar. Зберігається лише на цьому пристрої до наступного диктування.</string>
     <string name="dictate__remember_last_dictation_title">Запам’ятовувати останнє диктування</string>
+    <string name="changelog__v4_2_0">• НОВЕ: плаваюча кнопка диктування — диктуйте прямо в будь-якому застосунку, навіть коли активна інша клавіатура. Виберіть один із трьох стилів (Капсула, Кільце, Сфера), дивіться живу форму хвилі під час мовлення, перетягуйте будь-куди з прилипанням до країв, задавайте колір і розмір та утримуйте для переформулювання. Увімкніть у Налаштуваннях ▸ Dictate ▸ Плаваюча кнопка.\n• Надійніша вставка тексту в застосунках, включно з браузерами та іншими клавіатурами.</string>
+    <string name="dictate__promo_floating_button_message">Нове: диктуйте всюди</string>
+    <string name="dictate__promo_floating_button_action">Спробувати</string>
+    <string name="setup__floating_button__description">Порада: плаваючою кнопкою можна диктувати в будь-якому застосунку — навіть коли активна інша клавіатура.</string>
+    <string name="setup__floating_button__btn">Налаштувати плаваючу кнопку</string>
+    <string name="dictate__floating_button_badge_new">Нове</string>
     <string name="dictate__panel_title">Промпти ШІ</string>
     <string name="dictate__panel_no_prompts">Промптів поки немає. Додайте їх у налаштуваннях Dictate в розділі «Переформулювання».</string>
     <string name="dictate__prompts_layout_title">Розкладка промптів</string>

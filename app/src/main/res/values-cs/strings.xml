@@ -1156,6 +1156,12 @@
     <string name="dictate__providers_summary_both">Přepis: {transcription} · Přeformulování: {rewording}</string>
     <string name="dictate__remember_last_dictation_summary">Uchová vaše poslední úspěšné diktování, abyste ho mohli znovu vložit tlačítkem „Vložit znovu“ na Smartbaru — záchranná síť, pokud se textové pole vymaže otočením obrazovky nebo přepnutím aplikace. Tlačítko přidejte přes editor Smartbaru. Uloženo pouze v tomto zařízení do dalšího diktování.</string>
     <string name="dictate__remember_last_dictation_title">Zapamatovat poslední diktování</string>
+    <string name="changelog__v4_2_0">• NOVÉ: plovoucí tlačítko diktování — diktujte přímo v jakékoli aplikaci, i když je aktivní jiná klávesnice. Vyberte si ze tří stylů (Pilulka, Prstenec, Koule), sledujte živý průběh zvuku, když mluvíte, přetáhněte ho kamkoli s přichytáváním k okrajům, nastavte barvu a velikost a podržením přeformulujte. Zapněte ho v Nastavení ▸ Dictate ▸ Plovoucí tlačítko.\n• Spolehlivější vkládání textu napříč aplikacemi, včetně prohlížečů a jiných klávesnic.</string>
+    <string name="dictate__promo_floating_button_message">Nové: diktujte kdekoli</string>
+    <string name="dictate__promo_floating_button_action">Vyzkoušet</string>
+    <string name="setup__floating_button__description">Tip: s plovoucím tlačítkem můžete diktovat v jakékoli aplikaci — i když je aktivní jiná klávesnice.</string>
+    <string name="setup__floating_button__btn">Nastavit plovoucí tlačítko</string>
+    <string name="dictate__floating_button_badge_new">Nové</string>
     <string name="dictate__panel_title">Prompty AI</string>
     <string name="dictate__panel_no_prompts">Zatím žádné prompty. Přidejte nějaké v nastavení Dictate v sekci „Přeformulování\".</string>
     <string name="dictate__prompts_layout_title">Rozložení promptů</string>

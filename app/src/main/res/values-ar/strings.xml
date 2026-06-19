@@ -996,6 +996,12 @@
     <string name="dictate__providers_summary_both">النسخ: {transcription} · إعادة الصياغة: {rewording}</string>
     <string name="dictate__remember_last_dictation_summary">يحتفظ بآخر إملاء ناجح لك حتى تتمكن من إدراجه مجددًا بزر «إعادة الإدراج» في Smartbar — شبكة أمان إذا تم مسح حقل النص بسبب تدوير الشاشة أو تبديل التطبيق. أضف الزر عبر محرّر Smartbar. يُخزَّن على هذا الجهاز فقط حتى الإملاء التالي.</string>
     <string name="dictate__remember_last_dictation_title">تذكّر آخر إملاء</string>
+    <string name="changelog__v4_2_0">• جديد: زر إملاء عائم — أملِ مباشرةً في أي تطبيق، حتى عندما تكون لوحة مفاتيح أخرى نشطة. اختر من بين ثلاثة أنماط (كبسولة، حلقة، كرة)، وشاهد موجة صوتية حية أثناء التحدث، واسحبه إلى أي مكان مع الالتصاق بالحواف، واضبط لونه وحجمه، واضغط مطولاً لإعادة الصياغة. فعّله من الإعدادات ▸ Dictate ▸ الزر العائم.\n• إدراج نص أكثر موثوقية عبر التطبيقات، بما في ذلك المتصفحات ولوحات المفاتيح الأخرى.</string>
+    <string name="dictate__promo_floating_button_message">جديد: أملِ في أي تطبيق</string>
+    <string name="dictate__promo_floating_button_action">جرّبه</string>
+    <string name="setup__floating_button__description">نصيحة: باستخدام الزر العائم يمكنك الإملاء في أي تطبيق — حتى عندما تكون لوحة مفاتيح أخرى نشطة.</string>
+    <string name="setup__floating_button__btn">إعداد الزر العائم</string>
+    <string name="dictate__floating_button_badge_new">جديد</string>
     <string name="dictate__panel_title">مطالبات الذكاء الاصطناعي</string>
     <string name="dictate__panel_no_prompts">لا توجد مطالبات بعد. أضِف بعضها في إعدادات Dictate ضمن إعادة الصياغة.</string>
     <string name="dictate__prompts_layout_title">تخطيط المطالبات</string>

@@ -1119,6 +1119,12 @@
     <string name="dictate__providers_summary_both">Yazıya dökme: {transcription} · Yeniden ifade: {rewording}</string>
     <string name="dictate__remember_last_dictation_summary">Son başarılı dikteyi saklar, böylece Smartbar’daki „Yeniden ekle” düğmesiyle tekrar ekleyebilirsiniz — metin alanı ekran döndürme veya uygulama değiştirme nedeniyle temizlenirse bir güvenlik ağı. Düğmeyi Smartbar düzenleyicisinden ekleyin. Yalnızca bu cihazda bir sonraki dikteye kadar saklanır.</string>
     <string name="dictate__remember_last_dictation_title">Son dikteyi hatırla</string>
+    <string name="changelog__v4_2_0">• YENİ: kayan dikte düğmesi — başka bir klavye etkin olsa bile herhangi bir uygulamaya doğrudan dikte edin. Üç stilden birini seçin (Hap, Halka, Küre), konuşurken canlı dalga biçimini izleyin, kenara yapışmayla istediğiniz yere sürükleyin, rengini ve boyutunu ayarlayın ve yeniden ifade etmek için basılı tutun. Ayarlar ▸ Dictate ▸ Kayan düğme bölümünden açın.\n• Tarayıcılar ve diğer klavyeler dahil uygulamalar arası daha güvenilir metin ekleme.</string>
+    <string name="dictate__promo_floating_button_message">Yeni: her yerde dikte et</string>
+    <string name="dictate__promo_floating_button_action">Deneyin</string>
+    <string name="setup__floating_button__description">İpucu: kayan düğmeyle herhangi bir uygulamaya dikte edebilirsiniz — başka bir klavye etkin olsa bile.</string>
+    <string name="setup__floating_button__btn">Kayan düğmeyi ayarla</string>
+    <string name="dictate__floating_button_badge_new">Yeni</string>
     <string name="dictate__panel_title">Yapay zekâ komutları</string>
     <string name="dictate__panel_no_prompts">Henüz komut yok. Dictate ayarlarındaki Yeniden ifade etme bölümünden birkaç tane ekleyin.</string>
     <string name="dictate__prompts_layout_title">Komut düzeni</string>

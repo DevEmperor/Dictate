@@ -1139,6 +1139,12 @@
     <string name="dictate__providers_summary_both">Átírás: {transcription} · Átfogalmazás: {rewording}</string>
     <string name="dictate__remember_last_dictation_summary">Megőrzi a legutóbbi sikeres diktálását, hogy a Smartbar „Újrabeszúrás” gombjával ismét beszúrhassa — biztonsági háló, ha a szövegmezőt képernyőforgatás vagy alkalmazásváltás törli. A gombot a Smartbar-szerkesztőből adhatja hozzá. Csak ezen az eszközön tárolódik a következő diktálásig.</string>
     <string name="dictate__remember_last_dictation_title">Utolsó diktálás megjegyzése</string>
+    <string name="changelog__v4_2_0">• ÚJ: lebegő diktálógomb — diktáljon közvetlenül bármelyik appba, akkor is, ha másik billentyűzet aktív. Válasszon a három stílus közül (Pirula, Gyűrű, Gömb), nézze az élő hullámformát beszéd közben, húzza bárhová a szélhez illesztéssel, állítsa be a színét és méretét, és tartsa lenyomva az átfogalmazáshoz. Kapcsolja be a Beállítások ▸ Dictate ▸ Lebegő gomb alatt.\n• Megbízhatóbb szövegbeszúrás az appokban, beleértve a böngészőket és más billentyűzeteket.</string>
+    <string name="dictate__promo_floating_button_message">Új: diktálj bárhol</string>
+    <string name="dictate__promo_floating_button_action">Kipróbálom</string>
+    <string name="setup__floating_button__description">Tipp: a lebegő gombbal bármelyik appba diktálhat — akkor is, ha másik billentyűzet aktív.</string>
+    <string name="setup__floating_button__btn">Lebegő gomb beállítása</string>
+    <string name="dictate__floating_button_badge_new">Új</string>
     <string name="dictate__panel_title">MI-utasítások</string>
     <string name="dictate__panel_no_prompts">Még nincsenek utasítások. Adjon hozzá néhányat a Dictate beállításaiban, az Átfogalmazás résznél.</string>
     <string name="dictate__prompts_layout_title">Utasítások elrendezése</string>

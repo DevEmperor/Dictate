@@ -1141,6 +1141,12 @@
     <string name="dictate__providers_summary_both">Транскрипция: {transcription} · Преформулиране: {rewording}</string>
     <string name="dictate__remember_last_dictation_summary">Запазва последното ви успешно диктуване, за да можете да го вмъкнете отново с бутона „Вмъкни отново“ в Smartbar — предпазна мрежа, ако текстовото поле се изчисти при завъртане на екрана или смяна на приложение. Добавете бутона чрез редактора на Smartbar. Съхранява се само на това устройство до следващото диктуване.</string>
     <string name="dictate__remember_last_dictation_title">Запомни последното диктуване</string>
+    <string name="changelog__v4_2_0">• НОВО: плаващ бутон за диктовка — диктувайте директно във всяко приложение, дори когато е активна друга клавиатура. Изберете от три стила (Капсула, Пръстен, Сфера), гледайте форма на вълната на живо, докато говорите, плъзгайте го навсякъде с прилепване към ръбовете, задайте цвят и размер и задръжте за преформулиране. Включете го в Настройки ▸ Dictate ▸ Плаващ бутон.\n• По-надеждно вмъкване на текст в приложенията, включително браузъри и други клавиатури.</string>
+    <string name="dictate__promo_floating_button_message">Ново: диктувайте навсякъде</string>
+    <string name="dictate__promo_floating_button_action">Опитайте</string>
+    <string name="setup__floating_button__description">Съвет: с плаващия бутон можете да диктувате във всяко приложение — дори когато е активна друга клавиатура.</string>
+    <string name="setup__floating_button__btn">Настройка на плаващия бутон</string>
+    <string name="dictate__floating_button_badge_new">Ново</string>
     <string name="dictate__panel_title">ИИ подкани</string>
     <string name="dictate__panel_no_prompts">Все още няма подкани. Добавете в настройките на Dictate, раздел Преформулиране.</string>
     <string name="dictate__prompts_layout_title">Подредба на подканите</string>
