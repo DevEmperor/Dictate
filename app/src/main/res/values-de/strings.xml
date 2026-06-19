@@ -1029,6 +1029,9 @@
     <string name="dictate__floating_button_haptic_summary_off">Kein Vibrieren beim Tippen.</string>
     <string name="dictate__floating_button_no_prompts">Noch keine Umformulieren-Prompts — füge welche in den Dictate-Einstellungen hinzu.</string>
 
+    <string name="dictate__providers_summary_both">Transkription: {transcription} · Umformulieren: {rewording}</string>
+    <string name="dictate__remember_last_dictation_summary">Behält dein letztes erfolgreiches Diktat, damit du es mit dem „Erneut einfügen“-Button der Smartbar erneut einfügen kannst — ein Sicherheitsnetz, falls das Textfeld durch eine Bildschirmdrehung oder einen App-Wechsel geleert wird. Füge den Button über den Smartbar-Editor hinzu. Wird nur auf diesem Gerät bis zu deinem nächsten Diktat gespeichert.</string>
+    <string name="dictate__remember_last_dictation_title">Letztes Diktat merken</string>
     <string name="dictate__panel_title">KI-Prompts</string>
     <string name="dictate__panel_no_prompts">Noch keine Prompts. Füge welche in den Dictate-Einstellungen unter „Umformulieren\" hinzu.</string>
     <string name="dictate__prompts_layout_title">Prompt-Layout</string>
