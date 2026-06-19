@@ -1090,6 +1090,13 @@
     <string name="dictate__promo_floating_button_action">Izmēģināt</string>
     <string name="setup__floating_button__description">Padoms: ar peldošo pogu varat diktēt jebkurā lietotnē — pat ja aktīva ir cita tastatūra.</string>
     <string name="setup__floating_button__btn">Iestatīt peldošo pogu</string>
+    <string name="setup__nav_back">Atpakaļ</string>
+    <string name="setup__nav_next">Tālāk</string>
+    <string name="setup__floating_button__title">Diktējiet jebkur (neobligāti)</string>
+    <string name="setup__floating_button__intro">Peldošā poga novieto nelielu diktēšanas burbuli virs jebkuras lietotnes, lai jūs varētu runāt jebkurā teksta laukā, nepārslēdzot tastatūru.</string>
+    <string name="setup__floating_button__accessibility_note">Lai to izdarītu, {app_name} izmanto Android pieejamības iestatījumus — tā burbulis var parādīties virs citām lietotnēm un ievietot transkribēto tekstu jūsu vietā. Nākamais ekrāns palīdzēs to ieslēgt.</string>
+    <string name="setup__floating_button__optional_note">Tas ir pilnīgi neobligāti — izlaidiet to, ja vēlaties izmantot {app_name} vienkārši kā pilnvērtīgu tastatūru. To vienmēr varat iestatīt vēlāk iestatījumos.</string>
+    <string name="setup__floating_button__skip_btn">Izlaist — izmantošu tastatūru</string>
     <string name="dictate__floating_button_badge_new">Jauns</string>
     <string name="dictate__panel_title">MI uzvednes</string>
     <string name="dictate__panel_no_prompts">Vēl nav uzvedņu. Pievienojiet tās Dictate iestatījumos sadaļā Pārformulēšana.</string>

@@ -1046,6 +1046,13 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="dictate__promo_floating_button_action">Proberen</string>
     <string name="setup__floating_button__description">Tip: met de zwevende knop kun je in elke app dicteren — zelfs met een ander toetsenbord actief.</string>
     <string name="setup__floating_button__btn">Zwevende knop instellen</string>
+    <string name="setup__nav_back">Terug</string>
+    <string name="setup__nav_next">Volgende</string>
+    <string name="setup__floating_button__title">Overal dicteren (optioneel)</string>
+    <string name="setup__floating_button__intro">De zwevende knop plaatst een kleine dicteerbel over elke app, zodat je in elk tekstveld kunt spreken zonder van toetsenbord te wisselen.</string>
+    <string name="setup__floating_button__accessibility_note">Hiervoor gebruikt {app_name} de toegankelijkheidsinstellingen van Android — zo kan de bel over andere apps verschijnen en de getranscribeerde tekst voor je invoegen. Het volgende scherm helpt je bij het inschakelen.</string>
+    <string name="setup__floating_button__optional_note">Dit is volledig optioneel — sla het over als je {app_name} gewoon als volledig toetsenbord wilt gebruiken. Je kunt het later altijd instellen in de instellingen.</string>
+    <string name="setup__floating_button__skip_btn">Overslaan — ik gebruik het toetsenbord</string>
     <string name="dictate__floating_button_badge_new">Nieuw</string>
     <string name="dictate__panel_title">AI-prompts</string>
     <string name="dictate__panel_no_prompts">Nog geen prompts. Voeg er enkele toe in de Dictate-instellingen onder «Herformulering».</string>

@@ -1144,6 +1144,13 @@
     <string name="dictate__promo_floating_button_action">Kipróbálom</string>
     <string name="setup__floating_button__description">Tipp: a lebegő gombbal bármelyik appba diktálhat — akkor is, ha másik billentyűzet aktív.</string>
     <string name="setup__floating_button__btn">Lebegő gomb beállítása</string>
+    <string name="setup__nav_back">Vissza</string>
+    <string name="setup__nav_next">Tovább</string>
+    <string name="setup__floating_button__title">Diktálj bárhol (opcionális)</string>
+    <string name="setup__floating_button__intro">A lebegő gomb egy kis diktálóbuborékot helyez bármelyik alkalmazás fölé, így bármelyik szövegmezőbe beszélhetsz billentyűzetváltás nélkül.</string>
+    <string name="setup__floating_button__accessibility_note">Ehhez a(z) {app_name} az Android kisegítő lehetőségek beállításait használja — így jelenhet meg a buborék más alkalmazások fölött, és illesztheti be helyetted az átírt szöveget. A következő képernyő végigvezet a bekapcsoláson.</string>
+    <string name="setup__floating_button__optional_note">Ez teljesen opcionális — hagyd ki, ha a(z) {app_name} alkalmazást csak teljes billentyűzetként szeretnéd használni. Bármikor beállíthatod később a beállításokban.</string>
+    <string name="setup__floating_button__skip_btn">Kihagyás — a billentyűzetet használom</string>
     <string name="dictate__floating_button_badge_new">Új</string>
     <string name="dictate__panel_title">MI-utasítások</string>
     <string name="dictate__panel_no_prompts">Még nincsenek utasítások. Adjon hozzá néhányat a Dictate beállításaiban, az Átfogalmazás résznél.</string>

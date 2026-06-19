@@ -1150,6 +1150,13 @@
     <string name="dictate__promo_floating_button_action">Попробовать</string>
     <string name="setup__floating_button__description">Совет: с плавающей кнопкой можно диктовать в любом приложении — даже когда активна другая клавиатура.</string>
     <string name="setup__floating_button__btn">Настроить плавающую кнопку</string>
+    <string name="setup__nav_back">Назад</string>
+    <string name="setup__nav_next">Далее</string>
+    <string name="setup__floating_button__title">Диктуйте где угодно (необязательно)</string>
+    <string name="setup__floating_button__intro">Плавающая кнопка показывает небольшой пузырёк диктовки поверх любого приложения, чтобы вы могли говорить в любое текстовое поле, не переключая клавиатуру.</string>
+    <string name="setup__floating_button__accessibility_note">Для этого {app_name} использует настройки специальных возможностей Android — так пузырёк может отображаться поверх других приложений и вставлять расшифрованный текст за вас. Следующий экран поможет включить эту функцию.</string>
+    <string name="setup__floating_button__optional_note">Это полностью необязательно — пропустите, если хотите использовать {app_name} просто как полноценную клавиатуру. Вы всегда можете настроить это позже в настройках.</string>
+    <string name="setup__floating_button__skip_btn">Пропустить — буду использовать клавиатуру</string>
     <string name="dictate__floating_button_badge_new">Новое</string>
     <string name="dictate__panel_title">Промпты ИИ</string>
     <string name="dictate__panel_no_prompts">Промптов пока нет. Добавьте их в настройках Dictate в разделе «Переформулирование».</string>

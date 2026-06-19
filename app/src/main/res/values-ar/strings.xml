@@ -1001,6 +1001,13 @@
     <string name="dictate__promo_floating_button_action">جرّبه</string>
     <string name="setup__floating_button__description">نصيحة: باستخدام الزر العائم يمكنك الإملاء في أي تطبيق — حتى عندما تكون لوحة مفاتيح أخرى نشطة.</string>
     <string name="setup__floating_button__btn">إعداد الزر العائم</string>
+    <string name="setup__nav_back">رجوع</string>
+    <string name="setup__nav_next">التالي</string>
+    <string name="setup__floating_button__title">أملِ في أي مكان (اختياري)</string>
+    <string name="setup__floating_button__intro">يضع الزر العائم فقاعة إملاء صغيرة فوق أي تطبيق، حتى تتمكن من التحدث في أي حقل نصي دون تبديل لوحة المفاتيح.</string>
+    <string name="setup__floating_button__accessibility_note">للقيام بذلك، يستخدم {app_name} إعدادات إمكانية الوصول في أندرويد — وبهذا يمكن للفقاعة الظهور فوق التطبيقات الأخرى وإدراج النص المُفرَّغ نيابةً عنك. تُرشدك الشاشة التالية إلى تفعيلها.</string>
+    <string name="setup__floating_button__optional_note">هذا اختياري تمامًا — تخطَّه إذا كنت تريد استخدام {app_name} كلوحة مفاتيح كاملة فقط. يمكنك دائمًا إعداده لاحقًا من الإعدادات.</string>
+    <string name="setup__floating_button__skip_btn">تخطّي — سأستخدم لوحة المفاتيح</string>
     <string name="dictate__floating_button_badge_new">جديد</string>
     <string name="dictate__panel_title">مطالبات الذكاء الاصطناعي</string>
     <string name="dictate__panel_no_prompts">لا توجد مطالبات بعد. أضِف بعضها في إعدادات Dictate ضمن إعادة الصياغة.</string>

@@ -953,6 +953,13 @@
     <string name="dictate__promo_floating_button_action">Experimentar</string>
     <string name="setup__floating_button__description">Dica: com o botão flutuante você pode ditar em qualquer app — mesmo com outro teclado ativo.</string>
     <string name="setup__floating_button__btn">Configurar o botão flutuante</string>
+    <string name="setup__nav_back">Voltar</string>
+    <string name="setup__nav_next">Avançar</string>
+    <string name="setup__floating_button__title">Dite em qualquer lugar (opcional)</string>
+    <string name="setup__floating_button__intro">O botão flutuante coloca uma pequena bolha de ditado sobre qualquer app, para que você possa falar em qualquer campo de texto sem trocar de teclado.</string>
+    <string name="setup__floating_button__accessibility_note">Para isso, o {app_name} usa as configurações de acessibilidade do Android — é assim que a bolha pode aparecer sobre outros apps e inserir o texto transcrito para você. A próxima tela orienta você na ativação.</string>
+    <string name="setup__floating_button__optional_note">Isso é totalmente opcional — pule se você quiser usar o {app_name} apenas como teclado completo. Você sempre pode configurá-lo depois nas configurações.</string>
+    <string name="setup__floating_button__skip_btn">Pular — vou usar o teclado</string>
     <string name="dictate__floating_button_badge_new">Novo</string>
     <string name="dictate__panel_title">Prompts de IA</string>
     <string name="dictate__panel_no_prompts">Ainda não há prompts. Adicione alguns nas configurações do Dictate, em «Reformulação».</string>

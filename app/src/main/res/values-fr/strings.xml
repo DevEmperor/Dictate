@@ -1022,6 +1022,13 @@
     <string name="dictate__promo_floating_button_action">Essayer</string>
     <string name="setup__floating_button__description">Astuce : avec le bouton flottant, vous pouvez dicter dans n’importe quelle appli — même avec un autre clavier actif.</string>
     <string name="setup__floating_button__btn">Configurer le bouton flottant</string>
+    <string name="setup__nav_back">Retour</string>
+    <string name="setup__nav_next">Suivant</string>
+    <string name="setup__floating_button__title">Dicter partout (facultatif)</string>
+    <string name="setup__floating_button__intro">Le bouton flottant place une petite bulle de dictée par-dessus n’importe quelle app, pour parler dans n’importe quel champ de texte sans changer de clavier.</string>
+    <string name="setup__floating_button__accessibility_note">Pour cela, {app_name} utilise les paramètres d’accessibilité d’Android — c’est ainsi que la bulle peut s’afficher par-dessus les autres apps et insérer le texte transcrit à votre place. L’écran suivant vous guide pour l’activer.</string>
+    <string name="setup__floating_button__optional_note">C’est entièrement facultatif — passez cette étape si vous voulez simplement utiliser {app_name} comme clavier complet. Vous pourrez toujours le configurer plus tard dans les paramètres.</string>
+    <string name="setup__floating_button__skip_btn">Passer — j’utilise le clavier</string>
     <string name="dictate__floating_button_badge_new">Nouveau</string>
     <string name="dictate__panel_title">Prompts d\'IA</string>
     <string name="dictate__panel_no_prompts">Aucun prompt pour l\'instant. Ajoutez-en dans les paramètres de Dictate, sous « Reformulation ».</string>

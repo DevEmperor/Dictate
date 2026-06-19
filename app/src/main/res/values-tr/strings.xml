@@ -1124,6 +1124,13 @@
     <string name="dictate__promo_floating_button_action">Deneyin</string>
     <string name="setup__floating_button__description">İpucu: kayan düğmeyle herhangi bir uygulamaya dikte edebilirsiniz — başka bir klavye etkin olsa bile.</string>
     <string name="setup__floating_button__btn">Kayan düğmeyi ayarla</string>
+    <string name="setup__nav_back">Geri</string>
+    <string name="setup__nav_next">İleri</string>
+    <string name="setup__floating_button__title">Her yerde dikte et (isteğe bağlı)</string>
+    <string name="setup__floating_button__intro">Kayan düğme, herhangi bir uygulamanın üzerine küçük bir dikte balonu yerleştirir; böylece klavye değiştirmeden herhangi bir metin alanına konuşabilirsin.</string>
+    <string name="setup__floating_button__accessibility_note">Bunun için {app_name}, Android’in erişilebilirlik ayarlarını kullanır — balon bu sayede diğer uygulamaların üzerinde görünüp yazıya dökülen metni senin için ekleyebilir. Sonraki ekran, etkinleştirme konusunda sana yol gösterir.</string>
+    <string name="setup__floating_button__optional_note">Bu tamamen isteğe bağlı — {app_name} uygulamasını yalnızca tam bir klavye olarak kullanmak istiyorsan atla. Bunu istediğin zaman ayarlardan kurabilirsin.</string>
+    <string name="setup__floating_button__skip_btn">Atla — klavyeyi kullanacağım</string>
     <string name="dictate__floating_button_badge_new">Yeni</string>
     <string name="dictate__panel_title">Yapay zekâ komutları</string>
     <string name="dictate__panel_no_prompts">Henüz komut yok. Dictate ayarlarındaki Yeniden ifade etme bölümünden birkaç tane ekleyin.</string>

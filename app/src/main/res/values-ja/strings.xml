@@ -1076,6 +1076,13 @@
     <string name="dictate__promo_floating_button_action">試す</string>
     <string name="setup__floating_button__description">ヒント: フローティングボタンなら、別のキーボードが有効でもどのアプリにも音声入力できます。</string>
     <string name="setup__floating_button__btn">フローティングボタンを設定</string>
+    <string name="setup__nav_back">戻る</string>
+    <string name="setup__nav_next">次へ</string>
+    <string name="setup__floating_button__title">どこでも音声入力（任意）</string>
+    <string name="setup__floating_button__intro">フローティングボタンは、どのアプリの上にも小さな音声入力バブルを表示します。キーボードを切り替えずに、あらゆるテキスト欄に話しかけられます。</string>
+    <string name="setup__floating_button__accessibility_note">そのために {app_name} は Android のユーザー補助設定を利用します。これにより、バブルが他のアプリの上に表示され、文字起こししたテキストを代わりに挿入できます。次の画面で有効化の手順を案内します。</string>
+    <string name="setup__floating_button__optional_note">これは完全に任意です。{app_name} を通常のキーボードとして使うだけならスキップして構いません。あとから設定でいつでも有効にできます。</string>
+    <string name="setup__floating_button__skip_btn">スキップ — キーボードを使います</string>
     <string name="dictate__floating_button_badge_new">新着</string>
     <string name="dictate__panel_title">AIプロンプト</string>
     <string name="dictate__panel_no_prompts">まだプロンプトがありません。Dictate設定の「言い換え」で追加してください。</string>

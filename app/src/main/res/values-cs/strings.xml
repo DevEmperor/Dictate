@@ -1161,6 +1161,13 @@
     <string name="dictate__promo_floating_button_action">Vyzkoušet</string>
     <string name="setup__floating_button__description">Tip: s plovoucím tlačítkem můžete diktovat v jakékoli aplikaci — i když je aktivní jiná klávesnice.</string>
     <string name="setup__floating_button__btn">Nastavit plovoucí tlačítko</string>
+    <string name="setup__nav_back">Zpět</string>
+    <string name="setup__nav_next">Další</string>
+    <string name="setup__floating_button__title">Diktujte kdekoli (volitelné)</string>
+    <string name="setup__floating_button__intro">Plovoucí tlačítko zobrazí malou diktovací bublinu přes libovolnou aplikaci, takže můžete mluvit do jakéhokoli textového pole bez přepínání klávesnice.</string>
+    <string name="setup__floating_button__accessibility_note">K tomu {app_name} využívá nastavení přístupnosti Androidu — díky tomu se bublina může zobrazovat přes ostatní aplikace a vkládat za vás přepsaný text. Další obrazovka vás provede zapnutím.</string>
+    <string name="setup__floating_button__optional_note">Je to zcela volitelné — přeskočte, pokud chcete {app_name} používat jen jako plnohodnotnou klávesnici. Vždy to můžete nastavit později v nastavení.</string>
+    <string name="setup__floating_button__skip_btn">Přeskočit — použiji klávesnici</string>
     <string name="dictate__floating_button_badge_new">Nové</string>
     <string name="dictate__panel_title">Prompty AI</string>
     <string name="dictate__panel_no_prompts">Zatím žádné prompty. Přidejte nějaké v nastavení Dictate v sekci „Přeformulování\".</string>

@@ -928,6 +928,13 @@
     <string name="dictate__promo_floating_button_action">Prova</string>
     <string name="setup__floating_button__description">Suggerimento: con il pulsante flottante puoi dettare in qualsiasi app, anche con un’altra tastiera attiva.</string>
     <string name="setup__floating_button__btn">Configura il pulsante flottante</string>
+    <string name="setup__nav_back">Indietro</string>
+    <string name="setup__nav_next">Avanti</string>
+    <string name="setup__floating_button__title">Detta ovunque (facoltativo)</string>
+    <string name="setup__floating_button__intro">Il pulsante flottante mostra una piccola bolla di dettatura sopra qualsiasi app, così puoi parlare in qualsiasi campo di testo senza cambiare tastiera.</string>
+    <string name="setup__floating_button__accessibility_note">Per farlo, {app_name} usa le impostazioni di accessibilità di Android: è così che la bolla può comparire sopra le altre app e inserire per te il testo trascritto. La schermata successiva ti guida nell’attivazione.</string>
+    <string name="setup__floating_button__optional_note">È del tutto facoltativo: saltalo se vuoi usare {app_name} semplicemente come tastiera completa. Puoi sempre configurarlo più tardi nelle impostazioni.</string>
+    <string name="setup__floating_button__skip_btn">Salta — userò la tastiera</string>
     <string name="dictate__floating_button_badge_new">Novità</string>
     <string name="dictate__panel_title">Prompt IA</string>
     <string name="dictate__panel_no_prompts">Ancora nessun prompt. Aggiungine qualcuno nelle impostazioni di Dictate, in «Riformulazione».</string>

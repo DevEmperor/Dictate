@@ -1020,6 +1020,13 @@
     <string name="dictate__promo_floating_button_action">Prova-ho</string>
     <string name="setup__floating_button__description">Consell: amb el botó flotant pots dictar a qualsevol app, fins i tot amb un altre teclat actiu.</string>
     <string name="setup__floating_button__btn">Configura el botó flotant</string>
+    <string name="setup__nav_back">Enrere</string>
+    <string name="setup__nav_next">Següent</string>
+    <string name="setup__floating_button__title">Dicta a qualsevol lloc (opcional)</string>
+    <string name="setup__floating_button__intro">El botó flotant col·loca una petita bombolla de dictat sobre qualsevol aplicació, perquè puguis parlar a qualsevol camp de text sense canviar de teclat.</string>
+    <string name="setup__floating_button__accessibility_note">Per fer-ho, {app_name} utilitza la configuració d’accessibilitat d’Android — així la bombolla pot aparèixer sobre altres aplicacions i inserir el text transcrit per tu. La pantalla següent et guia per activar-ho.</string>
+    <string name="setup__floating_button__optional_note">Això és totalment opcional — omet-ho si només vols fer servir {app_name} com a teclat complet. Sempre pots configurar-ho més tard a la configuració.</string>
+    <string name="setup__floating_button__skip_btn">Omet — faré servir el teclat</string>
     <string name="dictate__floating_button_badge_new">Nou</string>
     <string name="dictate__panel_title">Prompts d\'IA</string>
     <string name="dictate__panel_no_prompts">Encara no hi ha prompts. Afegeix-ne alguns a la configuració del Dictate, a «Reformulació».</string>

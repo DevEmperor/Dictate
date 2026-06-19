@@ -1162,6 +1162,13 @@
     <string name="dictate__promo_floating_button_action">Wypróbuj</string>
     <string name="setup__floating_button__description">Wskazówka: pływającym przyciskiem możesz dyktować w dowolnej aplikacji — nawet gdy aktywna jest inna klawiatura.</string>
     <string name="setup__floating_button__btn">Skonfiguruj pływający przycisk</string>
+    <string name="setup__nav_back">Wstecz</string>
+    <string name="setup__nav_next">Dalej</string>
+    <string name="setup__floating_button__title">Dyktuj wszędzie (opcjonalnie)</string>
+    <string name="setup__floating_button__intro">Pływający przycisk umieszcza mały dymek dyktowania nad dowolną aplikacją, dzięki czemu możesz mówić w dowolnym polu tekstowym bez przełączania klawiatury.</string>
+    <string name="setup__floating_button__accessibility_note">W tym celu {app_name} korzysta z ustawień ułatwień dostępu Androida — dzięki temu dymek może pojawiać się nad innymi aplikacjami i wstawiać za Ciebie przepisany tekst. Następny ekran przeprowadzi Cię przez włączenie tej funkcji.</string>
+    <string name="setup__floating_button__optional_note">To całkowicie opcjonalne — pomiń, jeśli chcesz używać {app_name} po prostu jako pełnej klawiatury. Zawsze możesz to skonfigurować później w ustawieniach.</string>
+    <string name="setup__floating_button__skip_btn">Pomiń — będę używać klawiatury</string>
     <string name="dictate__floating_button_badge_new">Nowość</string>
     <string name="dictate__panel_title">Prompty AI</string>
     <string name="dictate__panel_no_prompts">Brak promptów. Dodaj je w ustawieniach Dictate w sekcji „Przeformułowanie\".</string>

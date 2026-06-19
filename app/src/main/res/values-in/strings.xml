@@ -1099,6 +1099,13 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="dictate__promo_floating_button_action">Coba</string>
     <string name="setup__floating_button__description">Tip: dengan tombol mengambang Anda bisa mendikte di aplikasi apa pun — bahkan saat keyboard lain aktif.</string>
     <string name="setup__floating_button__btn">Siapkan tombol mengambang</string>
+    <string name="setup__nav_back">Kembali</string>
+    <string name="setup__nav_next">Berikutnya</string>
+    <string name="setup__floating_button__title">Dikte di mana saja (opsional)</string>
+    <string name="setup__floating_button__intro">Tombol mengambang menampilkan gelembung dikte kecil di atas aplikasi mana pun, sehingga kamu bisa berbicara ke bidang teks apa pun tanpa berganti keyboard.</string>
+    <string name="setup__floating_button__accessibility_note">Untuk itu, {app_name} menggunakan pengaturan aksesibilitas Android — begitulah gelembung dapat muncul di atas aplikasi lain dan menyisipkan teks hasil transkripsi untukmu. Layar berikutnya akan memandumu mengaktifkannya.</string>
+    <string name="setup__floating_button__optional_note">Ini sepenuhnya opsional — lewati jika kamu hanya ingin menggunakan {app_name} sebagai keyboard penuh. Kamu selalu bisa mengaturnya nanti di pengaturan.</string>
+    <string name="setup__floating_button__skip_btn">Lewati — saya akan pakai keyboard</string>
     <string name="dictate__floating_button_badge_new">Baru</string>
     <string name="dictate__panel_title">Perintah AI</string>
     <string name="dictate__panel_no_prompts">Belum ada perintah. Tambahkan beberapa di pengaturan Dictate pada bagian Penyusunan ulang.</string>
