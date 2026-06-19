@@ -8,9 +8,9 @@
   verbatim in the system Accessibility settings and serves as the user-facing disclosure.
 -->
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accessibilityEventTypes="typeViewFocused|typeViewClicked|typeViewTextSelectionChanged|typeWindowStateChanged|typeWindowContentChanged"
+    android:accessibilityEventTypes="typeViewFocused|typeViewClicked|typeViewTextSelectionChanged|typeWindowStateChanged|typeWindowContentChanged|typeWindowsChanged"
     android:accessibilityFeedbackType="feedbackGeneric"
-    android:accessibilityFlags="flagDefault|flagRetrieveInteractiveWindows|flagReportViewIds"
+    android:accessibilityFlags="flagDefault|flagRetrieveInteractiveWindows|flagReportViewIds|flagInputMethodEditor"
     android:canRetrieveWindowContent="true"
     android:notificationTimeout="100"
     android:description="@string/dictate__accessibility_service_description"
