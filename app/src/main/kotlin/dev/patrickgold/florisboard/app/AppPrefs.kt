@@ -496,6 +496,13 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__live_prompt_action_removed",
             default = false,
         )
+        // Guard for the one-time switch of existing users to the always-on prompt ROW layout (the new
+        // default). Fires once so users who were on PANEL land on ROW after the update; they can switch
+        // back any time. See DictateLegacyMigrator.migratePromptsLayoutToRowIfNeeded.
+        val promptsLayoutRowMigrated = boolean(
+            key = "dictate__prompts_layout_row_migrated",
+            default = false,
+        )
         // Guard for the one-time re-engagement reset shipped with the 4.0.0 relaunch: existing users
         // (who had already rated/donated, or whose audio counter was long past the thresholds) are
         // given the rate & donate nudges one more time so they can react to the new app. Clears
@@ -515,9 +522,11 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         // How the rewording prompt chips are surfaced: a dedicated panel (PANEL) opened from the
         // Smartbar, or an always-on extra row pinned above the Smartbar (ROW). See DictatePromptsLayout.
+        // Defaults to ROW so the prompts are immediately visible; existing users are moved to ROW once via
+        // DictateLegacyMigrator.migratePromptsLayoutToRowIfNeeded.
         val promptsLayout = enum(
             key = "dictate__prompts_layout",
-            default = DictatePromptsLayout.PANEL,
+            default = DictatePromptsLayout.ROW,
         )
         // Chat (rewording) provider id – any chat-capable ProviderRegistry id ("openai", "groq",
         // "openrouter", … or "custom"). Independent from the transcription provider.

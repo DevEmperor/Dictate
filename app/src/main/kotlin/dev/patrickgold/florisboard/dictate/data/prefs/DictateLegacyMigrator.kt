@@ -14,6 +14,7 @@ import android.content.Context
 import androidx.compose.ui.graphics.Color
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.DictateLanguages
+import dev.patrickgold.florisboard.dictate.DictatePromptsLayout
 import dev.patrickgold.florisboard.dictate.provider.DictateProxyType
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
@@ -319,6 +320,19 @@ object DictateLegacyMigrator {
         prefs.dictate.hasDonated.set(false)
         prefs.dictate.totalAudioSeconds.set(0L)
         prefs.dictate.promoReengagementDone.set(true)
+    }
+
+    /**
+     * One-time switch to the always-on prompt ROW layout, now the default. Existing users who were on the
+     * PANEL layout are moved to ROW once on update so the prompt chips are immediately visible; they can
+     * switch back in settings. A brand-new install is already on ROW (the new default), so this is a no-op
+     * for them. Idempotent via `prefs.dictate.promptsLayoutRowMigrated`.
+     */
+    suspend fun migratePromptsLayoutToRowIfNeeded() {
+        val prefs by FlorisPreferenceStore
+        if (prefs.dictate.promptsLayoutRowMigrated.get()) return
+        prefs.dictate.promptsLayout.set(DictatePromptsLayout.ROW)
+        prefs.dictate.promptsLayoutRowMigrated.set(true)
     }
 
     /**
