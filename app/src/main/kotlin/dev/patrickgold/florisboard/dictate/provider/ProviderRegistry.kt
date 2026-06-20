@@ -111,6 +111,31 @@ object ProviderRegistry {
         ),
     )
 
+    val GEMINI = ProviderPreset(
+        id = "gemini",
+        displayName = "Google Gemini",
+        // The OpenAI-compatible base URL serves chat/rewording and the live model catalog unchanged.
+        // Transcription instead uses Gemini's native generateContent endpoint, derived from this URL by
+        // dropping the trailing `openai/` (see TranscriptionApi.GEMINI_GENERATE_CONTENT).
+        baseUrl = "https://generativelanguage.googleapis.com/v1beta/openai/",
+        capabilities = CHAT_AND_STT,
+        transcriptionApi = TranscriptionApi.GEMINI_GENERATE_CONTENT,
+        supportsDynamicModels = true,
+        apiKeyUrl = "https://aistudio.google.com/app/apikey",
+        defaultChatModel = "gemini-2.5-flash",
+        defaultTranscriptionModel = "gemini-2.5-flash",
+        // Stable, audio-capable Gemini models (verified June 2026; 2.0-flash was retired 2026-06-01). The
+        // live picker merges any newer ones on top.
+        curatedChatModels = listOf(
+            "gemini-2.5-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-2.5-pro", "gemini-2.5-flash-lite",
+        ),
+        // Gemini has no dedicated STT model – its multimodal chat models double as transcription models, so
+        // the curated STT set mirrors the (cheaper, faster) flash chat models.
+        curatedTranscriptionModels = listOf(
+            "gemini-2.5-flash", "gemini-3.5-flash", "gemini-2.5-flash-lite", "gemini-2.5-pro",
+        ),
+    )
+
     val TOGETHER = ProviderPreset(
         id = "together",
         displayName = "Together AI",
@@ -187,7 +212,7 @@ object ProviderRegistry {
 
     /** All built-in presets in display order. The custom option is added by the UI on top of these. */
     val presets: List<ProviderPreset> = listOf(
-        OPENAI, GROQ, OPENROUTER, TOGETHER, DEEPINFRA, MISTRAL, SONIOX, XAI, DEEPSEEK, OLLAMA,
+        OPENAI, GROQ, OPENROUTER, GEMINI, TOGETHER, DEEPINFRA, MISTRAL, SONIOX, XAI, DEEPSEEK, OLLAMA,
     )
 
     fun byId(id: String): ProviderPreset? = presets.firstOrNull { it.id == id }

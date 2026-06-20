@@ -112,7 +112,10 @@ fun ModelPickerDialog(
         ModelKind.CHAT -> preset.curatedChatModels
     }
     val candidates = remember(curated, fetched, query, current) {
-        (curated + fetched.filter { matchesKind(it, kind) } + current)
+        // Gemini transcribes via its multimodal chat models (no STT-tagged ids exist), so its live STT
+        // catalog is the chat catalog rather than the keyword-filtered subset.
+        val liveKind = if (preset.id == "gemini") ModelKind.CHAT else kind
+        (curated + fetched.filter { matchesKind(it, liveKind) } + current)
             .map { it.trim() }
             .filter { it.isNotEmpty() }
             .distinct()

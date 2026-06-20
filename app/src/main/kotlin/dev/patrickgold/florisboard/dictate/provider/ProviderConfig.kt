@@ -53,6 +53,14 @@ enum class TranscriptionApi {
      * `status == completed`, then fetch `GET /transcriptions/{id}/transcript`. See [OpenAiCompatibleClient].
      */
     SONIOX_ASYNC,
+
+    /**
+     * Google Gemini has no dedicated speech-to-text endpoint and its OpenAI-compatible layer (used for
+     * chat/rewording) does not accept audio. Instead the audio is base64-inlined into a single
+     * `POST {baseUrl}/../models/{model}:generateContent` call against the native Gemini API, instructing
+     * the multimodal model to emit only the verbatim transcript. See [OpenAiCompatibleClient].
+     */
+    GEMINI_GENERATE_CONTENT,
 }
 
 /**

@@ -36,8 +36,11 @@ import java.time.Duration
  * xAI, DeepSeek, local Ollama and arbitrary custom servers – they only differ by base URL, key and
  * a few headers (see [ProviderRegistry] and [ProviderConfig]).
  *
- * Providers with a genuinely different API (e.g. Anthropic, Google Gemini native) would need their
- * own [LlmProvider] implementation; until then they are reachable via OpenRouter.
+ * Google Gemini is also handled here: chat/rewording goes through its OpenAI-compatible layer
+ * unchanged, while transcription uses the native generateContent endpoint (see
+ * [transcribeGeminiGenerateContent]). Providers with a genuinely different chat API (e.g. Anthropic
+ * native) would still need their own [LlmProvider] implementation; until then they are reachable via
+ * OpenRouter.
  */
 class OpenAiCompatibleClient(
     private val config: ProviderConfig,
@@ -84,6 +87,7 @@ class OpenAiCompatibleClient(
         TranscriptionApi.OPENAI_MULTIPART -> transcribeMultipart(request, onRetry)
         TranscriptionApi.OPENROUTER_JSON -> transcribeOpenRouterJson(request, onRetry)
         TranscriptionApi.SONIOX_ASYNC -> transcribeSonioxAsync(request, onRetry)
+        TranscriptionApi.GEMINI_GENERATE_CONTENT -> transcribeGeminiGenerateContent(request, onRetry)
     }
 
     override suspend fun transcribe(request: TranscriptionRequest): TranscriptionResult =
@@ -267,6 +271,77 @@ class OpenAiCompatibleClient(
         }
     }
 
+    /**
+     * Google Gemini transcription. Gemini exposes no speech-to-text endpoint; its multimodal models
+     * transcribe audio sent as base64 `inline_data` to the native `generateContent` endpoint (the
+     * OpenAI-compatible layer used for chat does not accept audio). We give the model a strict instruction
+     * to emit only the verbatim transcript – and nothing at all for silence – so the output can be used
+     * directly and won't echo the style hint or hallucinate on empty audio.
+     */
+    private suspend fun transcribeGeminiGenerateContent(
+        request: TranscriptionRequest,
+        onRetry: (attempt: Int) -> Unit,
+    ): TranscriptionResult {
+        val base64 = withContext(Dispatchers.IO) {
+            android.util.Base64.encodeToString(request.audioFile.readBytes(), android.util.Base64.NO_WRAP)
+        }
+        val mimeType = guessAudioMediaType(request.audioFile).toString().substringBefore(";").trim()
+        val dto = GeminiGenerateRequestDto(
+            contents = listOf(
+                GeminiContentDto(
+                    parts = listOf(
+                        GeminiPartDto(text = buildGeminiTranscriptionInstruction(request)),
+                        GeminiPartDto(inlineData = GeminiInlineDataDto(mimeType = mimeType, data = base64)),
+                    ),
+                ),
+            ),
+            // Temperature 0 keeps the model faithful to the audio and discourages creative rewrites.
+            generationConfig = GeminiGenerationConfigDto(temperature = 0.0),
+        )
+        val payload = json.encodeToString(GeminiGenerateRequestDto.serializer(), dto)
+        // The native URL carries the `models/` prefix itself, so strip any the user/catalog included.
+        val model = request.model.removePrefix("models/")
+        val httpRequest = Request.Builder()
+            .url(geminiNativeBaseUrl() + "models/" + model + ":generateContent")
+            .headers(geminiNativeHeaders())
+            .post(payload.toRequestBody(JSON_MEDIA_TYPE))
+            .build()
+        val body = executeForBody(httpRequest, onRetry = onRetry)
+        val response = json.decodeFromString(GeminiGenerateResponseDto.serializer(), body)
+        val text = response.candidates.firstOrNull()?.content?.parts.orEmpty()
+            .mapNotNull { it.text }
+            .joinToString("")
+        return TranscriptionResult(text.trim())
+    }
+
+    /** Strict transcription prompt for [transcribeGeminiGenerateContent]; folds in the language and style hints. */
+    private fun buildGeminiTranscriptionInstruction(request: TranscriptionRequest): String = buildString {
+        append("Transcribe the speech in the audio exactly as spoken, with correct punctuation and ")
+        append("capitalization. Output only the transcription text. Do not add any preamble, commentary, ")
+        append("translation, quotation marks, or formatting. If there is no intelligible speech, output ")
+        append("nothing at all.")
+        request.language?.takeIf { it.isNotEmpty() && it != "detect" }?.let { lang ->
+            append(" The spoken language is '").append(lang).append("'; transcribe in that language.")
+        }
+        request.prompt?.takeIf { it.isNotBlank() }?.let { style ->
+            append("\n\nStyle/context hint (use it to guide spelling and punctuation, but never transcribe ")
+            append("the hint itself):\n").append(style)
+        }
+    }
+
+    /** Native Gemini base URL (`.../v1beta/`) derived from the OpenAI-compat base (`.../v1beta/openai/`). */
+    private fun geminiNativeBaseUrl(): String = config.normalizedBaseUrl.removeSuffix("openai/")
+
+    /** Gemini's native API authenticates via the `x-goog-api-key` header rather than a bearer token. */
+    private fun geminiNativeHeaders(): Headers {
+        val builder = Headers.Builder()
+        if (config.apiKey.isNotBlank()) {
+            builder.add("x-goog-api-key", config.apiKey)
+        }
+        config.extraHeaders.forEach { (key, value) -> builder.add(key, value) }
+        return builder.build()
+    }
+
     override suspend fun listModels(): List<ModelInfo> {
         val httpRequest = Request.Builder()
             .url(config.normalizedBaseUrl + "models")
@@ -284,7 +359,12 @@ class OpenAiCompatibleClient(
                 .sortedBy { it.id.lowercase() }
         }
         val response = json.decodeFromString(ModelsResponseDto.serializer(), body)
-        return response.data.map { ModelInfo(it.id) }.sortedBy { it.id.lowercase() }
+        // Gemini's catalog reports ids as `models/gemini-…`; strip that prefix so the picker shows clean
+        // ids that also work directly as the `model` field in both chat and generateContent calls.
+        val stripPrefix = config.transcriptionApi == TranscriptionApi.GEMINI_GENERATE_CONTENT
+        return response.data
+            .map { ModelInfo(if (stripPrefix) it.id.removePrefix("models/") else it.id) }
+            .sortedBy { it.id.lowercase() }
     }
 
     private fun authHeaders(): Headers {
@@ -449,6 +529,45 @@ class OpenAiCompatibleClient(
 
     @Serializable
     private data class TranscriptionResponseDto(val text: String = "")
+
+    // --- Gemini native generateContent DTOs (see transcribeGeminiGenerateContent) ---
+
+    @Serializable
+    private data class GeminiGenerateRequestDto(
+        val contents: List<GeminiContentDto>,
+        val generationConfig: GeminiGenerationConfigDto? = null,
+    )
+
+    @Serializable
+    private data class GeminiContentDto(
+        // Defaulted so the same shape parses the response, where a blocked candidate may omit `parts`.
+        val parts: List<GeminiPartDto> = emptyList(),
+        val role: String? = null,
+    )
+
+    @Serializable
+    private data class GeminiPartDto(
+        val text: String? = null,
+        // Gemini's proto-JSON accepts the snake_case `inline_data` on input; responses only carry `text`.
+        @SerialName("inline_data") val inlineData: GeminiInlineDataDto? = null,
+    )
+
+    @Serializable
+    private data class GeminiInlineDataDto(
+        @SerialName("mime_type") val mimeType: String,
+        val data: String,
+    )
+
+    @Serializable
+    private data class GeminiGenerationConfigDto(val temperature: Double? = null)
+
+    @Serializable
+    private data class GeminiGenerateResponseDto(
+        val candidates: List<GeminiCandidateDto> = emptyList(),
+    )
+
+    @Serializable
+    private data class GeminiCandidateDto(val content: GeminiContentDto? = null)
 
     @Serializable
     private data class ModelsResponseDto(val data: List<ModelEntryDto> = emptyList())
