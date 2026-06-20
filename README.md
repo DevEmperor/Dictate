@@ -42,12 +42,12 @@
   <tr>
     <td><img src="img/banner_01_en-EN.png" width="220"></td>
     <td><img src="img/banner_02_en-EN.png" width="220"></td>
-    <td><img src="img/banner_03_en-EN.png" width="220"></td>
+    <td><img src="img/banner_07_en-EN.png" width="220"></td>
   </tr>
   <tr>
+    <td><img src="img/banner_03_en-EN.png" width="220"></td>
     <td><img src="img/banner_04_en-EN.png" width="220"></td>
     <td><img src="img/banner_05_en-EN.png" width="220"></td>
-    <td><img src="img/banner_06_en-EN.png" width="220"></td>
   </tr>
 </table>
 
