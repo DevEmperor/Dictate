@@ -66,18 +66,21 @@ lifetime updates. Just tap the badge above or [this link](https://play.google.co
 [OpenAI Whisper](https://openai.com/index/whisper/) in the background, which delivers
 extremely accurate results for
 [many different languages](https://platform.openai.com/docs/guides/speech-to-text/supported-languages),
-complete with punctuation — plus custom AI rewording powered by GPT models.
+complete with punctuation — plus custom AI rewording powered by leading models from OpenAI,
+Google Gemini and many other providers.
 
 Instead of pecking at keys, just tap the microphone, speak, and watch your words appear as
 clean, formatted text in any app. Need it more formal, translated, summarised, or
-fixed-up? Hand the text to a rewording prompt and let the model do the work.
+fixed-up? Hand the text to a rewording prompt and let the model do the work. With the new
+floating button you can even dictate straight into apps while another keyboard is open.
 
 ## 🎤 Features
 
-- **Voice dictation with Whisper AI** — highly accurate speech-to-text in dozens of languages, with automatic punctuation.
+- **Voice dictation with Whisper AI** — highly accurate speech-to-text in dozens of languages, with automatic punctuation. It's so sensitive you can literally *whisper* and still get a clean transcription.
+- **Floating dictation button** — dictate straight into **any** app, even when another keyboard is active. Pick from three styles (Pill, Ring, Orb), watch a live waveform while you speak, drag it anywhere with edge-snapping, set its color and size, and long-press to reword.
 - **AI rewording & rewriting** — turn a selection into something more formal, casual, translated, summarised, or anything you define with custom prompts.
 - **Custom prompts & snippets** — build your own reword actions; reusable text snippets are inserted instantly without an API call.
-- **Bring your own key** — works with your own OpenAI API key (and compatible endpoints), so you stay in control of usage and cost.
+- **Bring your own key & provider** — use your own API key with OpenAI, Google Gemini, Groq, Mistral, OpenRouter, Soniox and other compatible endpoints, so you stay in control of usage and cost.
 - **A real, full keyboard** *(courtesy of the FlorisBoard base):*
   - Huge variety of keyboard layouts and easy language/subtype switching
   - Full theme customization with day/night presets and automatic switching
