@@ -10,29 +10,35 @@
 
 package dev.patrickgold.florisboard.app.settings.dictate
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Cloud
-import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Lan
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SmartToy
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -66,7 +72,6 @@ import dev.patrickgold.jetpref.datastore.model.collectAsState
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
-import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
 import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
 import kotlinx.coroutines.launch
@@ -89,7 +94,6 @@ fun DictateProvidersScreen() = FlorisScreen {
     content {
         val navController = LocalNavController.current
         val accounts by prefs.dictate.providerAccounts.collectAsState()
-        val activeTranscriptionId by prefs.dictate.transcriptionProviderId.collectAsState()
         val scope = rememberCoroutineScope()
 
         // The provider currently being edited in the dialog (null = closed).
@@ -105,27 +109,17 @@ fun DictateProvidersScreen() = FlorisScreen {
             .sortedBy { it.displayName.lowercase() }
 
         PreferenceGroup(title = stringRes(R.string.dictate__providers_active_group)) {
-            ListPreference(
-                prefs.dictate.transcriptionProviderId,
-                icon = Icons.Default.Mic,
-                title = stringRes(R.string.dictate__providers_active_transcription),
-                entries = listPrefEntries {
+            // Custom picker (issue #104): the transcription provider list, plus an offline-fallback
+            // checkbox as an extra item at the bottom of the same dialog (hidden when the chosen
+            // provider is already the on-device one, where a fallback makes no sense).
+            TranscriptionProviderPreference(
+                entries = buildList {
                     ProviderRegistry.presets
                         .filter { it.capabilities.transcription }
-                        .forEach { entry(key = it.id, label = it.displayName) }
-                    customAccounts.forEach { entry(key = it.providerId, label = customLabel(it)) }
+                        .forEach { add(it.id to it.displayName) }
+                    customAccounts.forEach { add(it.providerId to customLabel(it)) }
                 },
             )
-            // On-device offline fallback (issue #104): offer it right under the transcription provider
-            // selection. Hidden when the active provider is already the on-device one (no fallback needed).
-            if (ProviderRegistry.byId(activeTranscriptionId)?.transcriptionApi != TranscriptionApi.LOCAL_ONDEVICE) {
-                SwitchPreference(
-                    prefs.dictate.localFallbackEnabled,
-                    icon = Icons.Default.CloudOff,
-                    title = stringRes(R.string.dictate__local_fallback_title),
-                    summary = stringRes(R.string.dictate__local_fallback_summary),
-                )
-            }
             ListPreference(
                 prefs.dictate.rewordingProviderId,
                 icon = Icons.Default.SmartToy,
@@ -214,6 +208,90 @@ fun DictateProvidersScreen() = FlorisScreen {
                     null
                 },
             )
+        }
+    }
+}
+
+/**
+ * Active-transcription-provider picker (issue #104). Opens a dialog listing the transcription-capable
+ * providers as radio options, with the **offline fallback** toggle as an extra checkbox item at the
+ * bottom of the same dialog. The checkbox is hidden when the chosen provider is the on-device one (a
+ * local fallback is meaningless there). Both the selection and the toggle are committed on confirm.
+ */
+@Composable
+private fun TranscriptionProviderPreference(entries: List<Pair<String, String>>) {
+    val prefs by FlorisPreferenceStore
+    val scope = rememberCoroutineScope()
+    val selectedId by prefs.dictate.transcriptionProviderId.collectAsState()
+    val fallbackEnabled by prefs.dictate.localFallbackEnabled.collectAsState()
+    var open by remember { mutableStateOf(false) }
+
+    Preference(
+        icon = Icons.Default.Mic,
+        title = stringRes(R.string.dictate__providers_active_transcription),
+        summary = entries.firstOrNull { it.first == selectedId }?.second ?: selectedId,
+        onClick = { open = true },
+    )
+
+    if (open) {
+        var sel by remember { mutableStateOf(selectedId) }
+        var fb by remember { mutableStateOf(fallbackEnabled) }
+        val selectionIsLocal =
+            ProviderRegistry.byId(sel)?.transcriptionApi == TranscriptionApi.LOCAL_ONDEVICE
+        JetPrefAlertDialog(
+            title = stringRes(R.string.dictate__providers_active_transcription),
+            confirmLabel = stringRes(R.string.action__ok),
+            dismissLabel = stringRes(R.string.action__cancel),
+            onConfirm = {
+                scope.launch {
+                    prefs.dictate.transcriptionProviderId.set(sel)
+                    prefs.dictate.localFallbackEnabled.set(fb)
+                }
+                open = false
+            },
+            onDismiss = { open = false },
+        ) {
+            Column {
+                Column(
+                    modifier = Modifier
+                        .heightIn(max = 320.dp)
+                        .verticalScroll(rememberScrollState()),
+                ) {
+                    entries.forEach { (id, label) ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { sel = id }
+                                .padding(vertical = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            RadioButton(selected = sel == id, onClick = { sel = id })
+                            Text(label, modifier = Modifier.padding(start = 8.dp))
+                        }
+                    }
+                }
+                // Extra item at the bottom: offline fallback (only when the choice isn't already local).
+                if (!selectionIsLocal) {
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { fb = !fb }
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Checkbox(checked = fb, onCheckedChange = { fb = it })
+                        Column(modifier = Modifier.padding(start = 8.dp).weight(1f)) {
+                            Text(stringRes(R.string.dictate__local_fallback_title))
+                            Text(
+                                text = stringRes(R.string.dictate__local_fallback_summary),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
