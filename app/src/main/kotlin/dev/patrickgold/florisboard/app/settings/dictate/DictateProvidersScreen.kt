@@ -51,11 +51,14 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.dictate.dictateProxyConfig
+import dev.patrickgold.florisboard.dictate.provider.LocalModelCatalog
+import dev.patrickgold.florisboard.dictate.provider.LocalModelManager
 import dev.patrickgold.florisboard.dictate.provider.OpenAiCompatibleClient
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
 import dev.patrickgold.florisboard.dictate.provider.ProviderPreset
 import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
+import dev.patrickgold.florisboard.dictate.provider.TranscriptionApi
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.jetpref.datastore.model.collectAsState
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
@@ -209,6 +212,16 @@ private fun providerSummary(
     keySet: String,
     noKey: String,
 ): String {
+    if (preset.transcriptionApi == TranscriptionApi.LOCAL_ONDEVICE) {
+        // On-device provider: surface the active downloaded model instead of an API-key state.
+        val context = LocalContext.current
+        val spec = account?.transcriptionModel?.takeIf { it.isNotBlank() }?.let { LocalModelCatalog.byId(it) }
+        return if (spec != null && LocalModelManager.isInstalled(context, spec.id)) {
+            spec.displayName
+        } else {
+            stringRes(R.string.dictate__local_model_none_selected)
+        }
+    }
     val caps = buildList {
         if (preset.capabilities.transcription) add(stringRes(R.string.dictate__providers_cap_stt))
         if (preset.capabilities.chat) add(stringRes(R.string.dictate__providers_cap_chat))
@@ -271,6 +284,13 @@ private fun ProviderEditorDialog(
         onDismiss = onDismiss,
         onNeutral = { onDelete?.invoke() },
     ) {
+        if (preset?.transcriptionApi == TranscriptionApi.LOCAL_ONDEVICE) {
+            // On-device provider: no key/remote model — manage downloadable models instead (#104).
+            LocalModelSection(
+                activeModelId = transcriptionModel,
+                onActiveModelChange = { transcriptionModel = it },
+            )
+        } else {
         Column {
             if (isCustom) {
                 EditorField(
@@ -314,6 +334,7 @@ private fun ProviderEditorDialog(
                     onBrowse = { pickerKind = ModelKind.CHAT },
                 )
             }
+        }
         }
     }
 

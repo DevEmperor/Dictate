@@ -30,6 +30,7 @@ import dev.patrickgold.florisboard.dictate.data.prompts.PromptModel
 import dev.patrickgold.florisboard.dictate.data.prompts.PromptsDatabaseHelper
 import dev.patrickgold.florisboard.dictate.provider.ChatRequest
 import dev.patrickgold.florisboard.dictate.provider.DictateApiException
+import dev.patrickgold.florisboard.dictate.provider.LocalModelManager
 import dev.patrickgold.florisboard.dictate.provider.LocalTranscriptionProvider
 import dev.patrickgold.florisboard.dictate.provider.OpenAiCompatibleClient
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
@@ -548,6 +549,19 @@ object DictateController {
         val model = account.transcriptionModel.takeIf { it.isNotBlank() }
             ?: preset.defaultTranscriptionModel
             ?: "gpt-4o-mini-transcribe"
+
+        // On-device (#104): guide the user to download a model instead of failing mid-transcription.
+        if (preset.transcriptionApi == TranscriptionApi.LOCAL_ONDEVICE &&
+            !LocalModelManager.isInstalled(context.applicationContext, model)
+        ) {
+            _state.value = UiState.Error(
+                message = context.getString(R.string.dictate__local_model_not_installed_error),
+                kind = DictateApiException.Kind.UNKNOWN,
+                action = ErrorAction.OPEN_SETTINGS,
+            )
+            audioFile.delete()
+            return
+        }
 
         _state.value = UiState.Transcribing()
         val appContext = context.applicationContext
