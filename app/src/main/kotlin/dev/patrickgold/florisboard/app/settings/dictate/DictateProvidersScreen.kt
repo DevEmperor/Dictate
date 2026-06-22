@@ -261,8 +261,7 @@ private fun TranscriptionProviderPreference(entries: List<Pair<String, String>>)
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { sel = id }
-                                .padding(vertical = 10.dp),
+                                .clickable { sel = id },
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             RadioButton(selected = sel == id, onClick = { sel = id })
