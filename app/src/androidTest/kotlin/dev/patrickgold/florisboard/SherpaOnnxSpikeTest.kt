@@ -17,6 +17,7 @@ import com.k2fsa.sherpa.onnx.OfflineModelConfig
 import com.k2fsa.sherpa.onnx.OfflineRecognizer
 import com.k2fsa.sherpa.onnx.OfflineRecognizerConfig
 import com.k2fsa.sherpa.onnx.OfflineWhisperModelConfig
+import dev.patrickgold.florisboard.dictate.audio.AudioDecode
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,15 +46,56 @@ class SherpaOnnxSpikeTest {
 
     private val dir = "/data/local/tmp/sherpa-spike"
 
+    /** Phase 0 proof: a pre-made 16 kHz WAV transcribes on-device (no audio decode involved). */
     @Test
     fun transcribesWavWithWhisperTinyOnDevice() {
-        val encoder = File(dir, "tiny-encoder.int8.onnx")
-        val decoder = File(dir, "tiny-decoder.int8.onnx")
-        val tokens = File(dir, "tiny-tokens.txt")
         val wav = File(dir, "0.wav")
-        val present = encoder.exists() && decoder.exists() && tokens.exists() && wav.exists()
-        assumeTrue("sherpa-spike model/wav not pushed to $dir — skipping", present)
+        assumeModelPresent(extra = wav)
+        val (samples, sampleRate) = readPcm16Wav(wav)
+        Log.i(TAG, "wav: ${samples.size} samples @ ${sampleRate}Hz")
+        val text = transcribe(samples, sampleRate, label = "wav")
+        assertContainsYellow(text)
+    }
 
+    /**
+     * Phase 1 proof (issue #104): a recorder-format AAC/m4a (44.1 kHz mono) is decoded by
+     * [AudioDecode] to 16 kHz mono float and then transcribed on-device — the full local pipeline.
+     */
+    @Test
+    fun decodesM4aThenTranscribesOnDevice() {
+        val m4a = File(dir, "test0.m4a")
+        assumeModelPresent(extra = m4a)
+
+        val startDecode = System.currentTimeMillis()
+        val samples = AudioDecode.decodeToMono16k(m4a)
+        val decodeMs = System.currentTimeMillis() - startDecode
+        val seconds = samples.size / AudioDecode.TARGET_SAMPLE_RATE.toFloat()
+        val peak = samples.maxOf { kotlin.math.abs(it) }
+        Log.i(TAG, "AudioDecode: ${samples.size} samples @ ${AudioDecode.TARGET_SAMPLE_RATE}Hz " +
+            "(${seconds}s, peak=$peak) in ${decodeMs}ms")
+
+        // The source clip is ~6.6 s of speech; verify the resample produced a plausible 16 kHz mono
+        // track with real energy (not silence / not wrong rate).
+        assert(seconds in 6.0f..7.2f) { "Decoded duration $seconds s outside expected ~6.6 s" }
+        assert(peak > 0.05f) { "Decoded audio looks silent (peak=$peak)" }
+
+        val text = transcribe(samples, AudioDecode.TARGET_SAMPLE_RATE, label = "m4a")
+        assertContainsYellow(text)
+    }
+
+    // --- helpers ---
+
+    private val encoder get() = File(dir, "tiny-encoder.int8.onnx")
+    private val decoder get() = File(dir, "tiny-decoder.int8.onnx")
+    private val tokens get() = File(dir, "tiny-tokens.txt")
+
+    private fun assumeModelPresent(extra: File) {
+        val present = encoder.exists() && decoder.exists() && tokens.exists() && extra.exists()
+        assumeTrue("sherpa-spike model/${extra.name} not pushed to $dir — skipping", present)
+    }
+
+    /** Builds a Whisper-tiny recognizer, transcribes [samples], logs timing, and releases. */
+    private fun transcribe(samples: FloatArray, sampleRate: Int, label: String): String {
         val config = OfflineRecognizerConfig(
             featConfig = FeatureConfig(sampleRate = 16000, featureDim = 80),
             modelConfig = OfflineModelConfig(
@@ -69,31 +111,25 @@ class SherpaOnnxSpikeTest {
                 debug = true,
             ),
         )
-
-        val startCreate = System.currentTimeMillis()
         // assetManager defaults to null → models are read from the absolute filesystem paths above.
         val recognizer = OfflineRecognizer(config = config)
-        val createMs = System.currentTimeMillis() - startCreate
+        try {
+            val start = System.currentTimeMillis()
+            val stream = recognizer.createStream()
+            stream.acceptWaveform(samples, sampleRate)
+            recognizer.decode(stream)
+            val text = recognizer.getResult(stream).text
+            stream.release()
+            Log.i(TAG, "[$label] transcript (${System.currentTimeMillis() - start}ms): \"$text\"")
+            return text
+        } finally {
+            recognizer.release()
+        }
+    }
 
-        val (samples, sampleRate) = readPcm16Wav(wav)
-        Log.i(TAG, "loaded ${samples.size} samples @ ${sampleRate}Hz (${samples.size / sampleRate.toFloat()}s)")
-
-        val startDecode = System.currentTimeMillis()
-        val stream = recognizer.createStream()
-        stream.acceptWaveform(samples, sampleRate)
-        recognizer.decode(stream)
-        val text = recognizer.getResult(stream).text
-        val decodeMs = System.currentTimeMillis() - startDecode
-
-        stream.release()
-        recognizer.release()
-
-        Log.i(TAG, "=== SHERPA SPIKE RESULT ===")
-        Log.i(TAG, "model load: ${createMs}ms · decode: ${decodeMs}ms")
-        Log.i(TAG, "transcript: \"$text\"")
-
+    private fun assertContainsYellow(text: String) {
         assert(text.isNotBlank()) { "Expected a non-empty transcript from sherpa-onnx" }
-        // The bundled 0.wav says "...THE YELLOW LAMPS WOULD LIGHT UP..."; sanity-check one stable word.
+        // The source clip says "...THE YELLOW LAMPS WOULD LIGHT UP..."; sanity-check one stable word.
         assert(text.contains("yellow", ignoreCase = true)) {
             "Transcript did not contain the expected word 'yellow': \"$text\""
         }
