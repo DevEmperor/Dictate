@@ -1352,4 +1352,16 @@
     <string name="changelog__current">• Yepyeni bir klavye: Dictate artık, ses panelini açan özel bir mikrofon tuşuna sahip, tam donanımlı çok dilli bir düzen klavyesi olarak geliyor.\n• Kendi yapay zekânızı getirin: OpenAI uyumlu herhangi bir sağlayıcı seçin ve API anahtarınızı Ayarlar → Dictate altında girin.\n• Seçtiğiniz modelle desteklenen akıllı biçimlendirme ve yeniden ifade etme.\n• Önceki Dictate uygulamasındaki ayarlarınız otomatik olarak içe aktarılır.</string>
     <string name="changelog__v4_1_0">• Yeni: doğrudan klavyeden emoji arayın.\n• Yeni transkripsiyon sağlayıcısı: Soniox.\n• Son dikte ettiğinizi yeniden ekleyin ve klavye kapandığında kesilen kayıtları geri getirin.\n• İstem çubuğu artık canlı olarak yenileniyor: düzenlemek için bir isteme uzun basın.\n• Yapay zekâ sağlayıcıları ekranı artık hem etkin transkripsiyon hem de yeniden ifade sağlayıcınızı gösteriyor.\n• Daha büyük, daha kolay dokunulan kayıt düğmesi.\n• Düzeltmeler: bir destek bildirimi bazı dillerde takılıp çubuğu kapatabiliyordu; istemler, klavye veya tema seçiliyken yedekleme artık başarısız olmuyor; kaydedilen API anahtarları güncellemede korunuyor.</string>
     <string name="changelog__v4_1_1">• Düzeltme: vurgu rengi bazı cihazlarda yeşil görünebiliyordu; tuşlar ve düğmeler yeniden Dictate mavisinde.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Cihazınızda çalışır — ses gönderilmez. Başlamak için bir model indirin.</string>
+    <string name="dictate__local_model_status_active">Etkin</string>
+    <string name="dictate__local_model_status_installed">Yüklü · kullanmak için dokunun</string>
+    <string name="dictate__local_model_action_install">İndir</string>
+    <string name="dictate__local_model_action_delete">Sil</string>
+    <string name="dictate__local_model_action_cancel">İptal</string>
+    <string name="dictate__local_model_downloading">İndiriliyor… {percent}%</string>
+    <string name="dictate__local_model_download_failed">İndirme başarısız — lütfen tekrar deneyin</string>
+    <string name="dictate__local_model_none_selected">Henüz model indirilmedi</string>
+    <string name="dictate__local_model_delete_confirm">“{model}” silinsin mi? Daha sonra tekrar indirebilirsiniz.</string>
+    <string name="dictate__local_model_not_installed_error">İndirilen yerel model yok. İndirmek için ayarları açın.</string>
 </resources>

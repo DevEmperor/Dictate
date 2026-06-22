@@ -1247,4 +1247,16 @@
     <string name="changelog__v4_1_0">• Neu: Emojis direkt über die Tastatur suchen.\n• Neuer Transkriptions-Anbieter: Soniox.\n• Letzte Diktat-Eingabe erneut einfügen und Aufnahmen wiederherstellen, die beim Schließen der Tastatur unterbrochen wurden.\n• Die Prompt-Leiste aktualisiert sich jetzt live – lange auf einen Prompt tippen, um ihn zu bearbeiten.\n• Die Anbieter-Übersicht zeigt jetzt sowohl den aktiven Transkriptions- als auch den Umformulierungs-Anbieter.\n• Größerer, leichter treffbarer Aufnahme-Button.\n• Fixes: Ein Unterstützungs-Hinweis konnte hängenbleiben und die Leiste blockieren; Backup schlägt mit ausgewählten Prompts, Tastatur oder Theme nicht mehr fehl; gespeicherte API-Schlüssel bleiben beim Upgrade erhalten.</string>
     <string name="changelog__v4_2_0">• NEU: Floating-Diktat-Button — diktiere direkt in jede App, auch wenn eine andere Tastatur aktiv ist. Wähle aus drei Stilen (Pille, Ring, Kugel), sieh beim Sprechen eine Live-Wellenform, zieh ihn überallhin mit Kanten-Andocken, lege Farbe und Größe fest und halte ihn gedrückt zum Umformulieren. Aktiviere ihn unter Einstellungen ▸ Dictate ▸ Floating Button.\n• NEU: Google Gemini — nutze deinen eigenen AI-Studio-API-Schlüssel für Transkription und Umformulierung.\n• Prompts erscheinen jetzt standardmäßig in einer dauerhaften Zeile über den Tasten.\n• Zuverlässigeres Einfügen von Text über Apps hinweg, auch in Browsern und mit anderen Tastaturen.</string>
     <string name="changelog__v4_1_1">• Fix: Die Akzentfarbe konnte auf manchen Geräten grün erscheinen – Tasten und Buttons sind wieder im Dictate-Blau.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Läuft auf deinem Gerät — es wird kein Audio gesendet. Lade ein Modell, um zu starten.</string>
+    <string name="dictate__local_model_status_active">Aktiv</string>
+    <string name="dictate__local_model_status_installed">Installiert · zum Verwenden tippen</string>
+    <string name="dictate__local_model_action_install">Herunterladen</string>
+    <string name="dictate__local_model_action_delete">Löschen</string>
+    <string name="dictate__local_model_action_cancel">Abbrechen</string>
+    <string name="dictate__local_model_downloading">Wird heruntergeladen… {percent}%</string>
+    <string name="dictate__local_model_download_failed">Download fehlgeschlagen — bitte erneut versuchen</string>
+    <string name="dictate__local_model_none_selected">Noch kein Modell heruntergeladen</string>
+    <string name="dictate__local_model_delete_confirm">„{model}“ löschen? Du kannst es später erneut herunterladen.</string>
+    <string name="dictate__local_model_not_installed_error">Kein lokales Modell heruntergeladen. Öffne die Einstellungen, um eines zu laden.</string>
 </resources>

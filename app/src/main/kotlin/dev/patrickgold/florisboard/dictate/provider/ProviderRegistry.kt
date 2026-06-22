@@ -225,8 +225,9 @@ object ProviderRegistry {
         transcriptionApi = TranscriptionApi.LOCAL_ONDEVICE,
         supportsDynamicModels = false,
         apiKeyUrl = null,
-        defaultTranscriptionModel = "whisper-tiny",
-        curatedTranscriptionModels = listOf("whisper-tiny"),
+        // Base is the recommended balance of accuracy/speed; tiny is offered for low-end devices.
+        defaultTranscriptionModel = "whisper-base",
+        curatedTranscriptionModels = listOf("whisper-base", "whisper-tiny"),
     )
 
     /** All built-in presets in display order. The custom option is added by the UI on top of these. */

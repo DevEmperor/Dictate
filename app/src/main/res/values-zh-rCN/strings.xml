@@ -1369,4 +1369,16 @@
     <string name="changelog__current">• 全新键盘：Dictate 现在作为完整的多语言布局键盘提供，带有专用麦克风键以打开语音面板。\n• 自带 AI：选择任何兼容 OpenAI 的服务商，并在设置 → Dictate 中输入您的 API 密钥。\n• 由您选择的模型驱动的智能格式化和改写。\n• 您在旧版 Dictate 应用中的设置会自动导入。</string>
     <string name="changelog__v4_1_0">• 新增：直接从键盘搜索表情符号。\n• 新的转录服务商：Soniox。\n• 重新插入上一次的听写，并恢复键盘关闭时中断的录音。\n• 提示词栏现在会实时刷新：长按某个提示词即可编辑。\n• AI 服务商界面现在会同时显示当前启用的转录服务商和改写服务商。\n• 录音按钮更大，更容易点按。\n• 修复：在某些语言下，支持提示可能卡住并遮挡操作栏；选择了提示词、键盘或主题时备份不再失败；升级后会保留已保存的 API 密钥。</string>
     <string name="changelog__v4_1_1">• 修复：在某些设备上强调色可能显示为绿色；按键和按钮已恢复为 Dictate 蓝色。</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">在您的设备上运行 — 不会发送任何音频。下载模型即可开始。</string>
+    <string name="dictate__local_model_status_active">使用中</string>
+    <string name="dictate__local_model_status_installed">已安装 · 点按以使用</string>
+    <string name="dictate__local_model_action_install">下载</string>
+    <string name="dictate__local_model_action_delete">删除</string>
+    <string name="dictate__local_model_action_cancel">取消</string>
+    <string name="dictate__local_model_downloading">下载中… {percent}%</string>
+    <string name="dictate__local_model_download_failed">下载失败 — 请重试</string>
+    <string name="dictate__local_model_none_selected">尚未下载模型</string>
+    <string name="dictate__local_model_delete_confirm">删除“{model}”？以后可以重新下载。</string>
+    <string name="dictate__local_model_not_installed_error">未下载本地模型。打开设置以下载。</string>
 </resources>

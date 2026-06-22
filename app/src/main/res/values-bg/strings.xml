@@ -1374,4 +1374,16 @@
     <string name="changelog__current">• Чисто нова клавиатура: Dictate вече се предлага като пълноценна многоезична клавиатура с подредба и специален микрофонен клавиш, който отваря гласовия панел.\n• Ваш собствен ИИ: изберете всеки съвместим с OpenAI доставчик и въведете API ключа си в Настройки → Dictate.\n• Интелигентно форматиране и преформулиране, задвижвани от избрания от вас модел.\n• Настройките ви от предишното приложение Dictate се импортират автоматично.</string>
     <string name="changelog__v4_1_0">• Ново: търсене на емоджита директно от клавиатурата.\n• Нов доставчик на транскрипция: Soniox.\n• Вмъквайте отново последната си диктовка и възстановявайте записи, прекъснати при затваряне на клавиатурата.\n• Лентата с подкани вече се обновява на живо: задръжте подкана, за да я редактирате.\n• Екранът с доставчици на ИИ вече показва както активния доставчик на транскрипция, така и този за преформулиране.\n• По-голям бутон за запис, в който се уцелва по-лесно.\n• Корекции: подкана за поддръжка можеше да заседне и да закрие лентата на някои езици; архивирането вече не се проваля при избрани подкани, клавиатура или тема; запазените API ключове се запазват при обновяване.</string>
     <string name="changelog__v4_1_1">• Корекция: акцентният цвят можеше да изглежда зелен на някои устройства; клавишите и бутоните отново са в синьото на Dictate.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Работи на вашето устройство — не се изпраща аудио. Изтеглете модел, за да започнете.</string>
+    <string name="dictate__local_model_status_active">Активен</string>
+    <string name="dictate__local_model_status_installed">Инсталиран · докоснете за употреба</string>
+    <string name="dictate__local_model_action_install">Изтегляне</string>
+    <string name="dictate__local_model_action_delete">Изтриване</string>
+    <string name="dictate__local_model_action_cancel">Отказ</string>
+    <string name="dictate__local_model_downloading">Изтегляне… {percent}%</string>
+    <string name="dictate__local_model_download_failed">Неуспешно изтегляне — опитайте отново</string>
+    <string name="dictate__local_model_none_selected">Все още няма изтеглен модел</string>
+    <string name="dictate__local_model_delete_confirm">Да се изтрие ли „{model}“? Можете да го изтеглите отново по-късно.</string>
+    <string name="dictate__local_model_not_installed_error">Няма изтеглен локален модел. Отворете настройките, за да изтеглите.</string>
 </resources>

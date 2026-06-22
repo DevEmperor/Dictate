@@ -1181,4 +1181,16 @@
     <string name="changelog__current">• Teclado totalmente novo: o Dictate agora é um teclado de layout completo e multilíngue, com uma tecla de microfone dedicada que abre o painel de voz.\n• Use sua própria IA: escolha qualquer provedor compatível com OpenAI e insira sua chave de API em Configurações → Dictate.\n• Formatação e reformulação inteligentes com o modelo que você escolher.\n• Suas configurações do app Dictate anterior são importadas automaticamente.</string>
     <string name="changelog__v4_1_0">• Novo: pesquise emojis diretamente no teclado.\n• Novo provedor de transcrição: Soniox.\n• Reinsira seu último ditado e recupere gravações interrompidas ao fechar o teclado.\n• A barra de prompts agora atualiza em tempo real: mantenha um prompt pressionado para editá-lo.\n• A tela de provedores de IA agora mostra tanto o provedor de transcrição quanto o de reformulação ativos.\n• Botão de gravação maior e mais fácil de tocar.\n• Correções: um aviso de apoio podia ficar travado e bloquear a barra em alguns idiomas; o backup não falha mais com prompts, teclado ou tema selecionados; as chaves de API salvas são mantidas ao atualizar.</string>
     <string name="changelog__v4_1_1">• Correção: a cor de destaque podia aparecer verde em alguns dispositivos; as teclas e botões voltam ao azul do Dictate.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Funciona no seu dispositivo — nenhum áudio é enviado. Baixe um modelo para começar.</string>
+    <string name="dictate__local_model_status_active">Ativo</string>
+    <string name="dictate__local_model_status_installed">Instalado · toque para usar</string>
+    <string name="dictate__local_model_action_install">Baixar</string>
+    <string name="dictate__local_model_action_delete">Excluir</string>
+    <string name="dictate__local_model_action_cancel">Cancelar</string>
+    <string name="dictate__local_model_downloading">Baixando… {percent}%</string>
+    <string name="dictate__local_model_download_failed">Falha no download — tente novamente</string>
+    <string name="dictate__local_model_none_selected">Nenhum modelo baixado ainda</string>
+    <string name="dictate__local_model_delete_confirm">Excluir “{model}”? Você pode baixá-lo novamente mais tarde.</string>
+    <string name="dictate__local_model_not_installed_error">Nenhum modelo local baixado. Abra as configurações para baixar um.</string>
 </resources>

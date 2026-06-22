@@ -1156,4 +1156,16 @@
     <string name="changelog__current">• Tastiera tutta nuova: Dictate è ora una tastiera con layout completo e multilingua, con un tasto microfono dedicato che apre il pannello vocale.\n• Usa la tua IA: scegli un qualsiasi fornitore compatibile con OpenAI e inserisci la tua chiave API in Impostazioni → Dictate.\n• Formattazione e riformulazione intelligenti con il modello che preferisci.\n• Le impostazioni della precedente app Dictate vengono importate automaticamente.</string>
     <string name="changelog__v4_1_0">• Novità: cerca le emoji direttamente dalla tastiera.\n• Nuovo provider di trascrizione: Soniox.\n• Reinserisci la tua ultima dettatura e recupera le registrazioni interrotte alla chiusura della tastiera.\n• La barra dei prompt ora si aggiorna in tempo reale: tieni premuto un prompt per modificarlo.\n• La schermata dei provider IA ora mostra sia il provider di trascrizione sia quello di riformulazione attivi.\n• Pulsante di registrazione più grande e più facile da premere.\n• Correzioni: un avviso di supporto poteva bloccarsi e coprire la barra in alcune lingue; il backup non fallisce più con prompt, tastiera o tema selezionati; le chiavi API salvate vengono mantenute durante l\'aggiornamento.</string>
     <string name="changelog__v4_1_1">• Correzione: il colore d\'accento poteva apparire verde su alcuni dispositivi; tasti e pulsanti tornano al blu di Dictate.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Funziona sul tuo dispositivo — nessun audio viene inviato. Scarica un modello per iniziare.</string>
+    <string name="dictate__local_model_status_active">Attivo</string>
+    <string name="dictate__local_model_status_installed">Installato · tocca per usarlo</string>
+    <string name="dictate__local_model_action_install">Scarica</string>
+    <string name="dictate__local_model_action_delete">Elimina</string>
+    <string name="dictate__local_model_action_cancel">Annulla</string>
+    <string name="dictate__local_model_downloading">Download… {percent}%</string>
+    <string name="dictate__local_model_download_failed">Download non riuscito — riprova</string>
+    <string name="dictate__local_model_none_selected">Nessun modello ancora scaricato</string>
+    <string name="dictate__local_model_delete_confirm">Eliminare «{model}»? Potrai scaricarlo di nuovo più tardi.</string>
+    <string name="dictate__local_model_not_installed_error">Nessun modello locale scaricato. Apri le impostazioni per scaricarne uno.</string>
 </resources>

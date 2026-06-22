@@ -1390,4 +1390,16 @@
     <string name="changelog__current">• Zupełnie nowa klawiatura: Dictate jest teraz pełnoprawną, wielojęzyczną klawiaturą z dedykowanym klawiszem mikrofonu, który otwiera panel głosowy.\n• Własne AI: wybierz dowolnego dostawcę zgodnego z OpenAI i wprowadź klucz API w Ustawienia → Dictate.\n• Inteligentne formatowanie i przeformułowanie dzięki wybranemu modelowi.\n• Ustawienia z poprzedniej aplikacji Dictate są importowane automatycznie.</string>
     <string name="changelog__v4_1_0">• Nowość: wyszukuj emoji bezpośrednio z klawiatury.\n• Nowy dostawca transkrypcji: Soniox.\n• Ponownie wstawiaj ostatnie dyktowanie i odzyskuj nagrania przerwane po zamknięciu klawiatury.\n• Pasek promptów odświeża się teraz na żywo: przytrzymaj prompt, aby go edytować.\n• Ekran dostawców AI pokazuje teraz zarówno aktywnego dostawcę transkrypcji, jak i przeredagowywania.\n• Większy przycisk nagrywania, w który łatwiej trafić.\n• Poprawki: komunikat o wsparciu mógł się zaciąć i zasłonić pasek w niektórych językach; kopia zapasowa nie kończy się już błędem przy wybranych promptach, klawiaturze lub motywie; zapisane klucze API są zachowywane przy aktualizacji.</string>
     <string name="changelog__v4_1_1">• Poprawka: kolor akcentu mógł wyglądać na zielony na niektórych urządzeniach; klawisze i przyciski znów mają niebieski kolor Dictate.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Działa na Twoim urządzeniu — żaden dźwięk nie jest wysyłany. Pobierz model, aby zacząć.</string>
+    <string name="dictate__local_model_status_active">Aktywny</string>
+    <string name="dictate__local_model_status_installed">Zainstalowano · dotknij, aby użyć</string>
+    <string name="dictate__local_model_action_install">Pobierz</string>
+    <string name="dictate__local_model_action_delete">Usuń</string>
+    <string name="dictate__local_model_action_cancel">Anuluj</string>
+    <string name="dictate__local_model_downloading">Pobieranie… {percent}%</string>
+    <string name="dictate__local_model_download_failed">Pobieranie nie powiodło się — spróbuj ponownie</string>
+    <string name="dictate__local_model_none_selected">Nie pobrano jeszcze żadnego modelu</string>
+    <string name="dictate__local_model_delete_confirm">Usunąć „{model}“? Możesz pobrać go ponownie później.</string>
+    <string name="dictate__local_model_not_installed_error">Nie pobrano lokalnego modelu. Otwórz ustawienia, aby pobrać.</string>
 </resources>

@@ -1389,4 +1389,16 @@
     <string name="changelog__current">• Zcela nová klávesnice: Dictate je nyní plnohodnotná vícejazyčná klávesnice s vyhrazenou klávesou mikrofonu, která otevírá hlasový panel.\n• Vlastní AI: vyberte libovolného poskytovatele kompatibilního s OpenAI a zadejte klíč API v Nastavení → Dictate.\n• Inteligentní formátování a přeformulování pomocí zvoleného modelu.\n• Nastavení z předchozí aplikace Dictate se importují automaticky.</string>
     <string name="changelog__v4_1_0">• Novinka: vyhledávejte emoji přímo z klávesnice.\n• Nový poskytovatel přepisu: Soniox.\n• Znovu vložte své poslední diktování a obnovte nahrávky přerušené při zavření klávesnice.\n• Lišta promptů se nyní aktualizuje živě: podržením promptu jej upravíte.\n• Obrazovka poskytovatelů AI nyní zobrazuje aktivního poskytovatele přepisu i přeformulování.\n• Větší tlačítko nahrávání, na které se snáze míří.\n• Opravy: výzva k podpoře mohla zůstat viset a zakrýt lištu v některých jazycích; záloha už neselhává při vybraných promptech, klávesnici nebo motivu; uložené klíče API zůstanou zachovány při aktualizaci.</string>
     <string name="changelog__v4_1_1">• Oprava: zvýrazňovací barva se na některých zařízeních mohla zobrazovat zeleně; klávesy a tlačítka jsou opět v modré barvě Dictate.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Běží ve vašem zařízení — žádný zvuk se neodesílá. Stáhněte model a začněte.</string>
+    <string name="dictate__local_model_status_active">Aktivní</string>
+    <string name="dictate__local_model_status_installed">Nainstalováno · klepnutím použijete</string>
+    <string name="dictate__local_model_action_install">Stáhnout</string>
+    <string name="dictate__local_model_action_delete">Smazat</string>
+    <string name="dictate__local_model_action_cancel">Zrušit</string>
+    <string name="dictate__local_model_downloading">Stahování… {percent}%</string>
+    <string name="dictate__local_model_download_failed">Stažení se nezdařilo — zkuste to znovu</string>
+    <string name="dictate__local_model_none_selected">Zatím nestažen žádný model</string>
+    <string name="dictate__local_model_delete_confirm">Smazat „{model}“? Později jej můžete stáhnout znovu.</string>
+    <string name="dictate__local_model_not_installed_error">Není stažen žádný místní model. Otevřete nastavení a stáhněte jej.</string>
 </resources>

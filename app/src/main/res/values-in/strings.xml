@@ -1327,4 +1327,16 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="changelog__current">• Papan ketik yang sama sekali baru: Dictate kini hadir sebagai papan ketik tata letak multibahasa lengkap dengan tombol mikrofon khusus yang membuka panel suara.\n• Bawa AI Anda sendiri: pilih penyedia apa pun yang kompatibel dengan OpenAI dan masukkan kunci API Anda di Pengaturan → Dictate.\n• Pemformatan dan penyusunan ulang cerdas yang didukung oleh model pilihan Anda.\n• Pengaturan Anda dari aplikasi Dictate sebelumnya diimpor secara otomatis.</string>
     <string name="changelog__v4_1_0">• Baru: cari emoji langsung dari keyboard.\n• Penyedia transkripsi baru: Soniox.\n• Sisipkan kembali dikte terakhir Anda, dan pulihkan rekaman yang terputus saat keyboard ditutup.\n• Bilah prompt kini diperbarui secara langsung: tekan lama sebuah prompt untuk mengeditnya.\n• Layar penyedia AI kini menampilkan penyedia transkripsi dan pengubahan kata yang aktif.\n• Tombol rekam lebih besar dan lebih mudah ditekan.\n• Perbaikan: pesan dukungan bisa macet dan menutupi bilah dalam beberapa bahasa; pencadangan tidak lagi gagal saat prompt, keyboard, atau tema dipilih; kunci API yang tersimpan dipertahankan saat memperbarui.</string>
     <string name="changelog__v4_1_1">• Perbaikan: warna aksen bisa tampak hijau di beberapa perangkat; tombol dan tuts kembali ke biru Dictate.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Berjalan di perangkat Anda — tidak ada audio yang dikirim. Unduh model untuk memulai.</string>
+    <string name="dictate__local_model_status_active">Aktif</string>
+    <string name="dictate__local_model_status_installed">Terpasang · ketuk untuk memakai</string>
+    <string name="dictate__local_model_action_install">Unduh</string>
+    <string name="dictate__local_model_action_delete">Hapus</string>
+    <string name="dictate__local_model_action_cancel">Batal</string>
+    <string name="dictate__local_model_downloading">Mengunduh… {percent}%</string>
+    <string name="dictate__local_model_download_failed">Unduhan gagal — silakan coba lagi</string>
+    <string name="dictate__local_model_none_selected">Belum ada model yang diunduh</string>
+    <string name="dictate__local_model_delete_confirm">Hapus “{model}”? Anda dapat mengunduhnya lagi nanti.</string>
+    <string name="dictate__local_model_not_installed_error">Tidak ada model lokal yang diunduh. Buka pengaturan untuk mengunduh.</string>
 </resources>

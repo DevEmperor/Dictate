@@ -76,10 +76,10 @@ configure<ApplicationExtension> {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // sherpa-onnx on-device STT spike (issue #104): vendored native libs ship arm64-v8a only for
-        // now to keep the spike build small/fast. Widen (armeabi-v7a) once the feature is real.
+        // sherpa-onnx on-device STT (issue #104): ship the ABIs the vendored native libs cover —
+        // arm64-v8a (modern phones) and armeabi-v7a (older 32-bit devices).
         ndk {
-            abiFilters += "arm64-v8a"
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
         }
 
         buildConfigField("String", "BUILD_COMMIT_HASH", "\"${getGitCommitHash().get()}\"")
@@ -275,11 +275,13 @@ val verifySherpaOnnxLibs by tasks.registering {
     // Resolve paths at configuration time so the action captures only plain Files (configuration
     // cache cannot serialize references to Gradle script/Project objects).
     val projectDir = layout.projectDirectory
-    val required = listOf(
-        projectDir.file("libs/sherpa-onnx-1.13.3.jar").asFile,
-        projectDir.file("src/main/jniLibs/arm64-v8a/libonnxruntime.so").asFile,
-        projectDir.file("src/main/jniLibs/arm64-v8a/libsherpa-onnx-jni.so").asFile,
-    )
+    val required = buildList {
+        add(projectDir.file("libs/sherpa-onnx-1.13.3.jar").asFile)
+        for (abi in listOf("arm64-v8a", "armeabi-v7a")) {
+            add(projectDir.file("src/main/jniLibs/$abi/libonnxruntime.so").asFile)
+            add(projectDir.file("src/main/jniLibs/$abi/libsherpa-onnx-jni.so").asFile)
+        }
+    }
     doLast {
         val missing = required.filterNot { it.exists() }
         if (missing.isNotEmpty()) {

@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Lan
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SmartToy
 import androidx.compose.material3.CircularProgressIndicator
@@ -132,7 +133,11 @@ fun DictateProvidersScreen() = FlorisScreen {
             ProviderRegistry.presets.forEach { preset ->
                 val account = accounts[preset.id]
                 Preference(
-                    icon = Icons.Default.Cloud,
+                    icon = if (preset.transcriptionApi == TranscriptionApi.LOCAL_ONDEVICE) {
+                        Icons.Default.PhoneAndroid
+                    } else {
+                        Icons.Default.Cloud
+                    },
                     title = preset.displayName,
                     summary = providerSummary(preset, account, keySet, noKey),
                     onClick = { editingId = preset.id },

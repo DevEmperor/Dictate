@@ -1229,4 +1229,16 @@
     <string name="changelog__current">• لوحة مفاتيح جديدة كليًا: يأتي Dictate الآن كلوحة مفاتيح متعددة اللغات كاملة التخطيط مع مفتاح ميكروفون مخصّص يفتح لوحة الصوت.\n• استخدم ذكاءك الاصطناعي الخاص: اختر أي مزوّد متوافق مع OpenAI وأدخِل مفتاح API الخاص بك ضمن الإعدادات ← Dictate.\n• تنسيق وإعادة صياغة ذكيان بدعم من النموذج الذي تختاره.\n• تُستورَد إعداداتك من تطبيق Dictate السابق تلقائيًا.</string>
     <string name="changelog__v4_1_0">• جديد: ابحث عن الرموز التعبيرية مباشرة من لوحة المفاتيح.\n• مزوّد تفريغ صوتي جديد: Soniox.\n• أعد إدراج آخر إملاء، واستعد التسجيلات التي انقطعت عند إغلاق لوحة المفاتيح.\n• يتم الآن تحديث شريط المطالبات مباشرةً: اضغط مطوّلاً على مطالبة لتعديلها.\n• تعرض الآن شاشة مزوّدي الذكاء الاصطناعي مزوّد التفريغ الصوتي ومزوّد إعادة الصياغة النشطين معًا.\n• زر تسجيل أكبر وأسهل في الضغط عليه.\n• إصلاحات: كان من الممكن أن يعلق إشعار الدعم ويحجب الشريط في بعض اللغات؛ لم يعد النسخ الاحتياطي يفشل عند تحديد المطالبات أو لوحة المفاتيح أو السمة؛ تُحفظ مفاتيح API المخزّنة عند التحديث.</string>
     <string name="changelog__v4_1_1">• إصلاح: قد يظهر لون التمييز باللون الأخضر على بعض الأجهزة؛ عادت المفاتيح والأزرار إلى الأزرق الخاص بـ Dictate.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">يعمل على جهازك — لا يتم إرسال أي صوت. نزّل نموذجًا للبدء.</string>
+    <string name="dictate__local_model_status_active">نشط</string>
+    <string name="dictate__local_model_status_installed">مثبَّت · اضغط للاستخدام</string>
+    <string name="dictate__local_model_action_install">تنزيل</string>
+    <string name="dictate__local_model_action_delete">حذف</string>
+    <string name="dictate__local_model_action_cancel">إلغاء</string>
+    <string name="dictate__local_model_downloading">جارٍ التنزيل… {percent}%</string>
+    <string name="dictate__local_model_download_failed">فشل التنزيل — يرجى المحاولة مرة أخرى</string>
+    <string name="dictate__local_model_none_selected">لم يتم تنزيل أي نموذج بعد</string>
+    <string name="dictate__local_model_delete_confirm">حذف ”{model}“؟ يمكنك تنزيله مرة أخرى لاحقًا.</string>
+    <string name="dictate__local_model_not_installed_error">لا يوجد نموذج محلي مُنزَّل. افتح الإعدادات لتنزيل واحد.</string>
 </resources>

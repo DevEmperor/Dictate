@@ -1380,10 +1380,9 @@
     <string name="dictate__model_picker_use_custom" comment="Option to use the typed text as a model id. {model} is the typed text.">Use “{model}”</string>
 
     <!-- Dictate on-device (offline) models -->
-    <string name="dictate__local_models_header" comment="Intro text above the on-device model list in the provider editor">Transcription runs entirely on your device — no audio is sent anywhere. Download a model to get started.</string>
+    <string name="dictate__local_models_header" comment="Intro text above the on-device model list in the provider editor">Runs on your device — no audio is sent. Download a model to start.</string>
     <string name="dictate__local_model_status_active" comment="Badge on the on-device model that is currently selected for use">Active</string>
     <string name="dictate__local_model_status_installed" comment="Status for an on-device model that is downloaded but not selected">Installed · tap to use</string>
-    <string name="dictate__local_model_status_not_installed" comment="Status for an on-device model that is not downloaded yet">Not downloaded</string>
     <string name="dictate__local_model_action_install" comment="Button that downloads an on-device model">Download</string>
     <string name="dictate__local_model_action_delete" comment="Button that removes a downloaded on-device model">Delete</string>
     <string name="dictate__local_model_action_cancel" comment="Button that cancels an in-progress model download">Cancel</string>
