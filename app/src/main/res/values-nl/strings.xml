@@ -1274,4 +1274,18 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="changelog__current">• Gloednieuw toetsenbord: Dictate is nu een volwaardig meertalig lay-outtoetsenbord met een eigen microfoontoets die het spraakpaneel opent.\n• Gebruik je eigen AI: kies een willekeurige OpenAI-compatibele aanbieder en voer je API-sleutel in via Instellingen → Dictate.\n• Slimme opmaak en herformulering met het model van jouw keuze.\n• Je instellingen van de vorige Dictate-app worden automatisch geïmporteerd.</string>
     <string name="changelog__v4_1_0">• Nieuw: zoek emoji\'s rechtstreeks vanaf het toetsenbord.\n• Nieuwe transcriptieprovider: Soniox.\n• Voeg je laatste dictaat opnieuw in en herstel opnames die werden onderbroken toen het toetsenbord sloot.\n• De promptbalk wordt nu live bijgewerkt: houd een prompt ingedrukt om die te bewerken.\n• Het scherm met AI-providers toont nu zowel je actieve transcriptie- als herformuleringsprovider.\n• Grotere opnameknop die makkelijker te raken is.\n• Oplossingen: een ondersteuningsmelding kon blijven hangen en de balk blokkeren in sommige talen; back-up mislukt niet meer wanneer prompts, toetsenbord of thema zijn geselecteerd; opgeslagen API-sleutels blijven behouden bij het updaten.</string>
     <string name="changelog__v4_1_1">• Oplossing: de accentkleur kon op sommige apparaten groen lijken; toetsen en knoppen zijn weer Dictate-blauw.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Draait op je apparaat — er wordt geen audio verzonden. Download een model om te beginnen.</string>
+    <string name="dictate__local_model_status_active">Actief</string>
+    <string name="dictate__local_model_status_installed">Geïnstalleerd · tik om te gebruiken</string>
+    <string name="dictate__local_model_action_install">Downloaden</string>
+    <string name="dictate__local_model_action_delete">Verwijderen</string>
+    <string name="dictate__local_model_action_cancel">Annuleren</string>
+    <string name="dictate__local_model_downloading">Downloaden… {percent}%</string>
+    <string name="dictate__local_model_download_failed">Downloaden mislukt — probeer het opnieuw</string>
+    <string name="dictate__local_model_none_selected">Nog geen model gedownload</string>
+    <string name="dictate__local_model_delete_confirm">“{model}” verwijderen? Je kunt het later opnieuw downloaden.</string>
+    <string name="dictate__local_model_not_installed_error">Geen lokaal model gedownload</string>
+    <string name="dictate__local_fallback_title">Offline terugval</string>
+    <string name="dictate__local_fallback_summary">Offline transcriberen op het apparaat met het gedownloade model nadat de provider faalt</string>
 </resources>

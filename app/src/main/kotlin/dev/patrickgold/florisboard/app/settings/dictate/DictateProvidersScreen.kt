@@ -10,27 +10,35 @@
 
 package dev.patrickgold.florisboard.app.settings.dictate
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Lan
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SmartToy
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -51,11 +59,14 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.dictate.dictateProxyConfig
+import dev.patrickgold.florisboard.dictate.provider.LocalModelCatalog
+import dev.patrickgold.florisboard.dictate.provider.LocalModelManager
 import dev.patrickgold.florisboard.dictate.provider.OpenAiCompatibleClient
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
 import dev.patrickgold.florisboard.dictate.provider.ProviderPreset
 import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
+import dev.patrickgold.florisboard.dictate.provider.TranscriptionApi
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.jetpref.datastore.model.collectAsState
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
@@ -98,15 +109,15 @@ fun DictateProvidersScreen() = FlorisScreen {
             .sortedBy { it.displayName.lowercase() }
 
         PreferenceGroup(title = stringRes(R.string.dictate__providers_active_group)) {
-            ListPreference(
-                prefs.dictate.transcriptionProviderId,
-                icon = Icons.Default.Mic,
-                title = stringRes(R.string.dictate__providers_active_transcription),
-                entries = listPrefEntries {
+            // Custom picker (issue #104): the transcription provider list, plus an offline-fallback
+            // checkbox as an extra item at the bottom of the same dialog (hidden when the chosen
+            // provider is already the on-device one, where a fallback makes no sense).
+            TranscriptionProviderPreference(
+                entries = buildList {
                     ProviderRegistry.presets
                         .filter { it.capabilities.transcription }
-                        .forEach { entry(key = it.id, label = it.displayName) }
-                    customAccounts.forEach { entry(key = it.providerId, label = customLabel(it)) }
+                        .forEach { add(it.id to it.displayName) }
+                    customAccounts.forEach { add(it.providerId to customLabel(it)) }
                 },
             )
             ListPreference(
@@ -129,7 +140,11 @@ fun DictateProvidersScreen() = FlorisScreen {
             ProviderRegistry.presets.forEach { preset ->
                 val account = accounts[preset.id]
                 Preference(
-                    icon = Icons.Default.Cloud,
+                    icon = if (preset.transcriptionApi == TranscriptionApi.LOCAL_ONDEVICE) {
+                        Icons.Default.PhoneAndroid
+                    } else {
+                        Icons.Default.Cloud
+                    },
                     title = preset.displayName,
                     summary = providerSummary(preset, account, keySet, noKey),
                     onClick = { editingId = preset.id },
@@ -197,6 +212,89 @@ fun DictateProvidersScreen() = FlorisScreen {
     }
 }
 
+/**
+ * Active-transcription-provider picker (issue #104). Opens a dialog listing the transcription-capable
+ * providers as radio options, with the **offline fallback** toggle as an extra checkbox item at the
+ * bottom of the same dialog. The checkbox is hidden when the chosen provider is the on-device one (a
+ * local fallback is meaningless there). Both the selection and the toggle are committed on confirm.
+ */
+@Composable
+private fun TranscriptionProviderPreference(entries: List<Pair<String, String>>) {
+    val prefs by FlorisPreferenceStore
+    val scope = rememberCoroutineScope()
+    val selectedId by prefs.dictate.transcriptionProviderId.collectAsState()
+    val fallbackEnabled by prefs.dictate.localFallbackEnabled.collectAsState()
+    var open by remember { mutableStateOf(false) }
+
+    Preference(
+        icon = Icons.Default.Mic,
+        title = stringRes(R.string.dictate__providers_active_transcription),
+        summary = entries.firstOrNull { it.first == selectedId }?.second ?: selectedId,
+        onClick = { open = true },
+    )
+
+    if (open) {
+        var sel by remember { mutableStateOf(selectedId) }
+        var fb by remember { mutableStateOf(fallbackEnabled) }
+        val selectionIsLocal =
+            ProviderRegistry.byId(sel)?.transcriptionApi == TranscriptionApi.LOCAL_ONDEVICE
+        JetPrefAlertDialog(
+            title = stringRes(R.string.dictate__providers_active_transcription),
+            confirmLabel = stringRes(R.string.action__ok),
+            dismissLabel = stringRes(R.string.action__cancel),
+            onConfirm = {
+                scope.launch {
+                    prefs.dictate.transcriptionProviderId.set(sel)
+                    prefs.dictate.localFallbackEnabled.set(fb)
+                }
+                open = false
+            },
+            onDismiss = { open = false },
+        ) {
+            Column {
+                Column(
+                    modifier = Modifier
+                        .heightIn(max = 320.dp)
+                        .verticalScroll(rememberScrollState()),
+                ) {
+                    entries.forEach { (id, label) ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { sel = id },
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            RadioButton(selected = sel == id, onClick = { sel = id })
+                            Text(label, modifier = Modifier.padding(start = 8.dp))
+                        }
+                    }
+                }
+                // Extra item at the bottom: offline fallback (only when the choice isn't already local).
+                if (!selectionIsLocal) {
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { fb = !fb }
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Checkbox(checked = fb, onCheckedChange = { fb = it })
+                        Column(modifier = Modifier.padding(start = 8.dp).weight(1f)) {
+                            Text(stringRes(R.string.dictate__local_fallback_title))
+                            Text(
+                                text = stringRes(R.string.dictate__local_fallback_summary),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 /** Label for a custom endpoint: its user-given name, or a generic fallback. */
 private fun customLabel(account: ProviderAccount): String =
     account.displayName.ifBlank { "Custom server" }
@@ -209,6 +307,16 @@ private fun providerSummary(
     keySet: String,
     noKey: String,
 ): String {
+    if (preset.transcriptionApi == TranscriptionApi.LOCAL_ONDEVICE) {
+        // On-device provider: surface the active downloaded model instead of an API-key state.
+        val context = LocalContext.current
+        val spec = account?.transcriptionModel?.takeIf { it.isNotBlank() }?.let { LocalModelCatalog.byId(it) }
+        return if (spec != null && LocalModelManager.isInstalled(context, spec.id)) {
+            spec.displayName
+        } else {
+            stringRes(R.string.dictate__local_model_none_selected)
+        }
+    }
     val caps = buildList {
         if (preset.capabilities.transcription) add(stringRes(R.string.dictate__providers_cap_stt))
         if (preset.capabilities.chat) add(stringRes(R.string.dictate__providers_cap_chat))
@@ -271,6 +379,13 @@ private fun ProviderEditorDialog(
         onDismiss = onDismiss,
         onNeutral = { onDelete?.invoke() },
     ) {
+        if (preset?.transcriptionApi == TranscriptionApi.LOCAL_ONDEVICE) {
+            // On-device provider: no key/remote model — manage downloadable models instead (#104).
+            LocalModelSection(
+                activeModelId = transcriptionModel,
+                onActiveModelChange = { transcriptionModel = it },
+            )
+        } else {
         Column {
             if (isCustom) {
                 EditorField(
@@ -314,6 +429,7 @@ private fun ProviderEditorDialog(
                     onBrowse = { pickerKind = ModelKind.CHAT },
                 )
             }
+        }
         }
     }
 

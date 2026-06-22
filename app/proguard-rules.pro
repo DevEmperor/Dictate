@@ -27,3 +27,8 @@
 
 # @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+
+# sherpa-onnx on-device STT (issue #104): the native library reads these Kotlin config fields and
+# invokes their methods via JNI by name (e.g. GetFieldID "blankPenalty"). R8 shrinking otherwise
+# drops the "unused" fields, causing NoSuchFieldError at runtime — keep the whole package intact.
+-keep class com.k2fsa.sherpa.onnx.** { *; }

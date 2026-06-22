@@ -242,6 +242,15 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             default = "openai",
         )
 
+        // On-device offline fallback (issue #104): when the active provider is a cloud one and its call
+        // fails because the device is offline (after the normal retries), retry once on-device using the
+        // local provider's downloaded model. No effect if the local model isn't installed, or if the
+        // active provider is already the local one.
+        val localFallbackEnabled = boolean(
+            key = "dictate__local_fallback_enabled",
+            default = false,
+        )
+
         // --- Network proxy (roadmap 5.6) ---------------------------------------------------------
         // Optional proxy applied to *every* provider API call (transcription, rewording, model
         // listing, connection test). Disabled by default; built into a ProxyConfig via ProxyConfig.of

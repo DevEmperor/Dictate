@@ -61,6 +61,14 @@ enum class TranscriptionApi {
      * the multimodal model to emit only the verbatim transcript. See [OpenAiCompatibleClient].
      */
     GEMINI_GENERATE_CONTENT,
+
+    /**
+     * On-device transcription (issue #104): no network call at all. Handled by
+     * [dev.patrickgold.florisboard.dictate.provider.LocalTranscriptionProvider] (sherpa-onnx), not by
+     * [OpenAiCompatibleClient]; this value only marks a provider preset as local so the dictation flow
+     * dispatches to the offline engine instead of building an HTTP client.
+     */
+    LOCAL_ONDEVICE,
 }
 
 /**

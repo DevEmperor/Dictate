@@ -1304,4 +1304,18 @@
     <string name="changelog__current">• まったく新しいキーボード: Dictateは、音声パネルを開く専用マイクキーを備えた本格的な多言語レイアウトキーボードとして提供されるようになりました。\n• 自分のAIを使用: OpenAI互換の任意のプロバイダーを選び、設定 → DictateでAPIキーを入力します。\n• 選択したモデルによるスマートな書式設定と言い換え。\n• 以前のDictateアプリの設定が自動的にインポートされます。</string>
     <string name="changelog__v4_1_0">• 新機能: キーボードから直接絵文字を検索できます。\n• 新しい文字起こしプロバイダー: Soniox。\n• 直前のディクテーションを再挿入し、キーボードを閉じたときに中断された録音を復元できます。\n• プロンプトバーがライブ更新されるようになりました。プロンプトを長押しすると編集できます。\n• AIプロバイダー画面に、有効な文字起こしプロバイダーと言い換えプロバイダーの両方が表示されるようになりました。\n• 録音ボタンが大きくなり、タップしやすくなりました。\n• 修正: 一部の言語でサポートの案内が固まってバーを覆ってしまう問題を修正しました。プロンプト・キーボード・テーマを選択した状態でバックアップが失敗しなくなりました。保存したAPIキーがアップデート後も保持されます。</string>
     <string name="changelog__v4_1_1">• 修正: 一部の端末でアクセントカラーが緑色に表示されることがありました。キーやボタンが本来のDictateブルーに戻りました。</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">端末上で動作します — 音声は送信されません。開始するにはモデルをダウンロードしてください。</string>
+    <string name="dictate__local_model_status_active">使用中</string>
+    <string name="dictate__local_model_status_installed">インストール済み · タップして使用</string>
+    <string name="dictate__local_model_action_install">ダウンロード</string>
+    <string name="dictate__local_model_action_delete">削除</string>
+    <string name="dictate__local_model_action_cancel">キャンセル</string>
+    <string name="dictate__local_model_downloading">ダウンロード中… {percent}%</string>
+    <string name="dictate__local_model_download_failed">ダウンロードに失敗しました — もう一度お試しください</string>
+    <string name="dictate__local_model_none_selected">まだモデルがダウンロードされていません</string>
+    <string name="dictate__local_model_delete_confirm">「{model}」を削除しますか？後でもう一度ダウンロードできます。</string>
+    <string name="dictate__local_model_not_installed_error">端末内モデルがありません</string>
+    <string name="dictate__local_fallback_title">オフライン時のフォールバック</string>
+    <string name="dictate__local_fallback_summary">オフライン時、プロバイダーが失敗したらダウンロード済みモデルで端末上で文字起こしします</string>
 </resources>

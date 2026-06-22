@@ -1356,4 +1356,18 @@
     <string name="changelog__current">• Teclado completamente nuevo: Dictate ahora se ofrece como un teclado de diseño completo y multilingüe con una tecla de micrófono dedicada que abre el panel de voz.\n• Usa tu propia IA: elige cualquier proveedor compatible con OpenAI e introduce tu clave de API en Ajustes → Dictate.\n• Formato y reformulación inteligentes con el modelo que elijas.\n• Tus ajustes de la app Dictate anterior se importan automáticamente.</string>
     <string name="changelog__v4_1_0">• Nuevo: busca emojis directamente desde el teclado.\n• Nuevo proveedor de transcripción: Soniox.\n• Vuelve a insertar tu último dictado y recupera las grabaciones interrumpidas al cerrar el teclado.\n• La barra de prompts ahora se actualiza en vivo: mantén pulsado un prompt para editarlo.\n• La pantalla de proveedores de IA ahora muestra tanto el proveedor de transcripción como el de reformulación activos.\n• Botón de grabación más grande y fácil de pulsar.\n• Correcciones: un aviso de apoyo podía quedarse bloqueado y tapar la barra en algunos idiomas; la copia de seguridad ya no falla con prompts, teclado o tema seleccionados; las claves de API guardadas se conservan al actualizar.</string>
     <string name="changelog__v4_1_1">• Corrección: el color de acento podía verse verde en algunos dispositivos; las teclas y los botones vuelven al azul de Dictate.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Funciona en tu dispositivo — no se envía ningún audio. Descarga un modelo para empezar.</string>
+    <string name="dictate__local_model_status_active">Activo</string>
+    <string name="dictate__local_model_status_installed">Instalado · toca para usarlo</string>
+    <string name="dictate__local_model_action_install">Descargar</string>
+    <string name="dictate__local_model_action_delete">Eliminar</string>
+    <string name="dictate__local_model_action_cancel">Cancelar</string>
+    <string name="dictate__local_model_downloading">Descargando… {percent}%</string>
+    <string name="dictate__local_model_download_failed">Error al descargar — inténtalo de nuevo</string>
+    <string name="dictate__local_model_none_selected">Aún no se ha descargado ningún modelo</string>
+    <string name="dictate__local_model_delete_confirm">¿Eliminar «{model}»? Puedes descargarlo de nuevo más tarde.</string>
+    <string name="dictate__local_model_not_installed_error">No hay ningún modelo local descargado</string>
+    <string name="dictate__local_fallback_title">Alternativa sin conexión</string>
+    <string name="dictate__local_fallback_summary">Sin conexión, transcribe en el dispositivo con el modelo descargado tras fallar el proveedor</string>
 </resources>

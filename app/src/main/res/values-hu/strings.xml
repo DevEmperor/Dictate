@@ -1372,4 +1372,18 @@
     <string name="changelog__current">• Vadonatúj billentyűzet: a Dictate mostantól teljes értékű, többnyelvű elrendezésű billentyűzetként érkezik, dedikált mikrofongombbal, amely megnyitja a hangpanelt.\n• Hozza a saját MI-jét: válasszon bármilyen OpenAI-kompatibilis szolgáltatót, és adja meg az API-kulcsát a Beállítások → Dictate menüpontban.\n• Intelligens formázás és átfogalmazás az Ön által választott modell segítségével.\n• A korábbi Dictate alkalmazás beállításai automatikusan importálódnak.</string>
     <string name="changelog__v4_1_0">• Új: emodzsik keresése közvetlenül a billentyűzetről.\n• Új átírási szolgáltató: Soniox.\n• Szúrd be újra a legutóbbi diktálást, és állítsd vissza a billentyűzet bezárásakor megszakadt felvételeket.\n• A promptsáv mostantól élőben frissül: tartsd nyomva egy promptot a szerkesztéséhez.\n• Az AI-szolgáltatók képernyője mostantól az aktív átírási és átfogalmazási szolgáltatót is megjeleníti.\n• Nagyobb, könnyebben eltalálható felvétel gomb.\n• Javítások: egy támogatási üzenet beragadhatott, és eltakarhatta a sávot néhány nyelven; a biztonsági mentés már nem hiúsul meg, ha promptok, billentyűzet vagy téma van kiválasztva; a mentett API-kulcsok megmaradnak frissítéskor.</string>
     <string name="changelog__v4_1_1">• Javítás: a kiemelőszín egyes eszközökön zöldnek tűnhetett; a billentyűk és gombok ismét a Dictate kék színében jelennek meg.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Az eszközödön fut — nem küldünk hangot. Tölts le egy modellt a kezdéshez.</string>
+    <string name="dictate__local_model_status_active">Aktív</string>
+    <string name="dictate__local_model_status_installed">Telepítve · koppints a használathoz</string>
+    <string name="dictate__local_model_action_install">Letöltés</string>
+    <string name="dictate__local_model_action_delete">Törlés</string>
+    <string name="dictate__local_model_action_cancel">Mégse</string>
+    <string name="dictate__local_model_downloading">Letöltés… {percent}%</string>
+    <string name="dictate__local_model_download_failed">A letöltés nem sikerült — próbáld újra</string>
+    <string name="dictate__local_model_none_selected">Még nincs letöltött modell</string>
+    <string name="dictate__local_model_delete_confirm">Törlöd a(z) „{model}“ modellt? Később újra letöltheted.</string>
+    <string name="dictate__local_model_not_installed_error">Nincs letöltött helyi modell</string>
+    <string name="dictate__local_fallback_title">Offline tartalék</string>
+    <string name="dictate__local_fallback_summary">Offline állapotban a letöltött modellel írd át helyben, miután a szolgáltató hibázott</string>
 </resources>

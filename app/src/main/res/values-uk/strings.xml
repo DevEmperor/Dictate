@@ -1218,4 +1218,18 @@
     <string name="changelog__current">• Цілком нова клавіатура: Dictate тепер повноцінна багатомовна клавіатура з розкладкою та окремою клавішею мікрофона, що відкриває голосову панель.\n• Власний ШІ: виберіть будь-якого постачальника, сумісного з OpenAI, і введіть ключ API в Налаштування → Dictate.\n• Розумне форматування та переформулювання з обраною вами моделлю.\n• Налаштування з попереднього застосунку Dictate імпортуються автоматично.</string>
     <string name="changelog__v4_1_0">• Нове: пошук емодзі прямо з клавіатури.\n• Новий постачальник транскрипції: Soniox.\n• Повторно вставляйте останню диктовку та відновлюйте записи, перервані під час закриття клавіатури.\n• Панель промптів тепер оновлюється в реальному часі: утримуйте промпт, щоб відредагувати його.\n• Екран постачальників ШІ тепер показує і активного постачальника транскрипції, і постачальника переформулювання.\n• Більша кнопка запису, у яку легше влучити.\n• Виправлення: підказка про підтримку могла зависнути та перекрити панель деякими мовами; резервне копіювання більше не виходить з ладу з вибраними промптами, клавіатурою чи темою; збережені API-ключі зберігаються після оновлення.</string>
     <string name="changelog__v4_1_1">• Виправлення: на деяких пристроях акцентний колір міг відображатися зеленим — клавіші та кнопки знову сині, як у Dictate.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Працює на вашому пристрої — аудіо не надсилається. Завантажте модель, щоб почати.</string>
+    <string name="dictate__local_model_status_active">Активна</string>
+    <string name="dictate__local_model_status_installed">Встановлено · торкніться, щоб використати</string>
+    <string name="dictate__local_model_action_install">Завантажити</string>
+    <string name="dictate__local_model_action_delete">Видалити</string>
+    <string name="dictate__local_model_action_cancel">Скасувати</string>
+    <string name="dictate__local_model_downloading">Завантаження… {percent}%</string>
+    <string name="dictate__local_model_download_failed">Не вдалося завантажити — спробуйте ще раз</string>
+    <string name="dictate__local_model_none_selected">Модель ще не завантажено</string>
+    <string name="dictate__local_model_delete_confirm">Видалити «{model}»? Пізніше можна завантажити знову.</string>
+    <string name="dictate__local_model_not_installed_error">Локальну модель не завантажено</string>
+    <string name="dictate__local_fallback_title">Офлайн-резерв</string>
+    <string name="dictate__local_fallback_summary">Без мережі транскрибуйте на пристрої завантаженою моделлю після збою провайдера</string>
 </resources>

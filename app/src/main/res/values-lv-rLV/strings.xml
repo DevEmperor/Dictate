@@ -1318,4 +1318,18 @@
     <string name="changelog__current">• Pavisam jauna tastatūra: Dictate tagad tiek piedāvāta kā pilnvērtīga daudzvalodu izkārtojuma tastatūra ar īpašu mikrofona taustiņu, kas atver balss paneli.\n• Izmantojiet savu MI: izvēlieties jebkuru ar OpenAI saderīgu pakalpojuma sniedzēju un ievadiet savu API atslēgu sadaļā Iestatījumi → Dictate.\n• Vieda formatēšana un pārformulēšana, ko nodrošina jūsu izvēlētais modelis.\n• Jūsu iestatījumi no iepriekšējās Dictate lietotnes tiek importēti automātiski.</string>
     <string name="changelog__v4_1_0">• Jauns: meklē emocijzīmes tieši no tastatūras.\n• Jauns transkripcijas pakalpojums: Soniox.\n• Atkārtoti ievieto pēdējo diktātu un atjauno ierakstus, kas tika pārtraukti, aizverot tastatūru.\n• Uzvedņu josla tagad atjauninās reāllaikā: turi nospiestu uzvedni, lai to rediģētu.\n• AI pakalpojumu ekrānā tagad redzams gan aktīvais transkripcijas, gan pārformulēšanas pakalpojums.\n• Lielāka ierakstīšanas poga, kurā vieglāk trāpīt.\n• Labojumi: atbalsta paziņojums dažās valodās varēja iestrēgt un aizsegt joslu; dublēšana vairs neizgāžas, kad atlasītas uzvednes, tastatūra vai motīvs; saglabātās API atslēgas tiek saglabātas pēc atjaunināšanas.</string>
     <string name="changelog__v4_1_1">• Labojums: akcenta krāsa dažās ierīcēs varēja izskatīties zaļa; taustiņi un pogas atkal ir Dictate zilā krāsā.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Darbojas jūsu ierīcē — audio netiek sūtīts. Lejupielādējiet modeli, lai sāktu.</string>
+    <string name="dictate__local_model_status_active">Aktīvs</string>
+    <string name="dictate__local_model_status_installed">Instalēts · pieskarieties, lai lietotu</string>
+    <string name="dictate__local_model_action_install">Lejupielādēt</string>
+    <string name="dictate__local_model_action_delete">Dzēst</string>
+    <string name="dictate__local_model_action_cancel">Atcelt</string>
+    <string name="dictate__local_model_downloading">Lejupielāde… {percent}%</string>
+    <string name="dictate__local_model_download_failed">Lejupielāde neizdevās — mēģiniet vēlreiz</string>
+    <string name="dictate__local_model_none_selected">Vēl nav lejupielādēts neviens modelis</string>
+    <string name="dictate__local_model_delete_confirm">Dzēst “{model}”? Vēlāk to varēsiet lejupielādēt vēlreiz.</string>
+    <string name="dictate__local_model_not_installed_error">Nav lejupielādēta lokāla modeļa</string>
+    <string name="dictate__local_fallback_title">Bezsaistes rezerve</string>
+    <string name="dictate__local_fallback_summary">Bezsaistē transkribē ierīcē ar lejupielādēto modeli pēc nodrošinātāja kļūmes</string>
 </resources>

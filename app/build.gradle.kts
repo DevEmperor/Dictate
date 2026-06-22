@@ -76,6 +76,12 @@ configure<ApplicationExtension> {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
+        // sherpa-onnx on-device STT (issue #104): ship the ABIs the vendored native libs cover —
+        // arm64-v8a (modern phones) and armeabi-v7a (older 32-bit devices).
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+        }
+
         buildConfigField("String", "BUILD_COMMIT_HASH", "\"${getGitCommitHash().get()}\"")
         buildConfigField("String", "FLADDONS_API_VERSION", "\"v~draft2\"")
         buildConfigField("String", "FLADDONS_STORE_URL", "\"beta.addons.florisboard.org\"")
@@ -241,6 +247,11 @@ dependencies {
     implementation(libs.patrickgold.jetpref.datastore.ui)
     implementation(libs.patrickgold.jetpref.material.ui)
 
+    // sherpa-onnx on-device STT spike (issue #104). Vendored from the v1.13.3 GitHub release AAR:
+    // the Kotlin/JNI API as a jar here; the matching native .so live in src/main/jniLibs/<abi>/.
+    // Not on Maven Central, so consumed as a local file (see private/docs/research/sherpa-onnx-feasibility.md).
+    implementation(files("libs/sherpa-onnx-1.13.3.jar"))
+
     implementation(projects.lib.android)
     implementation(projects.lib.color)
     implementation(projects.lib.compose)
@@ -256,6 +267,33 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext)
     androidTestImplementation(libs.androidx.test.espresso.core)
 }
+
+// On-device STT (issue #104): the sherpa-onnx native libs are vendored, not committed (see
+// .gitignore). Fail early with a clear instruction instead of a cryptic linker error if a fresh
+// clone hasn't fetched them yet.
+val verifySherpaOnnxLibs by tasks.registering {
+    // Resolve paths at configuration time so the action captures only plain Files (configuration
+    // cache cannot serialize references to Gradle script/Project objects).
+    val projectDir = layout.projectDirectory
+    val required = buildList {
+        add(projectDir.file("libs/sherpa-onnx-1.13.3.jar").asFile)
+        for (abi in listOf("arm64-v8a", "armeabi-v7a")) {
+            add(projectDir.file("src/main/jniLibs/$abi/libonnxruntime.so").asFile)
+            add(projectDir.file("src/main/jniLibs/$abi/libsherpa-onnx-jni.so").asFile)
+        }
+    }
+    doLast {
+        val missing = required.filterNot { it.exists() }
+        if (missing.isNotEmpty()) {
+            throw GradleException(
+                "Missing vendored sherpa-onnx native libs:\n" +
+                    missing.joinToString("\n") { "  - ${it.name}" } +
+                    "\n\nRun:  scripts/fetch-sherpa-onnx.sh",
+            )
+        }
+    }
+}
+tasks.named("preBuild").configure { dependsOn(verifySherpaOnnxLibs) }
 
 fun getGitCommitHash(short: Boolean = false): Provider<String> {
     if (!File(".git").exists()) {

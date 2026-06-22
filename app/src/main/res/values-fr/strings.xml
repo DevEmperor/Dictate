@@ -1250,4 +1250,18 @@
     <string name="changelog__current">• Tout nouveau clavier : Dictate est désormais un clavier de disposition complet et multilingue, doté d\'une touche micro dédiée qui ouvre le panneau vocal.\n• Votre propre IA : choisissez n\'importe quel fournisseur compatible OpenAI et saisissez votre clé d\'API dans Paramètres → Dictate.\n• Mise en forme et reformulation intelligentes grâce au modèle de votre choix.\n• Vos paramètres de l\'ancienne application Dictate sont importés automatiquement.</string>
     <string name="changelog__v4_1_0">• Nouveau : recherchez des emojis directement depuis le clavier.\n• Nouveau fournisseur de transcription : Soniox.\n• Réinsérez votre dernière dictée et récupérez les enregistrements interrompus à la fermeture du clavier.\n• La barre de prompts se met désormais à jour en direct : appui long sur un prompt pour le modifier.\n• L\'écran des fournisseurs d\'IA affiche maintenant à la fois le fournisseur de transcription et celui de reformulation actifs.\n• Bouton d\'enregistrement plus grand et plus facile à toucher.\n• Corrections : un message de soutien pouvait rester bloqué et masquer la barre dans certaines langues ; la sauvegarde n\'échoue plus lorsque des prompts, le clavier ou le thème sont sélectionnés ; les clés d\'API enregistrées sont conservées lors de la mise à jour.</string>
     <string name="changelog__v4_1_1">• Correction : la couleur d\'accent pouvait apparaître en vert sur certains appareils ; les touches et boutons reviennent au bleu de Dictate.</string>
+    <!-- Dictate on-device (offline) models -->
+    <string name="dictate__local_models_header">Fonctionne sur votre appareil — aucun audio n’est envoyé. Téléchargez un modèle pour commencer.</string>
+    <string name="dictate__local_model_status_active">Actif</string>
+    <string name="dictate__local_model_status_installed">Installé · appuyez pour l’utiliser</string>
+    <string name="dictate__local_model_action_install">Télécharger</string>
+    <string name="dictate__local_model_action_delete">Supprimer</string>
+    <string name="dictate__local_model_action_cancel">Annuler</string>
+    <string name="dictate__local_model_downloading">Téléchargement… {percent}%</string>
+    <string name="dictate__local_model_download_failed">Échec du téléchargement — veuillez réessayer</string>
+    <string name="dictate__local_model_none_selected">Aucun modèle téléchargé pour l’instant</string>
+    <string name="dictate__local_model_delete_confirm">Supprimer « {model} » ? Vous pourrez le retélécharger plus tard.</string>
+    <string name="dictate__local_model_not_installed_error">Aucun modèle local téléchargé</string>
+    <string name="dictate__local_fallback_title">Repli hors ligne</string>
+    <string name="dictate__local_fallback_summary">Hors ligne, transcrivez sur l’appareil avec le modèle téléchargé après l’échec du fournisseur</string>
 </resources>
