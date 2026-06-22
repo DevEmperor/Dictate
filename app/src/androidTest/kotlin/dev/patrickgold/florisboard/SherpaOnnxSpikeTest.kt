@@ -19,6 +19,8 @@ import com.k2fsa.sherpa.onnx.OfflineRecognizerConfig
 import com.k2fsa.sherpa.onnx.OfflineWhisperModelConfig
 import androidx.test.platform.app.InstrumentationRegistry
 import dev.patrickgold.florisboard.dictate.audio.AudioDecode
+import dev.patrickgold.florisboard.dictate.provider.LocalModelCatalog
+import dev.patrickgold.florisboard.dictate.provider.LocalModelManager
 import dev.patrickgold.florisboard.dictate.provider.LocalTranscriptionProvider
 import dev.patrickgold.florisboard.dictate.provider.TranscriptionRequest
 import kotlinx.coroutines.runBlocking
@@ -119,6 +121,48 @@ class SherpaOnnxSpikeTest {
 
         modelDir.deleteRecursively()
         audio.delete()
+        assertContainsYellow(result.text)
+    }
+
+    /**
+     * Phase 3a proof (issue #104): the full download → verify → install → transcribe loop via
+     * [LocalModelManager]. Gated behind an instrumentation arg because it pulls ~99 MB over the network:
+     *
+     *   ./gradlew :app:connectedDebugAndroidTest \
+     *     -Pandroid.testInstrumentationRunnerArguments.class=dev.patrickgold.florisboard.SherpaOnnxSpikeTest#downloadsInstallsAndTranscribes \
+     *     -Pandroid.testInstrumentationRunnerArguments.runDownloadTest=1
+     */
+    @Test
+    fun downloadsInstallsAndTranscribes() {
+        val runIt = InstrumentationRegistry.getArguments().getString("runDownloadTest") == "1"
+        assumeTrue("set runDownloadTest=1 to run the ~99 MB download test", runIt)
+        val m4a = File(dir, "test0.m4a")
+        assumeTrue("test0.m4a not pushed to $dir — skipping", m4a.exists())
+
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val spec = LocalModelCatalog.WHISPER_TINY
+        LocalModelManager.delete(context, spec.id) // clean slate
+
+        val start = System.currentTimeMillis()
+        var lastLogged = -1
+        runBlocking {
+            LocalModelManager.download(context, spec) { done, total ->
+                val pct = (done * 100 / total).toInt()
+                if (pct / 10 != lastLogged / 10) { Log.i(TAG, "download $pct%"); lastLogged = pct }
+            }
+        }
+        Log.i(TAG, "download+install (incl. checksum verify) in ${System.currentTimeMillis() - start}ms")
+        assert(LocalModelManager.isInstalled(context, spec.id)) { "model not installed after download" }
+
+        val audio = File(context.cacheDir, "dl-test.m4a").also { m4a.copyTo(it, overwrite = true) }
+        val result = runBlocking {
+            LocalTranscriptionProvider(LocalTranscriptionProvider.modelDir(context, spec.id))
+                .transcribe(TranscriptionRequest(audioFile = audio, model = spec.id))
+        }
+        Log.i(TAG, "[downloaded] transcript: \"${result.text}\"")
+
+        audio.delete()
+        LocalModelManager.delete(context, spec.id) // leave device clean
         assertContainsYellow(result.text)
     }
 
