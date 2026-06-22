@@ -70,3 +70,8 @@ target/
 
 # Dictate: docs hidden from the public repo for now (kept locally)
 private/
+
+# Dictate: vendored sherpa-onnx native libs for on-device STT (issue #104). Reproducible build
+# artifacts fetched from the pinned GitHub release — run scripts/fetch-sherpa-onnx.sh to populate.
+/app/libs/sherpa-onnx-*.jar
+/app/src/main/jniLibs/
