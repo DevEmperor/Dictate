@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Lan
 import androidx.compose.material.icons.filled.Mic
@@ -65,6 +66,7 @@ import dev.patrickgold.jetpref.datastore.model.collectAsState
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
+import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
 import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
 import kotlinx.coroutines.launch
@@ -87,6 +89,7 @@ fun DictateProvidersScreen() = FlorisScreen {
     content {
         val navController = LocalNavController.current
         val accounts by prefs.dictate.providerAccounts.collectAsState()
+        val activeTranscriptionId by prefs.dictate.transcriptionProviderId.collectAsState()
         val scope = rememberCoroutineScope()
 
         // The provider currently being edited in the dialog (null = closed).
@@ -113,6 +116,16 @@ fun DictateProvidersScreen() = FlorisScreen {
                     customAccounts.forEach { entry(key = it.providerId, label = customLabel(it)) }
                 },
             )
+            // On-device offline fallback (issue #104): offer it right under the transcription provider
+            // selection. Hidden when the active provider is already the on-device one (no fallback needed).
+            if (ProviderRegistry.byId(activeTranscriptionId)?.transcriptionApi != TranscriptionApi.LOCAL_ONDEVICE) {
+                SwitchPreference(
+                    prefs.dictate.localFallbackEnabled,
+                    icon = Icons.Default.CloudOff,
+                    title = stringRes(R.string.dictate__local_fallback_title),
+                    summary = stringRes(R.string.dictate__local_fallback_summary),
+                )
+            }
             ListPreference(
                 prefs.dictate.rewordingProviderId,
                 icon = Icons.Default.SmartToy,
