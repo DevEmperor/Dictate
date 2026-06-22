@@ -16,6 +16,9 @@ import com.k2fsa.sherpa.onnx.OfflineModelConfig
 import com.k2fsa.sherpa.onnx.OfflineRecognizer
 import com.k2fsa.sherpa.onnx.OfflineRecognizerConfig
 import com.k2fsa.sherpa.onnx.OfflineWhisperModelConfig
+import com.k2fsa.sherpa.onnx.SileroVadModelConfig
+import com.k2fsa.sherpa.onnx.Vad
+import com.k2fsa.sherpa.onnx.VadModelConfig
 import dev.patrickgold.florisboard.dictate.audio.AudioDecode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -70,13 +73,13 @@ class LocalTranscriptionProvider(
 
             val text = try {
                 val recognizer = RecognizerCache.acquire(encoder, decoder, tokens, numThreads, language)
-                val stream = recognizer.createStream()
-                try {
-                    stream.acceptWaveform(samples, AudioDecode.TARGET_SAMPLE_RATE)
-                    recognizer.decode(stream)
-                    recognizer.getResult(stream).text
-                } finally {
-                    stream.release()
+                val vadFile = File(modelDir, VAD)
+                // Whisper handles ~30 s per pass; segment longer audio at speech pauses (VAD) so the
+                // tail isn't dropped. Short clips take the simple single-pass path (no VAD overhead).
+                if (vadFile.exists() && samples.size > VAD_MIN_SAMPLES) {
+                    transcribeSegmented(recognizer, vadFile, samples)
+                } else {
+                    decodeOnce(recognizer, samples)
                 }
             } catch (e: DictateApiException) {
                 throw e
@@ -91,11 +94,101 @@ class LocalTranscriptionProvider(
             TranscriptionResult(text.trim())
         }
 
+    /** Single whole-buffer Whisper pass (fine for clips up to ~30 s). */
+    private fun decodeOnce(recognizer: OfflineRecognizer, samples: FloatArray): String {
+        val stream = recognizer.createStream()
+        return try {
+            stream.acceptWaveform(samples, AudioDecode.TARGET_SAMPLE_RATE)
+            recognizer.decode(stream)
+            recognizer.getResult(stream).text
+        } finally {
+            stream.release()
+        }
+    }
+
+    /**
+     * Long-audio path: a Silero VAD splits the waveform into speech segments (each capped well under
+     * Whisper's 30 s window), every segment is transcribed and the texts are joined in order. Falls back
+     * to a single pass if the VAD detects no speech at all.
+     */
+    private fun transcribeSegmented(
+        recognizer: OfflineRecognizer,
+        vadFile: File,
+        samples: FloatArray,
+    ): String {
+        val vad = Vad(
+            config = VadModelConfig().apply {
+                sileroVadModelConfig = SileroVadModelConfig(
+                    model = vadFile.absolutePath,
+                    threshold = 0.5f,
+                    minSilenceDuration = 0.25f,
+                    minSpeechDuration = 0.25f,
+                    windowSize = VAD_WINDOW,
+                    maxSpeechDuration = 28f, // keep every segment safely inside Whisper's 30 s window
+                )
+                sampleRate = AudioDecode.TARGET_SAMPLE_RATE
+                numThreads = 1
+            },
+        )
+        val parts = StringBuilder()
+        try {
+            var i = 0
+            while (i < samples.size) {
+                val end = minOf(i + VAD_WINDOW, samples.size)
+                vad.acceptWaveform(samples.copyOfRange(i, end))
+                i = end
+                drainSegments(vad, recognizer, parts)
+            }
+            vad.flush()
+            drainSegments(vad, recognizer, parts)
+        } finally {
+            vad.release()
+        }
+        return parts.toString().trim().ifBlank { decodeOnce(recognizer, samples) }
+    }
+
+    private fun drainSegments(vad: Vad, recognizer: OfflineRecognizer, out: StringBuilder) {
+        while (!vad.empty()) {
+            appendDecoded(recognizer, vad.front().samples, out)
+            vad.pop()
+        }
+    }
+
+    /**
+     * Decodes [samples], hard-capping each piece below Whisper's 30 s window. VAD normally keeps segments
+     * short, but on gap-less continuous speech a segment can still exceed 30 s — without this cap Whisper
+     * would silently drop everything past 30 s (the original bug).
+     */
+    private fun appendDecoded(recognizer: OfflineRecognizer, samples: FloatArray, out: StringBuilder) {
+        var offset = 0
+        while (offset < samples.size) {
+            val end = minOf(offset + MAX_SEGMENT_SAMPLES, samples.size)
+            val piece = if (offset == 0 && end == samples.size) samples else samples.copyOfRange(offset, end)
+            val text = decodeOnce(recognizer, piece).trim()
+            if (text.isNotEmpty()) {
+                if (out.isNotEmpty()) out.append(' ')
+                out.append(text)
+            }
+            offset = end
+        }
+    }
+
     companion object {
+        /** Audio longer than this (~28 s at 16 kHz) is VAD-segmented; shorter takes the single pass. */
+        private const val VAD_MIN_SAMPLES = 28 * AudioDecode.TARGET_SAMPLE_RATE
+        private const val VAD_WINDOW = 512
+
+        /** Hard ceiling per Whisper pass (~29 s) — above VAD's 28 s cut so normal segments pass whole. */
+        private const val MAX_SEGMENT_SAMPLES = 29 * AudioDecode.TARGET_SAMPLE_RATE
+
+
         const val MODELS_SUBDIR = "dictate-models"
         const val ENCODER = "encoder.onnx"
         const val DECODER = "decoder.onnx"
         const val TOKENS = "tokens.txt"
+
+        /** Optional Silero VAD model, downloaded alongside each model; enables long-audio segmenting. */
+        const val VAD = "vad.onnx"
 
         /** Root directory that holds all installed on-device models. */
         fun modelsRoot(context: Context): File = File(context.filesDir, MODELS_SUBDIR)

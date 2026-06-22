@@ -166,6 +166,41 @@ class SherpaOnnxSpikeTest {
         assertContainsYellow(result.text)
     }
 
+    /**
+     * Regression proof (issue #104): a ~40 s clip whose final words ("…the squalid quarter of the
+     * brothels", from the appended 0.wav past the 30 s mark) only survive if VAD segmentation kicked in.
+     * Requires a model + silero_vad.onnx + long.m4a pushed to [dir].
+     */
+    @Test
+    fun vadSegmentsLongAudioThroughProvider() {
+        val m4a = File(dir, "long.m4a")
+        val vad = File(dir, "silero_vad.onnx")
+        assumeModelPresent(extra = m4a)
+        assumeTrue("silero_vad.onnx not pushed to $dir — skipping", vad.exists())
+
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val modelId = "whisper-tiny"
+        val modelDir = LocalTranscriptionProvider.modelDir(context, modelId).apply { mkdirs() }
+        encoder.copyTo(File(modelDir, LocalTranscriptionProvider.ENCODER), overwrite = true)
+        decoder.copyTo(File(modelDir, LocalTranscriptionProvider.DECODER), overwrite = true)
+        tokens.copyTo(File(modelDir, LocalTranscriptionProvider.TOKENS), overwrite = true)
+        vad.copyTo(File(modelDir, LocalTranscriptionProvider.VAD), overwrite = true)
+
+        val audio = File(context.cacheDir, "vad-test.m4a").also { m4a.copyTo(it, overwrite = true) }
+        val start = System.currentTimeMillis()
+        val result = runBlocking {
+            LocalTranscriptionProvider(modelDir)
+                .transcribe(TranscriptionRequest(audioFile = audio, model = modelId))
+        }
+        Log.i(TAG, "[vad ${System.currentTimeMillis() - start}ms] len=${result.text.length}: \"${result.text}\"")
+
+        modelDir.deleteRecursively()
+        audio.delete()
+        assert(result.text.contains("brothels", ignoreCase = true)) {
+            "Tail beyond 30 s was lost — VAD segmentation didn't cover the end: \"${result.text}\""
+        }
+    }
+
     // --- helpers ---
 
     private val encoder get() = File(dir, "tiny-encoder.int8.onnx")
