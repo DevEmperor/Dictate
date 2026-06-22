@@ -64,8 +64,12 @@ class LocalTranscriptionProvider(
                 )
             }
 
+            // Honor the user's chosen input language like the cloud providers do; null/blank → Whisper
+            // auto-detect. Whisper expects the base ISO code (e.g. "de"), so drop any region suffix.
+            val language = request.language?.substringBefore('-')?.takeIf { it.isNotBlank() }.orEmpty()
+
             val text = try {
-                val recognizer = RecognizerCache.acquire(encoder, decoder, tokens, numThreads)
+                val recognizer = RecognizerCache.acquire(encoder, decoder, tokens, numThreads, language)
                 val stream = recognizer.createStream()
                 try {
                     stream.acceptWaveform(samples, AudioDecode.TARGET_SAMPLE_RATE)
@@ -117,21 +121,22 @@ private object RecognizerCache {
     private var recognizer: OfflineRecognizer? = null
 
     @Synchronized
-    fun acquire(encoder: File, decoder: File, tokens: File, numThreads: Int): OfflineRecognizer {
-        val cacheKey = encoder.parentFile?.absolutePath ?: encoder.absolutePath
+    fun acquire(encoder: File, decoder: File, tokens: File, numThreads: Int, language: String): OfflineRecognizer {
+        // Language is baked into the Whisper config at build time, so it is part of the cache key:
+        // switching the input language rebuilds the recognizer (rare; recognizer load is ~1s).
+        val cacheKey = (encoder.parentFile?.absolutePath ?: encoder.absolutePath) + "|" + language
         val existing = recognizer
         if (existing != null && cacheKey == key) return existing
 
         existing?.release()
-        // Whisper auto-detects the language (language = ""), so the recognizer is reusable regardless of
-        // the user's selected input language. Honoring a forced language is a later refinement (#104).
         val config = OfflineRecognizerConfig(
             featConfig = FeatureConfig(sampleRate = AudioDecode.TARGET_SAMPLE_RATE, featureDim = 80),
             modelConfig = OfflineModelConfig(
                 whisper = OfflineWhisperModelConfig(
                     encoder = encoder.absolutePath,
                     decoder = decoder.absolutePath,
-                    language = "",
+                    // "" lets Whisper auto-detect; a base ISO code forces that language.
+                    language = language,
                     task = "transcribe",
                 ),
                 tokens = tokens.absolutePath,

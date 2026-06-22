@@ -1390,4 +1390,6 @@
     <string name="dictate__local_model_none_selected">Модель ещё не скачана</string>
     <string name="dictate__local_model_delete_confirm">Удалить «{model}»? Позже можно скачать снова.</string>
     <string name="dictate__local_model_not_installed_error">Локальная модель не скачана. Откройте настройки, чтобы скачать.</string>
+    <string name="dictate__local_fallback_title">Офлайн-резерв</string>
+    <string name="dictate__local_fallback_summary">Без сети транскрибируйте на устройстве скачанной моделью после сбоя провайдера</string>
 </resources>

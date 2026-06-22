@@ -585,14 +585,22 @@ object DictateController {
                     LocalTranscriptionProvider(LocalTranscriptionProvider.modelDir(appContext, model))
                         .transcribe(request)
                 } else {
-                    OpenAiCompatibleClient.from(
-                        preset, apiKey,
-                        baseUrlOverride = baseUrlOverrideFor(account),
-                        proxy = prefs.dictate.dictateProxyConfig(),
-                    ).transcribe(
-                        request,
-                        onRetry = { attempt -> _state.value = UiState.Transcribing(attempt) },
-                    )
+                    try {
+                        OpenAiCompatibleClient.from(
+                            preset, apiKey,
+                            baseUrlOverride = baseUrlOverrideFor(account),
+                            proxy = prefs.dictate.dictateProxyConfig(),
+                        ).transcribe(
+                            request,
+                            onRetry = { attempt -> _state.value = UiState.Transcribing(attempt) },
+                        )
+                    } catch (e: DictateApiException) {
+                        // Offline fallback (#104): the cloud call failed because we're offline (after its
+                        // retries) — transcribe on-device with the downloaded model instead of erroring.
+                        val fallback = localFallbackProvider(appContext, preset, e) ?: throw e
+                        _state.value = UiState.Transcribing()
+                        fallback.transcribe(request)
+                    }
                 }
                 val finalText = if (live) {
                     // The spoken transcript is an instruction; send it to GPT (optionally operating
@@ -1321,4 +1329,27 @@ object DictateController {
     /** Whether [account] needs an API key: built-in cloud providers do; custom/local servers may not. */
     private fun requiresKey(account: ProviderAccount): Boolean =
         !account.isCustom && presetFor(account).apiKeyUrl != null
+
+    /**
+     * The on-device provider to retry [error] on as an offline fallback (#104), or null when it doesn't
+     * apply: the fallback is disabled, the failure isn't a connectivity one, the active provider is
+     * already local, or no local model is downloaded.
+     */
+    private fun localFallbackProvider(
+        context: Context,
+        activePreset: ProviderPreset,
+        error: DictateApiException,
+    ): LocalTranscriptionProvider? {
+        if (!prefs.dictate.localFallbackEnabled.get()) return null
+        if (activePreset.transcriptionApi == TranscriptionApi.LOCAL_ONDEVICE) return null
+        if (error.kind != DictateApiException.Kind.NETWORK &&
+            error.kind != DictateApiException.Kind.TIMEOUT
+        ) return null
+        val localModel = prefs.dictate.providerAccounts.get().getOrEmpty(ProviderRegistry.LOCAL.id)
+            .transcriptionModel.takeIf { it.isNotBlank() }
+            ?: ProviderRegistry.LOCAL.defaultTranscriptionModel
+            ?: return null
+        if (!LocalModelManager.isInstalled(context, localModel)) return null
+        return LocalTranscriptionProvider(LocalTranscriptionProvider.modelDir(context, localModel))
+    }
 }

@@ -1241,4 +1241,6 @@
     <string name="dictate__local_model_none_selected">لم يتم تنزيل أي نموذج بعد</string>
     <string name="dictate__local_model_delete_confirm">حذف ”{model}“؟ يمكنك تنزيله مرة أخرى لاحقًا.</string>
     <string name="dictate__local_model_not_installed_error">لا يوجد نموذج محلي مُنزَّل. افتح الإعدادات لتنزيل واحد.</string>
+    <string name="dictate__local_fallback_title">احتياطي دون اتصال</string>
+    <string name="dictate__local_fallback_summary">عند عدم الاتصال، فرّغ الصوت محليًا بالنموذج المُنزَّل بعد فشل المزوّد</string>
 </resources>

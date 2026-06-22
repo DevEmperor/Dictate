@@ -1316,4 +1316,6 @@
     <string name="dictate__local_model_none_selected">まだモデルがダウンロードされていません</string>
     <string name="dictate__local_model_delete_confirm">「{model}」を削除しますか？後でもう一度ダウンロードできます。</string>
     <string name="dictate__local_model_not_installed_error">端末内モデルがありません。設定を開いてダウンロードしてください。</string>
+    <string name="dictate__local_fallback_title">オフライン時のフォールバック</string>
+    <string name="dictate__local_fallback_summary">オフライン時、プロバイダーが失敗したらダウンロード済みモデルで端末上で文字起こしします</string>
 </resources>

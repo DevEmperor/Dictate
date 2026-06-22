@@ -1401,4 +1401,6 @@
     <string name="dictate__local_model_none_selected">Zatím nestažen žádný model</string>
     <string name="dictate__local_model_delete_confirm">Smazat „{model}“? Později jej můžete stáhnout znovu.</string>
     <string name="dictate__local_model_not_installed_error">Není stažen žádný místní model. Otevřete nastavení a stáhněte jej.</string>
+    <string name="dictate__local_fallback_title">Offline záloha</string>
+    <string name="dictate__local_fallback_summary">Když jste offline, přepište zvuk lokálně staženým modelem poté, co poskytovatel selže</string>
 </resources>

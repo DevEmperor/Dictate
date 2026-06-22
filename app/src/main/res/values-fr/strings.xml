@@ -1262,4 +1262,6 @@
     <string name="dictate__local_model_none_selected">Aucun modèle téléchargé pour l’instant</string>
     <string name="dictate__local_model_delete_confirm">Supprimer « {model} » ? Vous pourrez le retélécharger plus tard.</string>
     <string name="dictate__local_model_not_installed_error">Aucun modèle local téléchargé. Ouvrez les réglages pour en télécharger un.</string>
+    <string name="dictate__local_fallback_title">Repli hors ligne</string>
+    <string name="dictate__local_fallback_summary">Hors ligne, transcrivez sur l’appareil avec le modèle téléchargé après l’échec du fournisseur</string>
 </resources>

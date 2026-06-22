@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.BrightnessHigh
 import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
 import androidx.compose.material.icons.filled.Edit
@@ -163,6 +164,15 @@ fun DictateScreen() = FlorisScreen {
                 placeholder = stringRes(R.string.dictate__custom_words_placeholder),
                 multiline = true,
                 notSetSummary = stringRes(R.string.dictate__custom_words_summary_empty),
+            )
+
+            // On-device offline fallback (issue #104): only meaningful once a local model is downloaded
+            // in the On-device provider; ignored when the active provider is already the local one.
+            SwitchPreference(
+                prefs.dictate.localFallbackEnabled,
+                icon = Icons.Default.CloudOff,
+                title = stringRes(R.string.dictate__local_fallback_title),
+                summary = stringRes(R.string.dictate__local_fallback_summary),
             )
         }
 

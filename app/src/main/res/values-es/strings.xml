@@ -1368,4 +1368,6 @@
     <string name="dictate__local_model_none_selected">Aún no se ha descargado ningún modelo</string>
     <string name="dictate__local_model_delete_confirm">¿Eliminar «{model}»? Puedes descargarlo de nuevo más tarde.</string>
     <string name="dictate__local_model_not_installed_error">No hay ningún modelo local descargado. Abre los ajustes para descargar uno.</string>
+    <string name="dictate__local_fallback_title">Alternativa sin conexión</string>
+    <string name="dictate__local_fallback_summary">Sin conexión, transcribe en el dispositivo con el modelo descargado tras fallar el proveedor</string>
 </resources>

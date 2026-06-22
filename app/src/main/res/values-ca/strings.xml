@@ -1260,4 +1260,6 @@
     <string name="dictate__local_model_none_selected">Encara no s’ha baixat cap model</string>
     <string name="dictate__local_model_delete_confirm">Vols eliminar «{model}»? El pots tornar a baixar més tard.</string>
     <string name="dictate__local_model_not_installed_error">Cap model local baixat. Obre la configuració per baixar-ne un.</string>
+    <string name="dictate__local_fallback_title">Alternativa fora de línia</string>
+    <string name="dictate__local_fallback_summary">Quan no tens connexió, transcriu localment amb el model baixat després que falli el proveïdor</string>
 </resources>

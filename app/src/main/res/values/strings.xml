@@ -1391,6 +1391,8 @@
     <string name="dictate__local_model_none_selected" comment="Summary on the on-device provider row when no model is downloaded/selected yet">No model downloaded yet</string>
     <string name="dictate__local_model_delete_confirm" comment="Confirmation question before deleting a downloaded model. {model} is the model name.">Delete “{model}”? You can download it again later.</string>
     <string name="dictate__local_model_not_installed_error" comment="Error shown when trying to dictate with the on-device provider but no model is downloaded">No on-device model downloaded. Open settings to download one.</string>
+    <string name="dictate__local_fallback_title" comment="Title of the toggle that enables on-device transcription as an offline fallback">Offline fallback</string>
+    <string name="dictate__local_fallback_summary" comment="Explains the offline fallback toggle">When offline, transcribe on-device with the downloaded model after the provider fails</string>
 
     <!-- Dictate recording settings -->
     <string name="dictate__recording_group" comment="Group title for recording-related settings">Recording</string>
