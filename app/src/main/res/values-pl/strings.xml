@@ -1401,7 +1401,7 @@
     <string name="dictate__local_model_download_failed">Pobieranie nie powiodło się — spróbuj ponownie</string>
     <string name="dictate__local_model_none_selected">Nie pobrano jeszcze żadnego modelu</string>
     <string name="dictate__local_model_delete_confirm">Usunąć „{model}“? Możesz pobrać go ponownie później.</string>
-    <string name="dictate__local_model_not_installed_error">Nie pobrano lokalnego modelu. Otwórz ustawienia, aby pobrać.</string>
+    <string name="dictate__local_model_not_installed_error">Nie pobrano lokalnego modelu</string>
     <string name="dictate__local_fallback_title">Tryb offline awaryjny</string>
     <string name="dictate__local_fallback_summary">Offline transkrybuj na urządzeniu pobranym modelem, gdy dostawca zawiedzie</string>
 </resources>

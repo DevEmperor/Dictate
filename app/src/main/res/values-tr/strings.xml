@@ -1363,7 +1363,7 @@
     <string name="dictate__local_model_download_failed">İndirme başarısız — lütfen tekrar deneyin</string>
     <string name="dictate__local_model_none_selected">Henüz model indirilmedi</string>
     <string name="dictate__local_model_delete_confirm">“{model}” silinsin mi? Daha sonra tekrar indirebilirsiniz.</string>
-    <string name="dictate__local_model_not_installed_error">İndirilen yerel model yok. İndirmek için ayarları açın.</string>
+    <string name="dictate__local_model_not_installed_error">İndirilen yerel model yok</string>
     <string name="dictate__local_fallback_title">Çevrimdışı yedek</string>
     <string name="dictate__local_fallback_summary">Çevrimdışıyken, sağlayıcı başarısız olduktan sonra indirilen modelle cihazda yazıya dök</string>
 </resources>

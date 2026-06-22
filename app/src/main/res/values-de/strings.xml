@@ -1258,7 +1258,7 @@
     <string name="dictate__local_model_download_failed">Download fehlgeschlagen — bitte erneut versuchen</string>
     <string name="dictate__local_model_none_selected">Noch kein Modell heruntergeladen</string>
     <string name="dictate__local_model_delete_confirm">„{model}“ löschen? Du kannst es später erneut herunterladen.</string>
-    <string name="dictate__local_model_not_installed_error">Kein lokales Modell heruntergeladen. Öffne die Einstellungen, um eines zu laden.</string>
+    <string name="dictate__local_model_not_installed_error">Kein lokales Modell heruntergeladen</string>
     <string name="dictate__local_fallback_title">Offline-Fallback</string>
     <string name="dictate__local_fallback_summary">Wenn offline, nach dem Fehlschlag des Anbieters lokal mit dem heruntergeladenen Modell transkribieren</string>
 </resources>

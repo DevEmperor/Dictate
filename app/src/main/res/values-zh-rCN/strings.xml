@@ -1380,7 +1380,7 @@
     <string name="dictate__local_model_download_failed">下载失败 — 请重试</string>
     <string name="dictate__local_model_none_selected">尚未下载模型</string>
     <string name="dictate__local_model_delete_confirm">删除“{model}”？以后可以重新下载。</string>
-    <string name="dictate__local_model_not_installed_error">未下载本地模型。打开设置以下载。</string>
+    <string name="dictate__local_model_not_installed_error">未下载本地模型</string>
     <string name="dictate__local_fallback_title">离线回退</string>
     <string name="dictate__local_fallback_summary">离线时，提供商失败后用已下载的模型在本地转写</string>
 </resources>

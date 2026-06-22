@@ -1338,7 +1338,7 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="dictate__local_model_download_failed">Unduhan gagal — silakan coba lagi</string>
     <string name="dictate__local_model_none_selected">Belum ada model yang diunduh</string>
     <string name="dictate__local_model_delete_confirm">Hapus “{model}”? Anda dapat mengunduhnya lagi nanti.</string>
-    <string name="dictate__local_model_not_installed_error">Tidak ada model lokal yang diunduh. Buka pengaturan untuk mengunduh.</string>
+    <string name="dictate__local_model_not_installed_error">Tidak ada model lokal yang diunduh</string>
     <string name="dictate__local_fallback_title">Cadangan luring</string>
     <string name="dictate__local_fallback_summary">Saat luring, transkripsi di perangkat dengan model yang diunduh setelah penyedia gagal</string>
 </resources>

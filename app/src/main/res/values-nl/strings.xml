@@ -1285,7 +1285,7 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="dictate__local_model_download_failed">Downloaden mislukt — probeer het opnieuw</string>
     <string name="dictate__local_model_none_selected">Nog geen model gedownload</string>
     <string name="dictate__local_model_delete_confirm">“{model}” verwijderen? Je kunt het later opnieuw downloaden.</string>
-    <string name="dictate__local_model_not_installed_error">Geen lokaal model gedownload. Open de instellingen om er een te downloaden.</string>
+    <string name="dictate__local_model_not_installed_error">Geen lokaal model gedownload</string>
     <string name="dictate__local_fallback_title">Offline terugval</string>
     <string name="dictate__local_fallback_summary">Offline transcriberen op het apparaat met het gedownloade model nadat de provider faalt</string>
 </resources>

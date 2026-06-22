@@ -1229,7 +1229,7 @@
     <string name="dictate__local_model_download_failed">Не вдалося завантажити — спробуйте ще раз</string>
     <string name="dictate__local_model_none_selected">Модель ще не завантажено</string>
     <string name="dictate__local_model_delete_confirm">Видалити «{model}»? Пізніше можна завантажити знову.</string>
-    <string name="dictate__local_model_not_installed_error">Локальну модель не завантажено. Відкрийте налаштування, щоб завантажити.</string>
+    <string name="dictate__local_model_not_installed_error">Локальну модель не завантажено</string>
     <string name="dictate__local_fallback_title">Офлайн-резерв</string>
     <string name="dictate__local_fallback_summary">Без мережі транскрибуйте на пристрої завантаженою моделлю після збою провайдера</string>
 </resources>

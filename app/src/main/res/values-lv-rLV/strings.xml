@@ -1329,7 +1329,7 @@
     <string name="dictate__local_model_download_failed">Lejupielāde neizdevās — mēģiniet vēlreiz</string>
     <string name="dictate__local_model_none_selected">Vēl nav lejupielādēts neviens modelis</string>
     <string name="dictate__local_model_delete_confirm">Dzēst “{model}”? Vēlāk to varēsiet lejupielādēt vēlreiz.</string>
-    <string name="dictate__local_model_not_installed_error">Nav lejupielādēta lokāla modeļa. Atveriet iestatījumus, lai lejupielādētu.</string>
+    <string name="dictate__local_model_not_installed_error">Nav lejupielādēta lokāla modeļa</string>
     <string name="dictate__local_fallback_title">Bezsaistes rezerve</string>
     <string name="dictate__local_fallback_summary">Bezsaistē transkribē ierīcē ar lejupielādēto modeli pēc nodrošinātāja kļūmes</string>
 </resources>
