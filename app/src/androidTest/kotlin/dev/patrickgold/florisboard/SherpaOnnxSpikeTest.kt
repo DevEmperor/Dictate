@@ -17,7 +17,11 @@ import com.k2fsa.sherpa.onnx.OfflineModelConfig
 import com.k2fsa.sherpa.onnx.OfflineRecognizer
 import com.k2fsa.sherpa.onnx.OfflineRecognizerConfig
 import com.k2fsa.sherpa.onnx.OfflineWhisperModelConfig
+import androidx.test.platform.app.InstrumentationRegistry
 import dev.patrickgold.florisboard.dictate.audio.AudioDecode
+import dev.patrickgold.florisboard.dictate.provider.LocalTranscriptionProvider
+import dev.patrickgold.florisboard.dictate.provider.TranscriptionRequest
+import kotlinx.coroutines.runBlocking
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -81,6 +85,41 @@ class SherpaOnnxSpikeTest {
 
         val text = transcribe(samples, AudioDecode.TARGET_SAMPLE_RATE, label = "m4a")
         assertContainsYellow(text)
+    }
+
+    /**
+     * Phase 2 proof (issue #104): the full [LocalTranscriptionProvider] path — install the model into
+     * the app's filesDir under the fixed encoder/decoder/tokens names, then transcribe a recorded-format
+     * m4a through the public TranscriptionProvider interface (decode + cached recognizer included).
+     */
+    @Test
+    fun localProviderTranscribesThroughInterface() {
+        val m4a = File(dir, "test0.m4a")
+        assumeModelPresent(extra = m4a)
+
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val modelId = "whisper-tiny"
+        val modelDir = LocalTranscriptionProvider.modelDir(context, modelId).apply { mkdirs() }
+        // Install under the provider's fixed file names.
+        encoder.copyTo(File(modelDir, LocalTranscriptionProvider.ENCODER), overwrite = true)
+        decoder.copyTo(File(modelDir, LocalTranscriptionProvider.DECODER), overwrite = true)
+        tokens.copyTo(File(modelDir, LocalTranscriptionProvider.TOKENS), overwrite = true)
+        assert(LocalTranscriptionProvider.isInstalled(context, modelId)) { "model install failed" }
+
+        // Copy the m4a into the app sandbox to mimic a real recording file.
+        val audio = File(context.cacheDir, "local-provider-test.m4a")
+        m4a.copyTo(audio, overwrite = true)
+
+        val provider = LocalTranscriptionProvider(modelDir)
+        val start = System.currentTimeMillis()
+        val result = runBlocking {
+            provider.transcribe(TranscriptionRequest(audioFile = audio, model = modelId))
+        }
+        Log.i(TAG, "[provider] transcript (${System.currentTimeMillis() - start}ms): \"${result.text}\"")
+
+        modelDir.deleteRecursively()
+        audio.delete()
+        assertContainsYellow(result.text)
     }
 
     // --- helpers ---

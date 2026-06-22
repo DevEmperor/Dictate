@@ -88,6 +88,9 @@ class OpenAiCompatibleClient(
         TranscriptionApi.OPENROUTER_JSON -> transcribeOpenRouterJson(request, onRetry)
         TranscriptionApi.SONIOX_ASYNC -> transcribeSonioxAsync(request, onRetry)
         TranscriptionApi.GEMINI_GENERATE_CONTENT -> transcribeGeminiGenerateContent(request, onRetry)
+        // On-device transcription never uses this HTTP client; the dictation flow routes local providers
+        // to LocalTranscriptionProvider before one is ever constructed.
+        TranscriptionApi.LOCAL_ONDEVICE -> error("LOCAL_ONDEVICE is handled by LocalTranscriptionProvider")
     }
 
     override suspend fun transcribe(request: TranscriptionRequest): TranscriptionResult =

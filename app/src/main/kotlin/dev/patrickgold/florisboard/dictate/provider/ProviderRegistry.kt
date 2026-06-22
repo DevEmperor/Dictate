@@ -210,9 +210,28 @@ object ProviderRegistry {
         apiKeyUrl = null,
     )
 
+    /**
+     * On-device, fully offline transcription (issue #104). No network, no API key. Handled by
+     * [LocalTranscriptionProvider] (sherpa-onnx + a bundled Whisper model), not by the HTTP client –
+     * [TranscriptionApi.LOCAL_ONDEVICE] marks it so the dictation flow routes there. The model id is the
+     * name of an installed model directory; models are downloaded on demand (the catalog is fixed, not
+     * fetched), hence supportsDynamicModels = false.
+     */
+    val LOCAL = ProviderPreset(
+        id = "local",
+        displayName = "On-device (offline)",
+        baseUrl = "",
+        capabilities = STT_ONLY,
+        transcriptionApi = TranscriptionApi.LOCAL_ONDEVICE,
+        supportsDynamicModels = false,
+        apiKeyUrl = null,
+        defaultTranscriptionModel = "whisper-tiny",
+        curatedTranscriptionModels = listOf("whisper-tiny"),
+    )
+
     /** All built-in presets in display order. The custom option is added by the UI on top of these. */
     val presets: List<ProviderPreset> = listOf(
-        OPENAI, GROQ, OPENROUTER, GEMINI, TOGETHER, DEEPINFRA, MISTRAL, SONIOX, XAI, DEEPSEEK, OLLAMA,
+        OPENAI, GROQ, OPENROUTER, GEMINI, TOGETHER, DEEPINFRA, MISTRAL, SONIOX, XAI, DEEPSEEK, OLLAMA, LOCAL,
     )
 
     fun byId(id: String): ProviderPreset? = presets.firstOrNull { it.id == id }

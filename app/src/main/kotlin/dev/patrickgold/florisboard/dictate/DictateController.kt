@@ -30,10 +30,12 @@ import dev.patrickgold.florisboard.dictate.data.prompts.PromptModel
 import dev.patrickgold.florisboard.dictate.data.prompts.PromptsDatabaseHelper
 import dev.patrickgold.florisboard.dictate.provider.ChatRequest
 import dev.patrickgold.florisboard.dictate.provider.DictateApiException
+import dev.patrickgold.florisboard.dictate.provider.LocalTranscriptionProvider
 import dev.patrickgold.florisboard.dictate.provider.OpenAiCompatibleClient
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
 import dev.patrickgold.florisboard.dictate.provider.ProviderPreset
 import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
+import dev.patrickgold.florisboard.dictate.provider.TranscriptionApi
 import dev.patrickgold.florisboard.dictate.provider.TranscriptionRequest
 import dev.patrickgold.florisboard.dictate.overlay.AccessibilitySink
 import dev.patrickgold.florisboard.lib.util.AppVersionUtils
@@ -555,23 +557,29 @@ object DictateController {
         transcribeJob = scope.launch {
             var keepAudio = false
             try {
-                val client = OpenAiCompatibleClient.from(
-                    preset, apiKey,
-                    baseUrlOverride = baseUrlOverrideFor(account),
-                    proxy = prefs.dictate.dictateProxyConfig(),
+                val request = TranscriptionRequest(
+                    audioFile = audioFile,
+                    model = model,
+                    // Null for "detect" so the provider auto-detects; otherwise the chosen code.
+                    language = prefs.dictate.activeInputLanguage.get()
+                        .takeIf { it != DictateLanguages.DETECT },
+                    // Style/punctuation prompt biases recognition (roadmap 2.4 / 4.11).
+                    prompt = transcriptionStylePrompt(),
                 )
-                val result = client.transcribe(
-                    TranscriptionRequest(
-                        audioFile = audioFile,
-                        model = model,
-                        // Null for "detect" so the provider auto-detects; otherwise the chosen code.
-                        language = prefs.dictate.activeInputLanguage.get()
-                            .takeIf { it != DictateLanguages.DETECT },
-                        // Style/punctuation prompt biases recognition (roadmap 2.4 / 4.11).
-                        prompt = transcriptionStylePrompt(),
-                    ),
-                    onRetry = { attempt -> _state.value = UiState.Transcribing(attempt) },
-                )
+                val result = if (preset.transcriptionApi == TranscriptionApi.LOCAL_ONDEVICE) {
+                    // On-device (issue #104): no HTTP client, no key; transcribe locally via sherpa-onnx.
+                    LocalTranscriptionProvider(LocalTranscriptionProvider.modelDir(appContext, model))
+                        .transcribe(request)
+                } else {
+                    OpenAiCompatibleClient.from(
+                        preset, apiKey,
+                        baseUrlOverride = baseUrlOverrideFor(account),
+                        proxy = prefs.dictate.dictateProxyConfig(),
+                    ).transcribe(
+                        request,
+                        onRetry = { attempt -> _state.value = UiState.Transcribing(attempt) },
+                    )
+                }
                 val finalText = if (live) {
                     // The spoken transcript is an instruction; send it to GPT (optionally operating
                     // on the current selection) and insert the answer instead of the transcript.
