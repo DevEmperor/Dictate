@@ -70,6 +70,11 @@ class WearSettingsActivity : ComponentActivity() {
                 micGranted = micGranted,
                 synced = synced,
                 onRequestMic = { requestMic.launch(Manifest.permission.RECORD_AUDIO) },
+                onSetStandalone = { enabled ->
+                    lifecycleScope.launch {
+                        runCatching { WearSyncClient.setStandalone(this@WearSettingsActivity, enabled) }
+                    }
+                },
             )
         }
     }
@@ -80,9 +85,10 @@ private fun SettingsScreen(
     micGranted: Boolean,
     synced: DictateSyncedSettings,
     onRequestMic: () -> Unit,
+    onSetStandalone: (Boolean) -> Unit,
 ) {
-    // Standalone opt-in. Persisted + reflected to the transcription path in P2b; local-only for now.
-    var standalone by remember { mutableStateOf(false) }
+    // The phone owns the standalone flag (it owns the key); the synced snapshot is the source of truth.
+    val standalone = synced.standaloneEnabled
 
     MaterialTheme {
         Column(
@@ -108,7 +114,7 @@ private fun SettingsScreen(
             )
 
             Chip(
-                onClick = { standalone = !standalone },
+                onClick = { onSetStandalone(!standalone) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ChipDefaults.secondaryChipColors(),
                 label = { Text(if (standalone) "Transcribe on watch: ON" else "Transcribe on watch: OFF") },

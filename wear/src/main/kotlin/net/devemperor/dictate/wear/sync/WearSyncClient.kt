@@ -38,4 +38,17 @@ object WearSyncClient {
             .sendMessage(nodeId, DictateWearProtocol.PATH_SYNC_REQUEST, ByteArray(0))
             .await()
     }
+
+    /**
+     * Tell the phone to enable/disable standalone transcription for this watch. The phone stores the
+     * choice and re-publishes the settings (with or without the API key). Returns false if no phone is
+     * reachable, so the UI can explain why nothing changed.
+     */
+    suspend fun setStandalone(context: Context, enabled: Boolean): Boolean {
+        val nodeId = findPhoneNodeId(context) ?: return false
+        Wearable.getMessageClient(context)
+            .sendMessage(nodeId, DictateWearProtocol.PATH_SET_STANDALONE, byteArrayOf(if (enabled) 1 else 0))
+            .await()
+        return true
+    }
 }

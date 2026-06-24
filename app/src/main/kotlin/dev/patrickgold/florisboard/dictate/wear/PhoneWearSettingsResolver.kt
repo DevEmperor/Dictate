@@ -32,15 +32,19 @@ object PhoneWearSettingsResolver {
         val baseUrl = if (account.isCustom) account.customBaseUrl else preset.baseUrl
         val language = prefs.dictate.activeInputLanguage.get().takeIf { it != DictateLanguages.DETECT }
 
+        // Only ship the key when the user opted the watch into standalone; otherwise it stays on the
+        // phone and the watch tethers (the phone transcribes).
+        val standalone = prefs.dictate.wearStandaloneEnabled.get()
+
         return DictateSyncedSettings(
             transcriptionProviderId = id,
             transcriptionApi = preset.transcriptionApi,
             baseUrl = baseUrl,
             model = model,
-            apiKey = "", // tether is the default; the key stays on the phone (see P2b for standalone)
+            apiKey = if (standalone) account.apiKey else "",
             language = language,
-            stylePrompt = null, // refined together with the standalone path in P2b
-            standaloneEnabled = false,
+            stylePrompt = null, // recognition style/punctuation prompt sync is refined in a later pass
+            standaloneEnabled = standalone,
         )
     }
 

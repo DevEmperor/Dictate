@@ -31,6 +31,13 @@ object DictateWearProtocol {
     /** MessageClient path: the phone returns the transcript (or an error) for a request. */
     const val PATH_TRANSCRIBE_RESPONSE = "/dictate/transcribe/response"
 
+    /**
+     * MessageClient path: the watch toggles standalone transcription on/off. Payload is a single byte
+     * (1 = on, 0 = off). The phone stores it and re-publishes [PATH_SETTINGS] (the key is only included
+     * in the snapshot while standalone is on).
+     */
+    const val PATH_SET_STANDALONE = "/dictate/set_standalone"
+
     /** CapabilityClient capability the phone app advertises so the watch can detect a usable peer. */
     const val CAPABILITY_PHONE_APP = "dictate_phone_transcriber"
 

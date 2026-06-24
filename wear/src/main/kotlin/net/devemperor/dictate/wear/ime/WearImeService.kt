@@ -6,11 +6,14 @@
 
 package net.devemperor.dictate.wear.ime
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.inputmethodservice.InputMethodService
 import android.view.View
 import android.view.inputmethod.InputConnection
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -22,7 +25,15 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import net.devemperor.dictate.wear.audio.WearAudioRecorder
 import net.devemperor.dictate.wear.sync.WearSettingsStore
+import net.devemperor.dictate.wear.transcribe.WearTranscription
 
 /**
  * The Dictate Wear OS keyboard: a lightweight [InputMethodService] hosting a Jetpack Compose UI.
@@ -48,6 +59,9 @@ class WearImeService :
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
 
     private val dictationState = mutableStateOf(WearDictationState.IDLE)
+
+    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private val recorder by lazy { WearAudioRecorder(applicationContext) }
 
     override val lifecycle: Lifecycle get() = lifecycleRegistry
     override val viewModelStore: ViewModelStore get() = store
@@ -81,6 +95,8 @@ class WearImeService :
         super.onDestroy()
         lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
         store.clear()
+        if (recorder.isRecording) recorder.cancel()
+        scope.cancel()
     }
 
     private val actions = WearImeActions(
@@ -93,20 +109,48 @@ class WearImeService :
     private fun ic(): InputConnection? = currentInputConnection
 
     /**
-     * Placeholder dictation toggle. Real recording + transcription (tethered via the phone, or
-     * standalone when opted in) is wired in P2 of the Wear roadmap. For now this just lets the
-     * record button and status line be exercised end to end.
+     * Voice-page record button. Tap once to start recording, tap again to stop; on stop the audio is
+     * transcribed (tethered via the phone by default, or standalone when the user opted in) and the
+     * resulting text is committed at the cursor.
      */
     private fun toggleDictation() {
-        dictationState.value = when (dictationState.value) {
-            WearDictationState.IDLE -> WearDictationState.RECORDING
-            WearDictationState.RECORDING -> {
-                // TODO(P2): hand the recorded audio to the tether/standalone transcriber and
-                //  commit the returned text instead of this placeholder.
-                ic()?.commitText("", 1)
-                WearDictationState.IDLE
+        when (dictationState.value) {
+            WearDictationState.RECORDING -> stopAndTranscribe()
+            WearDictationState.TRANSCRIBING -> Unit // ignore taps while a transcription is in flight
+            else -> startRecording()
+        }
+    }
+
+    private fun startRecording() {
+        val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) ==
+            PackageManager.PERMISSION_GRANTED
+        if (!granted) {
+            // The IME can't request permissions; the settings activity grants RECORD_AUDIO.
+            dictationState.value = WearDictationState.ERROR
+            return
+        }
+        val started = runCatching { recorder.start() }.isSuccess
+        dictationState.value = if (started) WearDictationState.RECORDING else WearDictationState.ERROR
+    }
+
+    private fun stopAndTranscribe() {
+        val audio = runCatching { recorder.stop() }.getOrNull()
+        if (audio == null) {
+            dictationState.value = WearDictationState.ERROR
+            return
+        }
+        dictationState.value = WearDictationState.TRANSCRIBING
+        scope.launch {
+            val text = runCatching {
+                withContext(Dispatchers.IO) { WearTranscription.transcribe(applicationContext, audio) }
+            }.getOrNull()
+            audio.delete()
+            if (text.isNullOrBlank()) {
+                dictationState.value = WearDictationState.ERROR
+            } else {
+                ic()?.commitText(text, 1)
+                dictationState.value = WearDictationState.IDLE
             }
-            else -> WearDictationState.IDLE
         }
     }
 }

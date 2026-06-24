@@ -6,32 +6,84 @@
 
 package dev.patrickgold.florisboard.dictate.wear
 
+import com.google.android.gms.wearable.ChannelClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.sync.DictateWearProtocol
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import java.io.File
 
 /**
  * Phone-side endpoint of the Wear OS Data Layer (#106).
  *
  * Handles requests coming from the watch:
  *  - [DictateWearProtocol.PATH_SYNC_REQUEST]: publish a fresh settings snapshot the watch can cache.
+ *  - [DictateWearProtocol.PATH_SET_STANDALONE]: store the standalone opt-in and re-publish settings
+ *    (the API key is only included while standalone is on).
+ *  - [DictateWearProtocol.PATH_TRANSCRIBE_REQUEST] (ChannelClient): receive recorded audio, transcribe
+ *    it with the phone's active provider and send the transcript back.
  *
- * The transcription relay ([DictateWearProtocol.PATH_TRANSCRIBE_REQUEST]) is added in P2b together with
- * the watch-side audio capture; until then the watch falls back to standalone (when the user opts in).
- *
- * The phone advertises the [DictateWearProtocol.CAPABILITY_PHONE_APP] capability (see
- * res/values/wear.xml) so the watch's CapabilityClient can discover it.
+ * The phone advertises the [DictateWearProtocol.CAPABILITY_PHONE_APP] capability (res/values/wear.xml)
+ * so the watch's CapabilityClient can discover it.
  */
 class DictateWearService : WearableListenerService() {
 
     private val prefs by FlorisPreferenceStore
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel()
+    }
 
     override fun onMessageReceived(event: MessageEvent) {
         when (event.path) {
             DictateWearProtocol.PATH_SYNC_REQUEST -> publishSettings()
+            DictateWearProtocol.PATH_SET_STANDALONE -> {
+                val enabled = event.data.firstOrNull() == 1.toByte()
+                scope.launch {
+                    prefs.dictate.wearStandaloneEnabled.set(enabled)
+                    publishSettings()
+                }
+            }
+        }
+    }
+
+    override fun onChannelOpened(channel: ChannelClient.Channel) {
+        if (channel.path != DictateWearProtocol.PATH_TRANSCRIBE_REQUEST) return
+        scope.launch { handleTranscribeChannel(channel) }
+    }
+
+    private suspend fun handleTranscribeChannel(channel: ChannelClient.Channel) {
+        val channelClient = Wearable.getChannelClient(applicationContext)
+        val audio = File(cacheDir, "wear_tether_${channel.nodeId}.wav")
+        var transcript = ""
+        try {
+            // Drain the watch's audio into a temp file.
+            channelClient.getInputStream(channel).await().use { input ->
+                audio.outputStream().use { input.copyTo(it) }
+            }
+            transcript = runCatching {
+                PhoneTranscriber.transcribe(applicationContext, prefs, audio)
+            }.getOrDefault("")
+        } finally {
+            audio.delete()
+            channelClient.close(channel)
+            // Always answer, even on failure (empty transcript -> the watch surfaces an error) so the
+            // watch never hangs waiting for a reply.
+            Wearable.getMessageClient(applicationContext).sendMessage(
+                channel.nodeId,
+                DictateWearProtocol.PATH_TRANSCRIBE_RESPONSE,
+                transcript.toByteArray(Charsets.UTF_8),
+            )
         }
     }
 
