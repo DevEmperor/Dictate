@@ -8,6 +8,7 @@ package dev.patrickgold.florisboard.dictate.wear
 
 import dev.patrickgold.florisboard.app.FlorisPreferenceModel
 import dev.patrickgold.florisboard.dictate.DictateLanguages
+import dev.patrickgold.florisboard.dictate.data.prompts.DictatePromptDefaults
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccount
 import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
 import dev.patrickgold.florisboard.dictate.sync.DictateSyncedSettings
@@ -43,7 +44,7 @@ object PhoneWearSettingsResolver {
             model = model,
             apiKey = if (standalone) account.apiKey else "",
             language = language,
-            stylePrompt = null, // recognition style/punctuation prompt sync is refined in a later pass
+            stylePrompt = stylePrompt(prefs),
             standaloneEnabled = standalone,
         )
     }
@@ -52,4 +53,21 @@ object PhoneWearSettingsResolver {
         account.isCustom -> ProviderRegistry.custom(account.customBaseUrl)
         else -> ProviderRegistry.byId(account.providerId) ?: ProviderRegistry.OPENAI
     }
+
+    /**
+     * The style/punctuation prompt the watch should send with a standalone transcription. Mirrors
+     * `DictateController.transcriptionStylePrompt()` so the watch biases recognition exactly like the
+     * phone (predefined punctuation prompt or the user's custom one, plus the custom-words list).
+     */
+    private fun stylePrompt(prefs: FlorisPreferenceModel): String? {
+        val base = when (prefs.dictate.stylePromptSelection.get()) {
+            DictatePromptDefaults.SELECTION_PREDEFINED ->
+                DictatePromptDefaults.punctuationPromptFor(prefs.dictate.activeInputLanguage.get())
+            DictatePromptDefaults.SELECTION_CUSTOM ->
+                prefs.dictate.stylePromptCustom.get().takeIf { it.isNotBlank() }
+            else -> null
+        }
+        return DictatePromptDefaults.appendCustomWords(base, prefs.dictate.customWords.get())
+    }
 }
+
