@@ -26,7 +26,8 @@
 
     <application
         android:allowBackup="false"
-        android:icon="@drawable/ic_dictate_wear"
+        android:icon="@mipmap/app_icon"
+        android:roundIcon="@mipmap/app_icon_round"
         android:label="@string/wear_app_name"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">

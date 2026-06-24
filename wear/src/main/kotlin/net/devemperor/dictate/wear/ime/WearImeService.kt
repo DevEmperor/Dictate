@@ -78,6 +78,17 @@ class WearImeService :
     override fun onCreateInputView(): View {
         // The input view becomes visible; drive the lifecycle to RESUMED so Compose runs.
         lifecycleRegistry.currentState = Lifecycle.State.RESUMED
+
+        // Compose resolves its window recomposer from the IME window's decor view (the root), not from
+        // our ComposeView — and the IME wraps our view in its own parentPanel. So the ViewTree owners
+        // MUST be set on the decor view, otherwise AbstractComposeView.onAttachedToWindow crashes with
+        // "ViewTreeLifecycleOwner not found". We set them on both to be safe.
+        window?.window?.decorView?.let { decor ->
+            decor.setViewTreeLifecycleOwner(this)
+            decor.setViewTreeViewModelStoreOwner(this)
+            decor.setViewTreeSavedStateRegistryOwner(this)
+        }
+
         return ComposeView(this).apply {
             setViewTreeLifecycleOwner(this@WearImeService)
             setViewTreeViewModelStoreOwner(this@WearImeService)
