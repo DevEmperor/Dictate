@@ -254,6 +254,7 @@ dependencies {
 
     implementation(projects.lib.android)
     implementation(projects.lib.color)
+    implementation(projects.lib.dictateCore)
     implementation(projects.lib.compose)
     implementation(projects.lib.kotlin)
     implementation(projects.lib.snygg)

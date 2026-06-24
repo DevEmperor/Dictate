@@ -104,6 +104,9 @@ configure<ApplicationExtension> {
 }
 
 dependencies {
+    // Shared transcription/LLM core (provider client, presets, prompts) — same module the phone app uses.
+    implementation(projects.lib.dictateCore)
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.ui)
