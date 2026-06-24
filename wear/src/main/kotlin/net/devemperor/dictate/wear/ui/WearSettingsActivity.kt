@@ -20,10 +20,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.lifecycleScope
+import dev.patrickgold.florisboard.dictate.sync.DictateSyncedSettings
+import net.devemperor.dictate.wear.sync.WearSettingsStore
+import net.devemperor.dictate.wear.sync.WearSyncClient
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -52,9 +58,17 @@ class WearSettingsActivity : ComponentActivity() {
         micGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) ==
             PackageManager.PERMISSION_GRANTED
 
+        // Load the last-known synced settings, then ask the phone for a fresh snapshot.
+        WearSettingsStore.load(this)
+        lifecycleScope.launch {
+            runCatching { WearSyncClient.requestSettingsSync(this@WearSettingsActivity) }
+        }
+
         setContent {
+            val synced by WearSettingsStore.settings.collectAsState()
             SettingsScreen(
                 micGranted = micGranted,
+                synced = synced,
                 onRequestMic = { requestMic.launch(Manifest.permission.RECORD_AUDIO) },
             )
         }
@@ -64,9 +78,10 @@ class WearSettingsActivity : ComponentActivity() {
 @Composable
 private fun SettingsScreen(
     micGranted: Boolean,
+    synced: DictateSyncedSettings,
     onRequestMic: () -> Unit,
 ) {
-    // Standalone opt-in. Persisted + reflected to the transcription path in P2; local-only for now.
+    // Standalone opt-in. Persisted + reflected to the transcription path in P2b; local-only for now.
     var standalone by remember { mutableStateOf(false) }
 
     MaterialTheme {
@@ -80,6 +95,10 @@ private fun SettingsScreen(
         ) {
             Text(text = "Dictate settings", textAlign = TextAlign.Center)
             Text(text = "Settings are synced from your phone.", textAlign = TextAlign.Center)
+
+            val providerLine = synced.transcriptionProviderId.ifBlank { "—" } +
+                (synced.model.takeIf { it.isNotBlank() }?.let { " · $it" } ?: "")
+            Text(text = "Provider: $providerLine", textAlign = TextAlign.Center)
 
             Chip(
                 onClick = onRequestMic,

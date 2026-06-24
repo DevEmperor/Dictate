@@ -62,6 +62,19 @@
                 android:resource="@xml/method" />
         </service>
 
+        <!-- Receives settings snapshots pushed from the phone over the Wearable Data Layer. -->
+        <service
+            android:name=".sync.WearSyncListenerService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:pathPrefix="/dictate" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

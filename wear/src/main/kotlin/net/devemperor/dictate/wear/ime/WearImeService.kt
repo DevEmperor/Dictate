@@ -22,6 +22,7 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import net.devemperor.dictate.wear.sync.WearSettingsStore
 
 /**
  * The Dictate Wear OS keyboard: a lightweight [InputMethodService] hosting a Jetpack Compose UI.
@@ -56,6 +57,8 @@ class WearImeService :
         savedStateRegistryController.performRestore(null)
         super.onCreate()
         lifecycleRegistry.currentState = Lifecycle.State.CREATED
+        // Warm the cached settings synced from the phone so the voice page is ready to transcribe.
+        WearSettingsStore.load(applicationContext)
     }
 
     override fun onCreateInputView(): View {

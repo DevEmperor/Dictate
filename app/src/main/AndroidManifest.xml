@@ -94,6 +94,19 @@
             <meta-data android:name="android.view.textservice.scs" android:resource="@xml/spellchecker"/>
         </service>
 
+        <!-- Wear OS Data Layer endpoint (#106): answers settings-sync requests from the watch app. -->
+        <service
+            android:name="dev.patrickgold.florisboard.dictate.wear.DictateWearService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:pathPrefix="/dictate" />
+            </intent-filter>
+        </service>
+
         <!-- Main App Activity -->
         <activity
             android:name="dev.patrickgold.florisboard.app.FlorisAppActivity"
