@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wear_app_name">Dictate</string>
+    <string name="wear_ime_label">Dictate (Wear)</string>
+
+    <!-- Voice page -->
+    <string name="wear_tap_to_dictate">Tap to dictate</string>
+    <string name="wear_recording">Recording…</string>
+    <string name="wear_transcribing">Transcribing…</string>
+    <string name="wear_tap_to_stop">Tap to stop</string>
+
+    <!-- Pager tabs -->
+    <string name="wear_page_voice">Voice</string>
+    <string name="wear_page_numbers">123</string>
+    <string name="wear_page_emoji">Emoji</string>
+
+    <!-- Settings -->
+    <string name="wear_settings_title">Dictate settings</string>
+    <string name="wear_settings_standalone">Transcribe on watch (standalone)</string>
+    <string name="wear_settings_standalone_summary">Off: the paired phone transcribes (recommended). On: the watch calls the provider directly and needs the API key synced.</string>
+    <string name="wear_settings_mic_permission">Grant microphone access</string>
+    <string name="wear_settings_synced_from_phone">Settings are synced from your phone.</string>
+</resources>
