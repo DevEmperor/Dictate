@@ -187,28 +187,60 @@ class DictateAccessibilityService : AccessibilityService() {
      * the field accepted the change — some custom/legacy views do not support `ACTION_SET_TEXT`.
      */
     private fun commitTextIntoFocused(text: String): Boolean {
-        // Primary on Android 13+: commit through the accessibility input connection — the real IME pipeline,
-        // the same path a keyboard uses. It works across apps (including browser/WebView fields), inserts
-        // into the field's real content (no placeholder prepend), and needs no clipboard (no Samsung toast).
-        if (commitViaInputConnection(text)) {
-            flogDebug { "commitTextIntoFocused via inputConnection len=${text.length}" }
+        // Resolve the target field freshly. The accessibility input focus (and its input connection) can
+        // go stale when the host app recreates its field — e.g. WhatsApp clearing the composer on send —
+        // and a stale binding silently swallows the commit, so the green check showed but no text appeared
+        // (#132 follow-up). We therefore trust the input-connection path only while the focused node is
+        // still a *live* node; otherwise we re-locate the field from the currently visible window and write
+        // straight into that, so the text always lands in the field the user actually sees, even after the
+        // service has been running a long time.
+        val focused = focusedEditableNode()
+        val focusLive = focused != null && runCatching { focused.refresh() }.getOrDefault(false)
+
+        // 1. Live focus → the accessibility input connection (cleanest: WebView-safe, no clipboard toast).
+        if (focusLive && commitViaInputConnection(text)) {
+            flogDebug { "commit via inputConnection (live focus) len=${text.length}" }
             return true
         }
-        // Fallback for Android 12 and below, or when no input connection is available: the node-based
-        // hybrid — ACTION_SET_TEXT (no clipboard/toast, placeholder treated as empty) then clipboard paste.
-        val node = focusedEditableNode() ?: return false
-        node.refresh()
-        flogDebug {
-            "commit target: class=${node.className} editable=${node.isEditable} hint=${node.isShowingHintText} " +
-                "text='${node.text}' hintText='${node.hintText}' sel=${node.textSelectionStart}..${node.textSelectionEnd}"
+
+        // 2. Node-based write into the actual on-screen field. Prefer the live focused node; if it was
+        //    stale or missing, take the editable field from the currently active window (the real one).
+        val target = (if (focusLive) focused else null) ?: activeWindowEditable()
+        if (target != null) {
+            runCatching { target.refresh() }
+            if (setTextOnFocused(target, text)) {
+                flogDebug { "commit via setText len=${text.length}" }
+                return true
+            }
+            if (pasteIntoFocused(target, text)) {
+                flogDebug { "commit via paste len=${text.length}" }
+                return true
+            }
         }
-        if (setTextOnFocused(node, text)) {
-            flogDebug { "commitTextIntoFocused via setText len=${text.length}" }
+
+        // 3. Last resort: the input connection even when no live focused node was found — covers apps that
+        //    expose an editor connection without an accessible focused node.
+        if (!focusLive && commitViaInputConnection(text)) {
+            flogDebug { "commit via inputConnection (fallback) len=${text.length}" }
             return true
         }
-        val pasted = pasteIntoFocused(node, text)
-        flogDebug { "commitTextIntoFocused via paste len=${text.length} ok=$pasted" }
-        return pasted
+        return false
+    }
+
+    /**
+     * The editable field in the currently active (visible) window, located fresh from the live node tree
+     * via [rootInActiveWindow]. Used when the cached input focus is stale — e.g. the host app recreated
+     * its input after sending a message — so dictation lands in the field the user actually sees rather
+     * than a detached one (#132 follow-up).
+     */
+    private fun activeWindowEditable(): AccessibilityNodeInfo? {
+        val root = rootInActiveWindow ?: return null
+        root.findFocus(AccessibilityNodeInfo.FOCUS_INPUT)?.let { focused ->
+            if (focused.isLikelyEditable()) return focused
+            findEditableDescendant(focused, 0)?.let { return it }
+        }
+        if (root.isLikelyEditable()) return root
+        return findEditableDescendant(root, 0)
     }
 
     /**
