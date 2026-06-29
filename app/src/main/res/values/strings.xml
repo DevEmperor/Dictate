@@ -1354,6 +1354,9 @@
     <string name="dictate__providers_test_failed" comment="Generic fallback shown when a connection test fails without a specific message">Connection failed</string>
     <string name="dictate__providers_network_group" comment="Group title for network-level provider settings (proxy)">Network</string>
 
+    <string name="dictate__wear_standalone_title" comment="Title of the toggle that lets a paired Wear OS watch transcribe on its own">Sync key to watch</string>
+    <string name="dictate__wear_standalone_summary" comment="Summary explaining the Wear OS standalone transcription toggle">When on, your API key is synced to a paired Wear OS watch so it can transcribe by itself when this phone is out of range. While the phone is reachable the watch still tethers through it. Turn off to keep the key strictly on this phone (the watch then can\'t dictate without it).</string>
+
     <!-- Dictate network proxy -->
     <string name="dictate__proxy_title" comment="Title of the proxy settings screen / row">Proxy</string>
     <string name="dictate__proxy_summary_off" comment="Summary on the proxy row when no proxy is active">Off · direct connection</string>

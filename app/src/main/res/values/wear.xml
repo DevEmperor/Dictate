@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Wearable Data Layer capability (#106): advertises that this phone app can act as the transcription
+  peer for the Dictate Wear OS app. The watch's CapabilityClient queries this name to decide whether a
+  usable phone is reachable (tethered transcription) or it must fall back to standalone.
+-->
+<resources>
+    <string-array name="android_wear_capabilities">
+        <item>dictate_phone_transcriber</item>
+    </string-array>
+</resources>

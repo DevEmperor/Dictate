@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SmartToy
+import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -72,6 +73,7 @@ import dev.patrickgold.jetpref.datastore.model.collectAsState
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
+import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
 import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
 import kotlinx.coroutines.launch
@@ -186,6 +188,15 @@ fun DictateProvidersScreen() = FlorisScreen {
                     proxyOff
                 },
                 onClick = { navController.navigate(Routes.Settings.DictateProxy) },
+            )
+            // Wear OS (#106): when on, a paired watch may transcribe by itself and the API key is
+            // included in the settings snapshot synced to it. Off (default) -> the watch tethers and
+            // the key never leaves this phone.
+            SwitchPreference(
+                prefs.dictate.wearStandaloneEnabled,
+                icon = Icons.Default.Watch,
+                title = stringRes(R.string.dictate__wear_standalone_title),
+                summary = stringRes(R.string.dictate__wear_standalone_summary),
             )
         }
 

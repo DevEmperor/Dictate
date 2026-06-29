@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Adaptive launcher icon background, matched to the phone app's Dictate icon. -->
+    <color name="ic_app_icon_background">#4F576D</color>
+</resources>

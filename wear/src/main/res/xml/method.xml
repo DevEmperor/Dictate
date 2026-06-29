@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2026 The Dictate Contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License").
+  -->
+<input-method xmlns:android="http://schemas.android.com/apk/res/android"
+    android:settingsActivity="net.devemperor.dictate.wear.ui.WearSettingsActivity"
+    android:supportsSwitchingToNextInputMethod="true" />
