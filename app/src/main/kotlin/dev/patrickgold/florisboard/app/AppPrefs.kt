@@ -26,6 +26,7 @@ import dev.patrickgold.florisboard.app.setup.NotificationPermissionState
 import dev.patrickgold.florisboard.dictate.DictateFloatingButtonDesign
 import dev.patrickgold.florisboard.dictate.DictateFloatingButtonSize
 import dev.patrickgold.florisboard.dictate.DictatePromptsLayout
+import dev.patrickgold.florisboard.dictate.data.mappings.DictateMappings
 import dev.patrickgold.florisboard.dictate.provider.DictateProxyType
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
 import dev.patrickgold.florisboard.ime.clipboard.CLIPBOARD_HISTORY_NUM_GRID_COLUMNS_AUTO
@@ -603,6 +604,13 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val customWords = string(
             key = "dictate__custom_words",
             default = "",
+        )
+        // Custom mappings (issue #129): deterministic find-and-replace applied to the finished transcript
+        // before it is inserted — exact and token-free, unlike the prompt-hint customWords above.
+        val customMappings = custom(
+            key = "dictate__custom_mappings",
+            default = DictateMappings.Empty,
+            serializer = DictateMappings.Serializer,
         )
         // Run the spoken-formatting-cues → Markdown pass automatically on every transcript.
         val autoFormattingEnabled = boolean(

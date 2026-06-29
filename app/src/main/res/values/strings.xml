@@ -1451,6 +1451,27 @@
     <string name="dictate__custom_words_summary_empty" comment="Summary shown when no custom words are set">Add names or technical terms to spell correctly</string>
     <string name="dictate__custom_words_placeholder" comment="Placeholder listing example custom words, comma-separated">e.g. FlorisBoard, Kubernetes, Renée, OAuth, Anthropic</string>
 
+    <!-- Dictate custom mappings: deterministic find-and-replace on the transcript (issue #129) -->
+    <string name="dictate__mappings_title" comment="Title of the custom find-and-replace mappings screen">Custom mappings</string>
+    <string name="dictate__mappings_entry_summary" comment="Summary on the row that opens the mappings screen">Find-and-replace rules applied to the transcript</string>
+    <string name="dictate__mappings_group" comment="Group title on the mappings screen">Replacement rules</string>
+    <string name="dictate__mappings_empty_title" comment="Shown when no mapping rules exist yet">No mappings yet</string>
+    <string name="dictate__mappings_empty_summary" comment="Summary when no mapping rules exist">Add a rule to automatically replace words or phrases in every transcript — exact and without using AI tokens.</string>
+    <string name="dictate__mappings_add" comment="Button to add a new mapping rule">Add mapping</string>
+    <string name="dictate__mappings_opt_wholeword" comment="Tag: rule matches whole words only">Whole word</string>
+    <string name="dictate__mappings_opt_substring" comment="Tag: rule matches anywhere, including inside words">Anywhere</string>
+    <string name="dictate__mappings_opt_casesensitive" comment="Tag: rule is case-sensitive">Case-sensitive</string>
+    <string name="dictate__mappings_opt_caseinsensitive" comment="Tag: rule ignores case">Ignores case</string>
+    <string name="dictate__mappings_editor_title" comment="Title of the add/edit mapping dialog">Mapping</string>
+    <string name="dictate__mappings_field_from" comment="Label for the text to search for">Replace</string>
+    <string name="dictate__mappings_field_from_placeholder" comment="Placeholder for the search text">e.g. github</string>
+    <string name="dictate__mappings_field_to" comment="Label for the replacement text">With</string>
+    <string name="dictate__mappings_field_to_placeholder" comment="Placeholder for the replacement text">e.g. GitHub</string>
+    <string name="dictate__mappings_wholeword_title" comment="Toggle: match whole words only">Whole word only</string>
+    <string name="dictate__mappings_wholeword_summary" comment="Summary for the whole-word toggle">Only replace standalone words, not matches inside longer words.</string>
+    <string name="dictate__mappings_matchcase_title" comment="Toggle: case-sensitive matching">Match case</string>
+    <string name="dictate__mappings_matchcase_summary" comment="Summary for the match-case toggle">Only replace when the capitalization matches exactly.</string>
+
     <!-- Dictate rewording (AI) settings -->
     <string name="dictate__rewording_group" comment="Group title for the rewording (AI editing) stage on the main Dictate screen">Rewording (AI editing)</string>
     <string name="dictate__rewording_title" comment="Title of the rewording settings screen">Rewording (AI)</string>

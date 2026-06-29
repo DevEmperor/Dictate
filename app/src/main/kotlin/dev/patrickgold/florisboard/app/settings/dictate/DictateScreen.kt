@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.ModelTraining
 import androidx.compose.material.icons.filled.Replay
@@ -163,6 +164,15 @@ fun DictateScreen() = FlorisScreen {
                 placeholder = stringRes(R.string.dictate__custom_words_placeholder),
                 multiline = true,
                 notSetSummary = stringRes(R.string.dictate__custom_words_summary_empty),
+            )
+
+            // Custom mappings (issue #129): deterministic find-and-replace, exact and token-free —
+            // complements the prompt-hint custom words above.
+            Preference(
+                icon = Icons.Default.SwapHoriz,
+                title = stringRes(R.string.dictate__mappings_title),
+                summary = stringRes(R.string.dictate__mappings_entry_summary),
+                onClick = { navController.navigate(Routes.Settings.DictateMappings) },
             )
         }
 
