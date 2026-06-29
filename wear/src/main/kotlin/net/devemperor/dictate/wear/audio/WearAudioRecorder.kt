@@ -29,6 +29,7 @@ class WearAudioRecorder(private val context: Context) {
     private var record: AudioRecord? = null
     private var thread: Thread? = null
     @Volatile private var recording = false
+    @Volatile private var paused = false
     private val pcm = ByteArrayOutputStream()
 
     val isRecording: Boolean get() = recording
@@ -49,15 +50,24 @@ class WearAudioRecorder(private val context: Context) {
         pcm.reset()
         record = recorder
         recording = true
+        paused = false
         recorder.startRecording()
         thread = Thread {
             val buf = ByteArray(bufferSize)
             while (recording) {
                 val read = recorder.read(buf, 0, buf.size)
-                if (read > 0) pcm.write(buf, 0, read)
+                // Keep draining the mic while paused (so the buffer never overflows) but drop the audio,
+                // so paused time contributes no samples — matching the phone's pause behavior.
+                if (read > 0 && !paused) pcm.write(buf, 0, read)
             }
         }.also { it.start() }
     }
+
+    /** Pause capture: the mic keeps running but recorded samples are dropped until [resume]. */
+    fun pause() { paused = true }
+
+    /** Resume capture after a [pause]. */
+    fun resume() { paused = false }
 
     /** Stops capture, releases the recorder and returns the recorded audio as a `.wav` file. */
     fun stop(): File {

@@ -6,6 +6,7 @@
 
 package dev.patrickgold.florisboard.dictate.wear
 
+import android.util.Log
 import com.google.android.gms.wearable.ChannelClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.PutDataMapRequest
@@ -71,9 +72,14 @@ class DictateWearService : WearableListenerService() {
             channelClient.getInputStream(channel).await().use { input ->
                 audio.outputStream().use { input.copyTo(it) }
             }
-            transcript = runCatching {
+            Log.i(TAG, "tether: received ${audio.length()} bytes from ${channel.nodeId}, transcribing…")
+            transcript = try {
                 PhoneTranscriber.transcribe(applicationContext, prefs, audio)
-            }.getOrDefault("")
+            } catch (e: Exception) {
+                Log.e(TAG, "tether: phone transcription failed", e)
+                ""
+            }
+            Log.i(TAG, "tether: transcript length=${transcript.length}")
         } finally {
             audio.delete()
             channelClient.close(channel)
@@ -98,5 +104,9 @@ class DictateWearService : WearableListenerService() {
             asPutDataRequest().setUrgent()
         }
         Wearable.getDataClient(this).putDataItem(request)
+    }
+
+    private companion object {
+        const val TAG = "DictateWear"
     }
 }

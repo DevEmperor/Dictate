@@ -9,6 +9,8 @@ package net.devemperor.dictate.wear.ime
 import android.Manifest
 import android.content.pm.PackageManager
 import android.inputmethodservice.InputMethodService
+import android.os.SystemClock
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputConnection
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.devemperor.dictate.wear.audio.WearAudioRecorder
 import net.devemperor.dictate.wear.sync.WearSettingsStore
+import net.devemperor.dictate.wear.sync.WearSyncClient
 import net.devemperor.dictate.wear.transcribe.WearTranscription
 
 /**
@@ -59,6 +62,10 @@ class WearImeService :
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
 
     private val dictationState = mutableStateOf(WearDictationState.IDLE)
+    private val recordingInfo = mutableStateOf(WearRecordingInfo())
+    // Short, human-readable reason shown on the voice page when a dictation fails, so problems are
+    // diagnosable on the wrist without a logcat round-trip.
+    private val errorMessage = mutableStateOf<String?>(null)
 
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private val recorder by lazy { WearAudioRecorder(applicationContext) }
@@ -73,6 +80,18 @@ class WearImeService :
         lifecycleRegistry.currentState = Lifecycle.State.CREATED
         // Warm the cached settings synced from the phone so the voice page is ready to transcribe.
         WearSettingsStore.load(applicationContext)
+    }
+
+    override fun onStartInputView(info: android.view.inputmethod.EditorInfo?, restarting: Boolean) {
+        super.onStartInputView(info, restarting)
+        // Opening the keyboard is a good moment to reconcile with the phone: read the latest replicated
+        // settings DataItem (accent/provider/key/prompt) and nudge a republish. The cached copy is used
+        // meanwhile so input never blocks on the sync.
+        scope.launch {
+            runCatching { WearSyncClient.requestSettingsSync(applicationContext) }
+            runCatching { WearSyncClient.fetchPublishedSettings(applicationContext) }
+                .getOrNull()?.let { WearSettingsStore.save(applicationContext, it) }
+        }
     }
 
     override fun onCreateInputView(): View {
@@ -90,6 +109,8 @@ class WearImeService :
         }
 
         return ComposeView(this).apply {
+            // Opaque host so the input view never lets the app behind show through (uniform background).
+            setBackgroundColor(android.graphics.Color.BLACK)
             setViewTreeLifecycleOwner(this@WearImeService)
             setViewTreeViewModelStoreOwner(this@WearImeService)
             setViewTreeSavedStateRegistryOwner(this@WearImeService)
@@ -97,6 +118,8 @@ class WearImeService :
                 WearKeyboard(
                     actions = actions,
                     dictationState = dictationState.value,
+                    recordingInfo = recordingInfo.value,
+                    errorMessage = errorMessage.value,
                 )
             }
         }
@@ -115,14 +138,15 @@ class WearImeService :
         deleteBackward = { ic()?.deleteSurroundingText(1, 0) },
         performEnter = { ic()?.commitText("\n", 1) },
         toggleDictation = { toggleDictation() },
+        togglePause = { togglePause() },
+        cancelDictation = { cancelDictation() },
     )
 
     private fun ic(): InputConnection? = currentInputConnection
 
     /**
      * Voice-page record button. Tap once to start recording, tap again to stop; on stop the audio is
-     * transcribed (tethered via the phone by default, or standalone when the user opted in) and the
-     * resulting text is committed at the cursor.
+     * transcribed (tethered via the phone when reachable, else standalone) and committed at the cursor.
      */
     private fun toggleDictation() {
         when (dictationState.value) {
@@ -137,31 +161,86 @@ class WearImeService :
             PackageManager.PERMISSION_GRANTED
         if (!granted) {
             // The IME can't request permissions; the settings activity grants RECORD_AUDIO.
-            dictationState.value = WearDictationState.ERROR
+            fail("Grant microphone in the Dictate watch app")
             return
         }
-        val started = runCatching { recorder.start() }.isSuccess
-        dictationState.value = if (started) WearDictationState.RECORDING else WearDictationState.ERROR
+        val result = runCatching { recorder.start() }
+        if (result.isSuccess) {
+            errorMessage.value = null
+            recordingInfo.value = WearRecordingInfo(startedAtMs = SystemClock.elapsedRealtime())
+            dictationState.value = WearDictationState.RECORDING
+        } else {
+            fail(result.exceptionOrNull()?.shortReason() ?: "Microphone unavailable")
+        }
+    }
+
+    /** Pause or resume the in-progress recording, accumulating elapsed time across segments. */
+    private fun togglePause() {
+        val info = recordingInfo.value
+        if (dictationState.value != WearDictationState.RECORDING) return
+        if (info.paused) {
+            recorder.resume()
+            recordingInfo.value = info.copy(startedAtMs = SystemClock.elapsedRealtime(), paused = false)
+        } else {
+            recorder.pause()
+            val segment = SystemClock.elapsedRealtime() - info.startedAtMs
+            recordingInfo.value = info.copy(accumulatedMs = info.accumulatedMs + segment, paused = true)
+        }
+    }
+
+    /** Discard an in-progress recording without transcribing. */
+    private fun cancelDictation() {
+        if (recorder.isRecording) recorder.cancel()
+        recordingInfo.value = WearRecordingInfo()
+        dictationState.value = WearDictationState.IDLE
     }
 
     private fun stopAndTranscribe() {
-        val audio = runCatching { recorder.stop() }.getOrNull()
-        if (audio == null) {
-            dictationState.value = WearDictationState.ERROR
-            return
-        }
+        // Show the spinner immediately; do the WAV encode (recorder.stop) AND the network call off the
+        // main thread so the IME never blocks long enough to trigger an ANR ("Dictate isn't responding").
         dictationState.value = WearDictationState.TRANSCRIBING
         scope.launch {
-            val text = runCatching {
-                withContext(Dispatchers.IO) { WearTranscription.transcribe(applicationContext, audio) }
-            }.getOrNull()
-            audio.delete()
-            if (text.isNullOrBlank()) {
-                dictationState.value = WearDictationState.ERROR
-            } else {
-                ic()?.commitText(text, 1)
-                dictationState.value = WearDictationState.IDLE
+            val outcome = runCatching {
+                withContext(Dispatchers.IO) {
+                    val audio = recorder.stop()
+                    try {
+                        WearTranscription.transcribe(applicationContext, audio)
+                    } finally {
+                        audio.delete()
+                    }
+                }
+            }
+            val text = outcome.getOrNull()
+            when {
+                outcome.isFailure -> {
+                    val e = outcome.exceptionOrNull()
+                    Log.e(TAG, "Dictation failed", e)
+                    fail(e?.shortReason() ?: "Transcription failed")
+                }
+                text.isNullOrBlank() -> fail("Empty transcript — check provider/key on the phone")
+                else -> {
+                    ic()?.commitText(text, 1)
+                    recordingInfo.value = WearRecordingInfo()
+                    dictationState.value = WearDictationState.IDLE
+                    // Dictation is the primary action — once the text is in, get out of the way so the
+                    // user sees their field again instead of a keyboard stuck open over it.
+                    requestHideSelf(0)
+                }
             }
         }
+    }
+
+    private fun fail(reason: String) {
+        errorMessage.value = reason
+        recordingInfo.value = WearRecordingInfo()
+        dictationState.value = WearDictationState.ERROR
+    }
+
+    /** A compact, user-facing reason from a thrown error (class name fallback when there's no message). */
+    private fun Throwable.shortReason(): String =
+        (message?.takeIf { it.isNotBlank() } ?: this::class.simpleName ?: "Unknown error").take(80)
+
+    private companion object {
+        const val TAG = "WearIme"
     }
 }

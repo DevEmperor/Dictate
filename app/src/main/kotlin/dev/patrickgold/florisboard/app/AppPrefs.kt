@@ -252,11 +252,13 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
 
         // Wear OS standalone (#106): when on, the paired watch is allowed to transcribe by itself and
-        // the API key is included in the settings snapshot synced to it (stored encrypted on the watch).
-        // Off by default: the watch then tethers, i.e. the phone transcribes and the key never leaves it.
+        // the API key is included in the settings snapshot synced to it (stored private to the watch app).
+        // On by default so the watch keeps working when the phone is out of range; it still tethers
+        // through the phone whenever one is reachable. Turn off to keep the key strictly on the phone
+        // (the watch is then tether-only and can't dictate without the phone).
         val wearStandaloneEnabled = boolean(
             key = "dictate__wear_standalone_enabled",
-            default = false,
+            default = true,
         )
 
         // --- Network proxy (roadmap 5.6) ---------------------------------------------------------

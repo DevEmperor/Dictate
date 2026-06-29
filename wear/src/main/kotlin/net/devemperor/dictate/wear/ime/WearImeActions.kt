@@ -17,6 +17,10 @@ class WearImeActions(
     val performEnter: () -> Unit,
     /** Toggle dictation recording on/off. The result is committed via [commitText] when it lands. */
     val toggleDictation: () -> Unit,
+    /** Pause or resume an in-progress recording (mirrors the phone's pause button). */
+    val togglePause: () -> Unit,
+    /** Discard an in-progress recording without transcribing. */
+    val cancelDictation: () -> Unit,
 )
 
 /** High-level state of the voice page, surfaced to the UI for the record button + status line. */
@@ -26,3 +30,13 @@ enum class WearDictationState {
     TRANSCRIBING,
     ERROR,
 }
+
+/**
+ * Timing of the current recording, mirroring `DictateController.UiState.Recording` on the phone so the
+ * watch can show the same m:ss elapsed counter across pause/resume segments.
+ */
+data class WearRecordingInfo(
+    val startedAtMs: Long = 0L,
+    val accumulatedMs: Long = 0L,
+    val paused: Boolean = false,
+)

@@ -52,31 +52,42 @@ object DictateWearProtocol {
 }
 
 /**
- * The subset of the phone's Dictate settings the watch needs to transcribe.
+ * The phone's Dictate settings the watch needs to mirror the phone experience (#106).
  *
- * For the default tethered flow the watch only needs the non-secret fields (it forwards audio to the
- * phone). For the opt-in standalone flow it additionally needs [baseUrl]/[apiKey]/[model] so it can
- * call the provider itself. [apiKey] is only populated by the phone when the user has enabled
- * standalone, and is stored encrypted on the watch.
+ * The watch picks its transport at dictation time (see `WearTranscription`): it tethers through the
+ * phone when one is reachable, and otherwise falls back to calling the provider itself. So it needs
+ * both the non-secret config (provider/model/language/prompt) and, for the offline fallback,
+ * [baseUrl]/[apiKey]. The key is only populated when the phone-side master toggle allows it
+ * (`wearStandaloneEnabled`, default on); it is stored private to the watch app.
+ *
+ * [accentColorArgb] carries the phone's accent color so the watch UI matches the phone's look.
  */
 @Serializable
 data class DictateSyncedSettings(
     val transcriptionProviderId: String = "openai",
+    /** Human-readable provider name for the watch UI (e.g. "Groq", "xAI (Grok)"). */
+    val providerLabel: String = "",
     val transcriptionApi: TranscriptionApi = TranscriptionApi.OPENAI_MULTIPART,
     val baseUrl: String = "",
     val model: String = "",
-    /** Only set when the user opted into standalone transcription on the watch; empty otherwise. */
+    /** Populated unless the phone master toggle forbids syncing the key; empty -> watch can only tether. */
     val apiKey: String = "",
     /** ISO language code, or null to let the provider auto-detect. */
     val language: String? = null,
-    /** Style/punctuation prompt biasing recognition, or null. */
+    /** Style/punctuation prompt biasing recognition (already includes the custom-words glossary), or null. */
     val stylePrompt: String? = null,
-    /** Whether the user enabled standalone (watch-direct) transcription. */
-    val standaloneEnabled: Boolean = false,
+    /** Phone accent color as a packed ARGB int, so the watch UI themes itself like the phone. */
+    val accentColorArgb: Int = DEFAULT_ACCENT_ARGB,
 ) {
+    /** True when the watch can transcribe on its own (a key is present), i.e. works without the phone. */
+    val canStandalone: Boolean get() = apiKey.isNotBlank() && baseUrl.isNotBlank()
+
     fun encode(): String = DictateWearProtocol.json.encodeToString(this)
 
     companion object {
+        /** Dictate light blue — the app's default accent, used until a real sync arrives. */
+        const val DEFAULT_ACCENT_ARGB: Int = 0xFF30B7E6.toInt()
+
         fun decode(raw: String?): DictateSyncedSettings? =
             raw?.let { runCatching { DictateWearProtocol.json.decodeFromString<DictateSyncedSettings>(it) }.getOrNull() }
     }

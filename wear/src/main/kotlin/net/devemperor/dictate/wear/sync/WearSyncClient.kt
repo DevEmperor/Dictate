@@ -8,7 +8,9 @@ package net.devemperor.dictate.wear.sync
 
 import android.content.Context
 import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.Wearable
+import dev.patrickgold.florisboard.dictate.sync.DictateSyncedSettings
 import dev.patrickgold.florisboard.dictate.sync.DictateWearProtocol
 import kotlinx.coroutines.tasks.await
 
@@ -19,16 +21,25 @@ import kotlinx.coroutines.tasks.await
 object WearSyncClient {
 
     /**
-     * The id of a connected node that advertises the phone Dictate capability, or null if no paired
-     * phone with the app is currently reachable (-> the watch should fall back to its cached settings
-     * and, for transcription, to standalone if enabled).
+     * The id of a connected node that runs the phone Dictate app, or null if none is currently
+     * reachable (-> the watch falls back to its cached settings and to standalone transcription).
+     *
+     * Primary signal is the advertised capability; if Play Services hasn't propagated it yet we fall
+     * back to any directly-connected node, since the phone's listener service answers regardless.
      */
     suspend fun findPhoneNodeId(context: Context): String? {
-        val info = Wearable.getCapabilityClient(context)
-            .getCapability(DictateWearProtocol.CAPABILITY_PHONE_APP, CapabilityClient.FILTER_REACHABLE)
-            .await()
-        // Prefer a directly-connected (nearby) node when several are returned.
-        return info.nodes.firstOrNull { it.isNearby }?.id ?: info.nodes.firstOrNull()?.id
+        runCatching {
+            val info = Wearable.getCapabilityClient(context)
+                .getCapability(DictateWearProtocol.CAPABILITY_PHONE_APP, CapabilityClient.FILTER_REACHABLE)
+                .await()
+            info.nodes.firstOrNull { it.isNearby }?.id ?: info.nodes.firstOrNull()?.id
+        }.getOrNull()?.let { return it }
+
+        // Capability not seen — fall back to a nearby connected node.
+        return runCatching {
+            val nodes = Wearable.getNodeClient(context).connectedNodes.await()
+            nodes.firstOrNull { it.isNearby }?.id ?: nodes.firstOrNull()?.id
+        }.getOrNull()
     }
 
     /** Ask the phone to push a fresh settings snapshot. No-op if no phone node is reachable. */
@@ -40,15 +51,20 @@ object WearSyncClient {
     }
 
     /**
-     * Tell the phone to enable/disable standalone transcription for this watch. The phone stores the
-     * choice and re-publishes the settings (with or without the API key). Returns false if no phone is
-     * reachable, so the UI can explain why nothing changed.
+     * Read the latest settings snapshot the phone published to the Data Layer. Unlike [requestSettingsSync]
+     * this needs no live round-trip — the Data Layer replicates the phone's [DictateWearProtocol.PATH_SETTINGS]
+     * DataItem to the watch and caches it, so the most recent values are available even right after a flaky
+     * reconnect. Returns null if the phone has never published. Call this on every settings/keyboard open so
+     * the watch always reflects the phone (accent color, provider, prompt, …).
      */
-    suspend fun setStandalone(context: Context, enabled: Boolean): Boolean {
-        val nodeId = findPhoneNodeId(context) ?: return false
-        Wearable.getMessageClient(context)
-            .sendMessage(nodeId, DictateWearProtocol.PATH_SET_STANDALONE, byteArrayOf(if (enabled) 1 else 0))
-            .await()
-        return true
+    suspend fun fetchPublishedSettings(context: Context): DictateSyncedSettings? {
+        val items = runCatching { Wearable.getDataClient(context).dataItems.await() }.getOrNull() ?: return null
+        try {
+            val item = items.firstOrNull { it.uri.path == DictateWearProtocol.PATH_SETTINGS } ?: return null
+            val json = DataMapItem.fromDataItem(item).dataMap.getString(DictateWearProtocol.KEY_SETTINGS_JSON)
+            return DictateSyncedSettings.decode(json)
+        } finally {
+            items.release()
+        }
     }
 }

@@ -43,8 +43,9 @@ import net.devemperor.dictate.wear.sync.WearSyncClient
 import androidx.lifecycle.lifecycleScope
 
 /**
- * On-watch settings & status (#106): microphone permission, the connection/sync state, and the
- * standalone opt-in. Provider/model and most options are synced read-only from the phone.
+ * On-watch settings & status (#106): microphone permission, the connection/sync state, and a manual
+ * re-sync. Provider/model and the rest are synced read-only from the phone; the watch transcribes
+ * through the phone when it is reachable and on its own otherwise (no mode toggle needed).
  */
 class WearSettingsActivity : ComponentActivity() {
 
@@ -59,45 +60,56 @@ class WearSettingsActivity : ComponentActivity() {
         refreshMic()
 
         WearSettingsStore.load(this)
-        lifecycleScope.launch {
-            runCatching { WearSyncClient.requestSettingsSync(this@WearSettingsActivity) }
-        }
+        syncFromPhone()
 
         setContent {
-            val synced by WearSettingsStore.settings.collectAsState()
-            var phoneConnected by remember { mutableStateOf<Boolean?>(null) }
+            WearDictateTheme {
+                val synced by WearSettingsStore.settings.collectAsState()
+                var phoneConnected by remember { mutableStateOf<Boolean?>(null) }
 
-            LaunchedEffect(Unit) {
-                phoneConnected = runCatching {
-                    WearSyncClient.findPhoneNodeId(this@WearSettingsActivity) != null
-                }.getOrDefault(false)
+                LaunchedEffect(Unit) {
+                    phoneConnected = runCatching {
+                        WearSyncClient.findPhoneNodeId(this@WearSettingsActivity) != null
+                    }.getOrDefault(false)
+                }
+
+                SettingsScreen(
+                    micGranted = micGranted,
+                    phoneConnected = phoneConnected,
+                    synced = synced,
+                    onRequestMic = { requestMic.launch(Manifest.permission.RECORD_AUDIO) },
+                    onResync = {
+                        syncFromPhone()
+                        lifecycleScope.launch {
+                            phoneConnected = runCatching {
+                                WearSyncClient.findPhoneNodeId(this@WearSettingsActivity) != null
+                            }.getOrDefault(false)
+                        }
+                    },
+                )
             }
-
-            SettingsScreen(
-                micGranted = micGranted,
-                phoneConnected = phoneConnected,
-                synced = synced,
-                onRequestMic = { requestMic.launch(Manifest.permission.RECORD_AUDIO) },
-                onSetStandalone = { enabled ->
-                    lifecycleScope.launch {
-                        runCatching { WearSyncClient.setStandalone(this@WearSettingsActivity, enabled) }
-                    }
-                },
-                onResync = {
-                    lifecycleScope.launch {
-                        runCatching { WearSyncClient.requestSettingsSync(this@WearSettingsActivity) }
-                        phoneConnected = runCatching {
-                            WearSyncClient.findPhoneNodeId(this@WearSettingsActivity) != null
-                        }.getOrDefault(false)
-                    }
-                },
-            )
         }
     }
 
     override fun onResume() {
         super.onResume()
         refreshMic()
+        // Opening (or returning to) settings should always reconcile with the phone, as requested.
+        syncFromPhone()
+    }
+
+    /**
+     * Pull the phone's current settings: read the latest replicated DataItem (works even right after a
+     * flaky reconnect) AND nudge the phone to (re)publish, so a change made on the phone — accent color,
+     * provider, prompt — lands on the watch every time settings are opened.
+     */
+    private fun syncFromPhone() {
+        lifecycleScope.launch {
+            runCatching { WearSyncClient.requestSettingsSync(this@WearSettingsActivity) }
+            runCatching { WearSyncClient.fetchPublishedSettings(this@WearSettingsActivity) }
+                .getOrNull()
+                ?.let { WearSettingsStore.save(this@WearSettingsActivity, it) }
+        }
     }
 
     private fun refreshMic() {
@@ -112,59 +124,40 @@ private fun SettingsScreen(
     phoneConnected: Boolean?,
     synced: DictateSyncedSettings,
     onRequestMic: () -> Unit,
-    onSetStandalone: (Boolean) -> Unit,
     onResync: () -> Unit,
 ) {
-    val standalone = synced.standaloneEnabled
     val listState = rememberScalingLazyListState()
 
-    MaterialTheme {
-        ScalingLazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            state = listState,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            item { ListHeader { Text("Dictate", fontWeight = FontWeight.SemiBold) } }
+    ScalingLazyColumn(
+        modifier = Modifier.fillMaxWidth(),
+        state = listState,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        item { ListHeader { Text("Dictate", fontWeight = FontWeight.SemiBold) } }
 
-            // --- Status card: connection + active provider/model + mode ---
-            item {
-                StatusCard(phoneConnected = phoneConnected, synced = synced, standalone = standalone)
-            }
+        // --- Status card: connection + active provider/model + resolved transcription path ---
+        item { StatusCard(phoneConnected = phoneConnected, synced = synced) }
 
-            // --- Microphone permission ---
-            item {
-                Chip(
-                    onClick = onRequestMic,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = if (micGranted) ChipDefaults.secondaryChipColors() else ChipDefaults.primaryChipColors(),
-                    label = { Text(if (micGranted) "Microphone ✓" else "Grant microphone") },
-                    secondaryLabel = if (micGranted) null else { { Text("Required to dictate") } },
-                )
-            }
+        // --- Microphone permission ---
+        item {
+            Chip(
+                onClick = onRequestMic,
+                modifier = Modifier.fillMaxWidth(),
+                colors = if (micGranted) ChipDefaults.secondaryChipColors() else ChipDefaults.primaryChipColors(),
+                label = { Text(if (micGranted) "Microphone ✓" else "Grant microphone") },
+                secondaryLabel = if (micGranted) null else { { Text("Required to dictate") } },
+            )
+        }
 
-            // --- Standalone opt-in ---
-            item {
-                Chip(
-                    onClick = { onSetStandalone(!standalone) },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ChipDefaults.secondaryChipColors(),
-                    label = { Text(if (standalone) "On-watch: ON" else "On-watch: OFF") },
-                    secondaryLabel = {
-                        Text(if (standalone) "Watch calls provider" else "Phone transcribes")
-                    },
-                )
-            }
-
-            // --- Manual re-sync ---
-            item {
-                Chip(
-                    onClick = onResync,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ChipDefaults.secondaryChipColors(),
-                    label = { Text("Re-sync from phone") },
-                )
-            }
+        // --- Manual re-sync ---
+        item {
+            Chip(
+                onClick = onResync,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ChipDefaults.secondaryChipColors(),
+                label = { Text("Re-sync from phone") },
+            )
         }
     }
 }
@@ -173,19 +166,19 @@ private fun SettingsScreen(
 private fun StatusCard(
     phoneConnected: Boolean?,
     synced: DictateSyncedSettings,
-    standalone: Boolean,
 ) {
     val connectionText = when (phoneConnected) {
         null -> "Checking phone…"
         true -> "Phone connected"
-        false -> "Phone not reachable"
+        false -> "Phone out of range"
     }
-    val mode = when {
-        standalone -> "Mode: on-watch"
-        phoneConnected == false -> "Mode: tether (no phone!)"
-        else -> "Mode: tether"
+    // The transport the watch will actually use, mirroring WearTranscription's AUTO decision.
+    val pathText = when {
+        phoneConnected == true -> "Transcribes via phone"
+        synced.canStandalone -> "Transcribes on watch"
+        else -> "Open phone app to sync"
     }
-    val provider = synced.transcriptionProviderId.ifBlank { "—" } +
+    val provider = synced.providerLabel.ifBlank { synced.transcriptionProviderId.ifBlank { "—" } } +
         (synced.model.takeIf { it.isNotBlank() }?.let { "\n$it" } ?: "")
 
     Column(
@@ -198,7 +191,12 @@ private fun StatusCard(
             style = MaterialTheme.typography.caption2,
             textAlign = TextAlign.Center,
         )
-        Text(text = mode, style = MaterialTheme.typography.caption2, textAlign = TextAlign.Center)
+        Text(
+            text = pathText,
+            style = MaterialTheme.typography.caption2,
+            color = MaterialTheme.colors.primary,
+            textAlign = TextAlign.Center,
+        )
         Text(
             text = provider,
             style = MaterialTheme.typography.caption1,

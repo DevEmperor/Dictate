@@ -6,6 +6,7 @@
 
 package dev.patrickgold.florisboard.dictate.wear
 
+import androidx.compose.ui.graphics.toArgb
 import dev.patrickgold.florisboard.app.FlorisPreferenceModel
 import dev.patrickgold.florisboard.dictate.DictateLanguages
 import dev.patrickgold.florisboard.dictate.data.prompts.DictatePromptDefaults
@@ -18,9 +19,9 @@ import dev.patrickgold.florisboard.dictate.sync.DictateSyncedSettings
  * watch (#106). Mirrors the active-account resolution in `DictateController` (transcriptionProviderId ->
  * keyring account -> registry preset) but only exposes what the watch needs.
  *
- * The API key is intentionally NOT included here: the default flow is tethered (the phone transcribes),
- * so the secret never has to leave the phone. Standalone key delivery is handled separately (P2b) and
- * gated on an explicit opt-in.
+ * The watch tethers through the phone whenever it is reachable; the API key is also shipped (unless the
+ * user turned the [wearStandaloneEnabled] master toggle off) so the watch can still transcribe on its
+ * own when the phone is out of range. The phone accent color is shipped so the watch UI matches.
  */
 object PhoneWearSettingsResolver {
 
@@ -33,19 +34,20 @@ object PhoneWearSettingsResolver {
         val baseUrl = if (account.isCustom) account.customBaseUrl else preset.baseUrl
         val language = prefs.dictate.activeInputLanguage.get().takeIf { it != DictateLanguages.DETECT }
 
-        // Only ship the key when the user opted the watch into standalone; otherwise it stays on the
-        // phone and the watch tethers (the phone transcribes).
-        val standalone = prefs.dictate.wearStandaloneEnabled.get()
+        // Ship the key so the watch can work standalone when the phone is away, unless the user opted out
+        // of syncing the secret (then the watch is tether-only and won't dictate without the phone).
+        val syncKey = prefs.dictate.wearStandaloneEnabled.get()
 
         return DictateSyncedSettings(
             transcriptionProviderId = id,
+            providerLabel = preset.displayName,
             transcriptionApi = preset.transcriptionApi,
             baseUrl = baseUrl,
             model = model,
-            apiKey = if (standalone) account.apiKey else "",
+            apiKey = if (syncKey) account.apiKey else "",
             language = language,
             stylePrompt = stylePrompt(prefs),
-            standaloneEnabled = standalone,
+            accentColorArgb = prefs.other.accentColor.get().toArgb(),
         )
     }
 

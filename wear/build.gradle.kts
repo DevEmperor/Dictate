@@ -64,6 +64,12 @@ configure<ApplicationExtension> {
         compose = true
     }
 
+    lint {
+        // The watch settings screen hosts a ComponentActivity directly (no Fragments), so the
+        // activity-result registration is safe; this check is a false positive without a Fragment dep.
+        disable.add("InvalidFragmentVersionForActivityResult")
+    }
+
     // Mirror the phone module's signing setup: credentials live in the untracked keystore.properties
     // at the repo root; absent file -> unsigned build, same as the phone app.
     val keystorePropsFile = rootProject.file("keystore.properties")
@@ -111,6 +117,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material.icons)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     // Wear-specific Compose UI.
