@@ -366,7 +366,12 @@ class OpenAiCompatibleClient(
         // ids that also work directly as the `model` field in both chat and generateContent calls.
         val stripPrefix = config.transcriptionApi == TranscriptionApi.GEMINI_GENERATE_CONTENT
         return response.data
-            .map { ModelInfo(if (stripPrefix) it.id.removePrefix("models/") else it.id) }
+            .map {
+                ModelInfo(
+                    id = if (stripPrefix) it.id.removePrefix("models/") else it.id,
+                    inputModalities = it.architecture?.inputModalities ?: emptyList(),
+                )
+            }
             .sortedBy { it.id.lowercase() }
     }
 
@@ -576,7 +581,16 @@ class OpenAiCompatibleClient(
     private data class ModelsResponseDto(val data: List<ModelEntryDto> = emptyList())
 
     @Serializable
-    private data class ModelEntryDto(val id: String)
+    private data class ModelEntryDto(
+        val id: String,
+        // OpenRouter reports per-model modalities here; absent for plain OpenAI-style catalogs.
+        val architecture: ArchitectureDto? = null,
+    )
+
+    @Serializable
+    private data class ArchitectureDto(
+        @SerialName("input_modalities") val inputModalities: List<String> = emptyList(),
+    )
 
     // --- Soniox async REST DTOs (see transcribeSonioxAsync) ---
 

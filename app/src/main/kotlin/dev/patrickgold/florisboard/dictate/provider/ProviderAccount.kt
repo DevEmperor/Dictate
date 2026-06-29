@@ -38,6 +38,12 @@ data class ProviderAccount(
     val chatModel: String = "",
     val cachedModels: List<String> = emptyList(),
     val cachedModelsAt: Long = 0L,
+    /**
+     * Ids from [cachedModels] whose catalog entry reports audio input → transcription-capable, even when
+     * the id has no whisper/transcribe-style name (issue #132). Additive field, defaults empty for older
+     * stored accounts; repopulated on the next live model fetch.
+     */
+    val cachedAudioModels: List<String> = emptyList(),
 ) {
     /** True once the user has supplied a usable key (or this is a keyless endpoint like Ollama). */
     val hasKey: Boolean

@@ -22,7 +22,16 @@ data class ProviderCapabilities(
 data class ModelInfo(
     val id: String,
     val displayName: String = id,
-)
+    /**
+     * Input modalities the model accepts (e.g. "text", "image", "audio"), when the provider's catalog
+     * reports them (OpenRouter does, via `architecture.input_modalities`). Empty when unknown. A model
+     * that accepts "audio" input is transcription-capable regardless of its name (issue #132).
+     */
+    val inputModalities: List<String> = emptyList(),
+) {
+    /** True when the catalog says this model accepts audio input → it can transcribe. */
+    val acceptsAudioInput: Boolean get() = inputModalities.any { it.equals("audio", ignoreCase = true) }
+}
 
 enum class ChatRole(val wire: String) {
     SYSTEM("system"),

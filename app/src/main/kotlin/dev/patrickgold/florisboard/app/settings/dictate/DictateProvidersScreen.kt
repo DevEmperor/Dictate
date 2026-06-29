@@ -360,6 +360,7 @@ private fun ProviderEditorDialog(
     var chatModel by remember { mutableStateOf(account.chatModel) }
     // Live catalog cache, updated when the picker fetches; persisted together with the rest on confirm.
     var cachedModels by remember { mutableStateOf(account.cachedModels) }
+    var cachedAudioModels by remember { mutableStateOf(account.cachedAudioModels) }
     var pickerKind by remember { mutableStateOf<ModelKind?>(null) }
 
     // Effective preset to drive the model picker (custom endpoints get a base-URL-only preset).
@@ -379,6 +380,7 @@ private fun ProviderEditorDialog(
                     transcriptionModel = transcriptionModel.trim(),
                     chatModel = chatModel.trim(),
                     cachedModels = cachedModels,
+                    cachedAudioModels = cachedAudioModels,
                     cachedModelsAt = if (cachedModels != account.cachedModels) {
                         System.currentTimeMillis()
                     } else {
@@ -451,7 +453,8 @@ private fun ProviderEditorDialog(
             apiKey = apiKey,
             current = if (kind == ModelKind.TRANSCRIPTION) transcriptionModel else chatModel,
             cachedModels = cachedModels,
-            onModelsFetched = { cachedModels = it },
+            cachedAudioModels = cachedAudioModels,
+            onModelsFetched = { ids, audioIds -> cachedModels = ids; cachedAudioModels = audioIds },
             onPick = { picked ->
                 if (kind == ModelKind.TRANSCRIPTION) transcriptionModel = picked else chatModel = picked
             },

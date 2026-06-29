@@ -63,7 +63,8 @@ fun ModelPickerDialog(
     apiKey: String,
     current: String,
     cachedModels: List<String>,
-    onModelsFetched: (List<String>) -> Unit,
+    cachedAudioModels: List<String>,
+    onModelsFetched: (ids: List<String>, audioIds: List<String>) -> Unit,
     onPick: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -73,6 +74,8 @@ fun ModelPickerDialog(
     var error by remember { mutableStateOf<String?>(null) }
     // Live catalog fetched this session, merged on top of the curated/cached list.
     var fetched by remember { mutableStateOf(cachedModels) }
+    // Ids the catalog flags as audio-input (transcription-capable) regardless of name (issue #132).
+    var audioModelIds by remember { mutableStateOf(cachedAudioModels) }
 
     // Fetches the provider's full /models catalog and caches it via [onModelsFetched]. Shared by the
     // Refresh button and the auto-load below.
@@ -80,12 +83,14 @@ fun ModelPickerDialog(
         loading = true
         error = null
         try {
-            val ids = OpenAiCompatibleClient
+            val models = OpenAiCompatibleClient
                 .from(preset, apiKey, baseUrlOverride = preset.baseUrl)
                 .listModels()
-                .map { it.id }
+            val ids = models.map { it.id }
+            val audioIds = models.filter { it.acceptsAudioInput }.map { it.id }
             fetched = ids
-            onModelsFetched(ids)
+            audioModelIds = audioIds
+            onModelsFetched(ids, audioIds)
         } catch (e: DictateApiException) {
             error = e.message
         } catch (e: Exception) {
@@ -111,11 +116,14 @@ fun ModelPickerDialog(
         ModelKind.TRANSCRIPTION -> preset.curatedTranscriptionModels
         ModelKind.CHAT -> preset.curatedChatModels
     }
-    val candidates = remember(curated, fetched, query, current) {
+    val candidates = remember(curated, fetched, audioModelIds, query, current) {
         // Gemini transcribes via its multimodal chat models (no STT-tagged ids exist), so its live STT
         // catalog is the chat catalog rather than the keyword-filtered subset.
         val liveKind = if (preset.id == "gemini") ModelKind.CHAT else kind
-        (curated + fetched.filter { matchesKind(it, liveKind) } + current)
+        // For transcription, also include every model the catalog flagged as audio-input — surfaces STT
+        // models whose ids don't match the name heuristic (e.g. OpenRouter's Microsoft model, #132).
+        val audioForTranscription = if (kind == ModelKind.TRANSCRIPTION) audioModelIds else emptyList()
+        (curated + audioForTranscription + fetched.filter { matchesKind(it, liveKind) } + current)
             .map { it.trim() }
             .filter { it.isNotEmpty() }
             .distinct()
