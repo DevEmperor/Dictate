@@ -1264,4 +1264,35 @@
     <string name="dictate__local_model_not_installed_error">Aucun modèle local téléchargé</string>
     <string name="dictate__local_fallback_title">Repli hors ligne</string>
     <string name="dictate__local_fallback_summary">Hors ligne, transcrivez sur l’appareil avec le modèle téléchargé après l’échec du fournisseur</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">Prompts de reformulation enregistrés</string>
+    <string name="dictate__floating_button_undo_failed">Annulation impossible — le texte a peut-être changé.</string>
+    <string name="dictate__floating_button_undo_summary_off">Aucun bouton d\'annulation affiché.</string>
+    <string name="dictate__floating_button_undo_summary_on">Après une dictée, un bouton d\'annulation apparaît à côté du bouton pour supprimer le texte inséré en une seule fois.</string>
+    <string name="dictate__floating_button_undo_title">Bouton d\'annulation</string>
+    <string name="dictate__mappings_add">Ajouter un remplacement</string>
+    <string name="dictate__mappings_editor_title">Remplacement</string>
+    <string name="dictate__mappings_empty_summary">Ajoutez une règle pour remplacer automatiquement des mots ou des phrases dans chaque transcription — de façon exacte et sans utiliser de jetons IA.</string>
+    <string name="dictate__mappings_empty_title">Aucun remplacement pour le moment</string>
+    <string name="dictate__mappings_entry_summary">Règles de rechercher-remplacer appliquées à la transcription</string>
+    <string name="dictate__mappings_field_from">Remplacer</string>
+    <string name="dictate__mappings_field_from_placeholder">ex. github</string>
+    <string name="dictate__mappings_field_to">Par</string>
+    <string name="dictate__mappings_field_to_placeholder">ex. GitHub</string>
+    <string name="dictate__mappings_group">Règles de remplacement</string>
+    <string name="dictate__mappings_matchcase_summary">Remplacer uniquement lorsque la casse correspond exactement.</string>
+    <string name="dictate__mappings_matchcase_title">Respecter la casse</string>
+    <string name="dictate__mappings_opt_caseinsensitive">Ignore la casse</string>
+    <string name="dictate__mappings_opt_casesensitive">Sensible à la casse</string>
+    <string name="dictate__mappings_opt_substring">N\'importe où</string>
+    <string name="dictate__mappings_opt_wholeword">Mot entier</string>
+    <string name="dictate__mappings_title">Remplacements personnalisés</string>
+    <string name="dictate__mappings_wholeword_summary">Remplacer uniquement les mots isolés, pas les correspondances à l\'intérieur de mots plus longs.</string>
+    <string name="dictate__mappings_wholeword_title">Mot entier uniquement</string>
+    <string name="dictate__wear_standalone_summary">Lorsque cette option est activée, votre clé API est synchronisée avec une montre Wear OS associée afin qu\'elle puisse transcrire seule lorsque ce téléphone est hors de portée. Tant que le téléphone est joignable, la montre passe toujours par lui. Désactivez l\'option pour conserver la clé uniquement sur ce téléphone (la montre ne pourra alors pas dicter sans lui).</string>
+    <string name="dictate__wear_standalone_title">Synchroniser la clé avec la montre</string>
+    <string name="emoji__search__hint">Rechercher un emoji</string>
+    <string name="emoji__search__no_results">Aucun emoji correspondant</string>
+    <string name="quick_action__dictate_reinsert">Réinsérer</string>
+    <string name="quick_action__dictate_reinsert__tooltip">Insérer à nouveau votre dernière dictée</string>
+
 </resources>

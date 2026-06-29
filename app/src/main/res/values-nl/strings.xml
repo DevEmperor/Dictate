@@ -1288,4 +1288,37 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="dictate__local_model_not_installed_error">Geen lokaal model gedownload</string>
     <string name="dictate__local_fallback_title">Offline terugval</string>
     <string name="dictate__local_fallback_summary">Offline transcriberen op het apparaat met het gedownloade model nadat de provider faalt</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">Opgeslagen herformuleerprompts</string>
+    <string name="dictate__floating_button_undo_failed">Ongedaan maken mislukt — de tekst is mogelijk gewijzigd.</string>
+    <string name="dictate__floating_button_undo_summary_off">Geen knop voor ongedaan maken weergegeven.</string>
+    <string name="dictate__floating_button_undo_summary_on">Na een dictaat verschijnt er een knop voor ongedaan maken naast de knop om de ingevoegde tekst met één tik te verwijderen.</string>
+    <string name="dictate__floating_button_undo_title">Knop voor ongedaan maken</string>
+    <string name="dictate__mappings_add">Toewijzing toevoegen</string>
+    <string name="dictate__mappings_editor_title">Toewijzing</string>
+    <string name="dictate__mappings_empty_summary">Voeg een regel toe om automatisch woorden of zinnen in elk transcript te vervangen — exact en zonder AI-tokens te gebruiken.</string>
+    <string name="dictate__mappings_empty_title">Nog geen toewijzingen</string>
+    <string name="dictate__mappings_entry_summary">Zoek-en-vervangregels toegepast op het transcript</string>
+    <string name="dictate__mappings_field_from">Vervang</string>
+    <string name="dictate__mappings_field_from_placeholder">bijv. github</string>
+    <string name="dictate__mappings_field_to">Door</string>
+    <string name="dictate__mappings_field_to_placeholder">bijv. GitHub</string>
+    <string name="dictate__mappings_group">Vervangregels</string>
+    <string name="dictate__mappings_matchcase_summary">Alleen vervangen wanneer de hoofdletters exact overeenkomen.</string>
+    <string name="dictate__mappings_matchcase_title">Hoofdlettergevoelig</string>
+    <string name="dictate__mappings_opt_caseinsensitive">Negeert hoofdletters</string>
+    <string name="dictate__mappings_opt_casesensitive">Hoofdlettergevoelig</string>
+    <string name="dictate__mappings_opt_substring">Overal</string>
+    <string name="dictate__mappings_opt_wholeword">Heel woord</string>
+    <string name="dictate__mappings_title">Aangepaste toewijzingen</string>
+    <string name="dictate__mappings_wholeword_summary">Alleen losstaande woorden vervangen, niet binnen langere woorden.</string>
+    <string name="dictate__mappings_wholeword_title">Alleen heel woord</string>
+    <string name="dictate__wear_standalone_summary">Wanneer ingeschakeld wordt je API-sleutel gesynchroniseerd met een gekoppeld Wear OS-horloge, zodat het zelf kan transcriberen wanneer deze telefoon buiten bereik is. Zolang de telefoon bereikbaar is, werkt het horloge er nog steeds doorheen. Schakel uit om de sleutel strikt op deze telefoon te houden (het horloge kan dan niet zonder dicteren).</string>
+    <string name="dictate__wear_standalone_title">Sleutel synchroniseren met horloge</string>
+    <string name="emoji__search__hint">Emoji zoeken</string>
+    <string name="emoji__search__no_results">Geen overeenkomende emoji</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__label">Suggesties voor automatisch invullen van systeem</string>
+    <string name="pref__suggestion__block_possibly_offensive__summary">Voorkomt dat mogelijk aanstootgevende woorden worden voorgesteld terwijl je typt</string>
+    <string name="quick_action__dictate_reinsert">Opnieuw invoegen</string>
+    <string name="quick_action__dictate_reinsert__tooltip">Voeg je laatste dictaat opnieuw in</string>
+
 </resources>

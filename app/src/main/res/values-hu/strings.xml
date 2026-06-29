@@ -1386,4 +1386,37 @@
     <string name="dictate__local_model_not_installed_error">Nincs letöltött helyi modell</string>
     <string name="dictate__local_fallback_title">Offline tartalék</string>
     <string name="dictate__local_fallback_summary">Offline állapotban a letöltött modellel írd át helyben, miután a szolgáltató hibázott</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">Mentett átfogalmazási utasítások</string>
+    <string name="dictate__floating_button_undo_failed">A visszavonás nem sikerült — a szöveg időközben megváltozhatott.</string>
+    <string name="dictate__floating_button_undo_summary_off">Nem jelenik meg visszavonás gomb.</string>
+    <string name="dictate__floating_button_undo_summary_on">Diktálás után a gomb mellett megjelenik egy visszavonás gomb, amellyel egyetlen koppintással eltávolítható a beillesztett szöveg.</string>
+    <string name="dictate__floating_button_undo_title">Visszavonás gomb</string>
+    <string name="dictate__mappings_add">Hozzárendelés hozzáadása</string>
+    <string name="dictate__mappings_editor_title">Hozzárendelés</string>
+    <string name="dictate__mappings_empty_summary">Adj hozzá szabályt, amely minden átiratban automatikusan lecseréli a szavakat vagy kifejezéseket — pontosan és MI-tokenek felhasználása nélkül.</string>
+    <string name="dictate__mappings_empty_title">Még nincsenek hozzárendelések</string>
+    <string name="dictate__mappings_entry_summary">Az átiratra alkalmazott keresés és csere szabályok</string>
+    <string name="dictate__mappings_field_from">Erre</string>
+    <string name="dictate__mappings_field_from_placeholder">pl. github</string>
+    <string name="dictate__mappings_field_to">Cseréld</string>
+    <string name="dictate__mappings_field_to_placeholder">pl. GitHub</string>
+    <string name="dictate__mappings_group">Cserélési szabályok</string>
+    <string name="dictate__mappings_matchcase_summary">Csak akkor cserél, ha a kis- és nagybetűk pontosan egyeznek.</string>
+    <string name="dictate__mappings_matchcase_title">Kis- és nagybetű egyezzen</string>
+    <string name="dictate__mappings_opt_caseinsensitive">Nem érzékeny a kis- és nagybetűkre</string>
+    <string name="dictate__mappings_opt_casesensitive">Érzékeny a kis- és nagybetűkre</string>
+    <string name="dictate__mappings_opt_substring">Bárhol</string>
+    <string name="dictate__mappings_opt_wholeword">Egész szó</string>
+    <string name="dictate__mappings_title">Egyéni hozzárendelések</string>
+    <string name="dictate__mappings_wholeword_summary">Csak önálló szavakat cserél, a hosszabb szavakon belüli egyezéseket nem.</string>
+    <string name="dictate__mappings_wholeword_title">Csak egész szó</string>
+    <string name="dictate__wear_standalone_summary">Bekapcsolva az API-kulcsod szinkronizálódik egy párosított Wear OS órával, így az önállóan is tud átírni, amikor ez a telefon nincs hatótávon belül. Amíg a telefon elérhető, az óra továbbra is rajta keresztül kapcsolódik. Kapcsold ki, ha a kulcsot kizárólag ezen a telefonon szeretnéd tartani (ekkor az óra nem tud nélküle diktálni).</string>
+    <string name="dictate__wear_standalone_title">Kulcs szinkronizálása az órára</string>
+    <string name="emoji__search__hint">Emoji keresése</string>
+    <string name="emoji__search__no_results">Nincs találat az emojikra</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__label">Rendszer automatikus kitöltési javaslatai</string>
+    <string name="pref__suggestion__block_possibly_offensive__summary">Megakadályozza, hogy esetlegesen sértő szavak jelenjenek meg a gépelés közbeni javaslatokban</string>
+    <string name="quick_action__dictate_reinsert">Újrabeillesztés</string>
+    <string name="quick_action__dictate_reinsert__tooltip">Az utolsó diktálás ismételt beillesztése</string>
+
 </resources>

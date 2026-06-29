@@ -1404,4 +1404,37 @@
     <string name="dictate__local_model_not_installed_error">Nie pobrano lokalnego modelu</string>
     <string name="dictate__local_fallback_title">Tryb offline awaryjny</string>
     <string name="dictate__local_fallback_summary">Offline transkrybuj na urządzeniu pobranym modelem, gdy dostawca zawiedzie</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">Zapisane polecenia przeformułowania</string>
+    <string name="dictate__floating_button_undo_failed">Nie można cofnąć — tekst mógł się zmienić.</string>
+    <string name="dictate__floating_button_undo_summary_off">Nie wyświetlono przycisku cofania.</string>
+    <string name="dictate__floating_button_undo_summary_on">Po dyktowaniu obok przycisku pojawia się przycisk cofania, który jednym dotknięciem usuwa wstawiony tekst.</string>
+    <string name="dictate__floating_button_undo_title">Przycisk cofania</string>
+    <string name="dictate__mappings_add">Dodaj mapowanie</string>
+    <string name="dictate__mappings_editor_title">Mapowanie</string>
+    <string name="dictate__mappings_empty_summary">Dodaj regułę, aby automatycznie zastępować słowa lub frazy w każdej transkrypcji — dokładnie i bez użycia tokenów AI.</string>
+    <string name="dictate__mappings_empty_title">Brak mapowań</string>
+    <string name="dictate__mappings_entry_summary">Reguły wyszukiwania i zamiany stosowane do transkrypcji</string>
+    <string name="dictate__mappings_field_from">Zastąp</string>
+    <string name="dictate__mappings_field_from_placeholder">np. github</string>
+    <string name="dictate__mappings_field_to">Na</string>
+    <string name="dictate__mappings_field_to_placeholder">np. GitHub</string>
+    <string name="dictate__mappings_group">Reguły zamiany</string>
+    <string name="dictate__mappings_matchcase_summary">Zastępuj tylko wtedy, gdy wielkość liter dokładnie się zgadza.</string>
+    <string name="dictate__mappings_matchcase_title">Uwzględniaj wielkość liter</string>
+    <string name="dictate__mappings_opt_caseinsensitive">Ignoruje wielkość liter</string>
+    <string name="dictate__mappings_opt_casesensitive">Uwzględnia wielkość liter</string>
+    <string name="dictate__mappings_opt_substring">Wszędzie</string>
+    <string name="dictate__mappings_opt_wholeword">Całe słowo</string>
+    <string name="dictate__mappings_title">Własne mapowania</string>
+    <string name="dictate__mappings_wholeword_summary">Zastępuj tylko samodzielne słowa, a nie dopasowania wewnątrz dłuższych słów.</string>
+    <string name="dictate__mappings_wholeword_title">Tylko całe słowo</string>
+    <string name="dictate__wear_standalone_summary">Gdy włączone, Twój klucz API jest synchronizowany ze sparowanym zegarkiem Wear OS, aby mógł sam transkrybować, gdy ten telefon jest poza zasięgiem. Gdy telefon jest dostępny, zegarek nadal łączy się przez niego. Wyłącz, aby klucz pozostał wyłącznie na tym telefonie (zegarek nie będzie wtedy mógł dyktować bez niego).</string>
+    <string name="dictate__wear_standalone_title">Synchronizuj klucz z zegarkiem</string>
+    <string name="emoji__search__hint">Szukaj emoji</string>
+    <string name="emoji__search__no_results">Brak pasujących emoji</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__label">Systemowe podpowiedzi autouzupełniania</string>
+    <string name="pref__suggestion__block_possibly_offensive__summary">Zapobiega podpowiadaniu potencjalnie obraźliwych słów podczas pisania</string>
+    <string name="quick_action__dictate_reinsert">Wstaw ponownie</string>
+    <string name="quick_action__dictate_reinsert__tooltip">Wstaw ponownie ostatnie dyktowanie</string>
+
 </resources>

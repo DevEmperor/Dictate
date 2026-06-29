@@ -1318,4 +1318,37 @@
     <string name="dictate__local_model_not_installed_error">端末内モデルがありません</string>
     <string name="dictate__local_fallback_title">オフライン時のフォールバック</string>
     <string name="dictate__local_fallback_summary">オフライン時、プロバイダーが失敗したらダウンロード済みモデルで端末上で文字起こしします</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">保存された言い換えプロンプト</string>
+    <string name="dictate__floating_button_undo_failed">元に戻せませんでした。テキストが変更された可能性があります。</string>
+    <string name="dictate__floating_button_undo_summary_off">元に戻すボタンを表示しません。</string>
+    <string name="dictate__floating_button_undo_summary_on">音声入力後、ボタンの横に元に戻すボタンが表示され、ワンタップで挿入したテキストを削除できます。</string>
+    <string name="dictate__floating_button_undo_title">元に戻すボタン</string>
+    <string name="dictate__mappings_add">マッピングを追加</string>
+    <string name="dictate__mappings_editor_title">マッピング</string>
+    <string name="dictate__mappings_empty_summary">ルールを追加すると、すべての文字起こしで単語やフレーズを自動的に置き換えます。AIトークンを使わず正確に処理します。</string>
+    <string name="dictate__mappings_empty_title">マッピングはまだありません</string>
+    <string name="dictate__mappings_entry_summary">文字起こしに適用される検索置換ルール</string>
+    <string name="dictate__mappings_field_from">置換対象</string>
+    <string name="dictate__mappings_field_from_placeholder">例: github</string>
+    <string name="dictate__mappings_field_to">置換後</string>
+    <string name="dictate__mappings_field_to_placeholder">例: GitHub</string>
+    <string name="dictate__mappings_group">置換ルール</string>
+    <string name="dictate__mappings_matchcase_summary">大文字と小文字が完全に一致する場合のみ置き換えます。</string>
+    <string name="dictate__mappings_matchcase_title">大文字と小文字を区別</string>
+    <string name="dictate__mappings_opt_caseinsensitive">大文字と小文字を無視</string>
+    <string name="dictate__mappings_opt_casesensitive">大文字と小文字を区別</string>
+    <string name="dictate__mappings_opt_substring">どこでも</string>
+    <string name="dictate__mappings_opt_wholeword">単語全体</string>
+    <string name="dictate__mappings_title">カスタムマッピング</string>
+    <string name="dictate__mappings_wholeword_summary">独立した単語のみを置き換え、長い単語の一部に一致するものは置き換えません。</string>
+    <string name="dictate__mappings_wholeword_title">単語全体のみ</string>
+    <string name="dictate__wear_standalone_summary">オンにすると、API キーがペア設定された Wear OS の時計と同期され、この携帯電話が圏外のときも時計単体で文字起こしできます。携帯電話に接続できる間は、時計は引き続き携帯電話を経由します。オフにするとキーはこの携帯電話のみに保持されます（その場合、時計はキーなしでは音声入力できません）。</string>
+    <string name="dictate__wear_standalone_title">キーを時計に同期</string>
+    <string name="emoji__search__hint">絵文字を検索</string>
+    <string name="emoji__search__no_results">一致する絵文字がありません</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__label">システムの自動入力候補</string>
+    <string name="pref__suggestion__block_possibly_offensive__summary">入力中に不適切と思われる単語が候補に表示されないようにします</string>
+    <string name="quick_action__dictate_reinsert">再挿入</string>
+    <string name="quick_action__dictate_reinsert__tooltip">前回の音声入力をもう一度挿入します</string>
+
 </resources>

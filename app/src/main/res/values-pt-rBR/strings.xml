@@ -1195,4 +1195,37 @@
     <string name="dictate__local_model_not_installed_error">Nenhum modelo local baixado</string>
     <string name="dictate__local_fallback_title">Alternativa offline</string>
     <string name="dictate__local_fallback_summary">Sem internet, transcreva no dispositivo com o modelo baixado após falha do provedor</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">Prompts de reformulação salvos</string>
+    <string name="dictate__floating_button_undo_failed">Não foi possível desfazer — o texto pode ter mudado.</string>
+    <string name="dictate__floating_button_undo_summary_off">Nenhum botão de desfazer é exibido.</string>
+    <string name="dictate__floating_button_undo_summary_on">Após um ditado, um botão de desfazer aparece ao lado do botão para remover o texto inserido com um toque.</string>
+    <string name="dictate__floating_button_undo_title">Botão de desfazer</string>
+    <string name="dictate__mappings_add">Adicionar mapeamento</string>
+    <string name="dictate__mappings_editor_title">Mapeamento</string>
+    <string name="dictate__mappings_empty_summary">Adicione uma regra para substituir palavras ou frases automaticamente em cada transcrição — de forma exata e sem usar tokens de IA.</string>
+    <string name="dictate__mappings_empty_title">Nenhum mapeamento ainda</string>
+    <string name="dictate__mappings_entry_summary">Regras de localizar e substituir aplicadas à transcrição</string>
+    <string name="dictate__mappings_field_from">Substituir</string>
+    <string name="dictate__mappings_field_from_placeholder">ex.: github</string>
+    <string name="dictate__mappings_field_to">Por</string>
+    <string name="dictate__mappings_field_to_placeholder">ex.: GitHub</string>
+    <string name="dictate__mappings_group">Regras de substituição</string>
+    <string name="dictate__mappings_matchcase_summary">Só substitui quando a capitalização coincide exatamente.</string>
+    <string name="dictate__mappings_matchcase_title">Diferenciar maiúsculas</string>
+    <string name="dictate__mappings_opt_caseinsensitive">Ignora maiúsculas</string>
+    <string name="dictate__mappings_opt_casesensitive">Diferencia maiúsculas</string>
+    <string name="dictate__mappings_opt_substring">Em qualquer lugar</string>
+    <string name="dictate__mappings_opt_wholeword">Palavra inteira</string>
+    <string name="dictate__mappings_title">Mapeamentos personalizados</string>
+    <string name="dictate__mappings_wholeword_summary">Só substitui palavras isoladas, não correspondências dentro de palavras maiores.</string>
+    <string name="dictate__mappings_wholeword_title">Somente palavra inteira</string>
+    <string name="dictate__wear_standalone_summary">Quando ativado, sua chave de API é sincronizada com um relógio Wear OS pareado para que ele possa transcrever sozinho quando este telefone estiver fora de alcance. Enquanto o telefone estiver acessível, o relógio ainda se conecta por meio dele. Desative para manter a chave restrita a este telefone (o relógio então não consegue ditar sem ele).</string>
+    <string name="dictate__wear_standalone_title">Sincronizar chave com o relógio</string>
+    <string name="emoji__search__hint">Pesquisar emoji</string>
+    <string name="emoji__search__no_results">Nenhum emoji correspondente</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__label">Sugestões de preenchimento automático do sistema</string>
+    <string name="pref__suggestion__block_possibly_offensive__summary">Impede que palavras possivelmente ofensivas sejam sugeridas enquanto você digita</string>
+    <string name="quick_action__dictate_reinsert">Inserir novamente</string>
+    <string name="quick_action__dictate_reinsert__tooltip">Inserir seu último ditado novamente</string>
+
 </resources>

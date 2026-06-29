@@ -1261,4 +1261,36 @@
     <string name="dictate__local_model_not_installed_error">Kein lokales Modell heruntergeladen</string>
     <string name="dictate__local_fallback_title">Offline-Fallback</string>
     <string name="dictate__local_fallback_summary">Wenn offline, nach dem Fehlschlag des Anbieters lokal mit dem heruntergeladenen Modell transkribieren</string>
+    <string name="dictate__floating_button_undo_failed">Rückgängig machen fehlgeschlagen — der Text wurde möglicherweise geändert.</string>
+    <string name="dictate__floating_button_undo_summary_off">Es wird keine Rückgängig-Schaltfläche angezeigt.</string>
+    <string name="dictate__floating_button_undo_summary_on">Nach einer Diktateingabe erscheint neben der Schaltfläche eine Rückgängig-Schaltfläche, mit der du den eingefügten Text mit einem Tippen wieder entfernst.</string>
+    <string name="dictate__floating_button_undo_title">Rückgängig-Schaltfläche</string>
+    <string name="dictate__mappings_add">Zuordnung hinzufügen</string>
+    <string name="dictate__mappings_editor_title">Zuordnung</string>
+    <string name="dictate__mappings_empty_summary">Füge eine Regel hinzu, um Wörter oder Wortgruppen in jedem Transkript automatisch zu ersetzen — exakt und ohne KI-Tokens zu verbrauchen.</string>
+    <string name="dictate__mappings_empty_title">Noch keine Zuordnungen</string>
+    <string name="dictate__mappings_entry_summary">Suchen-und-Ersetzen-Regeln, die auf das Transkript angewendet werden</string>
+    <string name="dictate__mappings_field_from">Ersetzen</string>
+    <string name="dictate__mappings_field_from_placeholder">z. B. github</string>
+    <string name="dictate__mappings_field_to">Durch</string>
+    <string name="dictate__mappings_field_to_placeholder">z. B. GitHub</string>
+    <string name="dictate__mappings_group">Ersetzungsregeln</string>
+    <string name="dictate__mappings_matchcase_summary">Nur ersetzen, wenn die Groß-/Kleinschreibung genau übereinstimmt.</string>
+    <string name="dictate__mappings_matchcase_title">Groß-/Kleinschreibung beachten</string>
+    <string name="dictate__mappings_opt_caseinsensitive">Groß-/Kleinschreibung wird ignoriert</string>
+    <string name="dictate__mappings_opt_casesensitive">Groß-/Kleinschreibung beachten</string>
+    <string name="dictate__mappings_opt_substring">Überall</string>
+    <string name="dictate__mappings_opt_wholeword">Ganzes Wort</string>
+    <string name="dictate__mappings_title">Eigene Zuordnungen</string>
+    <string name="dictate__mappings_wholeword_summary">Nur eigenständige Wörter ersetzen, keine Treffer innerhalb längerer Wörter.</string>
+    <string name="dictate__mappings_wholeword_title">Nur ganzes Wort</string>
+    <string name="dictate__wear_standalone_summary">Wenn aktiviert, wird dein API-Schlüssel mit einer gekoppelten Wear OS Uhr synchronisiert, sodass sie selbst transkribieren kann, wenn dieses Telefon außer Reichweite ist. Solange das Telefon erreichbar ist, nutzt die Uhr weiterhin die Verbindung darüber. Deaktiviere die Option, um den Schlüssel ausschließlich auf diesem Telefon zu behalten (die Uhr kann dann ohne ihn nicht diktieren).</string>
+    <string name="dictate__wear_standalone_title">Schlüssel mit Uhr synchronisieren</string>
+    <string name="emoji__search__hint">Emoji suchen</string>
+    <string name="emoji__search__no_results">Keine passenden Emojis</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__label">Autofill-Vorschläge des Systems</string>
+    <string name="pref__suggestion__block_possibly_offensive__summary">Verhindert, dass möglicherweise anstößige Wörter beim Tippen vorgeschlagen werden</string>
+    <string name="quick_action__dictate_reinsert">Erneut einfügen</string>
+    <string name="quick_action__dictate_reinsert__tooltip">Deine letzte Diktateingabe erneut einfügen</string>
+
 </resources>

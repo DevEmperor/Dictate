@@ -1403,4 +1403,37 @@
     <string name="dictate__local_model_not_installed_error">Není stažen žádný místní model</string>
     <string name="dictate__local_fallback_title">Offline záloha</string>
     <string name="dictate__local_fallback_summary">Když jste offline, přepište zvuk lokálně staženým modelem poté, co poskytovatel selže</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">Uložené prompty pro přeformulování</string>
+    <string name="dictate__floating_button_undo_failed">Nelze vrátit zpět — text se možná změnil.</string>
+    <string name="dictate__floating_button_undo_summary_off">Tlačítko zpět se nezobrazuje.</string>
+    <string name="dictate__floating_button_undo_summary_on">Po diktování se vedle tlačítka zobrazí tlačítko zpět, kterým jedním klepnutím odstraníte vložený text.</string>
+    <string name="dictate__floating_button_undo_title">Tlačítko zpět</string>
+    <string name="dictate__mappings_add">Přidat pravidlo</string>
+    <string name="dictate__mappings_editor_title">Pravidlo</string>
+    <string name="dictate__mappings_empty_summary">Přidejte pravidlo pro automatické nahrazení slov nebo frází v každém přepisu — přesně a bez použití AI tokenů.</string>
+    <string name="dictate__mappings_empty_title">Zatím žádná pravidla</string>
+    <string name="dictate__mappings_entry_summary">Pravidla najít a nahradit použitá na přepis</string>
+    <string name="dictate__mappings_field_from">Nahradit</string>
+    <string name="dictate__mappings_field_from_placeholder">např. github</string>
+    <string name="dictate__mappings_field_to">Za</string>
+    <string name="dictate__mappings_field_to_placeholder">např. GitHub</string>
+    <string name="dictate__mappings_group">Pravidla nahrazování</string>
+    <string name="dictate__mappings_matchcase_summary">Nahradit pouze tehdy, když přesně odpovídají velká a malá písmena.</string>
+    <string name="dictate__mappings_matchcase_title">Rozlišovat velikost písmen</string>
+    <string name="dictate__mappings_opt_caseinsensitive">Ignoruje velikost písmen</string>
+    <string name="dictate__mappings_opt_casesensitive">Rozlišuje velikost písmen</string>
+    <string name="dictate__mappings_opt_substring">Kdekoli</string>
+    <string name="dictate__mappings_opt_wholeword">Celé slovo</string>
+    <string name="dictate__mappings_title">Vlastní pravidla</string>
+    <string name="dictate__mappings_wholeword_summary">Nahradit pouze samostatná slova, nikoli shody uvnitř delších slov.</string>
+    <string name="dictate__mappings_wholeword_title">Pouze celá slova</string>
+    <string name="dictate__wear_standalone_summary">Když je zapnuto, váš API klíč se synchronizuje se spárovanými hodinkami Wear OS, aby mohly přepisovat samostatně, když je tento telefon mimo dosah. Dokud je telefon dostupný, hodinky se k němu nadále připojují. Vypněte, aby klíč zůstal výhradně v tomto telefonu (hodinky pak bez něj nemohou diktovat).</string>
+    <string name="dictate__wear_standalone_title">Synchronizovat klíč do hodinek</string>
+    <string name="emoji__search__hint">Hledat emoji</string>
+    <string name="emoji__search__no_results">Žádné odpovídající emoji</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__label">Návrhy automatického vyplňování systému</string>
+    <string name="pref__suggestion__block_possibly_offensive__summary">Zabraňuje navrhování potenciálně urážlivých slov při psaní</string>
+    <string name="quick_action__dictate_reinsert">Vložit znovu</string>
+    <string name="quick_action__dictate_reinsert__tooltip">Znovu vloží vaše poslední diktování</string>
+
 </resources>

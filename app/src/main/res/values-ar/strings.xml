@@ -1243,4 +1243,37 @@
     <string name="dictate__local_model_not_installed_error">لا يوجد نموذج محلي مُنزَّل</string>
     <string name="dictate__local_fallback_title">احتياطي دون اتصال</string>
     <string name="dictate__local_fallback_summary">عند عدم الاتصال، فرّغ الصوت محليًا بالنموذج المُنزَّل بعد فشل المزوّد</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">مطالبات إعادة الصياغة المحفوظة</string>
+    <string name="dictate__floating_button_undo_failed">تعذّر التراجع — ربما تغيّر النص.</string>
+    <string name="dictate__floating_button_undo_summary_off">لا يظهر زر التراجع.</string>
+    <string name="dictate__floating_button_undo_summary_on">بعد الإملاء، يظهر زر تراجع بجانب الزر لإزالة النص المُدرَج بنقرة واحدة.</string>
+    <string name="dictate__floating_button_undo_title">زر التراجع</string>
+    <string name="dictate__mappings_add">إضافة تعيين</string>
+    <string name="dictate__mappings_editor_title">التعيين</string>
+    <string name="dictate__mappings_empty_summary">أضف قاعدة لاستبدال الكلمات أو العبارات تلقائيًا في كل نص منسوخ — بدقة ودون استهلاك رموز الذكاء الاصطناعي.</string>
+    <string name="dictate__mappings_empty_title">لا توجد تعيينات بعد</string>
+    <string name="dictate__mappings_entry_summary">قواعد البحث والاستبدال المطبَّقة على النص المنسوخ</string>
+    <string name="dictate__mappings_field_from">استبدال</string>
+    <string name="dictate__mappings_field_from_placeholder">مثال: github</string>
+    <string name="dictate__mappings_field_to">بـ</string>
+    <string name="dictate__mappings_field_to_placeholder">مثال: GitHub</string>
+    <string name="dictate__mappings_group">قواعد الاستبدال</string>
+    <string name="dictate__mappings_matchcase_summary">الاستبدال فقط عند تطابق حالة الأحرف تمامًا.</string>
+    <string name="dictate__mappings_matchcase_title">مطابقة حالة الأحرف</string>
+    <string name="dictate__mappings_opt_caseinsensitive">تجاهل حالة الأحرف</string>
+    <string name="dictate__mappings_opt_casesensitive">حساس لحالة الأحرف</string>
+    <string name="dictate__mappings_opt_substring">في أي موضع</string>
+    <string name="dictate__mappings_opt_wholeword">كلمة كاملة</string>
+    <string name="dictate__mappings_title">تعيينات مخصّصة</string>
+    <string name="dictate__mappings_wholeword_summary">الاستبدال فقط للكلمات المستقلة، وليس للمطابقات داخل كلمات أطول.</string>
+    <string name="dictate__mappings_wholeword_title">الكلمات الكاملة فقط</string>
+    <string name="dictate__wear_standalone_summary">عند التفعيل، تتم مزامنة مفتاح API مع ساعة Wear OS مقترنة لتتمكن من النسخ بنفسها عندما يكون هذا الهاتف خارج النطاق. وطالما كان الهاتف متاحًا، تظل الساعة تعمل من خلاله. أوقف التفعيل للإبقاء على المفتاح في هذا الهاتف فقط (عندئذٍ لا يمكن للساعة الإملاء بدونه).</string>
+    <string name="dictate__wear_standalone_title">مزامنة المفتاح مع الساعة</string>
+    <string name="emoji__search__hint">البحث عن رمز تعبيري</string>
+    <string name="emoji__search__no_results">لا توجد رموز تعبيرية مطابقة</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__label">اقتراحات الملء التلقائي من النظام</string>
+    <string name="pref__suggestion__block_possibly_offensive__summary">يمنع اقتراح الكلمات التي قد تكون مسيئة أثناء الكتابة</string>
+    <string name="quick_action__dictate_reinsert">إعادة الإدراج</string>
+    <string name="quick_action__dictate_reinsert__tooltip">إدراج آخر إملاء لك مرة أخرى</string>
+
 </resources>

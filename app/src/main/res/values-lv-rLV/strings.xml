@@ -1332,4 +1332,37 @@
     <string name="dictate__local_model_not_installed_error">Nav lejupielādēta lokāla modeļa</string>
     <string name="dictate__local_fallback_title">Bezsaistes rezerve</string>
     <string name="dictate__local_fallback_summary">Bezsaistē transkribē ierīcē ar lejupielādēto modeli pēc nodrošinātāja kļūmes</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">Saglabātie pārformulēšanas norādījumi</string>
+    <string name="dictate__floating_button_undo_failed">Neizdevās atsaukt — teksts, iespējams, ir mainījies.</string>
+    <string name="dictate__floating_button_undo_summary_off">Atsaukšanas poga netiek rādīta.</string>
+    <string name="dictate__floating_button_undo_summary_on">Pēc diktēšanas blakus pogai parādās atsaukšanas poga, kas ar vienu pieskārienu noņem ievietoto tekstu.</string>
+    <string name="dictate__floating_button_undo_title">Atsaukšanas poga</string>
+    <string name="dictate__mappings_add">Pievienot kārtulu</string>
+    <string name="dictate__mappings_editor_title">Kārtula</string>
+    <string name="dictate__mappings_empty_summary">Pievienojiet kārtulu, lai katrā transkripcijā automātiski aizstātu vārdus vai frāzes — precīzi un neizmantojot MI marķierus.</string>
+    <string name="dictate__mappings_empty_title">Vēl nav neviena kārtula</string>
+    <string name="dictate__mappings_entry_summary">Transkripcijai piemērotās meklēšanas un aizstāšanas kārtulas</string>
+    <string name="dictate__mappings_field_from">Aizstāt</string>
+    <string name="dictate__mappings_field_from_placeholder">piem., github</string>
+    <string name="dictate__mappings_field_to">Ar</string>
+    <string name="dictate__mappings_field_to_placeholder">piem., GitHub</string>
+    <string name="dictate__mappings_group">Aizstāšanas kārtulas</string>
+    <string name="dictate__mappings_matchcase_summary">Aizstāt tikai tad, ja burtu reģistrs sakrīt precīzi.</string>
+    <string name="dictate__mappings_matchcase_title">Ņemt vērā reģistru</string>
+    <string name="dictate__mappings_opt_caseinsensitive">Neņem vērā reģistru</string>
+    <string name="dictate__mappings_opt_casesensitive">Ņem vērā reģistru</string>
+    <string name="dictate__mappings_opt_substring">Jebkur</string>
+    <string name="dictate__mappings_opt_wholeword">Vesels vārds</string>
+    <string name="dictate__mappings_title">Pielāgotās kārtulas</string>
+    <string name="dictate__mappings_wholeword_summary">Aizstāt tikai atsevišķus vārdus, nevis sakritības garāku vārdu iekšienē.</string>
+    <string name="dictate__mappings_wholeword_title">Tikai vesels vārds</string>
+    <string name="dictate__wear_standalone_summary">Kad ieslēgts, jūsu API atslēga tiek sinhronizēta ar pārī savienotu Wear OS pulksteni, lai tas varētu transkribēt patstāvīgi, kad šis tālrunis ir ārpus uztveršanas zonas. Kamēr tālrunis ir sasniedzams, pulkstenis joprojām darbojas caur to. Izslēdziet, lai atslēga paliktu tikai šajā tālrunī (tad pulkstenis bez tā nevar diktēt).</string>
+    <string name="dictate__wear_standalone_title">Sinhronizēt atslēgu ar pulksteni</string>
+    <string name="emoji__search__hint">Meklēt emocijzīmes</string>
+    <string name="emoji__search__no_results">Nav atbilstošu emocijzīmju</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__label">Sistēmas automātiskās aizpildes ieteikumi</string>
+    <string name="pref__suggestion__block_possibly_offensive__summary">Neļauj rakstīšanas laikā ieteikt iespējami aizskarošus vārdus</string>
+    <string name="quick_action__dictate_reinsert">Ievietot atkārtoti</string>
+    <string name="quick_action__dictate_reinsert__tooltip">Ievietot pēdējo diktējumu vēlreiz</string>
+
 </resources>

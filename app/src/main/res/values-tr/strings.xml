@@ -1366,4 +1366,37 @@
     <string name="dictate__local_model_not_installed_error">İndirilen yerel model yok</string>
     <string name="dictate__local_fallback_title">Çevrimdışı yedek</string>
     <string name="dictate__local_fallback_summary">Çevrimdışıyken, sağlayıcı başarısız olduktan sonra indirilen modelle cihazda yazıya dök</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">Kaydedilen yeniden ifade istemleri</string>
+    <string name="dictate__floating_button_undo_failed">Geri alınamadı — metin değişmiş olabilir.</string>
+    <string name="dictate__floating_button_undo_summary_off">Geri alma düğmesi gösterilmiyor.</string>
+    <string name="dictate__floating_button_undo_summary_on">Bir dikteden sonra, eklenen metni tek dokunuşla kaldırmak için düğmenin yanında bir geri alma düğmesi belirir.</string>
+    <string name="dictate__floating_button_undo_title">Geri alma düğmesi</string>
+    <string name="dictate__mappings_add">Eşleme ekle</string>
+    <string name="dictate__mappings_editor_title">Eşleme</string>
+    <string name="dictate__mappings_empty_summary">Her metindeki kelime veya ifadeleri otomatik olarak değiştirmek için bir kural ekleyin — tam olarak ve YZ tokeni kullanmadan.</string>
+    <string name="dictate__mappings_empty_title">Henüz eşleme yok</string>
+    <string name="dictate__mappings_entry_summary">Metne uygulanan bul ve değiştir kuralları</string>
+    <string name="dictate__mappings_field_from">Şunu değiştir</string>
+    <string name="dictate__mappings_field_from_placeholder">ör. github</string>
+    <string name="dictate__mappings_field_to">Şununla</string>
+    <string name="dictate__mappings_field_to_placeholder">ör. GitHub</string>
+    <string name="dictate__mappings_group">Değiştirme kuralları</string>
+    <string name="dictate__mappings_matchcase_summary">Yalnızca büyük/küçük harf tam olarak eşleştiğinde değiştir.</string>
+    <string name="dictate__mappings_matchcase_title">Büyük/küçük harf eşleştir</string>
+    <string name="dictate__mappings_opt_caseinsensitive">Büyük/küçük harf yok sayılır</string>
+    <string name="dictate__mappings_opt_casesensitive">Büyük/küçük harfe duyarlı</string>
+    <string name="dictate__mappings_opt_substring">Herhangi bir yerde</string>
+    <string name="dictate__mappings_opt_wholeword">Tam kelime</string>
+    <string name="dictate__mappings_title">Özel eşlemeler</string>
+    <string name="dictate__mappings_wholeword_summary">Yalnızca tek başına duran kelimeleri değiştir, daha uzun kelimelerin içindeki eşleşmeleri değil.</string>
+    <string name="dictate__mappings_wholeword_title">Yalnızca tam kelime</string>
+    <string name="dictate__wear_standalone_summary">Açıkken, API anahtarınız eşleştirilmiş bir Wear OS saatiyle senkronize edilir; böylece bu telefon menzil dışındayken saat kendi başına dikte edebilir. Telefon erişilebilir olduğunda saat yine telefon üzerinden bağlanır. Anahtarı yalnızca bu telefonda tutmak için kapatın (o zaman saat anahtar olmadan dikte edemez).</string>
+    <string name="dictate__wear_standalone_title">Anahtarı saatle senkronize et</string>
+    <string name="emoji__search__hint">Emoji ara</string>
+    <string name="emoji__search__no_results">Eşleşen emoji yok</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__label">Sistem otomatik doldurma önerileri</string>
+    <string name="pref__suggestion__block_possibly_offensive__summary">Yazarken muhtemelen rahatsız edici kelimelerin önerilmesini engeller</string>
+    <string name="quick_action__dictate_reinsert">Yeniden ekle</string>
+    <string name="quick_action__dictate_reinsert__tooltip">Son diktenizi tekrar ekleyin</string>
+
 </resources>

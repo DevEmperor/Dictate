@@ -1388,4 +1388,37 @@
     <string name="dictate__local_model_not_installed_error">Няма изтеглен локален модел</string>
     <string name="dictate__local_fallback_title">Офлайн резервен режим</string>
     <string name="dictate__local_fallback_summary">Когато сте офлайн, транскрибирайте локално с изтегления модел след неуспех на доставчика</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">Запазени промптове за преформулиране</string>
+    <string name="dictate__floating_button_undo_failed">Отмяната е невъзможна — текстът може да е променен.</string>
+    <string name="dictate__floating_button_undo_summary_off">Не се показва бутон за отмяна.</string>
+    <string name="dictate__floating_button_undo_summary_on">След диктовка до бутона се появява бутон за отмяна, който премахва вмъкнатия текст с едно докосване.</string>
+    <string name="dictate__floating_button_undo_title">Бутон за отмяна</string>
+    <string name="dictate__mappings_add">Добавяне на правило</string>
+    <string name="dictate__mappings_editor_title">Правило</string>
+    <string name="dictate__mappings_empty_summary">Добавете правило за автоматична замяна на думи или фрази във всяка транскрипция — точно и без използване на ИИ токени.</string>
+    <string name="dictate__mappings_empty_title">Все още няма правила</string>
+    <string name="dictate__mappings_entry_summary">Правила за намиране и замяна, прилагани върху транскрипцията</string>
+    <string name="dictate__mappings_field_from">Замяна на</string>
+    <string name="dictate__mappings_field_from_placeholder">напр. github</string>
+    <string name="dictate__mappings_field_to">С</string>
+    <string name="dictate__mappings_field_to_placeholder">напр. GitHub</string>
+    <string name="dictate__mappings_group">Правила за замяна</string>
+    <string name="dictate__mappings_matchcase_summary">Замяна само когато регистърът на буквите съвпада точно.</string>
+    <string name="dictate__mappings_matchcase_title">Съвпадение на регистъра</string>
+    <string name="dictate__mappings_opt_caseinsensitive">Без оглед на регистъра</string>
+    <string name="dictate__mappings_opt_casesensitive">Чувствителност към регистъра</string>
+    <string name="dictate__mappings_opt_substring">Навсякъде</string>
+    <string name="dictate__mappings_opt_wholeword">Цяла дума</string>
+    <string name="dictate__mappings_title">Персонализирани правила</string>
+    <string name="dictate__mappings_wholeword_summary">Замяна само на самостоятелни думи, не на съвпадения вътре в по-дълги думи.</string>
+    <string name="dictate__mappings_wholeword_title">Само цяла дума</string>
+    <string name="dictate__wear_standalone_summary">Когато е включено, вашият API ключ се синхронизира със сдвоен Wear OS часовник, за да може той сам да транскрибира, когато този телефон е извън обхват. Докато телефонът е достъпен, часовникът пак работи чрез него. Изключете, за да остане ключът само на този телефон (тогава часовникът не може да диктува без него).</string>
+    <string name="dictate__wear_standalone_title">Синхронизиране на ключа с часовника</string>
+    <string name="emoji__search__hint">Търсене на емоджи</string>
+    <string name="emoji__search__no_results">Няма съвпадащи емоджи</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__label">Системни предложения за автоматично попълване</string>
+    <string name="pref__suggestion__block_possibly_offensive__summary">Предотвратява предлагането на потенциално обидни думи, докато пишете</string>
+    <string name="quick_action__dictate_reinsert">Повторно вмъкване</string>
+    <string name="quick_action__dictate_reinsert__tooltip">Вмъкване на последната ви диктовка отново</string>
+
 </resources>

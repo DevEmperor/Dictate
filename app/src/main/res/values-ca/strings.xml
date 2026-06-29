@@ -1262,4 +1262,37 @@
     <string name="dictate__local_model_not_installed_error">Cap model local baixat</string>
     <string name="dictate__local_fallback_title">Alternativa fora de línia</string>
     <string name="dictate__local_fallback_summary">Quan no tens connexió, transcriu localment amb el model baixat després que falli el proveïdor</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">Indicacions de reformulació desades</string>
+    <string name="dictate__floating_button_undo_failed">No s\'ha pogut desfer — pot ser que el text hagi canviat.</string>
+    <string name="dictate__floating_button_undo_summary_off">No es mostra cap botó per desfer.</string>
+    <string name="dictate__floating_button_undo_summary_on">Després d\'un dictat, apareix un botó per desfer al costat del botó per eliminar el text inserit amb un sol toc.</string>
+    <string name="dictate__floating_button_undo_title">Botó per desfer</string>
+    <string name="dictate__mappings_add">Afegeix una assignació</string>
+    <string name="dictate__mappings_editor_title">Assignació</string>
+    <string name="dictate__mappings_empty_summary">Afegeix una regla per substituir automàticament paraules o frases a cada transcripció — exacta i sense fer servir tokens d\'IA.</string>
+    <string name="dictate__mappings_empty_title">Encara no hi ha cap assignació</string>
+    <string name="dictate__mappings_entry_summary">Regles de cerca i substitució aplicades a la transcripció</string>
+    <string name="dictate__mappings_field_from">Substitueix</string>
+    <string name="dictate__mappings_field_from_placeholder">p. ex. github</string>
+    <string name="dictate__mappings_field_to">Per</string>
+    <string name="dictate__mappings_field_to_placeholder">p. ex. GitHub</string>
+    <string name="dictate__mappings_group">Regles de substitució</string>
+    <string name="dictate__mappings_matchcase_summary">Substitueix només quan les majúscules i minúscules coincideixin exactament.</string>
+    <string name="dictate__mappings_matchcase_title">Distingeix majúscules</string>
+    <string name="dictate__mappings_opt_caseinsensitive">Ignora majúscules</string>
+    <string name="dictate__mappings_opt_casesensitive">Distingeix majúscules</string>
+    <string name="dictate__mappings_opt_substring">A qualsevol lloc</string>
+    <string name="dictate__mappings_opt_wholeword">Paraula sencera</string>
+    <string name="dictate__mappings_title">Assignacions personalitzades</string>
+    <string name="dictate__mappings_wholeword_summary">Substitueix només paraules independents, no coincidències dins de paraules més llargues.</string>
+    <string name="dictate__mappings_wholeword_title">Només paraula sencera</string>
+    <string name="dictate__wear_standalone_summary">Quan està activat, la teva clau API se sincronitza amb un rellotge Wear OS aparellat perquè pugui transcriure per si sol quan aquest telèfon estigui fora de l\'abast. Mentre el telèfon sigui accessible, el rellotge continua connectant-s\'hi. Desactiva-ho per mantenir la clau estrictament en aquest telèfon (llavors el rellotge no pot dictar sense ella).</string>
+    <string name="dictate__wear_standalone_title">Sincronitza la clau amb el rellotge</string>
+    <string name="emoji__search__hint">Cerca emojis</string>
+    <string name="emoji__search__no_results">No hi ha cap emoji coincident</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__label">Suggeriments d\'emplenament automàtic del sistema</string>
+    <string name="pref__suggestion__block_possibly_offensive__summary">Evita que es suggereixin paraules possiblement ofensives mentre escrius</string>
+    <string name="quick_action__dictate_reinsert">Torna a inserir</string>
+    <string name="quick_action__dictate_reinsert__tooltip">Insereix de nou el teu últim dictat</string>
+
 </resources>

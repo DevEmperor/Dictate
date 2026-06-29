@@ -1341,4 +1341,37 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="dictate__local_model_not_installed_error">Tidak ada model lokal yang diunduh</string>
     <string name="dictate__local_fallback_title">Cadangan luring</string>
     <string name="dictate__local_fallback_summary">Saat luring, transkripsi di perangkat dengan model yang diunduh setelah penyedia gagal</string>
+    <string name="backup_and_restore__back_up__files_dictate_prompts">Prompt penataan ulang yang tersimpan</string>
+    <string name="dictate__floating_button_undo_failed">Tidak dapat membatalkan — teks mungkin telah berubah.</string>
+    <string name="dictate__floating_button_undo_summary_off">Tidak ada tombol urungkan yang ditampilkan.</string>
+    <string name="dictate__floating_button_undo_summary_on">Setelah dikte, tombol urungkan muncul di samping tombol untuk menghapus teks yang disisipkan dengan satu ketukan.</string>
+    <string name="dictate__floating_button_undo_title">Tombol urungkan</string>
+    <string name="dictate__mappings_add">Tambah pemetaan</string>
+    <string name="dictate__mappings_editor_title">Pemetaan</string>
+    <string name="dictate__mappings_empty_summary">Tambahkan aturan untuk mengganti kata atau frasa secara otomatis di setiap transkrip — tepat dan tanpa menggunakan token AI.</string>
+    <string name="dictate__mappings_empty_title">Belum ada pemetaan</string>
+    <string name="dictate__mappings_entry_summary">Aturan cari-dan-ganti yang diterapkan pada transkrip</string>
+    <string name="dictate__mappings_field_from">Ganti</string>
+    <string name="dictate__mappings_field_from_placeholder">mis. github</string>
+    <string name="dictate__mappings_field_to">Dengan</string>
+    <string name="dictate__mappings_field_to_placeholder">mis. GitHub</string>
+    <string name="dictate__mappings_group">Aturan penggantian</string>
+    <string name="dictate__mappings_matchcase_summary">Hanya ganti jika kapitalisasinya sama persis.</string>
+    <string name="dictate__mappings_matchcase_title">Cocokkan huruf besar/kecil</string>
+    <string name="dictate__mappings_opt_caseinsensitive">Abaikan huruf besar/kecil</string>
+    <string name="dictate__mappings_opt_casesensitive">Peka huruf besar/kecil</string>
+    <string name="dictate__mappings_opt_substring">Di mana saja</string>
+    <string name="dictate__mappings_opt_wholeword">Seluruh kata</string>
+    <string name="dictate__mappings_title">Pemetaan khusus</string>
+    <string name="dictate__mappings_wholeword_summary">Hanya ganti kata yang berdiri sendiri, bukan kecocokan di dalam kata yang lebih panjang.</string>
+    <string name="dictate__mappings_wholeword_title">Hanya seluruh kata</string>
+    <string name="dictate__wear_standalone_summary">Saat aktif, kunci API Anda disinkronkan ke jam Wear OS yang dipasangkan sehingga dapat mentranskripsi sendiri ketika ponsel ini di luar jangkauan. Selama ponsel terjangkau, jam tetap terhubung melaluinya. Nonaktifkan untuk menjaga kunci tetap hanya di ponsel ini (jam kemudian tidak dapat mendikte tanpanya).</string>
+    <string name="dictate__wear_standalone_title">Sinkronkan kunci ke jam</string>
+    <string name="emoji__search__hint">Cari emoji</string>
+    <string name="emoji__search__no_results">Tidak ada emoji yang cocok</string>
+    <string name="pref__suggestion__api30_inline_suggestions_enabled__label">Saran isi otomatis sistem</string>
+    <string name="pref__suggestion__block_possibly_offensive__summary">Mencegah kata yang mungkin menyinggung disarankan saat Anda mengetik</string>
+    <string name="quick_action__dictate_reinsert">Sisipkan ulang</string>
+    <string name="quick_action__dictate_reinsert__tooltip">Sisipkan dikte terakhir Anda lagi</string>
+
 </resources>
