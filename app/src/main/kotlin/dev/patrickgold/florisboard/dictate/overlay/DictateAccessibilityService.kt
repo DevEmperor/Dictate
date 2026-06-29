@@ -280,6 +280,40 @@ class DictateAccessibilityService : AccessibilityService() {
         return ok
     }
 
+    /**
+     * Removes the last inserted [text] from the focused field again (undo, issue #133). Prefers the
+     * accessibility input connection (API 33+) when the characters right before the cursor are exactly
+     * [text]; otherwise removes the matching region — the window ending at the cursor if it matches,
+     * else the last occurrence — via [AccessibilityNodeInfo.ACTION_SET_TEXT]. Returns true on success.
+     */
+    private fun deleteLastTextFromFocused(text: String): Boolean {
+        if (text.isEmpty()) return false
+        // Reconstruct the field without the inserted text via ACTION_SET_TEXT (works pre-API-33 too and
+        // lets us verify the match first, so the user's own edits are never eaten).
+        val node = focusedEditableNode() ?: return false
+        node.refresh()
+        val existing = node.editableText()
+        val cursor = node.textSelectionEnd.coerceForText(existing)
+        val start = when {
+            cursor >= text.length && existing.regionMatches(cursor - text.length, text, 0, text.length) ->
+                cursor - text.length
+            existing.contains(text) -> existing.lastIndexOf(text)
+            else -> return false
+        }
+        val newText = existing.removeRange(start, start + text.length)
+        val setArgs = Bundle().apply {
+            putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, newText)
+        }
+        if (!node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, setArgs)) return false
+        val selArgs = Bundle().apply {
+            putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_START_INT, start)
+            putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_END_INT, start)
+        }
+        node.performAction(AccessibilityNodeInfo.ACTION_SET_SELECTION, selArgs)
+        flogDebug { "deleteLastText via setText len=${text.length}" }
+        return true
+    }
+
     /** The selected text in the focused editable field, or empty when nothing is selected. */
     private fun selectedTextOfFocused(): String {
         val node = focusedEditableNode() ?: return ""
@@ -465,5 +499,8 @@ class DictateAccessibilityService : AccessibilityService() {
 
         /** Presses Enter / the editor action on the focused field; false when unavailable. */
         fun performEnter(): Boolean = instance?.performEnterOnFocused() ?: false
+
+        /** Removes the last inserted [text] from the focused field (undo, #133); false when unavailable. */
+        fun deleteLastText(text: String): Boolean = instance?.deleteLastTextFromFocused(text) ?: false
     }
 }

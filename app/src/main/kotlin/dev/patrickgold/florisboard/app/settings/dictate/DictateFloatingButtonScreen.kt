@@ -19,6 +19,7 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Adjust
 import androidx.compose.material.icons.filled.Brush
@@ -235,6 +236,14 @@ fun DictateFloatingButtonScreen() = FlorisScreen {
                 title = stringRes(R.string.dictate__floating_button_haptic_title),
                 summaryOn = stringRes(R.string.dictate__floating_button_haptic_summary_on),
                 summaryOff = stringRes(R.string.dictate__floating_button_haptic_summary_off),
+            )
+
+            SwitchPreference(
+                prefs.dictate.floatingButtonUndoEnabled,
+                icon = Icons.AutoMirrored.Filled.Undo,
+                title = stringRes(R.string.dictate__floating_button_undo_title),
+                summaryOn = stringRes(R.string.dictate__floating_button_undo_summary_on),
+                summaryOff = stringRes(R.string.dictate__floating_button_undo_summary_off),
             )
         }
 

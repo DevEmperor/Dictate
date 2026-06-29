@@ -932,6 +932,27 @@ object DictateController {
         clearError()
     }
 
+    /**
+     * Undo (issue #133): removes the last successful dictation from the focused field again — the
+     * inverse of [reinsertLastDictation]. Used by the floating button's optional undo control, so it
+     * outputs through the overlay sink. No-op while a recording/transcription/rewording is in flight,
+     * or when nothing is cached. On success the cache is cleared so a second tap can't delete unrelated
+     * text. Returns true when the field accepted the removal.
+     */
+    fun undoLastDictation(context: Context): Boolean {
+        if (_state.value is UiState.Recording || _state.value is UiState.Transcribing ||
+            _state.value is UiState.Rewording
+        ) return false
+        if (!prefs.dictate.rememberLastDictation.get()) return false
+        val text = prefs.dictate.lastDictation.get()
+        if (text.isEmpty()) return false
+        outputTarget = OutputTarget.OVERLAY
+        if (!sink(context).deleteLastText(text)) return false
+        scope.launch { prefs.dictate.lastDictation.set("") }
+        clearError()
+        return true
+    }
+
     // --- Rate / Donate nudges (roadmap 9.7/9.8) -------------------------------------------------
 
     /**

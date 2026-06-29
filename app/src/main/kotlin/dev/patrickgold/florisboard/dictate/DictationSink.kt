@@ -41,6 +41,13 @@ interface DictationSink {
 
     /** Presses Enter / triggers the editor action (auto-enter, roadmap 10.1). */
     fun performEnter()
+
+    /**
+     * Removes the last inserted [text] from the field again (undo, issue #133). Only deletes when the
+     * text immediately before the cursor still matches [text], so the user's own edits are never eaten.
+     * Returns true when the field accepted the removal.
+     */
+    fun deleteLastText(text: String): Boolean
 }
 
 /**
@@ -69,6 +76,16 @@ class ImeDictationSink(context: Context) : DictationSink {
         // Dispatches a real Enter key event so it reuses the keyboard's full enter logic (editor action,
         // newline, …) rather than committing a literal "\n".
         keyboardManager.inputEventDispatcher.sendDownUp(EnterKeyData)
+    }
+
+    override fun deleteLastText(text: String): Boolean {
+        if (text.isEmpty()) return false
+        // Only undo when the characters right before the cursor are exactly what we inserted.
+        if (!editorInstance.activeContent.textBeforeSelection.endsWith(text)) return false
+        val keyboardManager by appContext.keyboardManager()
+        // Reuse the keyboard's own delete handling (one backspace per character).
+        repeat(text.length) { keyboardManager.inputEventDispatcher.sendDownUp(TextKeyData.DELETE) }
+        return true
     }
 
     private companion object {
