@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  AboutLibraries loads its generated res/raw/aboutlibraries.json dynamically (no compile-time
+  R.raw reference), so resource shrinking strips it from the release APK and the Third-party
+  licenses screen crashes ("Please provide the required library data"). Keep it explicitly.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@raw/aboutlibraries" />
