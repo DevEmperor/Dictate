@@ -615,11 +615,15 @@ object DictateController {
                     val processed = postProcessTranscript(appContext, result.text)
                     applyPendingPrompts(appContext, processed)
                 }
+                // Deterministic find-and-replace dictionary (issue #129), applied to the finished text
+                // right before it is inserted — independent of the AI rewording stage, so it is exact
+                // and costs no tokens. No-op when the user has no mappings configured.
+                val outputText = prefs.dictate.customMappings.get().apply(finalText)
                 // Output behavior (roadmap 10.1/10.2): instant or typed, then optional auto-enter.
-                commitOutput(appContext, finalText)
+                commitOutput(appContext, outputText)
                 // Keep the committed text as the re-insert safety net (issue #111), so it can be
                 // recovered if the field is later cleared (rotation / context switch / host refresh).
-                rememberLastDictation(finalText)
+                rememberLastDictation(outputText)
                 discardRetainedAudio()
                 // Credit recorded audio towards the rate/donate gating (roadmap 9.7/9.8).
                 if (recordedSeconds > 0L) creditAudioSeconds(recordedSeconds)
