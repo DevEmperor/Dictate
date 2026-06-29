@@ -37,9 +37,11 @@ import androidx.compose.material.icons.filled.FontDownload
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.KeyboardCapslock
+import androidx.compose.material.icons.filled.KeyboardAlt
 import androidx.compose.material.icons.filled.KeyboardHide
 import androidx.compose.material.icons.filled.KeyboardVoice
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.History
@@ -299,6 +301,14 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
         }
         KeyCode.LANGUAGE_SWITCH -> {
             Icons.Default.Language
+        }
+        KeyCode.SYSTEM_PREV_INPUT_METHOD -> {
+            // One-tap switch back to the previously used keyboard/IME (issue #122).
+            Icons.Default.SwapHoriz
+        }
+        KeyCode.SYSTEM_INPUT_METHOD_PICKER -> {
+            // Opens the system IME picker to choose another keyboard (issue #122).
+            Icons.Default.KeyboardAlt
         }
         KeyCode.SETTINGS -> {
             Icons.Default.Settings

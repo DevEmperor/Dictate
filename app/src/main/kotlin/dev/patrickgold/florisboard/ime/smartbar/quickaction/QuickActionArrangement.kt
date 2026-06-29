@@ -93,6 +93,11 @@ data class QuickActionArrangement(
                 QuickAction.InsertKey(TextKeyData.ARROW_RIGHT),
                 QuickAction.InsertKey(TextKeyData.CLIPBOARD_CLEAR_PRIMARY_CLIP),
                 QuickAction.InsertKey(TextKeyData.LANGUAGE_SWITCH),
+                // IME-switch actions (issue #122): one-tap return to the previously used keyboard, plus the
+                // system keyboard picker. Useful when pairing Dictate with another IME (e.g. a Japanese
+                // Kana–Kanji keyboard). Visible in the Smartbar by default; users can hide them in the editor.
+                QuickAction.InsertKey(TextKeyData.SYSTEM_PREV_INPUT_METHOD),
+                QuickAction.InsertKey(TextKeyData.SYSTEM_INPUT_METHOD_PICKER),
                 QuickAction.InsertKey(TextKeyData.FORWARD_DELETE),
                 QuickAction.InsertKey(TextKeyData.IME_HIDE_UI),
                 // Re-insert / re-send the last transcription safety net (issue #111). Placed at the end
@@ -110,7 +115,15 @@ data class QuickActionArrangement(
         }
 
         override fun deserialize(value: String): QuickActionArrangement {
-            return QuickActionJsonConfig.decodeFromString(value)
+            val stored: QuickActionArrangement = QuickActionJsonConfig.decodeFromString(value)
+            // Make newly-added known actions (e.g. the IME-switch actions, #122) show up for existing users
+            // too: any Default action not already present is appended to the visible (dynamic) actions, in
+            // Default order. In practice only brand-new actions are ever missing, since hiding an action
+            // keeps it in the stored arrangement.
+            val missing = (listOfNotNull(Default.stickyAction) + Default.dynamicActions + Default.hiddenActions)
+                .filter { it !in stored }
+            return if (missing.isEmpty()) stored
+            else stored.copy(dynamicActions = stored.dynamicActions + missing).distinct()
         }
     }
 }
