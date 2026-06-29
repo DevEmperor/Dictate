@@ -94,6 +94,14 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
     private var cancelAdded = false
     private val cancelSize get() = sdp(34)
 
+    /** Optional undo button shown beside the bubble right after a dictation (issue #133). */
+    private var undoView: View? = null
+    private var undoParams: WindowManager.LayoutParams? = null
+    private var undoAdded = false
+    private val undoSize get() = sdp(34)
+    /** True from when a dictation just finished until the next recording starts or undo is tapped. */
+    private var justDictated = false
+
     /** Long-press rewording menu window. */
     private var menuView: View? = null
     private var menuAdded = false
@@ -212,6 +220,16 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
                 manageForeground(state)
                 manageTicker(state)
                 manageCancel(state, show)
+                // Track when a dictation just finished so the undo button is offered only in that
+                // window (until the next recording), not perpetually from a stale cached result.
+                if (state is DictateController.UiState.Recording) {
+                    justDictated = false
+                } else if (state is DictateController.UiState.Idle &&
+                    (prevState is DictateController.UiState.Transcribing || prevState is DictateController.UiState.Rewording)
+                ) {
+                    justDictated = true
+                }
+                manageUndo(state, show)
                 reportTerminalState(state)
                 // Auto-dim only while idle and shown; restore (and stop the timer) otherwise.
                 val idleShown = state is DictateController.UiState.Idle && show
@@ -267,6 +285,7 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
             scaleY = 1f
         }
         hideCancel()
+        hideUndo()
     }
 
     // --- Cancel button (shown while recording) ---------------------------------------------------
@@ -319,6 +338,86 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             PixelFormat.TRANSLUCENT,
         ).apply { gravity = Gravity.TOP or Gravity.START }
+    }
+
+    // --- Undo button (shown beside the bubble right after a dictation, issue #133) ----------------
+
+    private fun manageUndo(state: DictateController.UiState, shown: Boolean) {
+        // Not while the bubble has auto-dimmed to a dot — the undo button would otherwise be left
+        // standing at full size next to a shrunken bubble (issue #133 follow-up).
+        val canUndo = shown && !dimmed && state is DictateController.UiState.Idle && justDictated &&
+            prefs.dictate.floatingButtonUndoEnabled.get() && DictateController.hasLastDictation()
+        if (canUndo) showUndo() else hideUndo()
+    }
+
+    private fun showUndo() {
+        if (undoAdded) return
+        val v = undoView ?: createUndoView().also { undoView = it }
+        val lp = undoParams ?: createUndoParams().also { undoParams = it }
+        runCatching {
+            windowManager.addView(v, lp)
+            undoAdded = true
+            positionUndo()
+        }
+    }
+
+    private fun hideUndo() {
+        val v = undoView
+        if (undoAdded && v != null) runCatching { windowManager.removeView(v) }
+        undoAdded = false
+    }
+
+    private fun createUndoView(): View {
+        val size = undoSize
+        val pad = sdp(7)
+        val icon = ImageView(context).apply {
+            setImageResource(R.drawable.ic_dictate_overlay_undo)
+            setPadding(pad, pad, pad, pad)
+            background = circle(R.color.dictate_overlay_cancel)
+            elevation = sdpf(6f)
+        }
+        return FrameLayout(context).apply {
+            addView(icon, FrameLayout.LayoutParams(size, size))
+            setOnClickListener {
+                if (prefs.dictate.floatingButtonHaptic.get()) vibrateTap()
+                val ok = DictateController.undoLastDictation(context)
+                justDictated = false
+                hideUndo()
+                if (!ok) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.dictate__floating_button_undo_failed),
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun createUndoParams(): WindowManager.LayoutParams {
+        return WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            PixelFormat.TRANSLUCENT,
+        ).apply { gravity = Gravity.TOP or Gravity.START }
+    }
+
+    private fun positionUndo() {
+        val ulp = undoParams ?: return
+        val undo = undoView ?: return
+        val blp = params ?: return
+        val bubble = rootView ?: return
+        val uw = undoSize
+        val gap = sdp(6)
+        ulp.y = (blp.y + (bubble.height - uw) / 2).coerceIn(0, (screenHeight() - uw).coerceAtLeast(0))
+        // Same inward-side logic as the cancel button so it sits beside the bubble and follows drags.
+        val onRight = blp.x + bubble.width / 2 >= screenWidth() / 2
+        val rawX = if (onRight) blp.x - gap - uw else blp.x + bubble.width + gap
+        ulp.x = rawX.coerceIn(0, (screenWidth() - uw).coerceAtLeast(0))
+        if (undoAdded) runCatching { windowManager.updateViewLayout(undo, ulp) }
     }
 
     // --- Long-press rewording menu ---------------------------------------------------------------
@@ -458,6 +557,7 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
             } else if (right - left != oldRight - oldLeft) {
                 repositionForSize()
                 if (cancelAdded) positionCancel() // keep the cancel button beside the (resized) pill
+                if (undoAdded) positionUndo()
             }
         }
         newSkin.applyState(DictateController.state.value)
@@ -541,6 +641,7 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
                         lp.y = (startY + dy.toInt()).coerceIn(0, maxY)
                         runCatching { windowManager.updateViewLayout(v, lp) }
                         if (cancelAdded) positionCancel() // keep the cancel button following the bubble
+                        if (undoAdded) positionUndo()
                     }
                     true
                 }
@@ -583,6 +684,7 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
                 lp.x = it.animatedValue as Int
                 runCatching { windowManager.updateViewLayout(v, lp) }
                 if (cancelAdded) positionCancel() // let the cancel button ride along to the edge
+                if (undoAdded) positionUndo()
             }
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
@@ -694,6 +796,8 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
             .scaleY(if (dim) 0.5f else 1f)
             .setDuration(200)
             .start()
+        // Keep the undo button in step with the bubble: hide it while dimmed, restore it on wake.
+        if (dim) hideUndo() else manageUndo(DictateController.state.value, added)
     }
 
     private fun vibrateTap() {

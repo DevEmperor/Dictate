@@ -382,6 +382,13 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__floating_button_haptic",
             default = true,
         )
+        // Optional undo control on the floating button (issue #133): when on, an undo button appears
+        // next to the bubble after a dictation and removes the last inserted text in one tap. Off by
+        // default to keep the overlay minimal; needs "remember last dictation" to have something to undo.
+        val floatingButtonUndoEnabled = boolean(
+            key = "dictate__floating_button_undo_enabled",
+            default = false,
+        )
         // Whether the user has opened the floating-button screen at least once (clears the "New" badge).
         val floatingButtonHintSeen = boolean(
             key = "dictate__floating_button_hint_seen",

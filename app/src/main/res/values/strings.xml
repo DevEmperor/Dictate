@@ -1252,6 +1252,10 @@
     <string name="dictate__floating_button_haptic_title" comment="Toggle: vibrate when the floating button is tapped">Vibrate on tap</string>
     <string name="dictate__floating_button_haptic_summary_on" comment="Summary when tap vibration is on">A short buzz when you tap the button.</string>
     <string name="dictate__floating_button_haptic_summary_off" comment="Summary when tap vibration is off">No vibration on tap.</string>
+    <string name="dictate__floating_button_undo_title" comment="Toggle: show an undo button on the floating button to revert the last dictation">Undo button</string>
+    <string name="dictate__floating_button_undo_summary_on" comment="Summary when the floating undo button is enabled">After a dictation, an undo button appears next to the button to remove the inserted text in one tap.</string>
+    <string name="dictate__floating_button_undo_summary_off" comment="Summary when the floating undo button is disabled">No undo button shown.</string>
+    <string name="dictate__floating_button_undo_failed" comment="Toast when the undo button could not remove the last text (field changed)">Couldn\'t undo — the text may have changed.</string>
     <string name="dictate__floating_button_no_prompts" comment="Toast when long-pressing the floating button but no rewording prompts exist">No rewording prompts yet — add some in Dictate settings.</string>
     <string name="dictate__floating_button_badge_new" comment="Small 'New' badge on the floating-button settings entry. Keep very short.">New</string>
 
