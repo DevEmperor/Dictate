@@ -1420,6 +1420,13 @@
     <string name="dictate__audio_focus_summary" comment="Summary for the audio focus setting">Pause music and other apps while recording</string>
     <string name="dictate__bluetooth_mic_title" comment="Setting: use a Bluetooth microphone">Bluetooth microphone</string>
     <string name="dictate__bluetooth_mic_summary" comment="Summary for the Bluetooth mic setting">Record through a connected Bluetooth headset when available</string>
+    <string name="dictate__audio_source_title" comment="Title of the audio input source setting">Audio input source</string>
+    <string name="dictate__audio_source_default" comment="Audio source option: the default microphone">Default microphone</string>
+    <string name="dictate__audio_source_default_summary" comment="Summary for the default microphone audio source">Standard mic, with the phone\'s built-in audio processing</string>
+    <string name="dictate__audio_source_voice_recognition" comment="Audio source option: voice recognition">Voice recognition</string>
+    <string name="dictate__audio_source_voice_recognition_summary" comment="Summary for the voice-recognition audio source">Tuned for speech with less processing — try this if transcription is inaccurate</string>
+    <string name="dictate__audio_source_unprocessed" comment="Audio source option: unprocessed/raw">Unprocessed (raw)</string>
+    <string name="dictate__audio_source_unprocessed_summary" comment="Summary for the unprocessed audio source">No processing at all; falls back to Voice recognition if your phone doesn\'t support it</string>
     <string name="dictate__keep_screen_awake_title" comment="Setting: keep the screen on while recording">Keep screen awake</string>
     <string name="dictate__keep_screen_awake_summary" comment="Summary for the keep-screen-awake setting">Prevent the screen from turning off while recording</string>
     <string name="dictate__instant_recording_title" comment="Setting: start recording when the keyboard opens">Instant recording</string>

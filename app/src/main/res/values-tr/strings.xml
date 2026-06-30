@@ -1413,4 +1413,11 @@
     <string name="quick_action__system_input_method_picker">Klavye seç</string>
     <string name="quick_action__system_input_method_picker__tooltip">Sistem klavye seçiciyi aç</string>
     <string name="changelog__v4_3_0">• YENİ: Cihaz üzerinde yazıya dökme — tamamen çevrimdışı dikte edin. İnternet gerekmez ve hiçbir şey telefonunuzdan çıkmaz. Ayarlar ▸ Dictate ▸ Sağlayıcılar bölümünden bir kez konuşma modeli indirin. 📴\n• YENİ: Wear OS klavyesi — doğrudan saatinizden, telefonunuz üzerinden veya bağımsız olarak dikte edin. ⌚\n• YENİ: Bul ve değiştir kuralları — her yazıya dökmede tekrarlayan kelimeleri, adları veya ifadeleri otomatik düzeltin. Ayarlar ▸ Dictate ▸ Özel eşlemeler bölümünden ayarlayın. 🔁\n• YENİ: Tek çağrı modu — yetenekli tek bir yapay zekâ modeli, tek bir istekte yazıya döker ve biçimlendirir; daha hızlı ve genellikle daha ucuz. Her sağlayıcı için açabilirsiniz. ⚡\n• YENİ: Önceki klavyeye dönmek veya sistem klavye seçiciyi açmak için Smartbar eylemleri. ⌨️\n• Klavyenin vurgu rengi artık Ayarlar ▸ Tema bölümünde seçtiğiniz rengi izliyor. 🎨\n• Kayan dikte düğmesine isteğe bağlı geri al düğmesi eklendi. ↩️\n• Çeşitli düzeltmeler ve kararlılık iyileştirmeleri. 🛠️</string>
+    <string name="dictate__audio_source_title">Ses giriş kaynağı</string>
+    <string name="dictate__audio_source_default">Varsayılan mikrofon</string>
+    <string name="dictate__audio_source_default_summary">Telefonun yerleşik ses işlemesiyle standart mikrofon</string>
+    <string name="dictate__audio_source_voice_recognition">Ses tanıma</string>
+    <string name="dictate__audio_source_voice_recognition_summary">Konuşma için ayarlanmış, daha az işleme — yazıya dökme hatalıysa bunu deneyin</string>
+    <string name="dictate__audio_source_unprocessed">İşlenmemiş (ham)</string>
+    <string name="dictate__audio_source_unprocessed_summary">Hiç işleme yok; telefonunuz desteklemiyorsa Ses tanımaya geri döner</string>
 </resources>

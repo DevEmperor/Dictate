@@ -1379,4 +1379,11 @@
     <string name="quick_action__system_input_method_picker">Izvēlēties tastatūru</string>
     <string name="quick_action__system_input_method_picker__tooltip">Atvērt sistēmas tastatūru izvēli</string>
     <string name="changelog__v4_3_0">• JAUNS: Transkripcija ierīcē — diktējiet pilnībā bezsaistē. Nav vajadzīgs internets, un nekas neatstāj jūsu tālruni. Vienreiz lejupielādējiet runas modeli sadaļā Iestatījumi ▸ Dictate ▸ Pakalpojumu sniedzēji. 📴\n• JAUNS: Wear OS tastatūra — diktējiet tieši no pulksteņa, caur tālruni vai patstāvīgi. ⌚\n• JAUNS: Meklēšanas un aizstāšanas noteikumi — automātiski labojiet atkārtotus vārdus, nosaukumus vai frāzes katrā transkripcijā. Iestatiet tos sadaļā Iestatījumi ▸ Dictate ▸ Pielāgotie kartējumi. 🔁\n• JAUNS: Viena izsaukuma režīms — viens spējīgs MI modelis transkribē un formatē vienā pieprasījumā, ātrāk un bieži lētāk. Ieslēdziet katram pakalpojumu sniedzējam. ⚡\n• JAUNS: Smartbar darbības, lai pārslēgtos atpakaļ uz iepriekšējo tastatūru vai atvērtu sistēmas tastatūru izvēli. ⌨️\n• Tastatūras akcenta krāsa tagad seko krāsai, ko izvēlaties sadaļā Iestatījumi ▸ Motīvs. 🎨\n• Pievienota neobligāta atsaukšanas poga peldošajai diktēšanas pogai. ↩️\n• Dažādi labojumi un stabilitātes uzlabojumi. 🛠️</string>
+    <string name="dictate__audio_source_title">Audio ievades avots</string>
+    <string name="dictate__audio_source_default">Noklusējuma mikrofons</string>
+    <string name="dictate__audio_source_default_summary">Standarta mikrofons ar tālruņa iebūvēto audio apstrādi</string>
+    <string name="dictate__audio_source_voice_recognition">Runas atpazīšana</string>
+    <string name="dictate__audio_source_voice_recognition_summary">Pielāgots runai ar mazāku apstrādi — izmēģiniet, ja transkripcija ir neprecīza</string>
+    <string name="dictate__audio_source_unprocessed">Neapstrādāts (jēls)</string>
+    <string name="dictate__audio_source_unprocessed_summary">Bez jebkādas apstrādes; ja tālrunis to neatbalsta, izmanto Runas atpazīšanu</string>
 </resources>

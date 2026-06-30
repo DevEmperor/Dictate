@@ -1433,4 +1433,11 @@
     <string name="quick_action__system_input_method_picker">Billentyűzet választása</string>
     <string name="quick_action__system_input_method_picker__tooltip">A rendszer billentyűzetválasztójának megnyitása</string>
     <string name="changelog__v4_3_0">• ÚJ: Eszközön belüli átírás — diktálj teljesen offline. Nincs szükség internetre, és semmi sem hagyja el a telefonod. Tölts le egyszer egy beszédmodellt itt: Beállítások ▸ Dictate ▸ Szolgáltatók. 📴\n• ÚJ: Wear OS billentyűzet — diktálj közvetlenül az órádról, a telefonon keresztül vagy önállóan. ⌚\n• ÚJ: Keresés és csere szabályok — automatikusan javítsd a visszatérő szavakat, neveket vagy kifejezéseket minden átiratban. Beállítás: Beállítások ▸ Dictate ▸ Egyéni hozzárendelések. 🔁\n• ÚJ: Egyhívásos mód — egyetlen alkalmas MI-modell egyetlen kérésben ír át és formáz, gyorsabban és gyakran olcsóbban. Szolgáltatónként kapcsolható be. ⚡\n• ÚJ: Smartbar műveletek az előző billentyűzetre váltáshoz vagy a rendszer billentyűzetválasztójának megnyitásához. ⌨️\n• A billentyűzet kiemelőszíne mostantól a Beállítások ▸ Téma alatt választott színt követi. 🎨\n• Opcionális visszavonás gomb a lebegő diktálás gombhoz. ↩️\n• Különféle hibajavítások és stabilitási fejlesztések. 🛠️</string>
+    <string name="dictate__audio_source_title">Hangbemeneti forrás</string>
+    <string name="dictate__audio_source_default">Alapértelmezett mikrofon</string>
+    <string name="dictate__audio_source_default_summary">Normál mikrofon a telefon beépített hangfeldolgozásával</string>
+    <string name="dictate__audio_source_voice_recognition">Beszédfelismerés</string>
+    <string name="dictate__audio_source_voice_recognition_summary">Beszédre hangolva, kevesebb feldolgozással — próbáld ki, ha az átírás pontatlan</string>
+    <string name="dictate__audio_source_unprocessed">Feldolgozatlan (nyers)</string>
+    <string name="dictate__audio_source_unprocessed_summary">Egyáltalán nincs feldolgozás; ha a telefonod nem támogatja, visszavált Beszédfelismerésre</string>
 </resources>

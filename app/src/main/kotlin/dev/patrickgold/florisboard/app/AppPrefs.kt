@@ -24,6 +24,7 @@ import dev.patrickgold.florisboard.app.settings.theme.DisplayKbdAfterDialogs
 import dev.patrickgold.florisboard.app.settings.theme.SnyggLevel
 import dev.patrickgold.florisboard.app.setup.NotificationPermissionState
 import dev.patrickgold.florisboard.dictate.DictateFloatingButtonDesign
+import dev.patrickgold.florisboard.dictate.audio.DictateAudioSource
 import dev.patrickgold.florisboard.dictate.DictateFloatingButtonSize
 import dev.patrickgold.florisboard.dictate.DictatePromptsLayout
 import dev.patrickgold.florisboard.dictate.data.mappings.DictateMappings
@@ -327,6 +328,13 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val useBluetoothMic = boolean(
             key = "dictate__use_bluetooth_mic",
             default = false,
+        )
+        // Which audio source the recorder captures from (issue #62). Default keeps the device MIC
+        // (current behavior); VOICE_RECOGNITION/UNPROCESSED skip phone audio processing that can hurt
+        // transcription. Ignored on the Bluetooth-SCO path (always VOICE_COMMUNICATION).
+        val audioInputSource = enum(
+            key = "dictate__audio_input_source",
+            default = DictateAudioSource.DEFAULT,
         )
         // Keep the screen awake while a recording is in progress (default on).
         val keepScreenAwake = boolean(

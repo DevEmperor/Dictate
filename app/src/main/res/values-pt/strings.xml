@@ -1415,4 +1415,11 @@
     <string name="quick_action__system_input_method_picker">Escolher teclado</string>
     <string name="quick_action__system_input_method_picker__tooltip">Abrir o seletor de teclado do sistema</string>
     <string name="changelog__v4_3_0">• NOVO: Transcrição no dispositivo — dite totalmente offline. Sem internet e nada sai do teu telemóvel. Descarrega um modelo de voz uma vez em Definições ▸ Dictate ▸ Fornecedores. 📴\n• NOVO: Teclado para Wear OS — dita diretamente do teu relógio, através do telemóvel ou de forma autónoma. ⌚\n• NOVO: Regras de localizar e substituir — corrige automaticamente palavras, nomes ou frases recorrentes em cada transcrição. Configura-as em Definições ▸ Dictate ▸ Mapeamentos personalizados. 🔁\n• NOVO: Modo de chamada única — um único modelo de IA capaz transcreve e formata num só pedido, mais rápido e muitas vezes mais barato. Ativa-o por fornecedor. ⚡\n• NOVO: Ações da Smartbar para voltar ao teclado anterior ou abrir o seletor de teclado do sistema. ⌨️\n• A cor de destaque do teclado segue agora a cor que escolhes em Definições ▸ Tema. 🎨\n• Adicionado um botão de anular opcional ao botão de ditado flutuante. ↩️\n• Várias correções e melhorias de estabilidade. 🛠️</string>
+    <string name="dictate__audio_source_title">Fonte de entrada de áudio</string>
+    <string name="dictate__audio_source_default">Microfone predefinido</string>
+    <string name="dictate__audio_source_default_summary">Microfone padrão, com o processamento de áudio integrado do telemóvel</string>
+    <string name="dictate__audio_source_voice_recognition">Reconhecimento de voz</string>
+    <string name="dictate__audio_source_voice_recognition_summary">Otimizado para fala com menos processamento — experimenta se a transcrição for imprecisa</string>
+    <string name="dictate__audio_source_unprocessed">Sem processamento (bruto)</string>
+    <string name="dictate__audio_source_unprocessed_summary">Sem qualquer processamento; recorre ao Reconhecimento de voz se o telemóvel não o suportar</string>
 </resources>

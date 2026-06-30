@@ -18,6 +18,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Adjust
+import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bluetooth
@@ -66,6 +67,7 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.dictate.DictateLanguages
+import dev.patrickgold.florisboard.dictate.audio.DictateAudioSource
 import dev.patrickgold.florisboard.dictate.data.prompts.DictatePromptDefaults
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
 import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
@@ -76,6 +78,7 @@ import dev.patrickgold.jetpref.datastore.ui.DialogSliderPreference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
+import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
 import kotlinx.coroutines.launch
 
@@ -223,6 +226,28 @@ fun DictateScreen() = FlorisScreen {
                 icon = Icons.Default.Bluetooth,
                 title = stringRes(R.string.dictate__bluetooth_mic_title),
                 summary = stringRes(R.string.dictate__bluetooth_mic_summary),
+            )
+            ListPreference(
+                prefs.dictate.audioInputSource,
+                icon = Icons.Default.GraphicEq,
+                title = stringRes(R.string.dictate__audio_source_title),
+                entries = listPrefEntries {
+                    entry(
+                        DictateAudioSource.DEFAULT,
+                        stringRes(R.string.dictate__audio_source_default),
+                        stringRes(R.string.dictate__audio_source_default_summary),
+                    )
+                    entry(
+                        DictateAudioSource.VOICE_RECOGNITION,
+                        stringRes(R.string.dictate__audio_source_voice_recognition),
+                        stringRes(R.string.dictate__audio_source_voice_recognition_summary),
+                    )
+                    entry(
+                        DictateAudioSource.UNPROCESSED,
+                        stringRes(R.string.dictate__audio_source_unprocessed),
+                        stringRes(R.string.dictate__audio_source_unprocessed_summary),
+                    )
+                },
             )
             SwitchPreference(
                 prefs.dictate.keepScreenAwake,

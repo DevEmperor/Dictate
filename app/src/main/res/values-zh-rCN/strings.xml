@@ -1429,4 +1429,11 @@
     <string name="quick_action__system_input_method_picker">选择键盘</string>
     <string name="quick_action__system_input_method_picker__tooltip">打开系统键盘选择器</string>
     <string name="changelog__v4_3_0">• 新功能：设备端转录 — 完全离线听写。无需联网，数据不会离开你的手机。在 设置 ▸ Dictate ▸ 服务商 中下载一次语音模型。📴\n• 新功能：Wear OS 键盘 — 直接从手表听写，通过手机或独立使用。⌚\n• 新功能：查找和替换规则 — 自动修正每条转录中反复出现的词语、名称或短语。在 设置 ▸ Dictate ▸ 自定义映射 中设置。🔁\n• 新功能：单次调用模式 — 一个强大的 AI 模型在一次请求中完成转录和格式化，更快且通常更便宜。可按服务商开启。⚡\n• 新功能：Smartbar 操作，可切换回上一个键盘或打开系统键盘选择器。⌨️\n• 键盘的强调色现在跟随你在 设置 ▸ 主题 中选择的颜色。🎨\n• 为悬浮听写按钮添加了可选的撤销按钮。↩️\n• 多项修复与稳定性改进。🛠️</string>
+    <string name="dictate__audio_source_title">音频输入源</string>
+    <string name="dictate__audio_source_default">默认麦克风</string>
+    <string name="dictate__audio_source_default_summary">标准麦克风，带手机内置的音频处理</string>
+    <string name="dictate__audio_source_voice_recognition">语音识别</string>
+    <string name="dictate__audio_source_voice_recognition_summary">针对语音优化、处理更少 — 如果转录不准确请试试</string>
+    <string name="dictate__audio_source_unprocessed">未处理（原始）</string>
+    <string name="dictate__audio_source_unprocessed_summary">完全不处理；若手机不支持则回退到语音识别</string>
 </resources>

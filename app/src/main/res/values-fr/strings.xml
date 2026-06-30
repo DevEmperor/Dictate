@@ -1309,4 +1309,11 @@
     <string name="quick_action__system_input_method_picker">Choisir un clavier</string>
     <string name="quick_action__system_input_method_picker__tooltip">Ouvrir le sélecteur de clavier du système</string>
     <string name="changelog__v4_3_0">• NOUVEAU : Transcription sur l\'appareil — dictez entièrement hors ligne. Sans Internet et rien ne quitte votre téléphone. Téléchargez un modèle vocal une fois dans Paramètres ▸ Dictate ▸ Fournisseurs. 📴\n• NOUVEAU : Clavier Wear OS — dictez directement depuis votre montre, via votre téléphone ou de façon autonome. ⌚\n• NOUVEAU : Règles de recherche et remplacement — corrigez automatiquement les mots, noms ou phrases récurrents dans chaque transcription. Configurez-les dans Paramètres ▸ Dictate ▸ Correspondances personnalisées. 🔁\n• NOUVEAU : Mode appel unique — un seul modèle d\'IA capable transcrit et met en forme en une seule requête, plus rapide et souvent moins cher. Activez-le par fournisseur. ⚡\n• NOUVEAU : Actions de la Smartbar pour revenir au clavier précédent ou ouvrir le sélecteur de clavier du système. ⌨️\n• La couleur d\'accent du clavier suit maintenant la couleur choisie dans Paramètres ▸ Thème. 🎨\n• Ajout d\'un bouton d\'annulation optionnel au bouton de dictée flottant. ↩️\n• Diverses corrections et améliorations de stabilité. 🛠️</string>
+    <string name="dictate__audio_source_title">Source d\'entrée audio</string>
+    <string name="dictate__audio_source_default">Microphone par défaut</string>
+    <string name="dictate__audio_source_default_summary">Micro standard, avec le traitement audio intégré du téléphone</string>
+    <string name="dictate__audio_source_voice_recognition">Reconnaissance vocale</string>
+    <string name="dictate__audio_source_voice_recognition_summary">Optimisé pour la voix avec moins de traitement — essayez si la transcription est imprécise</string>
+    <string name="dictate__audio_source_unprocessed">Non traité (brut)</string>
+    <string name="dictate__audio_source_unprocessed_summary">Aucun traitement; revient à la reconnaissance vocale si votre téléphone ne le prend pas en charge</string>
 </resources>

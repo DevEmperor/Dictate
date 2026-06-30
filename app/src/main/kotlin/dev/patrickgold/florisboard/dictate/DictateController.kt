@@ -1370,12 +1370,15 @@ object DictateController {
     }
 
     private suspend fun setupBluetoothIfEnabled(context: Context): Int {
-        if (!prefs.dictate.useBluetoothMic.get()) return MediaRecorder.AudioSource.MIC
+        // Non-Bluetooth path uses the user's chosen audio source (issue #62); Bluetooth SCO always needs
+        // VOICE_COMMUNICATION. If BT is requested but can't be activated, fall back to the chosen source.
+        val localSource = prefs.dictate.audioInputSource.get().resolve(context)
+        if (!prefs.dictate.useBluetoothMic.get()) return localSource
         val router = BluetoothMicRouter(context).also { btRouter = it }
         return if (router.activate()) {
             MediaRecorder.AudioSource.VOICE_COMMUNICATION
         } else {
-            MediaRecorder.AudioSource.MIC
+            localSource
         }
     }
 

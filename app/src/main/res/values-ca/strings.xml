@@ -1309,4 +1309,11 @@
     <string name="quick_action__system_input_method_picker">Tria el teclat</string>
     <string name="quick_action__system_input_method_picker__tooltip">Obre el selector de teclat del sistema</string>
     <string name="changelog__v4_3_0">• NOU: Transcripció al dispositiu — dicta totalment sense connexió. Sense internet i res no surt del teu telèfon. Baixa un model de veu un cop a Configuració ▸ Dictate ▸ Proveïdors. 📴\n• NOU: Teclat per a Wear OS — dicta directament des del rellotge, a través del telèfon o pel seu compte. ⌚\n• NOU: Regles de cerca i substitució — corregeix automàticament paraules, noms o frases recurrents a cada transcripció. Configura-les a Configuració ▸ Dictate ▸ Assignacions personalitzades. 🔁\n• NOU: Mode de crida única — un sol model d\'IA capaç transcriu i dóna format en una única sol·licitud, més ràpid i sovint més econòmic. Activa\'l per proveïdor. ⚡\n• NOU: Accions de la Smartbar per tornar al teclat anterior o obrir el selector de teclat del sistema. ⌨️\n• El color d\'accent del teclat ara segueix el color que tries a Configuració ▸ Tema. 🎨\n• Afegit un botó de desfer opcional al botó de dictat flotant. ↩️\n• Diverses correccions i millores d\'estabilitat. 🛠️</string>
+    <string name="dictate__audio_source_title">Font d\'entrada d\'àudio</string>
+    <string name="dictate__audio_source_default">Micròfon predeterminat</string>
+    <string name="dictate__audio_source_default_summary">Micròfon estàndard, amb el processament d\'àudio integrat del telèfon</string>
+    <string name="dictate__audio_source_voice_recognition">Reconeixement de veu</string>
+    <string name="dictate__audio_source_voice_recognition_summary">Optimitzat per a la veu amb menys processament — prova-ho si la transcripció és inexacta</string>
+    <string name="dictate__audio_source_unprocessed">Sense processar (cru)</string>
+    <string name="dictate__audio_source_unprocessed_summary">Sense cap processament; recorre al reconeixement de veu si el teu telèfon no ho admet</string>
 </resources>

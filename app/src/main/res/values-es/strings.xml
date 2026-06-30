@@ -1417,4 +1417,11 @@
     <string name="quick_action__system_input_method_picker">Elegir teclado</string>
     <string name="quick_action__system_input_method_picker__tooltip">Abrir el selector de teclado del sistema</string>
     <string name="changelog__v4_3_0">• NUEVO: Transcripción en el dispositivo — dicta totalmente sin conexión. Sin internet y nada sale de tu teléfono. Descarga un modelo de voz una vez en Ajustes ▸ Dictate ▸ Proveedores. 📴\n• NUEVO: Teclado para Wear OS — dicta directamente desde tu reloj, a través del teléfono o por su cuenta. ⌚\n• NUEVO: Reglas de buscar y reemplazar — corrige automáticamente palabras, nombres o frases recurrentes en cada transcripción. Configúralas en Ajustes ▸ Dictate ▸ Asignaciones personalizadas. 🔁\n• NUEVO: Modo de llamada única — un solo modelo de IA capaz transcribe y da formato en una sola petición, más rápido y a menudo más barato. Actívalo por proveedor. ⚡\n• NUEVO: Acciones de la Smartbar para volver al teclado anterior o abrir el selector de teclado del sistema. ⌨️\n• El color de acento del teclado ahora sigue el color que eliges en Ajustes ▸ Tema. 🎨\n• Se añadió un botón de deshacer opcional al botón de dictado flotante. ↩️\n• Varias correcciones y mejoras de estabilidad. 🛠️</string>
+    <string name="dictate__audio_source_title">Fuente de entrada de audio</string>
+    <string name="dictate__audio_source_default">Micrófono predeterminado</string>
+    <string name="dictate__audio_source_default_summary">Micrófono estándar, con el procesamiento de audio integrado del teléfono</string>
+    <string name="dictate__audio_source_voice_recognition">Reconocimiento de voz</string>
+    <string name="dictate__audio_source_voice_recognition_summary">Optimizado para voz con menos procesamiento: pruébalo si la transcripción es imprecisa</string>
+    <string name="dictate__audio_source_unprocessed">Sin procesar (en bruto)</string>
+    <string name="dictate__audio_source_unprocessed_summary">Sin ningún procesamiento; recurre a Reconocimiento de voz si tu teléfono no lo admite</string>
 </resources>

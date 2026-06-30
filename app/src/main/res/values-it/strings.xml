@@ -1217,4 +1217,11 @@
     <string name="quick_action__system_input_method_picker">Scegli tastiera</string>
     <string name="quick_action__system_input_method_picker__tooltip">Apri il selettore di tastiera del sistema</string>
     <string name="changelog__v4_3_0">• NUOVO: Trascrizione sul dispositivo — detta completamente offline. Niente internet e niente lascia il tuo telefono. Scarica un modello vocale una volta in Impostazioni ▸ Dictate ▸ Provider. 📴\n• NUOVO: Tastiera per Wear OS — detta direttamente dal tuo orologio, tramite il telefono o in autonomia. ⌚\n• NUOVO: Regole di cerca e sostituisci — correggi automaticamente parole, nomi o frasi ricorrenti in ogni trascrizione. Impostale in Impostazioni ▸ Dictate ▸ Mappature personalizzate. 🔁\n• NUOVO: Modalità chiamata singola — un solo modello di IA capace trascrive e formatta in un\'unica richiesta, più veloce e spesso più economico. Attivala per provider. ⚡\n• NUOVO: Azioni della Smartbar per tornare alla tastiera precedente o aprire il selettore di tastiera del sistema. ⌨️\n• Il colore d\'accento della tastiera ora segue il colore scelto in Impostazioni ▸ Tema. 🎨\n• Aggiunto un pulsante di annullamento opzionale al pulsante di dettatura flottante. ↩️\n• Varie correzioni e miglioramenti di stabilità. 🛠️</string>
+    <string name="dictate__audio_source_title">Sorgente di ingresso audio</string>
+    <string name="dictate__audio_source_default">Microfono predefinito</string>
+    <string name="dictate__audio_source_default_summary">Microfono standard, con l\'elaborazione audio integrata del telefono</string>
+    <string name="dictate__audio_source_voice_recognition">Riconoscimento vocale</string>
+    <string name="dictate__audio_source_voice_recognition_summary">Ottimizzato per il parlato con meno elaborazione — provalo se la trascrizione è imprecisa</string>
+    <string name="dictate__audio_source_unprocessed">Non elaborato (grezzo)</string>
+    <string name="dictate__audio_source_unprocessed_summary">Nessuna elaborazione; ripiega sul Riconoscimento vocale se il telefono non lo supporta</string>
 </resources>

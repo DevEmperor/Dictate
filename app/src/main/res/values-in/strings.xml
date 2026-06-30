@@ -1388,4 +1388,11 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="quick_action__system_input_method_picker">Pilih keyboard</string>
     <string name="quick_action__system_input_method_picker__tooltip">Buka pemilih keyboard sistem</string>
     <string name="changelog__v4_3_0">• BARU: Transkripsi di perangkat — mendikte sepenuhnya offline. Tanpa internet dan tidak ada yang keluar dari ponsel Anda. Unduh model suara sekali di Pengaturan ▸ Dictate ▸ Penyedia. 📴\n• BARU: Keyboard Wear OS — mendikte langsung dari jam tangan Anda, melalui ponsel atau secara mandiri. ⌚\n• BARU: Aturan cari dan ganti — perbaiki otomatis kata, nama, atau frasa yang berulang di setiap transkrip. Atur di Pengaturan ▸ Dictate ▸ Pemetaan khusus. 🔁\n• BARU: Mode panggilan tunggal — satu model AI yang mumpuni mentranskripsi dan memformat dalam satu permintaan, lebih cepat dan sering lebih murah. Aktifkan per penyedia. ⚡\n• BARU: Tindakan Smartbar untuk kembali ke keyboard sebelumnya atau membuka pemilih keyboard sistem. ⌨️\n• Warna aksen keyboard kini mengikuti warna yang Anda pilih di Pengaturan ▸ Tema. 🎨\n• Menambahkan tombol urungkan opsional ke tombol dikte mengambang. ↩️\n• Berbagai perbaikan dan peningkatan stabilitas. 🛠️</string>
+    <string name="dictate__audio_source_title">Sumber input audio</string>
+    <string name="dictate__audio_source_default">Mikrofon default</string>
+    <string name="dictate__audio_source_default_summary">Mikrofon standar dengan pemrosesan audio bawaan ponsel</string>
+    <string name="dictate__audio_source_voice_recognition">Pengenalan suara</string>
+    <string name="dictate__audio_source_voice_recognition_summary">Disesuaikan untuk ucapan dengan lebih sedikit pemrosesan — coba ini jika transkripsi tidak akurat</string>
+    <string name="dictate__audio_source_unprocessed">Tanpa pemrosesan (mentah)</string>
+    <string name="dictate__audio_source_unprocessed_summary">Tanpa pemrosesan sama sekali; kembali ke Pengenalan suara jika ponsel Anda tidak mendukungnya</string>
 </resources>

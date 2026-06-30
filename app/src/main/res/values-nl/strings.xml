@@ -1335,4 +1335,11 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="quick_action__system_input_method_picker">Toetsenbord kiezen</string>
     <string name="quick_action__system_input_method_picker__tooltip">De toetsenbordkiezer van het systeem openen</string>
     <string name="changelog__v4_3_0">• NIEUW: Transcriptie op het apparaat — dicteer volledig offline. Geen internet nodig en niets verlaat je telefoon. Download eenmalig een spraakmodel via Instellingen ▸ Dictate ▸ Providers. 📴\n• NIEUW: Wear OS-toetsenbord — dicteer rechtstreeks vanaf je horloge, via je telefoon of zelfstandig. ⌚\n• NIEUW: Zoek- en vervangregels — corrigeer automatisch terugkerende woorden, namen of zinnen in elke transcriptie. Stel ze in via Instellingen ▸ Dictate ▸ Aangepaste toewijzingen. 🔁\n• NIEUW: Modus met één aanroep — één capabel AI-model transcribeert en formatteert in één verzoek, sneller en vaak goedkoper. Schakel het per provider in. ⚡\n• NIEUW: Smartbar-acties om terug te gaan naar je vorige toetsenbord of de toetsenbordkiezer van het systeem te openen. ⌨️\n• De accentkleur van het toetsenbord volgt nu de kleur die je kiest in Instellingen ▸ Thema. 🎨\n• Een optionele ongedaan-maken-knop toegevoegd aan de zwevende dicteerknop. ↩️\n• Diverse fixes en stabiliteitsverbeteringen. 🛠️</string>
+    <string name="dictate__audio_source_title">Audio-invoerbron</string>
+    <string name="dictate__audio_source_default">Standaardmicrofoon</string>
+    <string name="dictate__audio_source_default_summary">Standaardmicrofoon, met de ingebouwde audioverwerking van de telefoon</string>
+    <string name="dictate__audio_source_voice_recognition">Spraakherkenning</string>
+    <string name="dictate__audio_source_voice_recognition_summary">Afgestemd op spraak met minder verwerking — probeer dit als de transcriptie onnauwkeurig is</string>
+    <string name="dictate__audio_source_unprocessed">Onverwerkt (ruw)</string>
+    <string name="dictate__audio_source_unprocessed_summary">Helemaal geen verwerking; valt terug op Spraakherkenning als je telefoon het niet ondersteunt</string>
 </resources>
