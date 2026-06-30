@@ -1304,4 +1304,8 @@
     <string name="dictate__wear_summary">Options pour dicter depuis une montre associée</string>
     <string name="dictate__wear_auto_rewording_title">Reformuler automatiquement les dictées de la montre</string>
     <string name="dictate__wear_auto_rewording_summary">Reformulez les dictées de la montre, comme sur le téléphone.</string>
+    <string name="quick_action__system_prev_input_method">Changer de clavier</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Revenir au clavier précédent</string>
+    <string name="quick_action__system_input_method_picker">Choisir un clavier</string>
+    <string name="quick_action__system_input_method_picker__tooltip">Ouvrir le sélecteur de clavier du système</string>
 </resources>

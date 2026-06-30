@@ -1428,4 +1428,8 @@
     <string name="dictate__wear_summary">Diktálási beállítások párosított órához</string>
     <string name="dictate__wear_auto_rewording_title">Óradiktálások automatikus újrafogalmazása</string>
     <string name="dictate__wear_auto_rewording_summary">Fogalmazd újra az óradiktálásokat, mint a telefonon.</string>
+    <string name="quick_action__system_prev_input_method">Billentyűzetváltás</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Visszaváltás az előző billentyűzetre</string>
+    <string name="quick_action__system_input_method_picker">Billentyűzet választása</string>
+    <string name="quick_action__system_input_method_picker__tooltip">A rendszer billentyűzetválasztójának megnyitása</string>
 </resources>

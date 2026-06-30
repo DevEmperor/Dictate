@@ -1446,4 +1446,8 @@
     <string name="dictate__wear_summary">Opcje dyktowania ze sparowanego zegarka</string>
     <string name="dictate__wear_auto_rewording_title">Automatyczne przeredagowanie dyktowań z zegarka</string>
     <string name="dictate__wear_auto_rewording_summary">Przeredaguj dyktowania z zegarka, tak jak w telefonie.</string>
+    <string name="quick_action__system_prev_input_method">Zmień klawiaturę</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Wróć do poprzedniej klawiatury</string>
+    <string name="quick_action__system_input_method_picker">Wybierz klawiaturę</string>
+    <string name="quick_action__system_input_method_picker__tooltip">Otwórz systemowy wybór klawiatury</string>
 </resources>

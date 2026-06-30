@@ -1304,4 +1304,8 @@
     <string name="dictate__wear_summary">Opcions per dictar des d\'un rellotge vinculat</string>
     <string name="dictate__wear_auto_rewording_title">Reformula automàticament els dictats del rellotge</string>
     <string name="dictate__wear_auto_rewording_summary">Reformula els dictats fets des del rellotge, com al telèfon.</string>
+    <string name="quick_action__system_prev_input_method">Canvia el teclat</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Torna al teclat anterior</string>
+    <string name="quick_action__system_input_method_picker">Tria el teclat</string>
+    <string name="quick_action__system_input_method_picker__tooltip">Obre el selector de teclat del sistema</string>
 </resources>

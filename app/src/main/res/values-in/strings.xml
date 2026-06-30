@@ -1383,4 +1383,8 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="dictate__wear_summary">Opsi untuk mendikte dari jam tangan yang dipasangkan</string>
     <string name="dictate__wear_auto_rewording_title">Susun ulang otomatis dikte dari jam tangan</string>
     <string name="dictate__wear_auto_rewording_summary">Susun ulang dikte dari jam tangan, seperti di ponsel.</string>
+    <string name="quick_action__system_prev_input_method">Ganti keyboard</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Kembali ke keyboard sebelumnya</string>
+    <string name="quick_action__system_input_method_picker">Pilih keyboard</string>
+    <string name="quick_action__system_input_method_picker__tooltip">Buka pemilih keyboard sistem</string>
 </resources>

@@ -1374,4 +1374,8 @@
     <string name="dictate__wear_summary">Diktēšanas opcijas no savienota pulksteņa</string>
     <string name="dictate__wear_auto_rewording_title">Automātiski pārformulēt pulksteņa diktātus</string>
     <string name="dictate__wear_auto_rewording_summary">Pārformulējiet pulksteņa diktātus, tāpat kā tālrunī.</string>
+    <string name="quick_action__system_prev_input_method">Mainīt tastatūru</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Pārslēgties atpakaļ uz iepriekšējo tastatūru</string>
+    <string name="quick_action__system_input_method_picker">Izvēlēties tastatūru</string>
+    <string name="quick_action__system_input_method_picker__tooltip">Atvērt sistēmas tastatūru izvēli</string>
 </resources>

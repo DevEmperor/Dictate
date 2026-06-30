@@ -1212,4 +1212,8 @@
     <string name="dictate__wear_summary">Opzioni per dettare da un orologio abbinato</string>
     <string name="dictate__wear_auto_rewording_title">Riformula automaticamente le dettature dall\'orologio</string>
     <string name="dictate__wear_auto_rewording_summary">Riformula le dettature dall\'orologio, come sul telefono.</string>
+    <string name="quick_action__system_prev_input_method">Cambia tastiera</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Torna alla tastiera precedente</string>
+    <string name="quick_action__system_input_method_picker">Scegli tastiera</string>
+    <string name="quick_action__system_input_method_picker__tooltip">Apri il selettore di tastiera del sistema</string>
 </resources>

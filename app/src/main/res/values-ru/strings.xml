@@ -1434,4 +1434,8 @@
     <string name="dictate__wear_summary">Параметры диктовки с сопряжённых часов</string>
     <string name="dictate__wear_auto_rewording_title">Авто-переформулирование диктовок с часов</string>
     <string name="dictate__wear_auto_rewording_summary">Переформулируйте диктовки с часов, как на телефоне.</string>
+    <string name="quick_action__system_prev_input_method">Сменить клавиатуру</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Вернуться к предыдущей клавиатуре</string>
+    <string name="quick_action__system_input_method_picker">Выбрать клавиатуру</string>
+    <string name="quick_action__system_input_method_picker__tooltip">Открыть системный выбор клавиатуры</string>
 </resources>

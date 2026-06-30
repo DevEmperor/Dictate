@@ -1274,4 +1274,8 @@
     <string name="dictate__wear_summary">Параметри диктування з парного годинника</string>
     <string name="dictate__wear_auto_rewording_title">Авто-переформулювання диктувань з годинника</string>
     <string name="dictate__wear_auto_rewording_summary">Переформулюйте диктування з годинника, як на телефоні.</string>
+    <string name="quick_action__system_prev_input_method">Змінити клавіатуру</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Повернутися до попередньої клавіатури</string>
+    <string name="quick_action__system_input_method_picker">Вибрати клавіатуру</string>
+    <string name="quick_action__system_input_method_picker__tooltip">Відкрити системний вибір клавіатури</string>
 </resources>

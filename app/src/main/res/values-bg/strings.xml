@@ -1430,4 +1430,8 @@
     <string name="dictate__wear_summary">Опции за диктуване от сдвоен часовник</string>
     <string name="dictate__wear_auto_rewording_title">Авт. преформулиране на диктовки от часовника</string>
     <string name="dictate__wear_auto_rewording_summary">Преформулирайте диктовките от часовника, както на телефона.</string>
+    <string name="quick_action__system_prev_input_method">Смяна на клавиатура</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Връщане към предишната клавиатура</string>
+    <string name="quick_action__system_input_method_picker">Избор на клавиатура</string>
+    <string name="quick_action__system_input_method_picker__tooltip">Отваряне на системния избор на клавиатура</string>
 </resources>

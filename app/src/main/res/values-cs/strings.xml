@@ -1445,4 +1445,8 @@
     <string name="dictate__wear_summary">Možnosti diktování ze spárovaných hodinek</string>
     <string name="dictate__wear_auto_rewording_title">Automaticky přeformulovat diktování z hodinek</string>
     <string name="dictate__wear_auto_rewording_summary">Přeformulujte diktování z hodinek, jako v telefonu.</string>
+    <string name="quick_action__system_prev_input_method">Přepnout klávesnici</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Přepnout zpět na předchozí klávesnici</string>
+    <string name="quick_action__system_input_method_picker">Vybrat klávesnici</string>
+    <string name="quick_action__system_input_method_picker__tooltip">Otevřít systémový výběr klávesnice</string>
 </resources>

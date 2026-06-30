@@ -1410,4 +1410,8 @@
     <string name="dictate__wear_summary">Opções para ditar a partir de um relógio emparelhado</string>
     <string name="dictate__wear_auto_rewording_title">Reformular automaticamente os ditados do relógio</string>
     <string name="dictate__wear_auto_rewording_summary">Reformula os ditados feitos no relógio, como no telemóvel.</string>
+    <string name="quick_action__system_prev_input_method">Mudar teclado</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Voltar ao teclado anterior</string>
+    <string name="quick_action__system_input_method_picker">Escolher teclado</string>
+    <string name="quick_action__system_input_method_picker__tooltip">Abrir o seletor de teclado do sistema</string>
 </resources>

@@ -1302,4 +1302,8 @@
     <string name="dictate__wear_summary">Optionen fürs Diktieren von einer gekoppelten Uhr</string>
     <string name="dictate__wear_auto_rewording_title">Watch-Diktate automatisch umformulieren</string>
     <string name="dictate__wear_auto_rewording_summary">Watch-Diktate umformulieren, wie am Handy.</string>
+    <string name="quick_action__system_prev_input_method">Tastatur wechseln</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Zur vorherigen Tastatur zurückwechseln</string>
+    <string name="quick_action__system_input_method_picker">Tastatur wählen</string>
+    <string name="quick_action__system_input_method_picker__tooltip">System-Tastaturauswahl öffnen</string>
 </resources>

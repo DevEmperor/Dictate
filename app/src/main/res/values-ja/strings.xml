@@ -1360,4 +1360,8 @@
     <string name="dictate__wear_summary">ペアリングした時計から音声入力するためのオプション</string>
     <string name="dictate__wear_auto_rewording_title">時計の音声入力を自動で書き換える</string>
     <string name="dictate__wear_auto_rewording_summary">時計からの音声入力を、スマートフォンと同じように書き換えます。</string>
+    <string name="quick_action__system_prev_input_method">キーボード切替</string>
+    <string name="quick_action__system_prev_input_method__tooltip">前のキーボードに戻す</string>
+    <string name="quick_action__system_input_method_picker">キーボード選択</string>
+    <string name="quick_action__system_input_method_picker__tooltip">システムのキーボード選択を開く</string>
 </resources>

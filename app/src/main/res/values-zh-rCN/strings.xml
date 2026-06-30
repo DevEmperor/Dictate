@@ -1424,4 +1424,8 @@
     <string name="dictate__wear_summary">从已配对手表听写的选项</string>
     <string name="dictate__wear_auto_rewording_title">自动改写手表听写</string>
     <string name="dictate__wear_auto_rewording_summary">像在手机上一样改写手表听写。</string>
+    <string name="quick_action__system_prev_input_method">切换键盘</string>
+    <string name="quick_action__system_prev_input_method__tooltip">切换回上一个键盘</string>
+    <string name="quick_action__system_input_method_picker">选择键盘</string>
+    <string name="quick_action__system_input_method_picker__tooltip">打开系统键盘选择器</string>
 </resources>

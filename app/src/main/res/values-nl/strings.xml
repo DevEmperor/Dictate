@@ -1330,4 +1330,8 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="dictate__wear_summary">Opties voor dicteren vanaf een gekoppeld horloge</string>
     <string name="dictate__wear_auto_rewording_title">Horlogedictaten automatisch herformuleren</string>
     <string name="dictate__wear_auto_rewording_summary">Herformuleer dictaten vanaf het horloge, net als op de telefoon.</string>
+    <string name="quick_action__system_prev_input_method">Toetsenbord wisselen</string>
+    <string name="quick_action__system_prev_input_method__tooltip">Terug naar je vorige toetsenbord</string>
+    <string name="quick_action__system_input_method_picker">Toetsenbord kiezen</string>
+    <string name="quick_action__system_input_method_picker__tooltip">De toetsenbordkiezer van het systeem openen</string>
 </resources>
