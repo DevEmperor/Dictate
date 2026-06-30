@@ -1364,4 +1364,5 @@
     <string name="quick_action__system_prev_input_method__tooltip">前のキーボードに戻す</string>
     <string name="quick_action__system_input_method_picker">キーボード選択</string>
     <string name="quick_action__system_input_method_picker__tooltip">システムのキーボード選択を開く</string>
+    <string name="changelog__v4_3_0">• 新機能: オンデバイス文字起こし — 完全オフラインで音声入力。インターネット不要で、データはスマートフォンの外に出ません。設定 ▸ Dictate ▸ プロバイダー で音声モデルを一度ダウンロードしてください。📴\n• 新機能: Wear OS キーボード — スマートフォン経由でも単独でも、時計から直接音声入力。⌚\n• 新機能: 検索と置換ルール — すべての文字起こしで繰り返し現れる単語・名前・フレーズを自動修正。設定 ▸ Dictate ▸ カスタムマッピング で設定。🔁\n• 新機能: シングルコールモード — 1つの高性能 AI モデルが1回のリクエストで文字起こしと整形を実行。より速く、多くの場合より安価。プロバイダーごとに有効化できます。⚡\n• 新機能: 前のキーボードに戻る、またはシステムのキーボード選択を開く Smartbar アクション。⌨️\n• キーボードのアクセントカラーが、設定 ▸ テーマ で選んだ色に追従するようになりました。🎨\n• フローティング音声入力ボタンに任意の取り消しボタンを追加。↩️\n• さまざまな修正と安定性の向上。🛠️</string>
 </resources>

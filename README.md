@@ -77,8 +77,12 @@ floating button you can even dictate straight into apps while another keyboard i
 ## 🎤 Features
 
 - **Voice dictation with Whisper AI** — highly accurate speech-to-text in dozens of languages, with automatic punctuation. It's so sensitive you can literally *whisper* and still get a clean transcription.
+- **On-device transcription** — dictate completely offline with a downloadable on-device model: no internet needed and nothing ever leaves your phone.
+- **Wear OS keyboard** — dictate straight from your watch, tethered through your phone or fully standalone.
 - **Floating dictation button** — dictate straight into **any** app, even when another keyboard is active. Pick from three styles (Pill, Ring, Orb), watch a live waveform while you speak, drag it anywhere with edge-snapping, set its color and size, and long-press to reword.
 - **AI rewording & rewriting** — turn a selection into something more formal, casual, translated, summarised, or anything you define with custom prompts.
+- **Find & replace rules** — automatically fix recurring words, names or phrases in every transcript.
+- **Single-call multimodal mode** — let one audio-capable AI model transcribe *and* format in a single request, for lower latency and cost.
 - **Custom prompts & snippets** — build your own reword actions; reusable text snippets are inserted instantly without an API call.
 - **Bring your own key & provider** — use your own API key with OpenAI, Google Gemini, Groq, Mistral, OpenRouter, Soniox and other compatible endpoints, so you stay in control of usage and cost.
 - **A real, full keyboard** *(courtesy of the FlorisBoard base):*
