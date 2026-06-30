@@ -10,6 +10,12 @@
   },
   "themes": [
     {
+      "id": "dictate_eink",
+      "label": "Dictate E-Ink (High Contrast)",
+      "authors": [ "DevEmperor" ],
+      "isNight": false
+    },
+    {
       "id": "floris_day",
       "label": "Dictate Day",
       "authors": [ "patrickgold" ],
