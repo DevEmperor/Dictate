@@ -31,8 +31,17 @@ class WearAudioRecorder(private val context: Context) {
     @Volatile private var recording = false
     @Volatile private var paused = false
     private val pcm = ByteArrayOutputStream()
+    /** Peak |sample| (0..32767) seen since the last [maxAmplitude] call; drives the live waveform. */
+    @Volatile private var peak = 0
 
     val isRecording: Boolean get() = recording
+
+    /** Peak microphone amplitude (0..32767) since the previous call, then resets. 0 when not recording. */
+    fun maxAmplitude(): Int {
+        val p = peak
+        peak = 0
+        return p
+    }
 
     @SuppressLint("MissingPermission") // caller guarantees RECORD_AUDIO; init failure is handled below.
     fun start() {
@@ -48,6 +57,7 @@ class WearAudioRecorder(private val context: Context) {
         )
         check(recorder.state == AudioRecord.STATE_INITIALIZED) { "AudioRecord failed to initialize" }
         pcm.reset()
+        peak = 0
         record = recorder
         recording = true
         paused = false
@@ -58,9 +68,24 @@ class WearAudioRecorder(private val context: Context) {
                 val read = recorder.read(buf, 0, buf.size)
                 // Keep draining the mic while paused (so the buffer never overflows) but drop the audio,
                 // so paused time contributes no samples — matching the phone's pause behavior.
-                if (read > 0 && !paused) pcm.write(buf, 0, read)
+                if (read > 0 && !paused) {
+                    pcm.write(buf, 0, read)
+                    updatePeak(buf, read)
+                }
             }
         }.also { it.start() }
+    }
+
+    private fun updatePeak(buf: ByteArray, length: Int) {
+        var max = peak
+        var i = 0
+        while (i + 1 < length) {
+            val sample = (buf[i].toInt() and 0xff) or (buf[i + 1].toInt() shl 8) // little-endian PCM16
+            val abs = if (sample < 0) -sample else sample
+            if (abs > max) max = abs
+            i += 2
+        }
+        peak = max.coerceAtMost(32767)
     }
 
     /** Pause capture: the mic keeps running but recorded samples are dropped until [resume]. */

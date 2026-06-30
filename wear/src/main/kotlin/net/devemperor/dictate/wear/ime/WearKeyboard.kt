@@ -15,15 +15,19 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +41,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
+import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Dialpad
 import androidx.compose.material.icons.filled.Mic
@@ -47,7 +53,9 @@ import androidx.compose.material.icons.filled.Stop
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,10 +66,12 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -80,8 +90,10 @@ import net.devemperor.dictate.wear.ui.WearDictateTheme
 
 /** The three input pages of the Wear keyboard, swipeable via the pager. */
 private enum class WearPage(val icon: ImageVector, val label: String) {
-    VOICE(Icons.Filled.Mic, "Voice"),
+    // Order matters: it is the left→right pager order. Voice is the centre/start page; swiping right
+    // goes to Numbers (previous), swiping left goes to Emoji (next).
     NUMBERS(Icons.Filled.Dialpad, "123"),
+    VOICE(Icons.Filled.Mic, "Voice"),
     EMOJI(Icons.Filled.Mood, "Emoji"),
 }
 
@@ -98,62 +110,112 @@ fun WearKeyboard(
     dictationState: WearDictationState,
     recordingInfo: WearRecordingInfo,
     errorMessage: String?,
+    peakProvider: () -> Int = { 0 },
 ) {
     WearDictateTheme {
         val pages = WearPage.entries
-        val pagerState = rememberPagerState(pageCount = { pages.size })
+        val pagerState = rememberPagerState(initialPage = WearPage.VOICE.ordinal, pageCount = { pages.size })
         val scope = rememberCoroutineScope()
 
-        Column(
-            // A solid background so the keyboard never shows the app behind it (uniform, not transparent).
-            // Top padding keeps the switcher clear of the round bezel; horizontal padding insets the grids.
+        // The pager fills the whole screen so the Voice record button sits at the *true* centre (no top
+        // bar pushing it down). A downward drag anywhere closes the keyboard — so the user never has to
+        // reach the top edge, which would pull the system notification shade down instead. A faint handle
+        // at the very top only hints at the gesture and takes no layout space.
+        var swipeDown by remember { mutableFloatStateOf(0f) }
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colors.background)
-                .padding(start = 10.dp, end = 10.dp, top = 18.dp, bottom = 6.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .pointerInput(Unit) {
+                    detectVerticalDragGestures(
+                        onDragEnd = { swipeDown = 0f },
+                        onDragCancel = { swipeDown = 0f },
+                    ) { change, dragAmount ->
+                        swipeDown = if (dragAmount > 0f) swipeDown + dragAmount else 0f
+                        if (swipeDown > 130f) {
+                            swipeDown = 0f
+                            actions.dismiss()
+                        }
+                        change.consume()
+                    }
+                },
         ) {
-            PageSwitcher(
-                pages = pages,
-                current = pagerState.currentPage,
-                onSelect = { index -> scope.launch { pagerState.animateScrollToPage(index) } },
-            )
-
             HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { index ->
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     when (pages[index]) {
-                        WearPage.VOICE -> VoicePage(dictationState, recordingInfo, errorMessage, actions)
-                        WearPage.NUMBERS -> NumbersPage(actions)
-                        WearPage.EMOJI -> EmojiPage(actions)
+                        WearPage.VOICE ->
+                            VoicePage(
+                                state = dictationState,
+                                recordingInfo = recordingInfo,
+                                errorMessage = errorMessage,
+                                actions = actions,
+                                peakProvider = peakProvider,
+                                onShowNumbers = {
+                                    scope.launch { pagerState.animateScrollToPage(WearPage.NUMBERS.ordinal) }
+                                },
+                                onShowEmoji = {
+                                    scope.launch { pagerState.animateScrollToPage(WearPage.EMOJI.ordinal) }
+                                },
+                            )
+                        // Numbers/Emoji get a round-screen inset so their corner cells aren't clipped.
+                        WearPage.NUMBERS -> PageInset { NumbersPage(actions) }
+                        WearPage.EMOJI -> PageInset { EmojiPage(actions) }
                     }
                 }
             }
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 4.dp)
+                    .size(width = 22.dp, height = 4.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(MaterialTheme.colors.onSurfaceVariant.copy(alpha = 0.4f)),
+            )
         }
     }
 }
 
-/** A small segmented control of round icon buttons; the active page is filled with the accent color. */
+/** Insets page content away from the clipped corners on round watches; near-zero padding on square ones. */
 @Composable
-private fun PageSwitcher(
-    pages: List<WearPage>,
-    current: Int,
-    onSelect: (Int) -> Unit,
+private fun PageInset(content: @Composable () -> Unit) {
+    val round = LocalConfiguration.current.isScreenRound
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = if (round) 16.dp else 6.dp, vertical = if (round) 12.dp else 2.dp),
+    ) {
+        content()
+    }
+}
+
+/**
+ * A small pill pinned to a screen edge on the Voice page: an outward chevron + the target page's icon,
+ * making it clear there is more input to the sides and acting as a tap shortcut. Numbers sits on the
+ * left, Emoji on the right (matching the pager order: swipe right → Numbers, swipe left → Emoji).
+ */
+@Composable
+private fun EdgeChip(
+    page: WearPage,
+    chevronOnStart: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        pages.forEachIndexed { index, page ->
-            val selected = current == index
-            Button(
-                onClick = { onSelect(index) },
-                modifier = Modifier.size(28.dp),
-                colors = if (selected) ButtonDefaults.primaryButtonColors()
-                else ButtonDefaults.secondaryButtonColors(),
-            ) {
-                Icon(
-                    imageVector = page.icon,
-                    contentDescription = page.label,
-                    modifier = Modifier.size(14.dp),
-                )
-            }
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(50))
+            .background(MaterialTheme.colors.surface)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 5.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(1.dp),
+    ) {
+        if (chevronOnStart) {
+            Icon(Icons.Filled.ChevronLeft, contentDescription = null, modifier = Modifier.size(15.dp))
+        }
+        Icon(imageVector = page.icon, contentDescription = page.label, modifier = Modifier.size(14.dp))
+        if (!chevronOnStart) {
+            Icon(Icons.Filled.ChevronRight, contentDescription = null, modifier = Modifier.size(15.dp))
         }
     }
 }
@@ -164,45 +226,91 @@ private fun VoicePage(
     recordingInfo: WearRecordingInfo,
     errorMessage: String?,
     actions: WearImeActions,
+    peakProvider: () -> Int,
+    onShowNumbers: () -> Unit,
+    onShowEmoji: () -> Unit,
 ) {
     val recording = state == WearDictationState.RECORDING
     val transcribing = state == WearDictationState.TRANSCRIBING
+    val rewording = state == WearDictationState.REWORDING
+    val busy = transcribing || rewording
     val paused = recordingInfo.paused
 
-    // Gentle breathing pulse on the record button while actively recording (mirrors the phone's pulsing
-    // recording indicator); frozen while paused / idle.
+    // Rolling window of recent mic levels (0..1) feeding the live waveform; polled from the recorder
+    // while actively recording, frozen on pause, cleared once recording ends.
+    val levels = remember { mutableStateListOf<Float>() }
+    LaunchedEffect(recording, paused) {
+        if (recording && !paused) {
+            while (true) {
+                val lvl = kotlin.math.sqrt((peakProvider() / 32767f).coerceIn(0f, 1f))
+                levels.add(lvl)
+                if (levels.size > WAVEFORM_BARS) levels.removeAt(0)
+                delay(70L)
+            }
+        } else if (!recording) {
+            levels.clear()
+        }
+    }
+
+    // Subtle breathing pulse on the record button while recording — scales in place only, so the button
+    // never changes position. Gentle enough to leave the larger pause/stop controls below room.
     val pulse by rememberInfiniteTransition(label = "rec").animateFloat(
-        initialValue = 0.88f,
-        targetValue = 1.12f,
-        animationSpec = infiniteRepeatable(tween(650), RepeatMode.Reverse),
+        initialValue = 0.95f,
+        targetValue = 1.05f,
+        animationSpec = infiniteRepeatable(tween(750), RepeatMode.Reverse),
         label = "pulse",
     )
     val scale = if (recording && !paused) pulse else 1f
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        if (recording) ElapsedTimer(recordingInfo)
+    // The record button is pinned to the exact centre and never moves; the timer/waveform sit above it
+    // and the controls/status below, both offset from centre so they don't push the button. The page
+    // navigation chips (Numbers / Emoji) live on the side edges, vertically centred — only here.
+    Box(modifier = Modifier.fillMaxSize()) {
+        EdgeChip(
+            page = WearPage.NUMBERS,
+            chevronOnStart = true,
+            onClick = onShowNumbers,
+            modifier = Modifier.align(Alignment.CenterStart),
+        )
+        EdgeChip(
+            page = WearPage.EMOJI,
+            chevronOnStart = false,
+            onClick = onShowEmoji,
+            modifier = Modifier.align(Alignment.CenterEnd),
+        )
 
         Button(
             onClick = actions.toggleDictation,
-            enabled = !transcribing,
-            modifier = Modifier.size(64.dp).scale(scale),
+            enabled = !busy,
+            modifier = Modifier.align(Alignment.Center).size(64.dp).scale(scale),
             colors = ButtonDefaults.primaryButtonColors(),
         ) {
             when {
-                transcribing -> CircularProgressIndicator(modifier = Modifier.size(26.dp), strokeWidth = 3.dp)
+                busy -> CircularProgressIndicator(modifier = Modifier.size(26.dp), strokeWidth = 3.dp)
                 recording -> Icon(Icons.Filled.Stop, contentDescription = "Stop", modifier = Modifier.size(28.dp))
                 else -> Icon(Icons.Filled.Mic, contentDescription = "Dictate", modifier = Modifier.size(28.dp))
             }
         }
 
-        when {
-            recording -> {
-                // Cancel + pause/resume, mirroring the phone smartbar controls.
-                Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+        // Timer + waveform above the button (only while recording).
+        if (recording) {
+            Column(
+                modifier = Modifier.align(Alignment.Center).offset(y = (-58).dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                ElapsedTimer(recordingInfo)
+                Waveform(levels)
+            }
+        }
+
+        // Controls (recording) / status line (otherwise) below the button.
+        Box(
+            modifier = Modifier.align(Alignment.Center).offset(y = 56.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (recording) {
+                Row(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
                     SmallAction(Icons.Filled.Close, "Cancel", actions.cancelDictation)
                     SmallAction(
                         if (paused) Icons.Filled.PlayArrow else Icons.Filled.Pause,
@@ -210,11 +318,11 @@ private fun VoicePage(
                         actions.togglePause,
                     )
                 }
-            }
-            else -> {
+            } else {
                 Text(
                     text = when (state) {
                         WearDictationState.TRANSCRIBING -> "Transcribing…"
+                        WearDictationState.REWORDING -> "Rewording…"
                         WearDictationState.ERROR -> errorMessage ?: "Error — tap to retry"
                         else -> "Tap to dictate"
                     },
@@ -251,14 +359,42 @@ private fun ElapsedTimer(info: WearRecordingInfo) {
     )
 }
 
+/** Number of bars in the live recording waveform. */
+private const val WAVEFORM_BARS = 19
+
+/**
+ * A compact live level meter shown under the timer while recording: [WAVEFORM_BARS] thin accent bars,
+ * the most recent level on the right, scrolling left as new samples arrive. Stays small so it never
+ * crowds the round screen; if there are no samples yet it is a flat baseline.
+ */
+@Composable
+private fun Waveform(levels: List<Float>) {
+    // Pad the left with silence so the bars fill from the right (newest sample) as the buffer fills.
+    val padded = List((WAVEFORM_BARS - levels.size).coerceAtLeast(0)) { 0f } + levels.takeLast(WAVEFORM_BARS)
+    Row(
+        modifier = Modifier.height(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        padded.forEach { level ->
+            Box(
+                modifier = Modifier
+                    .size(width = 3.dp, height = (3f + level * 13f).dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(MaterialTheme.colors.primary),
+            )
+        }
+    }
+}
+
 @Composable
 private fun SmallAction(icon: ImageVector, desc: String, onClick: () -> Unit) {
     Button(
         onClick = onClick,
-        modifier = Modifier.size(32.dp),
+        modifier = Modifier.size(40.dp),
         colors = ButtonDefaults.secondaryButtonColors(),
     ) {
-        Icon(icon, contentDescription = desc, modifier = Modifier.size(16.dp))
+        Icon(icon, contentDescription = desc, modifier = Modifier.size(20.dp))
     }
 }
 
@@ -325,7 +461,12 @@ private fun EmojiPage(actions: WearImeActions) {
     }
     val activeTab = selectedTab.coerceIn(0, tabs.lastIndex)
 
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        // Push the whole emoji page (the category tabs first of all) down from the narrow top of a round
+        // screen, so the outer category tabs are easy to tap.
+        modifier = Modifier.fillMaxSize().padding(top = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
@@ -389,6 +530,8 @@ private fun <T> RotaryGrid(
             }
             .focusRequester(focusRequester)
             .focusable(),
+        // Small top gap below the category tabs; the bulk of the top inset is above the tabs row instead.
+        contentPadding = PaddingValues(top = 4.dp, bottom = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {

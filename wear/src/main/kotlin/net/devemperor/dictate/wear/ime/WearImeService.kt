@@ -120,6 +120,7 @@ class WearImeService :
                     dictationState = dictationState.value,
                     recordingInfo = recordingInfo.value,
                     errorMessage = errorMessage.value,
+                    peakProvider = { recorder.maxAmplitude() },
                 )
             }
         }
@@ -140,6 +141,7 @@ class WearImeService :
         toggleDictation = { toggleDictation() },
         togglePause = { togglePause() },
         cancelDictation = { cancelDictation() },
+        dismiss = { requestHideSelf(0) },
     )
 
     private fun ic(): InputConnection? = currentInputConnection
@@ -151,7 +153,8 @@ class WearImeService :
     private fun toggleDictation() {
         when (dictationState.value) {
             WearDictationState.RECORDING -> stopAndTranscribe()
-            WearDictationState.TRANSCRIBING -> Unit // ignore taps while a transcription is in flight
+            // Ignore taps while transcription/rewording is in flight.
+            WearDictationState.TRANSCRIBING, WearDictationState.REWORDING -> Unit
             else -> startRecording()
         }
     }
@@ -204,7 +207,12 @@ class WearImeService :
                 withContext(Dispatchers.IO) {
                     val audio = recorder.stop()
                     try {
-                        WearTranscription.transcribe(applicationContext, audio)
+                        WearTranscription.transcribe(
+                            applicationContext,
+                            audio,
+                            // Fired when the watch starts standalone rewording → show "Rewording…".
+                            onRewording = { scope.launch { dictationState.value = WearDictationState.REWORDING } },
+                        )
                     } finally {
                         audio.delete()
                     }

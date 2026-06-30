@@ -21,6 +21,8 @@ class WearImeActions(
     val togglePause: () -> Unit,
     /** Discard an in-progress recording without transcribing. */
     val cancelDictation: () -> Unit,
+    /** Hide the keyboard entirely (wired to requestHideSelf), triggered by the swipe-down gesture. */
+    val dismiss: () -> Unit,
 )
 
 /** High-level state of the voice page, surfaced to the UI for the record button + status line. */
@@ -28,6 +30,7 @@ enum class WearDictationState {
     IDLE,
     RECORDING,
     TRANSCRIBING,
+    REWORDING,
     ERROR,
 }
 
