@@ -1288,7 +1288,7 @@
     <string name="dictate__mappings_title">Remplacements personnalisés</string>
     <string name="dictate__mappings_wholeword_summary">Remplacer uniquement les mots isolés, pas les correspondances à l\'intérieur de mots plus longs.</string>
     <string name="dictate__mappings_wholeword_title">Mot entier uniquement</string>
-    <string name="dictate__wear_standalone_summary">Lorsque cette option est activée, votre clé API est synchronisée avec une montre Wear OS associée afin qu\'elle puisse transcrire seule lorsque ce téléphone est hors de portée. Tant que le téléphone est joignable, la montre passe toujours par lui. Désactivez l\'option pour conserver la clé uniquement sur ce téléphone (la montre ne pourra alors pas dicter sans lui).</string>
+    <string name="dictate__wear_standalone_summary">Envoyez votre clé API à la montre pour qu\'elle puisse dicter sans le téléphone.</string>
     <string name="dictate__wear_standalone_title">Synchroniser la clé avec la montre</string>
     <string name="emoji__search__hint">Rechercher un emoji</string>
     <string name="emoji__search__no_results">Aucun emoji correspondant</string>
@@ -1300,4 +1300,8 @@
     <string name="dictate__providers_single_call_summary">Un seul modèle compatible audio transcrit et met en forme en une seule requête.</string>
     <string name="dictate__providers_single_call_pick_audio">Choisissez un modèle compatible audio (marqué 🎤 dans la liste des modèles).</string>
     <string name="dictate__providers_rewording_single_call_note">Non utilisé actuellement — votre fournisseur de transcription effectue la reformulation dans son appel unique.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">Options pour dicter depuis une montre associée</string>
+    <string name="dictate__wear_auto_rewording_title">Reformuler automatiquement les dictées de la montre</string>
+    <string name="dictate__wear_auto_rewording_summary">Reformulez les dictées de la montre, comme sur le téléphone.</string>
 </resources>

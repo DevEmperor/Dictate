@@ -1427,7 +1427,7 @@
     <string name="dictate__mappings_title">Vlastní pravidla</string>
     <string name="dictate__mappings_wholeword_summary">Nahradit pouze samostatná slova, nikoli shody uvnitř delších slov.</string>
     <string name="dictate__mappings_wholeword_title">Pouze celá slova</string>
-    <string name="dictate__wear_standalone_summary">Když je zapnuto, váš API klíč se synchronizuje se spárovanými hodinkami Wear OS, aby mohly přepisovat samostatně, když je tento telefon mimo dosah. Dokud je telefon dostupný, hodinky se k němu nadále připojují. Vypněte, aby klíč zůstal výhradně v tomto telefonu (hodinky pak bez něj nemohou diktovat).</string>
+    <string name="dictate__wear_standalone_summary">Odešlete svůj API klíč do hodinek, aby mohly diktovat i bez telefonu poblíž.</string>
     <string name="dictate__wear_standalone_title">Synchronizovat klíč do hodinek</string>
     <string name="emoji__search__hint">Hledat emoji</string>
     <string name="emoji__search__no_results">Žádné odpovídající emoji</string>
@@ -1441,4 +1441,8 @@
     <string name="dictate__providers_single_call_summary">Jeden model s podporou zvuku přepíše a zformátuje text v jediném požadavku.</string>
     <string name="dictate__providers_single_call_pick_audio">Vyberte model s podporou zvuku (označený 🎤 v seznamu modelů).</string>
     <string name="dictate__providers_rewording_single_call_note">Momentálně se nepoužívá — váš poskytovatel přepisu provádí přeformulování ve svém jediném požadavku.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">Možnosti diktování ze spárovaných hodinek</string>
+    <string name="dictate__wear_auto_rewording_title">Automaticky přeformulovat diktování z hodinek</string>
+    <string name="dictate__wear_auto_rewording_summary">Přeformulujte diktování z hodinek, jako v telefonu.</string>
 </resources>

@@ -1416,7 +1416,7 @@
     <string name="dictate__mappings_title">Свои замены</string>
     <string name="dictate__mappings_wholeword_summary">Заменять только отдельные слова, а не совпадения внутри более длинных слов.</string>
     <string name="dictate__mappings_wholeword_title">Только слово целиком</string>
-    <string name="dictate__wear_standalone_summary">Когда включено, ваш ключ API синхронизируется со сопряжёнными часами Wear OS, чтобы они могли расшифровывать самостоятельно, когда телефон вне зоны действия. Пока телефон доступен, часы по-прежнему работают через него. Отключите, чтобы хранить ключ строго на этом телефоне (тогда часы не смогут диктовать без него).</string>
+    <string name="dictate__wear_standalone_summary">Отправьте свой ключ API на часы, чтобы диктовать без телефона рядом.</string>
     <string name="dictate__wear_standalone_title">Синхронизировать ключ с часами</string>
     <string name="emoji__search__hint">Поиск эмодзи</string>
     <string name="emoji__search__no_results">Нет подходящих эмодзи</string>
@@ -1430,4 +1430,8 @@
     <string name="dictate__providers_single_call_summary">Одна модель с поддержкой аудио расшифровывает и форматирует за один запрос.</string>
     <string name="dictate__providers_single_call_pick_audio">Выберите модель с поддержкой аудио (отмечена 🎤 в списке моделей).</string>
     <string name="dictate__providers_rewording_single_call_note">Сейчас не используется — ваш провайдер транскрипции выполняет переформулирование в своём едином запросе.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">Параметры диктовки с сопряжённых часов</string>
+    <string name="dictate__wear_auto_rewording_title">Авто-переформулирование диктовок с часов</string>
+    <string name="dictate__wear_auto_rewording_summary">Переформулируйте диктовки с часов, как на телефоне.</string>
 </resources>

@@ -9,7 +9,6 @@ package dev.patrickgold.florisboard.dictate.wear
 import android.util.Log
 import com.google.android.gms.wearable.ChannelClient
 import com.google.android.gms.wearable.MessageEvent
-import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
@@ -47,11 +46,18 @@ class DictateWearService : WearableListenerService() {
 
     override fun onMessageReceived(event: MessageEvent) {
         when (event.path) {
-            DictateWearProtocol.PATH_SYNC_REQUEST -> publishSettings()
+            DictateWearProtocol.PATH_SYNC_REQUEST -> scope.launch { publishSettings() }
             DictateWearProtocol.PATH_SET_STANDALONE -> {
                 val enabled = event.data.firstOrNull() == 1.toByte()
                 scope.launch {
                     prefs.dictate.wearStandaloneEnabled.set(enabled)
+                    publishSettings()
+                }
+            }
+            DictateWearProtocol.PATH_SET_AUTO_REWORDING -> {
+                val enabled = event.data.firstOrNull() == 1.toByte()
+                scope.launch {
+                    prefs.dictate.wearAutoRewordingEnabled.set(enabled)
                     publishSettings()
                 }
             }
@@ -94,16 +100,8 @@ class DictateWearService : WearableListenerService() {
     }
 
     /** Serialize the active transcription settings and put them on the Data Layer for the watch. */
-    private fun publishSettings() {
-        val settings = PhoneWearSettingsResolver.resolve(prefs)
-        val request = PutDataMapRequest.create(DictateWearProtocol.PATH_SETTINGS).run {
-            dataMap.putString(DictateWearProtocol.KEY_SETTINGS_JSON, settings.encode())
-            // Vary a field every push so an identical settings payload still produces a DATA_CHANGED
-            // event on the watch when it explicitly re-requests a sync.
-            dataMap.putLong("published_at", System.currentTimeMillis())
-            asPutDataRequest().setUrgent()
-        }
-        Wearable.getDataClient(this).putDataItem(request)
+    private suspend fun publishSettings() {
+        DictateWearPublisher.publish(applicationContext)
     }
 
     private companion object {

@@ -1267,7 +1267,7 @@
     <string name="dictate__mappings_title">تعيينات مخصّصة</string>
     <string name="dictate__mappings_wholeword_summary">الاستبدال فقط للكلمات المستقلة، وليس للمطابقات داخل كلمات أطول.</string>
     <string name="dictate__mappings_wholeword_title">الكلمات الكاملة فقط</string>
-    <string name="dictate__wear_standalone_summary">عند التفعيل، تتم مزامنة مفتاح API مع ساعة Wear OS مقترنة لتتمكن من النسخ بنفسها عندما يكون هذا الهاتف خارج النطاق. وطالما كان الهاتف متاحًا، تظل الساعة تعمل من خلاله. أوقف التفعيل للإبقاء على المفتاح في هذا الهاتف فقط (عندئذٍ لا يمكن للساعة الإملاء بدونه).</string>
+    <string name="dictate__wear_standalone_summary">أرسل مفتاح API إلى الساعة لتتمكن من الإملاء دون وجود الهاتف قريبًا.</string>
     <string name="dictate__wear_standalone_title">مزامنة المفتاح مع الساعة</string>
     <string name="emoji__search__hint">البحث عن رمز تعبيري</string>
     <string name="emoji__search__no_results">لا توجد رموز تعبيرية مطابقة</string>
@@ -1281,4 +1281,8 @@
     <string name="dictate__providers_single_call_summary">نموذج واحد يدعم الصوت ينسخ وينسّق في طلب واحد.</string>
     <string name="dictate__providers_single_call_pick_audio">اختر نموذجًا يدعم الصوت (المميَّز بـ 🎤 في قائمة النماذج).</string>
     <string name="dictate__providers_rewording_single_call_note">غير مُستخدَم حاليًا — مزوّد النسخ لديك يقوم بإعادة الصياغة ضمن استدعائه الواحد.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">خيارات الإملاء من ساعة مقترنة</string>
+    <string name="dictate__wear_auto_rewording_title">إعادة صياغة إملاءات الساعة تلقائيًا</string>
+    <string name="dictate__wear_auto_rewording_summary">أعد صياغة الإملاءات من الساعة، كما في الهاتف.</string>
 </resources>

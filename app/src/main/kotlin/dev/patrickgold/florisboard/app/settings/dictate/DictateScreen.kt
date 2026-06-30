@@ -18,6 +18,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Adjust
+import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Bolt
@@ -204,6 +205,12 @@ fun DictateScreen() = FlorisScreen {
                 } else {
                     null
                 },
+            )
+            Preference(
+                icon = Icons.Default.Watch,
+                title = stringRes(R.string.dictate__wear_title),
+                summary = stringRes(R.string.dictate__wear_summary),
+                onClick = { navController.navigate(Routes.Settings.DictateWear) },
             )
             SwitchPreference(
                 prefs.dictate.audioFocus,

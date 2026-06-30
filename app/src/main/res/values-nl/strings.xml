@@ -1312,7 +1312,7 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="dictate__mappings_title">Aangepaste toewijzingen</string>
     <string name="dictate__mappings_wholeword_summary">Alleen losstaande woorden vervangen, niet binnen langere woorden.</string>
     <string name="dictate__mappings_wholeword_title">Alleen heel woord</string>
-    <string name="dictate__wear_standalone_summary">Wanneer ingeschakeld wordt je API-sleutel gesynchroniseerd met een gekoppeld Wear OS-horloge, zodat het zelf kan transcriberen wanneer deze telefoon buiten bereik is. Zolang de telefoon bereikbaar is, werkt het horloge er nog steeds doorheen. Schakel uit om de sleutel strikt op deze telefoon te houden (het horloge kan dan niet zonder dicteren).</string>
+    <string name="dictate__wear_standalone_summary">Stuur je API-sleutel naar het horloge zodat het zonder telefoon kan dicteren.</string>
     <string name="dictate__wear_standalone_title">Sleutel synchroniseren met horloge</string>
     <string name="emoji__search__hint">Emoji zoeken</string>
     <string name="emoji__search__no_results">Geen overeenkomende emoji</string>
@@ -1326,4 +1326,8 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="dictate__providers_single_call_summary">Eén audiogeschikt model transcribeert en formatteert in één verzoek.</string>
     <string name="dictate__providers_single_call_pick_audio">Kies een model met audio-invoer (gemarkeerd met 🎤 in de modellijst).</string>
     <string name="dictate__providers_rewording_single_call_note">Wordt nu niet gebruikt — je transcriptieprovider doet de herformulering in zijn enkele aanroep.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">Opties voor dicteren vanaf een gekoppeld horloge</string>
+    <string name="dictate__wear_auto_rewording_title">Horlogedictaten automatisch herformuleren</string>
+    <string name="dictate__wear_auto_rewording_summary">Herformuleer dictaten vanaf het horloge, net als op de telefoon.</string>
 </resources>

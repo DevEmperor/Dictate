@@ -1286,7 +1286,7 @@
     <string name="dictate__mappings_title">Assignacions personalitzades</string>
     <string name="dictate__mappings_wholeword_summary">Substitueix només paraules independents, no coincidències dins de paraules més llargues.</string>
     <string name="dictate__mappings_wholeword_title">Només paraula sencera</string>
-    <string name="dictate__wear_standalone_summary">Quan està activat, la teva clau API se sincronitza amb un rellotge Wear OS aparellat perquè pugui transcriure per si sol quan aquest telèfon estigui fora de l\'abast. Mentre el telèfon sigui accessible, el rellotge continua connectant-s\'hi. Desactiva-ho per mantenir la clau estrictament en aquest telèfon (llavors el rellotge no pot dictar sense ella).</string>
+    <string name="dictate__wear_standalone_summary">Envia la teva clau API al rellotge perquè pugui dictar sense el telèfon a prop.</string>
     <string name="dictate__wear_standalone_title">Sincronitza la clau amb el rellotge</string>
     <string name="emoji__search__hint">Cerca emojis</string>
     <string name="emoji__search__no_results">No hi ha cap emoji coincident</string>
@@ -1300,4 +1300,8 @@
     <string name="dictate__providers_single_call_summary">Un sol model amb capacitat d\'àudio transcriu i dóna format en una única sol·licitud.</string>
     <string name="dictate__providers_single_call_pick_audio">Tria un model amb capacitat d\'àudio (marcat amb 🎤 a la llista de models).</string>
     <string name="dictate__providers_rewording_single_call_note">Ara mateix no s\'utilitza — el teu proveïdor de transcripció fa la reformulació en la seva crida única.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">Opcions per dictar des d\'un rellotge vinculat</string>
+    <string name="dictate__wear_auto_rewording_title">Reformula automàticament els dictats del rellotge</string>
+    <string name="dictate__wear_auto_rewording_summary">Reformula els dictats fets des del rellotge, com al telèfon.</string>
 </resources>

@@ -50,6 +50,22 @@ object WearSyncClient {
             .await()
     }
 
+    /** Toggle "sync key to watch" on the phone from the watch (#106). No-op if no phone is reachable. */
+    suspend fun setStandalone(context: Context, enabled: Boolean) {
+        val nodeId = findPhoneNodeId(context) ?: return
+        Wearable.getMessageClient(context)
+            .sendMessage(nodeId, DictateWearProtocol.PATH_SET_STANDALONE, byteArrayOf(if (enabled) 1 else 0))
+            .await()
+    }
+
+    /** Toggle auto-rewording of watch dictations on the phone from the watch (#130). */
+    suspend fun setAutoRewording(context: Context, enabled: Boolean) {
+        val nodeId = findPhoneNodeId(context) ?: return
+        Wearable.getMessageClient(context)
+            .sendMessage(nodeId, DictateWearProtocol.PATH_SET_AUTO_REWORDING, byteArrayOf(if (enabled) 1 else 0))
+            .await()
+    }
+
     /**
      * Read the latest settings snapshot the phone published to the Data Layer. Unlike [requestSettingsSync]
      * this needs no live round-trip — the Data Layer replicates the phone's [DictateWearProtocol.PATH_SETTINGS]

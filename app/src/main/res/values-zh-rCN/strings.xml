@@ -1407,7 +1407,7 @@
     <string name="dictate__mappings_title">自定义映射</string>
     <string name="dictate__mappings_wholeword_summary">仅替换独立的字词，不替换较长词语中的匹配部分。</string>
     <string name="dictate__mappings_wholeword_title">仅整词匹配</string>
-    <string name="dictate__wear_standalone_summary">开启后，你的 API 密钥会同步到已配对的 Wear OS 手表，以便在手机不在范围内时手表可独立转录。手机可连接时，手表仍会通过手机进行转录。关闭后密钥将仅保留在本手机上（届时手表无法独立听写）。</string>
+    <string name="dictate__wear_standalone_summary">将 API 密钥发送到手表，即使手机不在附近也能听写。</string>
     <string name="dictate__wear_standalone_title">将密钥同步到手表</string>
     <string name="emoji__search__hint">搜索表情符号</string>
     <string name="emoji__search__no_results">没有匹配的表情符号</string>
@@ -1420,4 +1420,8 @@
     <string name="dictate__providers_single_call_summary">一个支持音频的模型在一次请求中完成转录和格式化。</string>
     <string name="dictate__providers_single_call_pick_audio">选择一个支持音频输入的模型（在模型列表中以 🎤 标记）。</string>
     <string name="dictate__providers_rewording_single_call_note">当前未使用 — 你的转录服务商在其单次调用中完成改写。</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">从已配对手表听写的选项</string>
+    <string name="dictate__wear_auto_rewording_title">自动改写手表听写</string>
+    <string name="dictate__wear_auto_rewording_summary">像在手机上一样改写手表听写。</string>
 </resources>

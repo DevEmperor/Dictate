@@ -1284,7 +1284,7 @@
     <string name="dictate__mappings_title">Eigene Zuordnungen</string>
     <string name="dictate__mappings_wholeword_summary">Nur eigenständige Wörter ersetzen, keine Treffer innerhalb längerer Wörter.</string>
     <string name="dictate__mappings_wholeword_title">Nur ganzes Wort</string>
-    <string name="dictate__wear_standalone_summary">Wenn aktiviert, wird dein API-Schlüssel mit einer gekoppelten Wear OS Uhr synchronisiert, sodass sie selbst transkribieren kann, wenn dieses Telefon außer Reichweite ist. Solange das Telefon erreichbar ist, nutzt die Uhr weiterhin die Verbindung darüber. Deaktiviere die Option, um den Schlüssel ausschließlich auf diesem Telefon zu behalten (die Uhr kann dann ohne ihn nicht diktieren).</string>
+    <string name="dictate__wear_standalone_summary">Sende deinen API-Key an die Uhr, damit sie auch ohne Handy in der Nähe diktieren kann.</string>
     <string name="dictate__wear_standalone_title">Schlüssel mit Uhr synchronisieren</string>
     <string name="emoji__search__hint">Emoji suchen</string>
     <string name="emoji__search__no_results">Keine passenden Emojis</string>
@@ -1298,4 +1298,8 @@
     <string name="dictate__providers_single_call_summary">Ein audiofähiges Modell transkribiert und formatiert in einer einzigen Anfrage.</string>
     <string name="dictate__providers_single_call_pick_audio">Wähle ein audiofähiges Modell (mit 🎤 in der Modellliste markiert).</string>
     <string name="dictate__providers_rewording_single_call_note">Wird gerade nicht genutzt – dein Transkriptions-Anbieter übernimmt die Umformulierung in seinem Single-Call.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">Optionen fürs Diktieren von einer gekoppelten Uhr</string>
+    <string name="dictate__wear_auto_rewording_title">Watch-Diktate automatisch umformulieren</string>
+    <string name="dictate__wear_auto_rewording_summary">Watch-Diktate umformulieren, wie am Handy.</string>
 </resources>

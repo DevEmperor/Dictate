@@ -1342,7 +1342,7 @@
     <string name="dictate__mappings_title">カスタムマッピング</string>
     <string name="dictate__mappings_wholeword_summary">独立した単語のみを置き換え、長い単語の一部に一致するものは置き換えません。</string>
     <string name="dictate__mappings_wholeword_title">単語全体のみ</string>
-    <string name="dictate__wear_standalone_summary">オンにすると、API キーがペア設定された Wear OS の時計と同期され、この携帯電話が圏外のときも時計単体で文字起こしできます。携帯電話に接続できる間は、時計は引き続き携帯電話を経由します。オフにするとキーはこの携帯電話のみに保持されます（その場合、時計はキーなしでは音声入力できません）。</string>
+    <string name="dictate__wear_standalone_summary">API キーを時計に送れば、近くにスマートフォンがなくても音声入力できます。</string>
     <string name="dictate__wear_standalone_title">キーを時計に同期</string>
     <string name="emoji__search__hint">絵文字を検索</string>
     <string name="emoji__search__no_results">一致する絵文字がありません</string>
@@ -1356,4 +1356,8 @@
     <string name="dictate__providers_single_call_summary">音声対応の 1 つのモデルが、1 回のリクエストで文字起こしと整形を行います。</string>
     <string name="dictate__providers_single_call_pick_audio">音声入力に対応したモデルを選択してください（モデル一覧で 🎤 が付いたもの）。</string>
     <string name="dictate__providers_rewording_single_call_note">現在は使用されていません。文字起こしプロバイダーがシングルコール内で書き換えを行います。</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">ペアリングした時計から音声入力するためのオプション</string>
+    <string name="dictate__wear_auto_rewording_title">時計の音声入力を自動で書き換える</string>
+    <string name="dictate__wear_auto_rewording_summary">時計からの音声入力を、スマートフォンと同じように書き換えます。</string>
 </resources>

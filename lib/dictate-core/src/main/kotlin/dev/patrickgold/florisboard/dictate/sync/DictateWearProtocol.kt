@@ -38,6 +38,12 @@ object DictateWearProtocol {
      */
     const val PATH_SET_STANDALONE = "/dictate/set_standalone"
 
+    /**
+     * MessageClient path: the watch toggles auto-rewording on/off (#130). Payload is a single byte
+     * (1 = on, 0 = off). The phone stores it and re-publishes [PATH_SETTINGS].
+     */
+    const val PATH_SET_AUTO_REWORDING = "/dictate/set_auto_rewording"
+
     /** CapabilityClient capability the phone app advertises so the watch can detect a usable peer. */
     const val CAPABILITY_PHONE_APP = "dictate_phone_transcriber"
 
@@ -72,15 +78,43 @@ data class DictateSyncedSettings(
     val model: String = "",
     /** Populated unless the phone master toggle forbids syncing the key; empty -> watch can only tether. */
     val apiKey: String = "",
+    /** Mirrors the phone's "sync key to watch" toggle so the watch UI can show/flip the same state. */
+    val keySyncEnabled: Boolean = true,
     /** ISO language code, or null to let the provider auto-detect. */
     val language: String? = null,
+    /** Readable language name (e.g. "German") for the rewording auto-formatting hint; computed on phone. */
+    val languageName: String? = null,
     /** Style/punctuation prompt biasing recognition (already includes the custom-words glossary), or null. */
     val stylePrompt: String? = null,
     /** Phone accent color as a packed ARGB int, so the watch UI themes itself like the phone. */
     val accentColorArgb: Int = DEFAULT_ACCENT_ARGB,
+    /**
+     * Auto-rewording (issue #130): when true, watch dictations are auto-reworded. Settable on the watch
+     * too; mirrored back to the phone. The fields below carry everything the watch needs to run the
+     * rewording chain itself in the standalone path ([DictateRewording]); for tethered dictations the
+     * phone rewords before sending the transcript back, so the watch ignores them.
+     */
+    val autoRewordingEnabled: Boolean = true,
+    /** Phone master "rewording enabled" toggle — when false nothing is reworded regardless of the above. */
+    val rewordingEnabled: Boolean = false,
+    /** Phone "auto-formatting" toggle (spoken cues → Markdown), the first rewording step. */
+    val autoFormattingEnabled: Boolean = false,
+    /** Rewording chat model + endpoint/key/api (may differ from transcription); empty → no standalone reword. */
+    val chatModel: String = "",
+    val rewordingBaseUrl: String = "",
+    val rewordingApiKey: String = "",
+    val rewordingApi: TranscriptionApi = TranscriptionApi.OPENAI_MULTIPART,
+    /** Rewording system prompt (be-precise / custom), appended to each auto-apply prompt. */
+    val systemPrompt: String? = null,
+    /** The user's auto-apply prompts, in order, for the standalone rewording chain. */
+    val autoApplyPrompts: List<SyncedPrompt> = emptyList(),
 ) {
     /** True when the watch can transcribe on its own (a key is present), i.e. works without the phone. */
     val canStandalone: Boolean get() = apiKey.isNotBlank() && baseUrl.isNotBlank()
+
+    /** True when the watch has everything it needs to run rewording itself (standalone). */
+    val canRewordStandalone: Boolean
+        get() = rewordingApiKey.isNotBlank() && rewordingBaseUrl.isNotBlank() && chatModel.isNotBlank()
 
     fun encode(): String = DictateWearProtocol.json.encodeToString(this)
 
@@ -92,3 +126,10 @@ data class DictateSyncedSettings(
             raw?.let { runCatching { DictateWearProtocol.json.decodeFromString<DictateSyncedSettings>(it) }.getOrNull() }
     }
 }
+
+/** One auto-apply rewording prompt, synced to the watch for the standalone rewording chain (#130). */
+@Serializable
+data class SyncedPrompt(
+    val instruction: String,
+    val requiresSelection: Boolean = false,
+)

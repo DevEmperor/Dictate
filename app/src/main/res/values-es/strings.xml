@@ -1394,7 +1394,7 @@
     <string name="dictate__mappings_title">Asignaciones personalizadas</string>
     <string name="dictate__mappings_wholeword_summary">Reemplazar solo palabras independientes, no coincidencias dentro de palabras más largas.</string>
     <string name="dictate__mappings_wholeword_title">Solo palabra completa</string>
-    <string name="dictate__wear_standalone_summary">Cuando está activado, tu clave de API se sincroniza con un reloj Wear OS emparejado para que pueda transcribir por sí mismo cuando este teléfono esté fuera de alcance. Mientras el teléfono esté disponible, el reloj sigue conectándose a través de él. Desactívalo para mantener la clave estrictamente en este teléfono (entonces el reloj no podrá dictar sin él).</string>
+    <string name="dictate__wear_standalone_summary">Envía tu clave API al reloj para que pueda dictar sin el teléfono cerca.</string>
     <string name="dictate__wear_standalone_title">Sincronizar clave con el reloj</string>
     <string name="emoji__search__hint">Buscar emoji</string>
     <string name="emoji__search__no_results">No hay emojis coincidentes</string>
@@ -1408,4 +1408,8 @@
     <string name="dictate__providers_single_call_summary">Un solo modelo con audio transcribe y da formato en una única solicitud.</string>
     <string name="dictate__providers_single_call_pick_audio">Elige un modelo con capacidad de audio (marcado con 🎤 en la lista de modelos).</string>
     <string name="dictate__providers_rewording_single_call_note">Ahora mismo no se usa: tu proveedor de transcripción hace la reformulación en su llamada única.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">Opciones para dictar desde un reloj vinculado</string>
+    <string name="dictate__wear_auto_rewording_title">Reformular automáticamente los dictados del reloj</string>
+    <string name="dictate__wear_auto_rewording_summary">Reformula los dictados hechos desde el reloj, como en el teléfono.</string>
 </resources>

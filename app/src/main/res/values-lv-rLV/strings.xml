@@ -1356,7 +1356,7 @@
     <string name="dictate__mappings_title">Pielāgotās kārtulas</string>
     <string name="dictate__mappings_wholeword_summary">Aizstāt tikai atsevišķus vārdus, nevis sakritības garāku vārdu iekšienē.</string>
     <string name="dictate__mappings_wholeword_title">Tikai vesels vārds</string>
-    <string name="dictate__wear_standalone_summary">Kad ieslēgts, jūsu API atslēga tiek sinhronizēta ar pārī savienotu Wear OS pulksteni, lai tas varētu transkribēt patstāvīgi, kad šis tālrunis ir ārpus uztveršanas zonas. Kamēr tālrunis ir sasniedzams, pulkstenis joprojām darbojas caur to. Izslēdziet, lai atslēga paliktu tikai šajā tālrunī (tad pulkstenis bez tā nevar diktēt).</string>
+    <string name="dictate__wear_standalone_summary">Nosūtiet API atslēgu pulkstenim, lai tas var diktēt bez tālruņa tuvumā.</string>
     <string name="dictate__wear_standalone_title">Sinhronizēt atslēgu ar pulksteni</string>
     <string name="emoji__search__hint">Meklēt emocijzīmes</string>
     <string name="emoji__search__no_results">Nav atbilstošu emocijzīmju</string>
@@ -1370,4 +1370,8 @@
     <string name="dictate__providers_single_call_summary">Viens audio modelis transkribē un formatē vienā pieprasījumā.</string>
     <string name="dictate__providers_single_call_pick_audio">Izvēlieties audio ievadi atbalstošu modeli (modeļu sarakstā atzīmēts ar 🎤).</string>
     <string name="dictate__providers_rewording_single_call_note">Pašlaik netiek izmantots — jūsu transkripcijas pakalpojums veic pārformulēšanu savā vienreizējā pieprasījumā.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">Diktēšanas opcijas no savienota pulksteņa</string>
+    <string name="dictate__wear_auto_rewording_title">Automātiski pārformulēt pulksteņa diktātus</string>
+    <string name="dictate__wear_auto_rewording_summary">Pārformulējiet pulksteņa diktātus, tāpat kā tālrunī.</string>
 </resources>

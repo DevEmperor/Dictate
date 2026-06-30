@@ -35,7 +35,9 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.ListHeader
 import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.Switch
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.ToggleChip
 import dev.patrickgold.florisboard.dictate.sync.DictateSyncedSettings
 import kotlinx.coroutines.launch
 import net.devemperor.dictate.wear.sync.WearSettingsStore
@@ -86,6 +88,16 @@ class WearSettingsActivity : ComponentActivity() {
                             }.getOrDefault(false)
                         }
                     },
+                    onSetStandalone = { enabled ->
+                        lifecycleScope.launch {
+                            runCatching { WearSyncClient.setStandalone(this@WearSettingsActivity, enabled) }
+                        }
+                    },
+                    onSetAutoRewording = { enabled ->
+                        lifecycleScope.launch {
+                            runCatching { WearSyncClient.setAutoRewording(this@WearSettingsActivity, enabled) }
+                        }
+                    },
                 )
             }
         }
@@ -125,6 +137,8 @@ private fun SettingsScreen(
     synced: DictateSyncedSettings,
     onRequestMic: () -> Unit,
     onResync: () -> Unit,
+    onSetStandalone: (Boolean) -> Unit,
+    onSetAutoRewording: (Boolean) -> Unit,
 ) {
     val listState = rememberScalingLazyListState()
 
@@ -147,6 +161,32 @@ private fun SettingsScreen(
                 colors = if (micGranted) ChipDefaults.secondaryChipColors() else ChipDefaults.primaryChipColors(),
                 label = { Text(if (micGranted) "Microphone ✓" else "Grant microphone") },
                 secondaryLabel = if (micGranted) null else { { Text("Required to dictate") } },
+            )
+        }
+
+        // --- Sync key to watch (mirrors the phone toggle; flipping it here updates the phone) ---
+        item {
+            var standalone by remember(synced.keySyncEnabled) { mutableStateOf(synced.keySyncEnabled) }
+            ToggleChip(
+                checked = standalone,
+                onCheckedChange = { standalone = it; onSetStandalone(it) },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text("Key on watch") },
+                secondaryLabel = { Text(if (standalone) "Can dictate solo" else "Tether-only") },
+                toggleControl = { Switch(checked = standalone) },
+            )
+        }
+
+        // --- Auto-reword watch dictations (mirrors the phone toggle) ---
+        item {
+            var reword by remember(synced.autoRewordingEnabled) { mutableStateOf(synced.autoRewordingEnabled) }
+            ToggleChip(
+                checked = reword,
+                onCheckedChange = { reword = it; onSetAutoRewording(it) },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text("Auto-reword") },
+                secondaryLabel = { Text(if (reword) "Format watch dictations" else "Raw text") },
+                toggleControl = { Switch(checked = reword) },
             )
         }
 

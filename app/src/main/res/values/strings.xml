@@ -1367,8 +1367,12 @@
     <string name="dictate__providers_test_failed" comment="Generic fallback shown when a connection test fails without a specific message">Connection failed</string>
     <string name="dictate__providers_network_group" comment="Group title for network-level provider settings (proxy)">Network</string>
 
+    <string name="dictate__wear_title" comment="Title of the Wear OS companion settings screen">Wear OS</string>
+    <string name="dictate__wear_summary" comment="Summary of the Wear OS settings entry on the main Dictate screen">Options for dictating from a paired watch</string>
+    <string name="dictate__wear_auto_rewording_title" comment="Title of the toggle that auto-rewords watch dictations">Auto-reword watch dictations</string>
+    <string name="dictate__wear_auto_rewording_summary" comment="Short summary for the auto-rewording-on-watch toggle">Reword dictations made from the watch, like on the phone.</string>
     <string name="dictate__wear_standalone_title" comment="Title of the toggle that lets a paired Wear OS watch transcribe on its own">Sync key to watch</string>
-    <string name="dictate__wear_standalone_summary" comment="Summary explaining the Wear OS standalone transcription toggle">When on, your API key is synced to a paired Wear OS watch so it can transcribe by itself when this phone is out of range. While the phone is reachable the watch still tethers through it. Turn off to keep the key strictly on this phone (the watch then can\'t dictate without it).</string>
+    <string name="dictate__wear_standalone_summary" comment="Short summary for the Wear OS standalone transcription toggle">Send your API key to the watch so it can dictate without the phone nearby.</string>
 
     <!-- Dictate network proxy -->
     <string name="dictate__proxy_title" comment="Title of the proxy settings screen / row">Proxy</string>

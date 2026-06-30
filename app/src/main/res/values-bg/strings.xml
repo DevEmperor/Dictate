@@ -1412,7 +1412,7 @@
     <string name="dictate__mappings_title">Персонализирани правила</string>
     <string name="dictate__mappings_wholeword_summary">Замяна само на самостоятелни думи, не на съвпадения вътре в по-дълги думи.</string>
     <string name="dictate__mappings_wholeword_title">Само цяла дума</string>
-    <string name="dictate__wear_standalone_summary">Когато е включено, вашият API ключ се синхронизира със сдвоен Wear OS часовник, за да може той сам да транскрибира, когато този телефон е извън обхват. Докато телефонът е достъпен, часовникът пак работи чрез него. Изключете, за да остане ключът само на този телефон (тогава часовникът не може да диктува без него).</string>
+    <string name="dictate__wear_standalone_summary">Изпратете API ключа към часовника, за да диктува без телефона наблизо.</string>
     <string name="dictate__wear_standalone_title">Синхронизиране на ключа с часовника</string>
     <string name="emoji__search__hint">Търсене на емоджи</string>
     <string name="emoji__search__no_results">Няма съвпадащи емоджи</string>
@@ -1426,4 +1426,8 @@
     <string name="dictate__providers_single_call_summary">Един модел с поддръжка на аудио транскрибира и форматира с една заявка.</string>
     <string name="dictate__providers_single_call_pick_audio">Изберете модел с поддръжка на аудио (отбелязан с 🎤 в списъка с модели).</string>
     <string name="dictate__providers_rewording_single_call_note">В момента не се използва — вашият доставчик за транскрипция извършва преформулирането в своята единична заявка.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">Опции за диктуване от сдвоен часовник</string>
+    <string name="dictate__wear_auto_rewording_title">Авт. преформулиране на диктовки от часовника</string>
+    <string name="dictate__wear_auto_rewording_summary">Преформулирайте диктовките от часовника, както на телефона.</string>
 </resources>

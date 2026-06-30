@@ -1365,7 +1365,7 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="dictate__mappings_title">Pemetaan khusus</string>
     <string name="dictate__mappings_wholeword_summary">Hanya ganti kata yang berdiri sendiri, bukan kecocokan di dalam kata yang lebih panjang.</string>
     <string name="dictate__mappings_wholeword_title">Hanya seluruh kata</string>
-    <string name="dictate__wear_standalone_summary">Saat aktif, kunci API Anda disinkronkan ke jam Wear OS yang dipasangkan sehingga dapat mentranskripsi sendiri ketika ponsel ini di luar jangkauan. Selama ponsel terjangkau, jam tetap terhubung melaluinya. Nonaktifkan untuk menjaga kunci tetap hanya di ponsel ini (jam kemudian tidak dapat mendikte tanpanya).</string>
+    <string name="dictate__wear_standalone_summary">Kirim kunci API ke jam tangan agar bisa mendikte tanpa ponsel di dekatnya.</string>
     <string name="dictate__wear_standalone_title">Sinkronkan kunci ke jam</string>
     <string name="emoji__search__hint">Cari emoji</string>
     <string name="emoji__search__no_results">Tidak ada emoji yang cocok</string>
@@ -1379,4 +1379,8 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="dictate__providers_single_call_summary">Satu model berkemampuan audio mentranskripsi dan memformat dalam satu permintaan.</string>
     <string name="dictate__providers_single_call_pick_audio">Pilih model yang mendukung audio (ditandai 🎤 di daftar model).</string>
     <string name="dictate__providers_rewording_single_call_note">Sedang tidak digunakan — penyedia transkripsi Anda melakukan penyusunan ulang dalam panggilan tunggalnya.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">Opsi untuk mendikte dari jam tangan yang dipasangkan</string>
+    <string name="dictate__wear_auto_rewording_title">Susun ulang otomatis dikte dari jam tangan</string>
+    <string name="dictate__wear_auto_rewording_summary">Susun ulang dikte dari jam tangan, seperti di ponsel.</string>
 </resources>

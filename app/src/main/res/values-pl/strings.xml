@@ -1428,7 +1428,7 @@
     <string name="dictate__mappings_title">Własne mapowania</string>
     <string name="dictate__mappings_wholeword_summary">Zastępuj tylko samodzielne słowa, a nie dopasowania wewnątrz dłuższych słów.</string>
     <string name="dictate__mappings_wholeword_title">Tylko całe słowo</string>
-    <string name="dictate__wear_standalone_summary">Gdy włączone, Twój klucz API jest synchronizowany ze sparowanym zegarkiem Wear OS, aby mógł sam transkrybować, gdy ten telefon jest poza zasięgiem. Gdy telefon jest dostępny, zegarek nadal łączy się przez niego. Wyłącz, aby klucz pozostał wyłącznie na tym telefonie (zegarek nie będzie wtedy mógł dyktować bez niego).</string>
+    <string name="dictate__wear_standalone_summary">Wyślij swój klucz API do zegarka, aby mógł dyktować bez telefonu w pobliżu.</string>
     <string name="dictate__wear_standalone_title">Synchronizuj klucz z zegarkiem</string>
     <string name="emoji__search__hint">Szukaj emoji</string>
     <string name="emoji__search__no_results">Brak pasujących emoji</string>
@@ -1442,4 +1442,8 @@
     <string name="dictate__providers_single_call_summary">Jeden model obsługujący dźwięk transkrybuje i formatuje w jednym żądaniu.</string>
     <string name="dictate__providers_single_call_pick_audio">Wybierz model obsługujący dźwięk (oznaczony 🎤 na liście modeli).</string>
     <string name="dictate__providers_rewording_single_call_note">Obecnie nieużywany — Twój dostawca transkrypcji wykonuje przeredagowanie w swoim pojedynczym wywołaniu.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">Opcje dyktowania ze sparowanego zegarka</string>
+    <string name="dictate__wear_auto_rewording_title">Automatyczne przeredagowanie dyktowań z zegarka</string>
+    <string name="dictate__wear_auto_rewording_summary">Przeredaguj dyktowania z zegarka, tak jak w telefonie.</string>
 </resources>

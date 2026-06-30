@@ -1390,7 +1390,7 @@
     <string name="dictate__mappings_title">Özel eşlemeler</string>
     <string name="dictate__mappings_wholeword_summary">Yalnızca tek başına duran kelimeleri değiştir, daha uzun kelimelerin içindeki eşleşmeleri değil.</string>
     <string name="dictate__mappings_wholeword_title">Yalnızca tam kelime</string>
-    <string name="dictate__wear_standalone_summary">Açıkken, API anahtarınız eşleştirilmiş bir Wear OS saatiyle senkronize edilir; böylece bu telefon menzil dışındayken saat kendi başına dikte edebilir. Telefon erişilebilir olduğunda saat yine telefon üzerinden bağlanır. Anahtarı yalnızca bu telefonda tutmak için kapatın (o zaman saat anahtar olmadan dikte edemez).</string>
+    <string name="dictate__wear_standalone_summary">API anahtarını saate gönder; telefon yokken de dikte edebilsin.</string>
     <string name="dictate__wear_standalone_title">Anahtarı saatle senkronize et</string>
     <string name="emoji__search__hint">Emoji ara</string>
     <string name="emoji__search__no_results">Eşleşen emoji yok</string>
@@ -1404,4 +1404,8 @@
     <string name="dictate__providers_single_call_summary">Sesi destekleyen tek bir model, tek bir istekte yazıya döker ve biçimlendirir.</string>
     <string name="dictate__providers_single_call_pick_audio">Ses girişini destekleyen bir model seçin (model listesinde 🎤 ile işaretli).</string>
     <string name="dictate__providers_rewording_single_call_note">Şu anda kullanılmıyor — yazıya dökme sağlayıcınız yeniden ifadeyi tek çağrısında yapıyor.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">Eşleştirilmiş saatten dikte seçenekleri</string>
+    <string name="dictate__wear_auto_rewording_title">Saat diktelerini otomatik yeniden ifade et</string>
+    <string name="dictate__wear_auto_rewording_summary">Saat diktelerini telefondaki gibi yeniden ifade et.</string>
 </resources>

@@ -1410,7 +1410,7 @@
     <string name="dictate__mappings_title">Egyéni hozzárendelések</string>
     <string name="dictate__mappings_wholeword_summary">Csak önálló szavakat cserél, a hosszabb szavakon belüli egyezéseket nem.</string>
     <string name="dictate__mappings_wholeword_title">Csak egész szó</string>
-    <string name="dictate__wear_standalone_summary">Bekapcsolva az API-kulcsod szinkronizálódik egy párosított Wear OS órával, így az önállóan is tud átírni, amikor ez a telefon nincs hatótávon belül. Amíg a telefon elérhető, az óra továbbra is rajta keresztül kapcsolódik. Kapcsold ki, ha a kulcsot kizárólag ezen a telefonon szeretnéd tartani (ekkor az óra nem tud nélküle diktálni).</string>
+    <string name="dictate__wear_standalone_summary">Küldd el az API-kulcsod az órának, hogy telefon nélkül is diktálhasson.</string>
     <string name="dictate__wear_standalone_title">Kulcs szinkronizálása az órára</string>
     <string name="emoji__search__hint">Emoji keresése</string>
     <string name="emoji__search__no_results">Nincs találat az emojikra</string>
@@ -1424,4 +1424,8 @@
     <string name="dictate__providers_single_call_summary">Egyetlen hangkezelő modell egyetlen kérésben átír és formáz.</string>
     <string name="dictate__providers_single_call_pick_audio">Válassz hangbemenetet támogató modellt (a modellek listájában 🎤 jelöli).</string>
     <string name="dictate__providers_rewording_single_call_note">Jelenleg nincs használatban — az átírási szolgáltató az újrafogalmazást az egyetlen hívásában végzi.</string>
+    <string name="dictate__wear_title">Wear OS</string>
+    <string name="dictate__wear_summary">Diktálási beállítások párosított órához</string>
+    <string name="dictate__wear_auto_rewording_title">Óradiktálások automatikus újrafogalmazása</string>
+    <string name="dictate__wear_auto_rewording_summary">Fogalmazd újra az óradiktálásokat, mint a telefonon.</string>
 </resources>

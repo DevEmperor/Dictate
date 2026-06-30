@@ -262,6 +262,14 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             default = true,
         )
 
+        // Wear OS (#106/#130): when on, dictations made from the watch are auto-reworded like on the
+        // phone — tethered dictations are reworded by the phone, standalone ones by the watch itself
+        // (using the synced rewording config + auto-apply prompts). On by default.
+        val wearAutoRewordingEnabled = boolean(
+            key = "dictate__wear_auto_rewording_enabled",
+            default = true,
+        )
+
         // --- Network proxy (roadmap 5.6) ---------------------------------------------------------
         // Optional proxy applied to *every* provider API call (transcription, rewording, model
         // listing, connection test). Disabled by default; built into a ProxyConfig via ProxyConfig.of

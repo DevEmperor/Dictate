@@ -10,6 +10,7 @@ import android.content.Context
 import android.util.Log
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
+import dev.patrickgold.florisboard.dictate.provider.DictateRewording
 import dev.patrickgold.florisboard.dictate.provider.OpenAiCompatibleClient
 import dev.patrickgold.florisboard.dictate.provider.ProviderConfig
 import dev.patrickgold.florisboard.dictate.provider.TranscriptionRequest
@@ -38,7 +39,12 @@ object WearTranscription {
     /** Thrown when no transport is currently usable (no phone reachable and no synced key to go solo). */
     class Unavailable(message: String) : Exception(message)
 
-    suspend fun transcribe(context: Context, audio: File): String {
+    /**
+     * @param onRewording invoked (on a background thread) when the watch is about to **standalone-reword**
+     * the transcript, so the UI can show a "Rewording…" state. Not fired for tethered dictations (the
+     * phone rewords those) or when nothing will be reworded.
+     */
+    suspend fun transcribe(context: Context, audio: File, onRewording: () -> Unit = {}): String {
         val settings = WearSettingsStore.current()
         val phoneNode = WearSyncClient.findPhoneNodeId(context)
         Log.i(TAG, "transcribe: phoneNode=${phoneNode != null}, canStandalone=${settings.canStandalone}, " +
@@ -51,19 +57,19 @@ object WearTranscription {
                 tether(context, phoneNode, audio)
             } catch (e: Exception) {
                 Log.w(TAG, "tether failed (${e.message}); standalone=${settings.canStandalone}", e)
-                if (settings.canStandalone) standalone(settings, audio) else throw e
+                if (settings.canStandalone) standalone(settings, audio, onRewording) else throw e
             }
         }
 
         // No phone: go solo if we can, otherwise tell the user why nothing happened.
-        if (settings.canStandalone) return standalone(settings, audio)
+        if (settings.canStandalone) return standalone(settings, audio, onRewording)
         throw Unavailable("No phone in range and no on-watch key — open Dictate settings to sync.")
     }
 
     private const val TAG = "WearTranscription"
 
-    /** Direct provider call from the watch using the synced config + key. */
-    private suspend fun standalone(settings: DictateSyncedSettings, audio: File): String {
+    /** Direct provider call from the watch using the synced config + key, then standalone rewording. */
+    private suspend fun standalone(settings: DictateSyncedSettings, audio: File, onRewording: () -> Unit): String {
         val client = OpenAiCompatibleClient(
             ProviderConfig(
                 baseUrl = settings.baseUrl,
@@ -71,7 +77,7 @@ object WearTranscription {
                 transcriptionApi = settings.transcriptionApi,
             )
         )
-        return client.transcribe(
+        val transcript = client.transcribe(
             TranscriptionRequest(
                 audioFile = audio,
                 model = settings.model,
@@ -79,6 +85,42 @@ object WearTranscription {
                 prompt = settings.stylePrompt,
             )
         ).text.trim()
+        return maybeReword(settings, transcript, onRewording)
+    }
+
+    /**
+     * Standalone auto-rewording (#130): when the phone is out of range the watch runs the same rewording
+     * chain itself, using the synced rewording config + auto-apply prompts. Best-effort — any failure
+     * keeps the raw transcript. The tethered path needs none of this (the phone already reworded).
+     */
+    private suspend fun maybeReword(
+        settings: DictateSyncedSettings,
+        transcript: String,
+        onRewording: () -> Unit,
+    ): String {
+        if (transcript.isBlank()) return transcript
+        if (!settings.autoRewordingEnabled || !settings.rewordingEnabled) return transcript
+        if (!settings.canRewordStandalone) return transcript
+        onRewording()
+        val client = OpenAiCompatibleClient(
+            ProviderConfig(
+                baseUrl = settings.rewordingBaseUrl,
+                apiKey = settings.rewordingApiKey,
+                transcriptionApi = settings.rewordingApi,
+            )
+        )
+        val prompts = settings.autoApplyPrompts.map {
+            DictateRewording.Prompt(it.instruction, it.requiresSelection)
+        }
+        return DictateRewording.apply(
+            client = client,
+            chatModel = settings.chatModel,
+            transcript = transcript,
+            autoFormatting = settings.autoFormattingEnabled,
+            languageName = settings.languageName,
+            systemPrompt = settings.systemPrompt,
+            autoApplyPrompts = prompts,
+        )
     }
 
     /** Stream the audio to the phone and await its transcript over the Data Layer. */
