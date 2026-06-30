@@ -1249,4 +1249,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">Ajustado para fala com menos processamento — experimente se a transcrição estiver imprecisa</string>
     <string name="dictate__audio_source_unprocessed">Sem processamento (bruto)</string>
     <string name="dictate__audio_source_unprocessed_summary">Sem nenhum processamento; volta para Reconhecimento de voz se o celular não suportar</string>
+    <string name="dictate__security_group">Segurança</string>
+    <string name="dictate__trust_user_certs_title">Confiar em certificados instalados pelo usuário</string>
+    <string name="dictate__trust_user_certs_summary">Confia em certificados de AC que você instalou, para endpoints auto-hospedados atrás de uma AC privada.</string>
 </resources>

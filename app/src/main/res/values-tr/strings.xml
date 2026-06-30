@@ -1420,4 +1420,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">Konuşma için ayarlanmış, daha az işleme — yazıya dökme hatalıysa bunu deneyin</string>
     <string name="dictate__audio_source_unprocessed">İşlenmemiş (ham)</string>
     <string name="dictate__audio_source_unprocessed_summary">Hiç işleme yok; telefonunuz desteklemiyorsa Ses tanımaya geri döner</string>
+    <string name="dictate__security_group">Güvenlik</string>
+    <string name="dictate__trust_user_certs_title">Kullanıcının yüklediği sertifikalara güven</string>
+    <string name="dictate__trust_user_certs_summary">Kendi yüklediğiniz CA sertifikalarına güven – özel CA arkasındaki kendi uç noktalarınız için.</string>
 </resources>

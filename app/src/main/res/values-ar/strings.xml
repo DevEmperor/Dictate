@@ -1297,4 +1297,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">مُحسَّن للكلام بمعالجة أقل — جرّبه إذا كان النسخ غير دقيق</string>
     <string name="dictate__audio_source_unprocessed">غير معالَج (خام)</string>
     <string name="dictate__audio_source_unprocessed_summary">بدون أي معالجة؛ يعود إلى التعرف على الكلام إذا كان هاتفك لا يدعمه</string>
+    <string name="dictate__security_group">الأمان</string>
+    <string name="dictate__trust_user_certs_title">الوثوق بالشهادات المثبَّتة من المستخدم</string>
+    <string name="dictate__trust_user_certs_summary">الوثوق بشهادات CA التي ثبَّتها بنفسك، للنقاط المستضافة ذاتيًا خلف هيئة شهادات خاصة.</string>
 </resources>

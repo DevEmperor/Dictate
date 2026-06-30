@@ -1436,4 +1436,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">针对语音优化、处理更少 — 如果转录不准确请试试</string>
     <string name="dictate__audio_source_unprocessed">未处理（原始）</string>
     <string name="dictate__audio_source_unprocessed_summary">完全不处理；若手机不支持则回退到语音识别</string>
+    <string name="dictate__security_group">安全</string>
+    <string name="dictate__trust_user_certs_title">信任用户安装的证书</string>
+    <string name="dictate__trust_user_certs_summary">信任你自己安装的 CA 证书，用于私有 CA 后面的自托管端点。</string>
 </resources>

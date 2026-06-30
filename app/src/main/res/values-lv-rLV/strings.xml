@@ -1386,4 +1386,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">Pielāgots runai ar mazāku apstrādi — izmēģiniet, ja transkripcija ir neprecīza</string>
     <string name="dictate__audio_source_unprocessed">Neapstrādāts (jēls)</string>
     <string name="dictate__audio_source_unprocessed_summary">Bez jebkādas apstrādes; ja tālrunis to neatbalsta, izmanto Runas atpazīšanu</string>
+    <string name="dictate__security_group">Drošība</string>
+    <string name="dictate__trust_user_certs_title">Uzticēties lietotāja instalētiem sertifikātiem</string>
+    <string name="dictate__trust_user_certs_summary">Uzticēties pašiem instalētiem CA sertifikātiem – pašmitinātiem galapunktiem aiz privātas CA.</string>
 </resources>

@@ -1390,6 +1390,9 @@
     <string name="dictate__proxy_auth_group" comment="Group title for optional proxy authentication (HTTP only)">Authentication (optional)</string>
     <string name="dictate__proxy_username_title" comment="Label for the proxy username field">Username</string>
     <string name="dictate__proxy_password_title" comment="Label for the proxy password field">Password</string>
+    <string name="dictate__security_group" comment="Group title for connection security settings">Security</string>
+    <string name="dictate__trust_user_certs_title" comment="Title of the setting to trust user-installed CA certificates">Trust user-installed certificates</string>
+    <string name="dictate__trust_user_certs_summary" comment="Summary explaining the user-installed CA trust setting">Trust CA certificates you installed yourself, for self-hosted endpoints behind a private CA.</string>
 
     <!-- Dictate model picker -->
     <string name="dictate__model_picker_title" comment="Title of the model picker dialog">Choose a model</string>

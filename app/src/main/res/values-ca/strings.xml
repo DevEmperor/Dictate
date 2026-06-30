@@ -1316,4 +1316,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">Optimitzat per a la veu amb menys processament — prova-ho si la transcripció és inexacta</string>
     <string name="dictate__audio_source_unprocessed">Sense processar (cru)</string>
     <string name="dictate__audio_source_unprocessed_summary">Sense cap processament; recorre al reconeixement de veu si el teu telèfon no ho admet</string>
+    <string name="dictate__security_group">Seguretat</string>
+    <string name="dictate__trust_user_certs_title">Confia en els certificats instal·lats per l\'usuari</string>
+    <string name="dictate__trust_user_certs_summary">Confia en certificats de CA que has instal·lat tu mateix, per a punts auto-allotjats darrere d\'una CA privada.</string>
 </resources>

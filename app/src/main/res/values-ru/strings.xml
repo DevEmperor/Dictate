@@ -1446,4 +1446,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">Настроен для речи с меньшей обработкой — попробуйте, если транскрипция неточная</string>
     <string name="dictate__audio_source_unprocessed">Без обработки (сырой)</string>
     <string name="dictate__audio_source_unprocessed_summary">Совсем без обработки; возвращается к Распознаванию речи, если телефон не поддерживает</string>
+    <string name="dictate__security_group">Безопасность</string>
+    <string name="dictate__trust_user_certs_title">Доверять сертификатам, установленным пользователем</string>
+    <string name="dictate__trust_user_certs_summary">Доверять сертификатам ЦС, которые вы установили сами – для своих эндпоинтов за частным ЦС.</string>
 </resources>

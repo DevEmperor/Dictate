@@ -454,6 +454,7 @@ private fun ProviderEditorDialog(
     onSave: (ProviderAccount) -> Unit,
     onDelete: (() -> Unit)?,
 ) {
+    val prefs by FlorisPreferenceStore
     val isCustom = preset == null
     val showTranscription = preset?.capabilities?.transcription ?: true
     val showChat = preset?.capabilities?.chat ?: true
@@ -482,7 +483,11 @@ private fun ProviderEditorDialog(
         ) {
             runCatching {
                 val models = OpenAiCompatibleClient
-                    .from(effectivePreset, apiKey, baseUrlOverride = effectivePreset.baseUrl)
+                    .from(
+                        effectivePreset, apiKey,
+                        baseUrlOverride = effectivePreset.baseUrl,
+                        trustUserCerts = prefs.dictate.trustUserCertificates.get(),
+                    )
                     .listModels()
                 cachedModels = models.map { it.id }
                 cachedAudioModels = models.filter { it.acceptsAudioInput }.map { it.id }
@@ -678,6 +683,7 @@ private fun ConnectionTestRow(preset: ProviderPreset, apiKey: String) {
                                 preset, apiKey.trim(),
                                 baseUrlOverride = preset.baseUrl,
                                 proxy = prefs.dictate.dictateProxyConfig(),
+                                trustUserCerts = prefs.dictate.trustUserCertificates.get(),
                             )
                             .listModels()
                             .size

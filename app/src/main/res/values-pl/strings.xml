@@ -1458,4 +1458,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">Dostrojone do mowy z mniejszym przetwarzaniem — wypróbuj, jeśli transkrypcja jest niedokładna</string>
     <string name="dictate__audio_source_unprocessed">Nieprzetworzone (surowe)</string>
     <string name="dictate__audio_source_unprocessed_summary">Bez żadnego przetwarzania; wraca do Rozpoznawania mowy, jeśli telefon tego nie obsługuje</string>
+    <string name="dictate__security_group">Bezpieczeństwo</string>
+    <string name="dictate__trust_user_certs_title">Ufaj certyfikatom zainstalowanym przez użytkownika</string>
+    <string name="dictate__trust_user_certs_summary">Ufaj certyfikatom CA zainstalowanym przez Ciebie – dla własnych punktów za prywatnym CA.</string>
 </resources>

@@ -1316,4 +1316,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">Optimisé pour la voix avec moins de traitement — essayez si la transcription est imprécise</string>
     <string name="dictate__audio_source_unprocessed">Non traité (brut)</string>
     <string name="dictate__audio_source_unprocessed_summary">Aucun traitement; revient à la reconnaissance vocale si votre téléphone ne le prend pas en charge</string>
+    <string name="dictate__security_group">Sécurité</string>
+    <string name="dictate__trust_user_certs_title">Faire confiance aux certificats installés par l\'utilisateur</string>
+    <string name="dictate__trust_user_certs_summary">Faire confiance aux certificats que vous avez installés, pour des points auto-hébergés derrière une CA privée.</string>
 </resources>

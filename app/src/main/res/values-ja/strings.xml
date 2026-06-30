@@ -1372,4 +1372,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">音声向けに最適化され処理が少なめ — 文字起こしが不正確なら試してください</string>
     <string name="dictate__audio_source_unprocessed">未処理（生）</string>
     <string name="dictate__audio_source_unprocessed_summary">処理は一切なし。スマートフォンが非対応の場合は音声認識に戻ります</string>
+    <string name="dictate__security_group">セキュリティ</string>
+    <string name="dictate__trust_user_certs_title">ユーザーがインストールした証明書を信頼</string>
+    <string name="dictate__trust_user_certs_summary">自分でインストールした CA 証明書を信頼します（プライベート CA 配下の自己ホスト型エンドポイント用）。</string>
 </resources>

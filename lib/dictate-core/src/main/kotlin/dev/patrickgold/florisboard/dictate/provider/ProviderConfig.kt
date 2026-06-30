@@ -35,6 +35,15 @@ data class ProviderConfig(
      * [transcriptionApi] for the transcribe path. Only valid for models that accept audio input.
      */
     val useChatAudio: Boolean = false,
+    /**
+     * Trust user-installed CA certificates in addition to the system ones (issue #137). Android's
+     * default trust manager (API 24+) honours only system CAs, so a self-hosted HTTPS endpoint behind
+     * a private/internal CA fails with "Trust anchor … not found". When true, this client also trusts
+     * the device's user-added CAs (via the `AndroidCAStore` keystore). Default false keeps the strict,
+     * system-CAs-only posture, and the relaxation applies only to this app's own client – never
+     * system-wide.
+     */
+    val trustUserCerts: Boolean = false,
 ) {
     /** Base URL guaranteed to end with a single trailing slash. */
     val normalizedBaseUrl: String

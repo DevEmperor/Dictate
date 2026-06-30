@@ -28,7 +28,11 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.IOException
 import java.net.Proxy
+import java.security.KeyStore
 import java.time.Duration
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
+import javax.net.ssl.X509TrustManager
 
 /**
  * A single client implementation that talks to any OpenAI Chat Completions / Audio Transcriptions
@@ -562,7 +566,32 @@ class OpenAiCompatibleClient(
             // SOCKS proxy authentication is not handled here (OkHttp limitation). Add a
             // java.net.Authenticator if SOCKS-with-credentials support is ever required.
         }
+        if (config.trustUserCerts) {
+            applyUserCertTrust(builder)
+        }
         return builder.build()
+    }
+
+    /**
+     * Makes this client trust user-installed CA certificates as well as system ones (issue #137).
+     * Android's default trust manager (API 24+) honours only system CAs, but the `AndroidCAStore`
+     * keystore exposes the combined system + user trust anchors, so we build an [X509TrustManager]
+     * from it and install it on this client only. Best-effort: if the platform store is unavailable
+     * for any reason, the default (system-CAs-only) trust configuration stays in place.
+     */
+    private fun applyUserCertTrust(builder: OkHttpClient.Builder) {
+        runCatching {
+            val keyStore = KeyStore.getInstance("AndroidCAStore").apply { load(null) }
+            val tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm()).apply {
+                init(keyStore)
+            }
+            val trustManager = tmf.trustManagers.filterIsInstance<X509TrustManager>().firstOrNull()
+                ?: return@runCatching
+            val sslContext = SSLContext.getInstance("TLS").apply {
+                init(null, arrayOf(trustManager), null)
+            }
+            builder.sslSocketFactory(sslContext.socketFactory, trustManager)
+        }
     }
 
     private fun guessAudioMediaType(file: File): MediaType {
@@ -789,6 +818,7 @@ class OpenAiCompatibleClient(
             baseUrlOverride: String? = null,
             proxy: ProxyConfig? = null,
             useChatAudio: Boolean = false,
+            trustUserCerts: Boolean = false,
         ): OpenAiCompatibleClient = OpenAiCompatibleClient(
             ProviderConfig(
                 baseUrl = baseUrlOverride ?: preset.baseUrl,
@@ -797,6 +827,7 @@ class OpenAiCompatibleClient(
                 proxy = proxy,
                 transcriptionApi = preset.transcriptionApi,
                 useChatAudio = useChatAudio,
+                trustUserCerts = trustUserCerts,
             )
         )
     }

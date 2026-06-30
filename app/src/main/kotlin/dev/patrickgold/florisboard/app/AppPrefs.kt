@@ -300,6 +300,10 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__proxy_password",
             default = "",
         )
+        val trustUserCertificates = boolean(
+            key = "dictate__trust_user_certificates",
+            default = false,
+        )
 
         // --- DEPRECATED flat credential prefs (migration source only) ----------------------------
         // Kept solely so DictateProviderMigrator can copy them into the keyring once. Do not read these

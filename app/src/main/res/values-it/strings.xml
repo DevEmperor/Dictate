@@ -1224,4 +1224,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">Ottimizzato per il parlato con meno elaborazione — provalo se la trascrizione è imprecisa</string>
     <string name="dictate__audio_source_unprocessed">Non elaborato (grezzo)</string>
     <string name="dictate__audio_source_unprocessed_summary">Nessuna elaborazione; ripiega sul Riconoscimento vocale se il telefono non lo supporta</string>
+    <string name="dictate__security_group">Sicurezza</string>
+    <string name="dictate__trust_user_certs_title">Considera attendibili i certificati installati dall\'utente</string>
+    <string name="dictate__trust_user_certs_summary">Considera attendibili i certificati CA che hai installato, per endpoint self-hosted dietro una CA privata.</string>
 </resources>

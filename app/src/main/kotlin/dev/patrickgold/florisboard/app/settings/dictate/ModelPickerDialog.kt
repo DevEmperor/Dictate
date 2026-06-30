@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
+import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.provider.DictateApiException
 import dev.patrickgold.florisboard.dictate.provider.OpenAiCompatibleClient
 import dev.patrickgold.florisboard.dictate.provider.ProviderPreset
@@ -68,6 +69,7 @@ fun ModelPickerDialog(
     onPick: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val prefs by FlorisPreferenceStore
     val scope = rememberCoroutineScope()
     var query by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
@@ -84,7 +86,11 @@ fun ModelPickerDialog(
         error = null
         try {
             val models = OpenAiCompatibleClient
-                .from(preset, apiKey, baseUrlOverride = preset.baseUrl)
+                .from(
+                    preset, apiKey,
+                    baseUrlOverride = preset.baseUrl,
+                    trustUserCerts = prefs.dictate.trustUserCertificates.get(),
+                )
                 .listModels()
             val ids = models.map { it.id }
             val audioIds = models.filter { it.acceptsAudioInput }.map { it.id }

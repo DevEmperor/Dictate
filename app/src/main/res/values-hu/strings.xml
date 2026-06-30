@@ -1440,4 +1440,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">Beszédre hangolva, kevesebb feldolgozással — próbáld ki, ha az átírás pontatlan</string>
     <string name="dictate__audio_source_unprocessed">Feldolgozatlan (nyers)</string>
     <string name="dictate__audio_source_unprocessed_summary">Egyáltalán nincs feldolgozás; ha a telefonod nem támogatja, visszavált Beszédfelismerésre</string>
+    <string name="dictate__security_group">Biztonság</string>
+    <string name="dictate__trust_user_certs_title">Felhasználó által telepített tanúsítványok megbízhatósága</string>
+    <string name="dictate__trust_user_certs_summary">Megbízik a magad telepítette CA-tanúsítványokban – saját üzemeltetésű végpontokhoz privát CA mögött.</string>
 </resources>

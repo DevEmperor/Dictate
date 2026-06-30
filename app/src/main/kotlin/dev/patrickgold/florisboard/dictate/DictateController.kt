@@ -598,6 +598,7 @@ object DictateController {
                             proxy = prefs.dictate.dictateProxyConfig(),
                             // Single-call multimodal (issue #130): route audio through chat/completions.
                             useChatAudio = chatAudio,
+                            trustUserCerts = prefs.dictate.trustUserCertificates.get(),
                         ).transcribe(
                             request,
                             onRetry = { attempt -> _state.value = UiState.Transcribing(attempt) },
@@ -1272,6 +1273,7 @@ object DictateController {
             preset, apiKey,
             baseUrlOverride = baseUrlOverrideFor(account),
             proxy = prefs.dictate.dictateProxyConfig(),
+            trustUserCerts = prefs.dictate.trustUserCertificates.get(),
         )
         return client.complete(ChatRequest.ofUser(model, userContent)).text.trim()
     }

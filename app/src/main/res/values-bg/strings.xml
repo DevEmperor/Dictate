@@ -1442,4 +1442,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">Настроен за реч с по-малко обработка — опитайте, ако транскрипцията е неточна</string>
     <string name="dictate__audio_source_unprocessed">Необработен (суров)</string>
     <string name="dictate__audio_source_unprocessed_summary">Без никаква обработка; връща се към Гласово разпознаване, ако телефонът ви не го поддържа</string>
+    <string name="dictate__security_group">Сигурност</string>
+    <string name="dictate__trust_user_certs_title">Доверяване на потребителски сертификати</string>
+    <string name="dictate__trust_user_certs_summary">Доверие към CA сертификати, които сте инсталирали сами – за самостоятелно хоствани адреси зад частен CA.</string>
 </resources>

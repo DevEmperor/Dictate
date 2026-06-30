@@ -49,6 +49,7 @@ object PhoneTranscriber {
                 account.apiKey,
                 baseUrlOverride = if (account.isCustom) account.customBaseUrl.takeIf { it.isNotBlank() } else null,
                 proxy = prefs.dictate.dictateProxyConfig(),
+                trustUserCerts = prefs.dictate.trustUserCertificates.get(),
             )
             client.transcribe(request).text.trim()
         }
@@ -76,6 +77,7 @@ object PhoneTranscriber {
             apiKey,
             baseUrlOverride = if (rewordingAccount.isCustom) rewordingAccount.customBaseUrl.takeIf { it.isNotBlank() } else null,
             proxy = prefs.dictate.dictateProxyConfig(),
+            trustUserCerts = prefs.dictate.trustUserCertificates.get(),
         )
         val autoApply = withContext(Dispatchers.IO) {
             PromptsDatabaseHelper(context.applicationContext).getAll()

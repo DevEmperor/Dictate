@@ -1286,4 +1286,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">Налаштовано для мовлення з меншою обробкою — спробуйте, якщо транскрипція неточна</string>
     <string name="dictate__audio_source_unprocessed">Без обробки (сирий)</string>
     <string name="dictate__audio_source_unprocessed_summary">Узагалі без обробки; повертається до Розпізнавання мовлення, якщо телефон не підтримує</string>
+    <string name="dictate__security_group">Безпека</string>
+    <string name="dictate__trust_user_certs_title">Довіряти сертифікатам, встановленим користувачем</string>
+    <string name="dictate__trust_user_certs_summary">Довіряти сертифікатам ЦС, які ви встановили самі – для власних точок за приватним ЦС.</string>
 </resources>

@@ -1422,4 +1422,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">Otimizado para fala com menos processamento — experimenta se a transcrição for imprecisa</string>
     <string name="dictate__audio_source_unprocessed">Sem processamento (bruto)</string>
     <string name="dictate__audio_source_unprocessed_summary">Sem qualquer processamento; recorre ao Reconhecimento de voz se o telemóvel não o suportar</string>
+    <string name="dictate__security_group">Segurança</string>
+    <string name="dictate__trust_user_certs_title">Confiar em certificados instalados pelo utilizador</string>
+    <string name="dictate__trust_user_certs_summary">Confia em certificados de AC que instalaste, para endpoints auto-hospedados atrás de uma AC privada.</string>
 </resources>

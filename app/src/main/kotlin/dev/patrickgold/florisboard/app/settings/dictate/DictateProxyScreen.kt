@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Router
 import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import dev.patrickgold.florisboard.R
@@ -98,6 +99,15 @@ fun DictateProxyScreen() = FlorisScreen {
                     isSecret = true,
                 )
             }
+        }
+
+        PreferenceGroup(title = stringRes(R.string.dictate__security_group)) {
+            SwitchPreference(
+                prefs.dictate.trustUserCertificates,
+                icon = Icons.Default.VerifiedUser,
+                title = stringRes(R.string.dictate__trust_user_certs_title),
+                summary = stringRes(R.string.dictate__trust_user_certs_summary),
+            )
         }
     }
 }

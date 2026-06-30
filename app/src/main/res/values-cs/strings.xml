@@ -1457,4 +1457,7 @@
     <string name="dictate__audio_source_voice_recognition_summary">Vyladěno pro řeč s menším zpracováním — vyzkoušejte, pokud je přepis nepřesný</string>
     <string name="dictate__audio_source_unprocessed">Nezpracováno (surové)</string>
     <string name="dictate__audio_source_unprocessed_summary">Žádné zpracování; když to telefon nepodporuje, použije se Rozpoznávání řeči</string>
+    <string name="dictate__security_group">Zabezpečení</string>
+    <string name="dictate__trust_user_certs_title">Důvěřovat certifikátům nainstalovaným uživatelem</string>
+    <string name="dictate__trust_user_certs_summary">Důvěřovat CA certifikátům, které jste sami nainstalovali – pro vlastní koncové body za soukromou CA.</string>
 </resources>
