@@ -28,6 +28,13 @@ data class ProviderConfig(
     val proxy: ProxyConfig? = null,
     val timeoutSeconds: Long = 120,
     val transcriptionApi: TranscriptionApi = TranscriptionApi.OPENAI_MULTIPART,
+    /**
+     * Single-call multimodal transcription (issue #130): when true, audio is sent to `chat/completions`
+     * as an `input_audio` content part of a multimodal model (e.g. Gemini Flash) instead of using the
+     * dedicated speech-to-text endpoint, so transcription + formatting happen in one request. Overrides
+     * [transcriptionApi] for the transcribe path. Only valid for models that accept audio input.
+     */
+    val useChatAudio: Boolean = false,
 ) {
     /** Base URL guaranteed to end with a single trailing slash. */
     val normalizedBaseUrl: String

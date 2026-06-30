@@ -1276,4 +1276,9 @@
     <string name="quick_action__dictate_reinsert">إعادة الإدراج</string>
     <string name="quick_action__dictate_reinsert__tooltip">إدراج آخر إملاء لك مرة أخرى</string>
 
+    <string name="dictate__providers_field_transcription_rewording_model">نموذج النسخ وإعادة الصياغة</string>
+    <string name="dictate__providers_single_call_title">استدعاء واحد متعدد الوسائط</string>
+    <string name="dictate__providers_single_call_summary">نموذج واحد يدعم الصوت ينسخ وينسّق في طلب واحد.</string>
+    <string name="dictate__providers_single_call_pick_audio">اختر نموذجًا يدعم الصوت (المميَّز بـ 🎤 في قائمة النماذج).</string>
+    <string name="dictate__providers_rewording_single_call_note">غير مُستخدَم حاليًا — مزوّد النسخ لديك يقوم بإعادة الصياغة ضمن استدعائه الواحد.</string>
 </resources>

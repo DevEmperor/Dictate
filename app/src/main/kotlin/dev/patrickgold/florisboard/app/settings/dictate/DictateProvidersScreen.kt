@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Dns
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.filled.Lan
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PhoneAndroid
@@ -40,12 +41,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -70,11 +73,9 @@ import dev.patrickgold.florisboard.dictate.provider.ProviderRegistry
 import dev.patrickgold.florisboard.dictate.provider.TranscriptionApi
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.jetpref.datastore.model.collectAsState
-import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
-import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
 import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
 import kotlinx.coroutines.launch
 import org.florisboard.lib.compose.stringRes
@@ -96,6 +97,7 @@ fun DictateProvidersScreen() = FlorisScreen {
     content {
         val navController = LocalNavController.current
         val accounts by prefs.dictate.providerAccounts.collectAsState()
+        val activeTranscriptionId by prefs.dictate.transcriptionProviderId.collectAsState()
         val scope = rememberCoroutineScope()
 
         // The provider currently being edited in the dialog (null = closed).
@@ -122,16 +124,17 @@ fun DictateProvidersScreen() = FlorisScreen {
                     customAccounts.forEach { add(it.providerId to customLabel(it)) }
                 },
             )
-            ListPreference(
-                prefs.dictate.rewordingProviderId,
-                icon = Icons.Default.SmartToy,
-                title = stringRes(R.string.dictate__providers_active_rewording),
-                entries = listPrefEntries {
+            // When the active transcription provider runs single-call multimodal (#130), rewording happens
+            // inside that one call, so the rewording provider here is currently unused — surfaced as a
+            // trailing info "i" on this row (same pattern as the Punctuation/Style prompt info).
+            RewordingProviderPreference(
+                entries = buildList {
                     ProviderRegistry.presets
                         .filter { it.capabilities.chat }
-                        .forEach { entry(key = it.id, label = it.displayName) }
-                    customAccounts.forEach { entry(key = it.providerId, label = customLabel(it)) }
+                        .forEach { add(it.id to it.displayName) }
+                    customAccounts.forEach { add(it.providerId to customLabel(it)) }
                 },
+                showInfo = accounts.getOrEmpty(activeTranscriptionId).transcriptionViaChat,
             )
         }
 
@@ -220,6 +223,7 @@ fun DictateProvidersScreen() = FlorisScreen {
                 },
             )
         }
+
     }
 }
 
@@ -229,6 +233,78 @@ fun DictateProvidersScreen() = FlorisScreen {
  * bottom of the same dialog. The checkbox is hidden when the chosen provider is the on-device one (a
  * local fallback is meaningless there). Both the selection and the toggle are committed on confirm.
  */
+@Composable
+private fun RewordingProviderPreference(entries: List<Pair<String, String>>, showInfo: Boolean) {
+    val prefs by FlorisPreferenceStore
+    val scope = rememberCoroutineScope()
+    val selectedId by prefs.dictate.rewordingProviderId.collectAsState()
+    var open by remember { mutableStateOf(false) }
+    var infoOpen by remember { mutableStateOf(false) }
+
+    Preference(
+        icon = Icons.Default.SmartToy,
+        title = stringRes(R.string.dictate__providers_active_rewording),
+        summary = entries.firstOrNull { it.first == selectedId }?.second ?: selectedId,
+        // Trailing info "i" (only while single-call is active), mirroring the Punctuation/Style prompt.
+        trailing = if (showInfo) {
+            {
+                IconButton(onClick = { infoOpen = true }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = stringRes(R.string.dictate__providers_rewording_single_call_note),
+                    )
+                }
+            }
+        } else {
+            null
+        },
+        onClick = { open = true },
+    )
+
+    if (open) {
+        var sel by remember { mutableStateOf(selectedId) }
+        JetPrefAlertDialog(
+            title = stringRes(R.string.dictate__providers_active_rewording),
+            confirmLabel = stringRes(R.string.action__ok),
+            dismissLabel = stringRes(R.string.action__cancel),
+            onConfirm = {
+                scope.launch { prefs.dictate.rewordingProviderId.set(sel) }
+                open = false
+            },
+            onDismiss = { open = false },
+        ) {
+            Column(
+                modifier = Modifier
+                    .heightIn(max = 320.dp)
+                    .verticalScroll(rememberScrollState()),
+            ) {
+                entries.forEach { (id, label) ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { sel = id },
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(selected = sel == id, onClick = { sel = id })
+                        Text(label, modifier = Modifier.padding(start = 8.dp))
+                    }
+                }
+            }
+        }
+    }
+
+    if (infoOpen) {
+        JetPrefAlertDialog(
+            title = stringRes(R.string.dictate__providers_active_rewording),
+            confirmLabel = stringRes(R.string.action__ok),
+            onConfirm = { infoOpen = false },
+            onDismiss = { infoOpen = false },
+        ) {
+            Text(stringRes(R.string.dictate__providers_rewording_single_call_note))
+        }
+    }
+}
+
 @Composable
 private fun TranscriptionProviderPreference(entries: List<Pair<String, String>>) {
     val prefs by FlorisPreferenceStore
@@ -361,10 +437,29 @@ private fun ProviderEditorDialog(
     // Live catalog cache, updated when the picker fetches; persisted together with the rest on confirm.
     var cachedModels by remember { mutableStateOf(account.cachedModels) }
     var cachedAudioModels by remember { mutableStateOf(account.cachedAudioModels) }
+    var transcriptionViaChat by remember { mutableStateOf(account.transcriptionViaChat) }
     var pickerKind by remember { mutableStateOf<ModelKind?>(null) }
 
     // Effective preset to drive the model picker (custom endpoints get a base-URL-only preset).
     val effectivePreset = preset ?: ProviderRegistry.custom(baseUrl)
+
+    // Pre-load the model catalog so we know whether this provider has any audio-capable model — that
+    // gates the single-call multimodal option (#130/#132). Populates on open for keyed accounts; for a
+    // fresh account the model browser fills it in when the user picks a model. Once classified, stops.
+    LaunchedEffect(effectivePreset.id, effectivePreset.baseUrl) {
+        if (showTranscription && showChat && effectivePreset.supportsDynamicModels &&
+            cachedAudioModels.isEmpty() &&
+            (apiKey.isNotBlank() || effectivePreset.apiKeyUrl == null)
+        ) {
+            runCatching {
+                val models = OpenAiCompatibleClient
+                    .from(effectivePreset, apiKey, baseUrlOverride = effectivePreset.baseUrl)
+                    .listModels()
+                cachedModels = models.map { it.id }
+                cachedAudioModels = models.filter { it.acceptsAudioInput }.map { it.id }
+            }
+        }
+    }
 
     JetPrefAlertDialog(
         title = preset?.displayName ?: stringRes(R.string.dictate__providers_custom_title),
@@ -381,6 +476,7 @@ private fun ProviderEditorDialog(
                     chatModel = chatModel.trim(),
                     cachedModels = cachedModels,
                     cachedAudioModels = cachedAudioModels,
+                    transcriptionViaChat = transcriptionViaChat,
                     cachedModelsAt = if (cachedModels != account.cachedModels) {
                         System.currentTimeMillis()
                     } else {
@@ -424,7 +520,14 @@ private fun ProviderEditorDialog(
             ConnectionTestRow(preset = effectivePreset, apiKey = apiKey)
             if (showTranscription) {
                 EditorField(
-                    label = stringRes(R.string.dictate__providers_field_transcription_model),
+                    // When single-call is on, this one model does both transcription and rewording (#130).
+                    label = stringRes(
+                        if (transcriptionViaChat) {
+                            R.string.dictate__providers_field_transcription_rewording_model
+                        } else {
+                            R.string.dictate__providers_field_transcription_model
+                        },
+                    ),
                     value = transcriptionModel,
                     onValueChange = { transcriptionModel = it },
                     placeholder = preset?.defaultTranscriptionModel
@@ -432,7 +535,8 @@ private fun ProviderEditorDialog(
                     onBrowse = { pickerKind = ModelKind.TRANSCRIPTION },
                 )
             }
-            if (showChat) {
+            // Rewording model is unused while single-call multimodal is on (one model does both, #130).
+            if (showChat && !transcriptionViaChat) {
                 EditorField(
                     label = stringRes(R.string.dictate__providers_field_chat_model),
                     value = chatModel,
@@ -441,6 +545,43 @@ private fun ProviderEditorDialog(
                         ?: stringRes(R.string.dictate__model_placeholder),
                     onBrowse = { pickerKind = ModelKind.CHAT },
                 )
+            }
+            // Single-call multimodal (issue #130): kept at the bottom; when on, this one model transcribes
+            // and formats in a single request (the rewording model above is hidden). Offered for any
+            // provider with a chat endpoint (the prerequisite for input_audio) — whether a given model
+            // accepts audio is only known for providers that report modalities (#132), so we don't hide
+            // the toggle, but we do warn when the catalog says the selected model is not audio-capable.
+            if (showTranscription && showChat) {
+                // Only warn when we positively know the model isn't audio-capable (catalog has modality
+                // data and the chosen model isn't in it) — never for providers that don't report it.
+                val knownNotAudio = cachedAudioModels.isNotEmpty() &&
+                    transcriptionModel.trim() !in cachedAudioModels
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringRes(R.string.dictate__providers_single_call_title),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        Text(
+                            stringRes(
+                                if (transcriptionViaChat && knownNotAudio) {
+                                    R.string.dictate__providers_single_call_pick_audio
+                                } else {
+                                    R.string.dictate__providers_single_call_summary
+                                },
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Switch(
+                        checked = transcriptionViaChat,
+                        onCheckedChange = { transcriptionViaChat = it },
+                    )
+                }
             }
         }
         }

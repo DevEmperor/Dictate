@@ -1403,4 +1403,9 @@
     <string name="quick_action__dictate_reinsert">Reinsertar</string>
     <string name="quick_action__dictate_reinsert__tooltip">Insertar de nuevo tu último dictado</string>
 
+    <string name="dictate__providers_field_transcription_rewording_model">Modelo de transcripción y reformulación</string>
+    <string name="dictate__providers_single_call_title">Llamada única multimodal</string>
+    <string name="dictate__providers_single_call_summary">Un solo modelo con audio transcribe y da formato en una única solicitud.</string>
+    <string name="dictate__providers_single_call_pick_audio">Elige un modelo con capacidad de audio (marcado con 🎤 en la lista de modelos).</string>
+    <string name="dictate__providers_rewording_single_call_note">Ahora mismo no se usa: tu proveedor de transcripción hace la reformulación en su llamada única.</string>
 </resources>

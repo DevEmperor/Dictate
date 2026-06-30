@@ -1437,4 +1437,9 @@
     <string name="quick_action__dictate_reinsert">Wstaw ponownie</string>
     <string name="quick_action__dictate_reinsert__tooltip">Wstaw ponownie ostatnie dyktowanie</string>
 
+    <string name="dictate__providers_field_transcription_rewording_model">Model transkrypcji i przeredagowania</string>
+    <string name="dictate__providers_single_call_title">Pojedyncze wywołanie multimodalne</string>
+    <string name="dictate__providers_single_call_summary">Jeden model obsługujący dźwięk transkrybuje i formatuje w jednym żądaniu.</string>
+    <string name="dictate__providers_single_call_pick_audio">Wybierz model obsługujący dźwięk (oznaczony 🎤 na liście modeli).</string>
+    <string name="dictate__providers_rewording_single_call_note">Obecnie nieużywany — Twój dostawca transkrypcji wykonuje przeredagowanie w swoim pojedynczym wywołaniu.</string>
 </resources>

@@ -104,10 +104,14 @@ fun ModelPickerDialog(
     // dialog shows only the few curated ids — and nothing at all for providers that ship no curated list
     // (xAI, DeepSeek, …) until the user manually tapped Refresh (roadmap 11.13). Gated on a usable key
     // (or a keyless provider like Ollama) so we don't fire a guaranteed-401 request.
+    // Also refetch (once) when we have a model list but no audio classification yet, so the 🎤 markers
+    // and single-call gating have fresh modality info (issue #130/#132) without the user tapping Refresh.
+    var autoLoaded by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
-        if (cachedModels.isEmpty() && preset.supportsDynamicModels &&
-            (apiKey.isNotBlank() || preset.apiKeyUrl == null)
+        if (!autoLoaded && (cachedModels.isEmpty() || audioModelIds.isEmpty()) &&
+            preset.supportsDynamicModels && (apiKey.isNotBlank() || preset.apiKeyUrl == null)
         ) {
+            autoLoaded = true
             loadModels()
         }
     }
@@ -185,6 +189,8 @@ fun ModelPickerDialog(
                     ModelRow(
                         label = model,
                         selected = model.equals(current, ignoreCase = true),
+                        // Mark models the catalog reports as accepting audio input (issue #130/#132).
+                        audio = audioModelIds.contains(model),
                         onClick = { onPick(model); onDismiss() },
                     )
                 }
@@ -194,7 +200,7 @@ fun ModelPickerDialog(
 }
 
 @Composable
-private fun ModelRow(label: String, selected: Boolean, onClick: () -> Unit) {
+private fun ModelRow(label: String, selected: Boolean, audio: Boolean = false, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -207,6 +213,10 @@ private fun ModelRow(label: String, selected: Boolean, onClick: () -> Unit) {
             modifier = Modifier.weight(1f),
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
         )
+        // Audio-input capable (usable for single-call multimodal); helps the user spot those models.
+        if (audio) {
+            Text("🎤", modifier = Modifier.padding(end = 8.dp))
+        }
         if (selected) {
             Icon(Icons.Default.Check, contentDescription = null)
         }

@@ -1321,4 +1321,9 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="quick_action__dictate_reinsert">Opnieuw invoegen</string>
     <string name="quick_action__dictate_reinsert__tooltip">Voeg je laatste dictaat opnieuw in</string>
 
+    <string name="dictate__providers_field_transcription_rewording_model">Model voor transcriptie en herformulering</string>
+    <string name="dictate__providers_single_call_title">Eén multimodale aanroep</string>
+    <string name="dictate__providers_single_call_summary">Eén audiogeschikt model transcribeert en formatteert in één verzoek.</string>
+    <string name="dictate__providers_single_call_pick_audio">Kies een model met audio-invoer (gemarkeerd met 🎤 in de modellijst).</string>
+    <string name="dictate__providers_rewording_single_call_note">Wordt nu niet gebruikt — je transcriptieprovider doet de herformulering in zijn enkele aanroep.</string>
 </resources>

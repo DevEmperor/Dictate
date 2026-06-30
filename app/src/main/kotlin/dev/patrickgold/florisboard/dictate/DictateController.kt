@@ -218,7 +218,7 @@ object DictateController {
     private var carryOverSeconds = 0L
 
     /** Cache file name for the merged audio when a continued interrupted recording is stitched together. */
-    private const val MERGED_AUDIO_NAME = "dictate_merged.m4a"
+    private const val MERGED_AUDIO_NAME = "dictate_merged.wav"
 
     /** Cumulative recorded audio (seconds) after which the rate / donate nudges appear (roadmap 9.7/9.8). */
     private const val RATE_THRESHOLD_SECONDS = 180L   // 3 min
@@ -571,14 +571,20 @@ object DictateController {
         transcribeJob = scope.launch {
             var keepAudio = false
             try {
+                // Single-call multimodal (issue #130): one chat/completions+input_audio request transcribes
+                // and formats together (cloud chat models only, never the on-device engine).
+                val chatAudio = account.transcriptionViaChat &&
+                    preset.transcriptionApi != TranscriptionApi.LOCAL_ONDEVICE
                 val request = TranscriptionRequest(
                     audioFile = audioFile,
                     model = model,
-                    // Null for "detect" so the provider auto-detects; otherwise the chosen code.
-                    language = prefs.dictate.activeInputLanguage.get()
+                    // Null for "detect" so the provider auto-detects; otherwise the chosen code. For the
+                    // chat-audio path the language goes into the instruction (readable name) instead.
+                    language = if (chatAudio) null else prefs.dictate.activeInputLanguage.get()
                         .takeIf { it != DictateLanguages.DETECT },
-                    // Style/punctuation prompt biases recognition (roadmap 2.4 / 4.11).
-                    prompt = transcriptionStylePrompt(),
+                    // Non-chat: style/punctuation prompt biases recognition (roadmap 2.4 / 4.11).
+                    // Chat-audio: the full instruction (language + style + all auto-formatting) in one go.
+                    prompt = if (chatAudio) buildChatAudioInstruction(appContext) else transcriptionStylePrompt(),
                 )
                 val result = if (preset.transcriptionApi == TranscriptionApi.LOCAL_ONDEVICE) {
                     // On-device (issue #104): no HTTP client, no key; transcribe locally via sherpa-onnx.
@@ -590,6 +596,8 @@ object DictateController {
                             preset, apiKey,
                             baseUrlOverride = baseUrlOverrideFor(account),
                             proxy = prefs.dictate.dictateProxyConfig(),
+                            // Single-call multimodal (issue #130): route audio through chat/completions.
+                            useChatAudio = chatAudio,
                         ).transcribe(
                             request,
                             onRetry = { attempt -> _state.value = UiState.Transcribing(attempt) },
@@ -612,7 +620,14 @@ object DictateController {
                 } else {
                     // Normal dictation: auto-formatting + auto-apply prompts, then the prompts the user
                     // queued by tapping the prompt row while recording, in tap order; then commit.
-                    val processed = postProcessTranscript(appContext, result.text)
+                    // Single-call multimodal (issue #130) already returns finished, formatted text in one
+                    // request (the auto-formatting/auto-apply prompts were folded into the instruction), so
+                    // the separate rewording pass is skipped; explicitly queued prompts still apply.
+                    val processed = if (chatAudio) {
+                        result.text
+                    } else {
+                        postProcessTranscript(appContext, result.text)
+                    }
                     applyPendingPrompts(appContext, processed)
                 }
                 // Deterministic find-and-replace dictionary (issue #129), applied to the finished text
@@ -776,12 +791,12 @@ object DictateController {
 
     /** Stable on-disk location for an interrupted recording: in filesDir so it survives the cache wipe. */
     private fun interruptedAudioFile(context: Context): File =
-        File(context.applicationContext.filesDir, "dictate_interrupted.m4a")
+        File(context.applicationContext.filesDir, "dictate_interrupted.wav")
 
     /**
      * Called when the keyboard window is hidden (see [FlorisImeService.onWindowHidden]). If a recording
      * is in progress it is *finalized and kept* instead of discarded: the audio is stopped cleanly (so
-     * the m4a is valid even if the recorder/process is destroyed afterwards) and moved to [interruptedAudioFile],
+     * the WAV is valid even if the recorder/process is destroyed afterwards) and moved to [interruptedAudioFile],
      * with its metadata mirrored to prefs. The next keyboard open then offers to send it (see
      * [maybeOfferInterruptedRecording]). Outside the recording state this falls back to the normal
      * teardown ([cancelRecording]).
@@ -1281,6 +1296,37 @@ object DictateController {
             else -> null
         }
         return DictatePromptDefaults.appendCustomWords(base, prefs.dictate.customWords.get())
+    }
+
+    /**
+     * The instruction sent alongside the audio in the single-call multimodal path (issue #130). Folds
+     * everything the two-call flow would otherwise do into one prompt: the spoken language (readable
+     * name), the style/punctuation prompt + custom words, and — when rewording is enabled — the
+     * auto-formatting rules and the user's auto-apply prompts. The client prepends a "transcribe, return
+     * only the text" preamble.
+     */
+    private suspend fun buildChatAudioInstruction(context: Context): String {
+        val parts = mutableListOf<String>()
+        val langCode = prefs.dictate.activeInputLanguage.get()
+        if (langCode != DictateLanguages.DETECT) {
+            // Source-language hint only (not an output directive) so it never fights a "translate to X"
+            // rewording prompt — the weaker models otherwise just echo the spoken language.
+            DictateLanguages.englishNameFor(langCode)?.takeIf { it.isNotBlank() }
+                ?.let { parts.add("The audio is spoken in $it.") }
+        }
+        transcriptionStylePrompt()?.takeIf { it.isNotBlank() }?.let { parts.add(it) }
+        // Formatting/rewording is folded in only when the user has rewording enabled (mirrors
+        // postProcessTranscript's gating), so single-call output matches the two-call output.
+        if (prefs.dictate.rewordingEnabled.get()) {
+            if (prefs.dictate.autoFormattingEnabled.get()) {
+                parts.add(DictatePromptDefaults.AUTO_FORMATTING_PROMPT)
+            }
+            val autoApply = withContext(Dispatchers.IO) {
+                promptsDb(context).getAll().filter { it.autoApply }
+            }
+            autoApply.forEach { p -> p.prompt?.takeIf { it.isNotBlank() }?.let { parts.add(it) } }
+        }
+        return parts.joinToString("\n\n")
     }
 
     /** The active transcription provider's stored credentials (keyring). */

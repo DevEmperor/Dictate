@@ -43,6 +43,9 @@ object AudioDecode {
      */
     fun decodeToMono16k(file: File): FloatArray {
         require(file.exists() && file.length() > 0L) { "audio file missing or empty: ${file.absolutePath}" }
+        // Fast path for the recorder's own PCM16 WAV (issue #130): MediaCodec has no decoder for raw
+        // `audio/raw` WAV tracks, so parse the PCM directly instead of going through MediaExtractor.
+        decodeWavOrNull(file)?.let { return it }
         val extractor = MediaExtractor()
         try {
             extractor.setDataSource(file.absolutePath)
@@ -68,6 +71,76 @@ object AudioDecode {
         } finally {
             extractor.release()
         }
+    }
+
+    /**
+     * Parses a PCM WAV [file] directly into mono float samples at [TARGET_SAMPLE_RATE], or returns null
+     * if it is not a (PCM) WAV — then the caller falls back to the MediaCodec path. Handles arbitrary
+     * channel counts / sample rates / 16-bit (and 8-bit) PCM, down-mixing and resampling as needed.
+     */
+    private fun decodeWavOrNull(file: File): FloatArray? {
+        val bytes = file.readBytes()
+        if (bytes.size < 44) return null
+        fun tag(off: Int) = String(bytes, off, 4, Charsets.US_ASCII)
+        if (tag(0) != "RIFF" || tag(8) != "WAVE") return null
+        fun le16(off: Int) = (bytes[off].toInt() and 0xff) or ((bytes[off + 1].toInt() and 0xff) shl 8)
+        fun le32(off: Int) = (bytes[off].toInt() and 0xff) or ((bytes[off + 1].toInt() and 0xff) shl 8) or
+            ((bytes[off + 2].toInt() and 0xff) shl 16) or ((bytes[off + 3].toInt() and 0xff) shl 24)
+
+        var audioFormat = 1
+        var channels = 1
+        var sampleRate = TARGET_SAMPLE_RATE
+        var bits = 16
+        var dataOff = -1
+        var dataLen = 0
+        var p = 12 // after "RIFF"<size>"WAVE"
+        while (p + 8 <= bytes.size) {
+            val id = tag(p)
+            val size = le32(p + 4)
+            val body = p + 8
+            when (id) {
+                "fmt " -> {
+                    audioFormat = le16(body)
+                    channels = le16(body + 2).coerceAtLeast(1)
+                    sampleRate = le32(body + 4).takeIf { it > 0 } ?: TARGET_SAMPLE_RATE
+                    bits = le16(body + 14)
+                }
+                "data" -> { dataOff = body; dataLen = size.coerceAtMost(bytes.size - body) }
+            }
+            if (dataOff >= 0 && id == "data") break
+            p = body + size + (size and 1) // chunks are word-aligned
+        }
+        if (dataOff < 0 || dataLen <= 0) return null
+        if (audioFormat != 1 || (bits != 16 && bits != 8)) return null // only PCM 8/16-bit supported here
+
+        val mono: FloatArray = when (bits) {
+            16 -> {
+                val frames = dataLen / (2 * channels)
+                FloatArray(frames).also { arr ->
+                    var i = dataOff
+                    for (f in 0 until frames) {
+                        var sum = 0
+                        repeat(channels) {
+                            val s = (bytes[i].toInt() and 0xff) or (bytes[i + 1].toInt() shl 8)
+                            sum += s; i += 2
+                        }
+                        arr[f] = (sum / channels) / 32768.0f
+                    }
+                }
+            }
+            else -> { // 8-bit PCM is unsigned (0..255, midpoint 128)
+                val frames = dataLen / channels
+                FloatArray(frames).also { arr ->
+                    var i = dataOff
+                    for (f in 0 until frames) {
+                        var sum = 0
+                        repeat(channels) { sum += (bytes[i].toInt() and 0xff) - 128; i += 1 }
+                        arr[f] = (sum / channels) / 128.0f
+                    }
+                }
+            }
+        }
+        return if (sampleRate == TARGET_SAMPLE_RATE) mono else resampleLinear(mono, sampleRate, TARGET_SAMPLE_RATE)
     }
 
     private class MonoPcm(val samples: FloatArray, val sampleRate: Int)

@@ -1419,4 +1419,9 @@
     <string name="quick_action__dictate_reinsert">Újrabeillesztés</string>
     <string name="quick_action__dictate_reinsert__tooltip">Az utolsó diktálás ismételt beillesztése</string>
 
+    <string name="dictate__providers_field_transcription_rewording_model">Átírási és újrafogalmazási modell</string>
+    <string name="dictate__providers_single_call_title">Egyetlen multimodális hívás</string>
+    <string name="dictate__providers_single_call_summary">Egyetlen hangkezelő modell egyetlen kérésben átír és formáz.</string>
+    <string name="dictate__providers_single_call_pick_audio">Válassz hangbemenetet támogató modellt (a modellek listájában 🎤 jelöli).</string>
+    <string name="dictate__providers_rewording_single_call_note">Jelenleg nincs használatban — az átírási szolgáltató az újrafogalmazást az egyetlen hívásában végzi.</string>
 </resources>

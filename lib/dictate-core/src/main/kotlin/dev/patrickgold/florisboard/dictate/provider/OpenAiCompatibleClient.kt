@@ -83,6 +83,16 @@ class OpenAiCompatibleClient(
     suspend fun transcribe(
         request: TranscriptionRequest,
         onRetry: (attempt: Int) -> Unit,
+    ): TranscriptionResult = when {
+        // Single-call multimodal (issue #130): route audio through chat/completions with input_audio,
+        // overriding the dedicated STT endpoint, so one request transcribes and formats together.
+        config.useChatAudio -> transcribeViaChatAudio(request, onRetry)
+        else -> transcribeByApi(request, onRetry)
+    }
+
+    private suspend fun transcribeByApi(
+        request: TranscriptionRequest,
+        onRetry: (attempt: Int) -> Unit,
     ): TranscriptionResult = when (config.transcriptionApi) {
         TranscriptionApi.OPENAI_MULTIPART -> transcribeMultipart(request, onRetry)
         TranscriptionApi.OPENROUTER_JSON -> transcribeOpenRouterJson(request, onRetry)
@@ -150,6 +160,67 @@ class OpenAiCompatibleClient(
         val body = executeForBody(httpRequest, onRetry = onRetry)
         val response = json.decodeFromString(TranscriptionResponseDto.serializer(), body)
         return TranscriptionResult(response.text.trim())
+    }
+
+    /**
+     * Single-call multimodal transcription (issue #130): sends the audio as an `input_audio` content part
+     * to `chat/completions` of a multimodal model (e.g. Gemini Flash) together with a text instruction, so
+     * the model transcribes (and formats, per the instruction) in one request. The instruction comes from
+     * [TranscriptionRequest.prompt] (the caller builds it: style + formatting); a sane default is prepended.
+     * Returns the model's text output. Reuses the chat error-envelope handling from [complete].
+     */
+    private suspend fun transcribeViaChatAudio(
+        request: TranscriptionRequest,
+        onRetry: (attempt: Int) -> Unit,
+    ): TranscriptionResult {
+        val base64 = withContext(Dispatchers.IO) {
+            android.util.Base64.encodeToString(request.audioFile.readBytes(), android.util.Base64.NO_WRAP)
+        }
+        val extra = request.prompt?.trim()?.takeIf { it.isNotEmpty() }
+        val instruction = buildString {
+            append("Transcribe the speech in the attached audio.")
+            if (extra != null) {
+                append(
+                    " Then apply ALL of the following instructions to the transcript before returning it — " +
+                        "they are mandatory and may change the wording or even the language (e.g. translation, " +
+                        "formatting):\n\n",
+                )
+                append(extra)
+            }
+            request.language?.takeIf { it.isNotEmpty() && it != "detect" }
+                ?.let { append("\n\nThe language spoken in the audio is '$it'.") }
+            append("\n\nReturn ONLY the final resulting text after applying the instructions — no preamble, no quotes, no explanations, no notes.")
+        }
+        val dto = ChatAudioRequestDto(
+            model = request.model,
+            temperature = 0.0,
+            messages = listOf(
+                ChatAudioMessageDto(
+                    role = "user",
+                    content = listOf(
+                        ContentPartDto(type = "text", text = instruction),
+                        ContentPartDto(
+                            type = "input_audio",
+                            inputAudio = InputAudioDto(data = base64, format = guessAudioFormat(request.audioFile)),
+                        ),
+                    ),
+                ),
+            ),
+        )
+        val payload = json.encodeToString(ChatAudioRequestDto.serializer(), dto)
+        val httpRequest = Request.Builder()
+            .url(config.normalizedBaseUrl + "chat/completions")
+            .headers(authHeaders())
+            .post(payload.toRequestBody(JSON_MEDIA_TYPE))
+            .build()
+        val body = executeForBody(httpRequest, onRetry = onRetry)
+        val response = json.decodeFromString(ChatCompletionResponseDto.serializer(), body)
+        val text = response.choices.firstOrNull()?.message?.content.orEmpty()
+        if (text.isBlank() && response.choices.isEmpty()) {
+            val message = extractErrorMessage(body)
+            throw DictateApiException(DictateApiException.Kind.UNKNOWN, message ?: "Empty response from provider")
+        }
+        return TranscriptionResult(text.trim())
     }
 
     /**
@@ -369,10 +440,35 @@ class OpenAiCompatibleClient(
             .map {
                 ModelInfo(
                     id = if (stripPrefix) it.id.removePrefix("models/") else it.id,
-                    inputModalities = it.architecture?.inputModalities ?: emptyList(),
+                    // Normalize each provider's own modality reporting to a single "audio" flag, used by
+                    // the single-call multimodal feature (issue #130) and the 🎤 markers (#132).
+                    inputModalities = if (isAudioInputChatModel(it)) listOf("audio") else emptyList(),
                 )
             }
             .sortedBy { it.id.lowercase() }
+    }
+
+    /**
+     * Whether a catalog entry is an audio-input **chat** model usable for single-call multimodal
+     * transcription (issue #130). Each provider reports this differently (verified against the live APIs):
+     *  - **Mistral** exposes a `capabilities` object → `audio && completion_chat` (e.g. Voxtral).
+     *  - **OpenRouter** lists `architecture.input_modalities` → contains `audio` (its audio entries are
+     *    chat models; Whisper-style STT is served elsewhere and isn't listed with audio input).
+     *  - **Groq** uses top-level `input_modalities`/`output_modalities` → audio in, **text** out; this
+     *    excludes Whisper, whose output modality is `transcription` (STT-only, not a chat model).
+     *  - **OpenAI** and **Gemini** report no modality info at all → treated as unknown (false).
+     */
+    private fun isAudioInputChatModel(m: ModelEntryDto): Boolean {
+        m.capabilities?.let { return it.audio && it.completionChat }
+        m.architecture?.let { arch ->
+            return arch.inputModalities.any { it.equals("audio", ignoreCase = true) }
+        }
+        m.inputModalities?.let { inputs ->
+            val audioIn = inputs.any { it.equals("audio", ignoreCase = true) }
+            val textOut = m.outputModalities?.any { it.equals("text", ignoreCase = true) } == true
+            return audioIn && textOut
+        }
+        return false
     }
 
     private fun authHeaders(): Headers {
@@ -535,6 +631,30 @@ class OpenAiCompatibleClient(
     @Serializable
     private data class InputAudioDto(val data: String, val format: String)
 
+    // Single-call multimodal chat request (issue #130): chat/completions with array content carrying a
+    // text instruction + an input_audio part. `encodeDefaults = false` keeps the unused nullable out.
+    @Serializable
+    private data class ChatAudioRequestDto(
+        val model: String,
+        val messages: List<ChatAudioMessageDto>,
+        // 0 → deterministic, accurate transcription (mirrors the Gemini generateContent path); max_tokens
+        // is intentionally left unset so a long dictation is never truncated.
+        val temperature: Double? = null,
+    )
+
+    @Serializable
+    private data class ChatAudioMessageDto(
+        val role: String,
+        val content: List<ContentPartDto>,
+    )
+
+    @Serializable
+    private data class ContentPartDto(
+        val type: String,
+        val text: String? = null,
+        @SerialName("input_audio") val inputAudio: InputAudioDto? = null,
+    )
+
     @Serializable
     private data class TranscriptionResponseDto(val text: String = "")
 
@@ -580,16 +700,28 @@ class OpenAiCompatibleClient(
     @Serializable
     private data class ModelsResponseDto(val data: List<ModelEntryDto> = emptyList())
 
+    // Each provider exposes audio-input capability differently in its /models response (verified against
+    // the live APIs): OpenRouter under `architecture.input_modalities`, Groq as top-level
+    // `input_modalities`/`output_modalities`, Mistral via a `capabilities` object. OpenAI and Gemini
+    // report no modality info at all. See [isAudioInputChatModel] (issue #130/#132).
     @Serializable
     private data class ModelEntryDto(
         val id: String,
-        // OpenRouter reports per-model modalities here; absent for plain OpenAI-style catalogs.
-        val architecture: ArchitectureDto? = null,
+        val architecture: ArchitectureDto? = null, // OpenRouter
+        @SerialName("input_modalities") val inputModalities: List<String>? = null, // Groq (top-level)
+        @SerialName("output_modalities") val outputModalities: List<String>? = null, // Groq (top-level)
+        val capabilities: CapabilitiesDto? = null, // Mistral
     )
 
     @Serializable
     private data class ArchitectureDto(
         @SerialName("input_modalities") val inputModalities: List<String> = emptyList(),
+    )
+
+    @Serializable
+    private data class CapabilitiesDto(
+        val audio: Boolean = false,
+        @SerialName("completion_chat") val completionChat: Boolean = false,
     )
 
     // --- Soniox async REST DTOs (see transcribeSonioxAsync) ---
@@ -656,6 +788,7 @@ class OpenAiCompatibleClient(
             apiKey: String,
             baseUrlOverride: String? = null,
             proxy: ProxyConfig? = null,
+            useChatAudio: Boolean = false,
         ): OpenAiCompatibleClient = OpenAiCompatibleClient(
             ProviderConfig(
                 baseUrl = baseUrlOverride ?: preset.baseUrl,
@@ -663,6 +796,7 @@ class OpenAiCompatibleClient(
                 extraHeaders = preset.extraHeaders,
                 proxy = proxy,
                 transcriptionApi = preset.transcriptionApi,
+                useChatAudio = useChatAudio,
             )
         )
     }

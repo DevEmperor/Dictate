@@ -44,6 +44,13 @@ data class ProviderAccount(
      * stored accounts; repopulated on the next live model fetch.
      */
     val cachedAudioModels: List<String> = emptyList(),
+    /**
+     * Single-call multimodal transcription (issue #130): when on, this provider's transcription model is
+     * an audio-capable chat model and dictation is sent to `chat/completions` with `input_audio` in one
+     * request (transcribe + format together) instead of using the dedicated STT endpoint plus a separate
+     * rewording call. Additive field, defaults off for older stored accounts.
+     */
+    val transcriptionViaChat: Boolean = false,
 ) {
     /** True once the user has supplied a usable key (or this is a keyless endpoint like Ollama). */
     val hasKey: Boolean
