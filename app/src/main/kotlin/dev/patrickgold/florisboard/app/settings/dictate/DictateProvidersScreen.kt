@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -57,6 +58,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
@@ -228,11 +235,28 @@ fun DictateProvidersScreen() = FlorisScreen {
 }
 
 /**
- * Active-transcription-provider picker (issue #104). Opens a dialog listing the transcription-capable
- * providers as radio options, with the **offline fallback** toggle as an extra checkbox item at the
- * bottom of the same dialog. The checkbox is hidden when the chosen provider is the on-device one (a
- * local fallback is meaningless there). Both the selection and the toggle are committed on confirm.
+ * Draws a thin, rounded scrollbar thumb on the trailing edge of a [verticalScroll]ed container so the
+ * user can tell there is more content below (Compose has no built-in scrollbar). Nothing is drawn when
+ * the content already fits.
  */
+private fun Modifier.verticalScrollbar(state: ScrollState, color: Color, width: Dp = 3.dp): Modifier =
+    drawWithContent {
+        drawContent()
+        val max = state.maxValue
+        if (max > 0 && max != Int.MAX_VALUE) {
+            val viewport = size.height
+            val thumbHeight = viewport * (viewport / (viewport + max))
+            val top = (viewport - thumbHeight) * (state.value.toFloat() / max)
+            val w = width.toPx()
+            drawRoundRect(
+                color = color,
+                topLeft = Offset(size.width - w, top),
+                size = Size(w, thumbHeight),
+                cornerRadius = CornerRadius(w / 2, w / 2),
+            )
+        }
+    }
+
 @Composable
 private fun RewordingProviderPreference(entries: List<Pair<String, String>>, showInfo: Boolean) {
     val prefs by FlorisPreferenceStore
@@ -273,10 +297,14 @@ private fun RewordingProviderPreference(entries: List<Pair<String, String>>, sho
             },
             onDismiss = { open = false },
         ) {
+            val scrollState = rememberScrollState()
+            val scrollbarColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
             Column(
                 modifier = Modifier
                     .heightIn(max = 320.dp)
-                    .verticalScroll(rememberScrollState()),
+                    .verticalScrollbar(scrollState, scrollbarColor)
+                    .verticalScroll(scrollState)
+                    .padding(end = 6.dp),
             ) {
                 entries.forEach { (id, label) ->
                     Row(
@@ -305,6 +333,12 @@ private fun RewordingProviderPreference(entries: List<Pair<String, String>>, sho
     }
 }
 
+/**
+ * Active-transcription-provider picker (issue #104). Opens a dialog listing the transcription-capable
+ * providers as radio options, with the **offline fallback** toggle as an extra checkbox item at the
+ * bottom of the same dialog. The checkbox is hidden when the chosen provider is the on-device one (a
+ * local fallback is meaningless there). Both the selection and the toggle are committed on confirm.
+ */
 @Composable
 private fun TranscriptionProviderPreference(entries: List<Pair<String, String>>) {
     val prefs by FlorisPreferenceStore
@@ -338,11 +372,15 @@ private fun TranscriptionProviderPreference(entries: List<Pair<String, String>>)
             },
             onDismiss = { open = false },
         ) {
+            val scrollState = rememberScrollState()
+            val scrollbarColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
             Column {
                 Column(
                     modifier = Modifier
                         .heightIn(max = 320.dp)
-                        .verticalScroll(rememberScrollState()),
+                        .verticalScrollbar(scrollState, scrollbarColor)
+                        .verticalScroll(scrollState)
+                        .padding(end = 6.dp),
                 ) {
                     entries.forEach { (id, label) ->
                         Row(
