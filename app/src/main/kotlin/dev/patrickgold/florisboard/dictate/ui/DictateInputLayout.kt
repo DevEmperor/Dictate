@@ -37,7 +37,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
+import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.dictate.DictateController
+import dev.patrickgold.jetpref.datastore.model.collectAsState
 import dev.patrickgold.florisboard.ime.ImeUiMode
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
@@ -72,6 +74,8 @@ fun DictateInputLayout(
     val keyboardManager by context.keyboardManager()
     val prompts by DictateController.prompts.collectAsState()
     val scrollState = rememberScrollState()
+    val prefs by FlorisPreferenceStore
+    val accent by prefs.theme.accentColor.collectAsState() // follows the user's keyboard accent.
 
     SnyggColumn(
         elementName = FlorisImeUi.Media.elementName,
@@ -116,7 +120,7 @@ fun DictateInputLayout(
                 // size.height is the content height and the offset compensates with state.value), but
                 // with a hard-coded accent color – MaterialTheme is not wired up in the IME, so the
                 // shared scrollbar's onSurface tint is effectively invisible here.
-                .dictatePanelScrollbar(scrollState)
+                .dictatePanelScrollbar(scrollState, accent)
                 .padding(8.dp),
             horizontalArrangement = Arrangement.Start,
         ) {
@@ -167,8 +171,6 @@ fun DictateInputLayout(
     }
 }
 
-/** Dictate accent (theme accent default), used for the panel scrollbar so it is visible on any theme. */
-private val DictateScrollbarAccent = Color(0xFF30B7E6)
 
 /**
  * Draws a slim, persistent scrollbar at the right edge of a [verticalScroll]ed container whenever the
@@ -183,6 +185,7 @@ private val DictateScrollbarAccent = Color(0xFF30B7E6)
  */
 private fun Modifier.dictatePanelScrollbar(
     state: ScrollState,
+    accent: Color,
     width: Dp = 5.dp,
 ): Modifier = drawWithContent {
     drawContent()
@@ -199,13 +202,13 @@ private fun Modifier.dictatePanelScrollbar(
     val thumbY = scrollValue + (viewport - thumbHeight) * (scrollValue / scrollMax)
     val radius = CornerRadius(barWidth / 2f, barWidth / 2f)
     drawRoundRect(
-        color = DictateScrollbarAccent.copy(alpha = 0.12f),
+        color = accent.copy(alpha = 0.12f),
         topLeft = Offset(x, trackY),
         size = Size(barWidth, viewport),
         cornerRadius = radius,
     )
     drawRoundRect(
-        color = DictateScrollbarAccent.copy(alpha = 0.85f),
+        color = accent.copy(alpha = 0.85f),
         topLeft = Offset(x, thumbY),
         size = Size(barWidth, thumbHeight),
         cornerRadius = radius,

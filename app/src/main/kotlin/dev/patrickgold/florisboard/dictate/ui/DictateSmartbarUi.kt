@@ -523,8 +523,9 @@ private fun errorIcon(kind: DictateApiException.Kind?, action: DictateController
 @Composable
 private fun PromoContent(kind: DictateController.PromoKind) {
     val context = LocalContext.current
+    val prefs by FlorisPreferenceStore
     val rowStyle = rememberSnyggThemeQuery(FlorisImeUi.SmartbarSharedActionsRow.elementName)
-    val accent = Color(0xFF30B7E6) // Dictate light blue (theme accent default).
+    val accent by prefs.theme.accentColor.collectAsState() // follows the user's keyboard accent.
     val leadingIcon = when (kind) {
         DictateController.PromoKind.RATE -> Icons.Default.Star
         DictateController.PromoKind.DONATE -> Icons.Default.Favorite

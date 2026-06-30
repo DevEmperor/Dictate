@@ -50,7 +50,11 @@ fun FlorisImeTheme(content: @Composable () -> Unit) {
     val assetResolver = remember(activeThemeInfo) {
         FlorisAssetResolver(context, activeThemeInfo)
     }
-    val snyggTheme = rememberSnyggTheme(activeThemeInfo.stylesheet, assetResolver)
+    // Drive the keyboard accent from the user's theme.accentColor: compileFrom replaces a *static*
+    // --primary/--primary-variant (the fixed default themes) with this exact color, while Material You
+    // themes keep their dynamic primaries. This is what makes the Dictate button / enter key follow the
+    // accent the user picks (the static themes hardcode #30b7e6 otherwise).
+    val snyggTheme = rememberSnyggTheme(activeThemeInfo.stylesheet, assetResolver, accentColor = accentColor)
     val windowSpec by windowController.activeWindowSpec.collectAsState()
     val fontScale by remember { derivedStateOf { windowSpec.fontScale } }
 

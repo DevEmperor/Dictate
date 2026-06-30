@@ -122,8 +122,9 @@ internal val LocalSnyggParentSelector: ProvidableCompositionLocal<SnyggSelector>
 fun rememberSnyggTheme(
     stylesheet: SnyggStylesheet,
     assetResolver: SnyggAssetResolver = SnyggDefaultAssetResolver,
-) = remember(stylesheet, assetResolver) {
-    SnyggTheme.compileFrom(stylesheet, assetResolver)
+    accentColor: Color? = null,
+) = remember(stylesheet, assetResolver, accentColor) {
+    SnyggTheme.compileFrom(stylesheet, assetResolver, accentColor)
 }
 
 /**

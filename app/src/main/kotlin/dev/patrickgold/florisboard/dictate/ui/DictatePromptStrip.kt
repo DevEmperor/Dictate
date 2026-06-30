@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.FlorisImeService
 import dev.patrickgold.florisboard.R
+import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.jetpref.datastore.model.collectAsState
 import dev.patrickgold.florisboard.dictate.DictateController
 import dev.patrickgold.florisboard.dictate.data.prompts.PromptModel
 import dev.patrickgold.florisboard.ime.input.LocalInputFeedbackController
@@ -51,9 +53,6 @@ import org.florisboard.lib.compose.stringRes
 import org.florisboard.lib.snygg.ui.SnyggIcon
 import org.florisboard.lib.snygg.ui.SnyggRow
 import org.florisboard.lib.snygg.ui.SnyggText
-
-/** Dictate accent (theme accent default), used to highlight queued prompts. */
-private val DictateAccent = Color(0xFF30B7E6)
 
 /** Matches the themed `smartbar-action-tile` shape (`rounded-corner(20%)`) for the highlight ring. */
 private val ChipShape = RoundedCornerShape(percent = 20)
@@ -186,6 +185,8 @@ internal fun DictatePromptChip(
     highlighted: Boolean = false,
     onLongClick: (() -> Unit)? = null,
 ) {
+    val prefs by FlorisPreferenceStore
+    val accent by prefs.theme.accentColor.collectAsState() // follows the user's keyboard accent.
     SnyggRow(
         elementName = FlorisImeUi.SmartbarActionTile.elementName,
         modifier = modifier,
@@ -195,8 +196,8 @@ internal fun DictatePromptChip(
             .then(
                 if (highlighted) {
                     Modifier
-                        .background(DictateAccent.copy(alpha = 0.22f))
-                        .border(1.5.dp, DictateAccent, ChipShape)
+                        .background(accent.copy(alpha = 0.22f))
+                        .border(1.5.dp, accent, ChipShape)
                 } else {
                     Modifier
                 },

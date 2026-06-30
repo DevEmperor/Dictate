@@ -30,6 +30,7 @@ import org.florisboard.lib.snygg.value.SnyggDefaultAssetResolver
 import org.florisboard.lib.snygg.value.SnyggFontStyleValue
 import org.florisboard.lib.snygg.value.SnyggFontWeightValue
 import org.florisboard.lib.snygg.value.SnyggUndefinedValue
+import androidx.compose.ui.graphics.Color
 import org.florisboard.lib.snygg.value.SnyggStaticColorValue
 import org.florisboard.lib.snygg.value.SnyggUriValue
 import java.io.File
@@ -94,6 +95,10 @@ data class SnyggTheme internal constructor(
         internal fun compileFrom(
             stylesheet: SnyggStylesheet,
             assetResolver: SnyggAssetResolver = SnyggDefaultAssetResolver,
+            // When non-null, replaces a *static* `--primary` / `--primary-variant` define with this color
+            // (and a darkened shade) so the user accent drives the keyboard. Themes that define those as
+            // dynamic values (Material You) are left untouched, so their dynamic behaviour is preserved.
+            accentColor: Color? = null,
         ): SnyggTheme {
             val elements = mutableMapOf<String, MutableList<Pair<SnyggElementRule, SnyggSinglePropertySet>>>()
             var variablesSet: SnyggSinglePropertySet? = null
@@ -133,7 +138,25 @@ data class SnyggTheme internal constructor(
                     }
                 }
             }
-            val variables = variablesSet?.properties ?: emptyMap()
+            val variables = (variablesSet?.properties ?: emptyMap()).let { vars ->
+                if (accentColor == null) return@let vars
+                vars.toMutableMap().apply {
+                    // Only override when the theme uses a *static* primary (the fixed-color default themes);
+                    // dynamic (Material You) primaries are left as-is.
+                    if (this["--primary"] is SnyggStaticColorValue) {
+                        this["--primary"] = SnyggStaticColorValue(accentColor)
+                    }
+                    if (this["--primary-variant"] is SnyggStaticColorValue) {
+                        this["--primary-variant"] = SnyggStaticColorValue(
+                            accentColor.copy(
+                                red = accentColor.red * 0.62f,
+                                green = accentColor.green * 0.62f,
+                                blue = accentColor.blue * 0.62f,
+                            ),
+                        )
+                    }
+                }
+            }
             val style = elements.mapValues { (_, rulesets) ->
                 rulesets.sortBy { it.first }
                 return@mapValues rulesets.map { (rule, propertySet) ->
