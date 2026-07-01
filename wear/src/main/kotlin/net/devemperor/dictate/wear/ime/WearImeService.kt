@@ -33,6 +33,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.devemperor.dictate.wear.R
 import net.devemperor.dictate.wear.audio.WearAudioRecorder
 import net.devemperor.dictate.wear.sync.WearSettingsStore
 import net.devemperor.dictate.wear.sync.WearSyncClient
@@ -164,7 +165,7 @@ class WearImeService :
             PackageManager.PERMISSION_GRANTED
         if (!granted) {
             // The IME can't request permissions; the settings activity grants RECORD_AUDIO.
-            fail("Grant microphone in the Dictate watch app")
+            fail(getString(R.string.wear_err_mic_grant))
             return
         }
         val result = runCatching { recorder.start() }
@@ -173,7 +174,7 @@ class WearImeService :
             recordingInfo.value = WearRecordingInfo(startedAtMs = SystemClock.elapsedRealtime())
             dictationState.value = WearDictationState.RECORDING
         } else {
-            fail(result.exceptionOrNull()?.shortReason() ?: "Microphone unavailable")
+            fail(result.exceptionOrNull()?.shortReason() ?: getString(R.string.wear_err_mic_unavailable))
         }
     }
 
@@ -223,9 +224,9 @@ class WearImeService :
                 outcome.isFailure -> {
                     val e = outcome.exceptionOrNull()
                     Log.e(TAG, "Dictation failed", e)
-                    fail(e?.shortReason() ?: "Transcription failed")
+                    fail(e?.shortReason() ?: getString(R.string.wear_err_transcribe_failed))
                 }
-                text.isNullOrBlank() -> fail("Empty transcript — check provider/key on the phone")
+                text.isNullOrBlank() -> fail(getString(R.string.wear_err_empty))
                 else -> {
                     ic()?.commitText(text, 1)
                     recordingInfo.value = WearRecordingInfo()
@@ -246,7 +247,7 @@ class WearImeService :
 
     /** A compact, user-facing reason from a thrown error (class name fallback when there's no message). */
     private fun Throwable.shortReason(): String =
-        (message?.takeIf { it.isNotBlank() } ?: this::class.simpleName ?: "Unknown error").take(80)
+        (message?.takeIf { it.isNotBlank() } ?: this::class.simpleName ?: getString(R.string.wear_err_unknown)).take(80)
 
     private companion object {
         const val TAG = "WearIme"

@@ -73,9 +73,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.annotation.StringRes
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.CircularProgressIndicator
@@ -84,17 +86,18 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.devemperor.dictate.wear.R
 import net.devemperor.dictate.wear.emoji.WearEmojiData
 import net.devemperor.dictate.wear.emoji.WearEmojiRecents
 import net.devemperor.dictate.wear.ui.WearDictateTheme
 
 /** The three input pages of the Wear keyboard, swipeable via the pager. */
-private enum class WearPage(val icon: ImageVector, val label: String) {
+private enum class WearPage(val icon: ImageVector, @StringRes val labelRes: Int) {
     // Order matters: it is the left→right pager order. Voice is the centre/start page; swiping right
     // goes to Numbers (previous), swiping left goes to Emoji (next).
-    NUMBERS(Icons.Filled.Dialpad, "123"),
-    VOICE(Icons.Filled.Mic, "Voice"),
-    EMOJI(Icons.Filled.Mood, "Emoji"),
+    NUMBERS(Icons.Filled.Dialpad, R.string.wear_tab_numbers),
+    VOICE(Icons.Filled.Mic, R.string.wear_tab_voice),
+    EMOJI(Icons.Filled.Mood, R.string.wear_tab_emoji),
 }
 
 /**
@@ -213,7 +216,7 @@ private fun EdgeChip(
         if (chevronOnStart) {
             Icon(Icons.Filled.ChevronLeft, contentDescription = null, modifier = Modifier.size(15.dp))
         }
-        Icon(imageVector = page.icon, contentDescription = page.label, modifier = Modifier.size(14.dp))
+        Icon(imageVector = page.icon, contentDescription = stringResource(page.labelRes), modifier = Modifier.size(14.dp))
         if (!chevronOnStart) {
             Icon(Icons.Filled.ChevronRight, contentDescription = null, modifier = Modifier.size(15.dp))
         }
@@ -287,8 +290,8 @@ private fun VoicePage(
         ) {
             when {
                 busy -> CircularProgressIndicator(modifier = Modifier.size(26.dp), strokeWidth = 3.dp)
-                recording -> Icon(Icons.Filled.Stop, contentDescription = "Stop", modifier = Modifier.size(28.dp))
-                else -> Icon(Icons.Filled.Mic, contentDescription = "Dictate", modifier = Modifier.size(28.dp))
+                recording -> Icon(Icons.Filled.Stop, contentDescription = stringResource(R.string.wear_cd_stop), modifier = Modifier.size(28.dp))
+                else -> Icon(Icons.Filled.Mic, contentDescription = stringResource(R.string.wear_cd_dictate), modifier = Modifier.size(28.dp))
             }
         }
 
@@ -311,20 +314,20 @@ private fun VoicePage(
         ) {
             if (recording) {
                 Row(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
-                    SmallAction(Icons.Filled.Close, "Cancel", actions.cancelDictation)
+                    SmallAction(Icons.Filled.Close, stringResource(R.string.wear_cd_cancel), actions.cancelDictation)
                     SmallAction(
                         if (paused) Icons.Filled.PlayArrow else Icons.Filled.Pause,
-                        if (paused) "Resume" else "Pause",
+                        if (paused) stringResource(R.string.wear_cd_resume) else stringResource(R.string.wear_cd_pause),
                         actions.togglePause,
                     )
                 }
             } else {
                 Text(
                     text = when (state) {
-                        WearDictationState.TRANSCRIBING -> "Transcribing…"
-                        WearDictationState.REWORDING -> "Rewording…"
-                        WearDictationState.ERROR -> errorMessage ?: "Error — tap to retry"
-                        else -> "Tap to dictate"
+                        WearDictationState.TRANSCRIBING -> stringResource(R.string.wear_status_transcribing)
+                        WearDictationState.REWORDING -> stringResource(R.string.wear_status_rewording)
+                        WearDictationState.ERROR -> errorMessage ?: stringResource(R.string.wear_status_error)
+                        else -> stringResource(R.string.wear_status_tap)
                     },
                     style = MaterialTheme.typography.caption2,
                     color = if (state == WearDictationState.ERROR) MaterialTheme.colors.error
@@ -435,8 +438,8 @@ private fun NumbersPage(actions: WearImeActions) {
                         contentAlignment = Alignment.Center,
                     ) {
                         when (key) {
-                            "⌫" -> Icon(Icons.AutoMirrored.Filled.Backspace, "Backspace", modifier = Modifier.size(22.dp))
-                            "⏎" -> Icon(Icons.AutoMirrored.Filled.KeyboardReturn, "Enter", modifier = Modifier.size(22.dp))
+                            "⌫" -> Icon(Icons.AutoMirrored.Filled.Backspace, stringResource(R.string.wear_cd_backspace), modifier = Modifier.size(22.dp))
+                            "⏎" -> Icon(Icons.AutoMirrored.Filled.KeyboardReturn, stringResource(R.string.wear_cd_enter), modifier = Modifier.size(22.dp))
                             else -> Text(key, style = MaterialTheme.typography.title2, fontWeight = FontWeight.Medium)
                         }
                     }

@@ -19,6 +19,7 @@ import dev.patrickgold.florisboard.dictate.sync.DictateWearProtocol
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
+import net.devemperor.dictate.wear.R
 import net.devemperor.dictate.wear.sync.WearSettingsStore
 import net.devemperor.dictate.wear.sync.WearSyncClient
 import java.io.File
@@ -63,7 +64,7 @@ object WearTranscription {
 
         // No phone: go solo if we can, otherwise tell the user why nothing happened.
         if (settings.canStandalone) return standalone(settings, audio, onRewording)
-        throw Unavailable("No phone in range and no on-watch key — open Dictate settings to sync.")
+        throw Unavailable(context.getString(R.string.wear_err_no_transport))
     }
 
     private const val TAG = "WearTranscription"

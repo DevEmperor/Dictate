@@ -3,21 +3,77 @@
     <string name="wear_app_name">Dictate</string>
     <string name="wear_ime_label">Dictate (Wear)</string>
 
-    <!-- Voice page -->
-    <string name="wear_tap_to_dictate">Tap to dictate</string>
-    <string name="wear_recording">Recording…</string>
-    <string name="wear_transcribing">Transcribing…</string>
-    <string name="wear_tap_to_stop">Tap to stop</string>
+    <!-- Pager tabs (content descriptions) -->
+    <string name="wear_tab_numbers">123</string>
+    <string name="wear_tab_voice">Voice</string>
+    <string name="wear_tab_emoji">Emoji</string>
 
-    <!-- Pager tabs -->
-    <string name="wear_page_voice">Voice</string>
-    <string name="wear_page_numbers">123</string>
-    <string name="wear_page_emoji">Emoji</string>
+    <!-- Voice page status line -->
+    <string name="wear_status_tap">Tap to dictate</string>
+    <string name="wear_status_transcribing">Transcribing…</string>
+    <string name="wear_status_rewording">Rewording…</string>
+    <string name="wear_status_error">Error — tap to retry</string>
 
-    <!-- Settings -->
-    <string name="wear_settings_title">Dictate settings</string>
-    <string name="wear_settings_standalone">Transcribe on watch (standalone)</string>
-    <string name="wear_settings_standalone_summary">Off: the paired phone transcribes (recommended). On: the watch calls the provider directly and needs the API key synced.</string>
-    <string name="wear_settings_mic_permission">Grant microphone access</string>
-    <string name="wear_settings_synced_from_phone">Settings are synced from your phone.</string>
+    <!-- Content descriptions -->
+    <string name="wear_cd_stop">Stop</string>
+    <string name="wear_cd_dictate">Dictate</string>
+    <string name="wear_cd_cancel">Cancel</string>
+    <string name="wear_cd_pause">Pause</string>
+    <string name="wear_cd_resume">Resume</string>
+    <string name="wear_cd_backspace">Backspace</string>
+    <string name="wear_cd_enter">Enter</string>
+
+    <!-- Errors -->
+    <string name="wear_err_mic_grant">Grant mic in Dictate app</string>
+    <string name="wear_err_mic_unavailable">Microphone unavailable</string>
+    <string name="wear_err_transcribe_failed">Transcription failed</string>
+    <string name="wear_err_empty">Empty — check phone key</string>
+    <string name="wear_err_unknown">Unknown error</string>
+    <string name="wear_err_no_transport">No phone; sync key in app</string>
+
+    <!-- Settings sections -->
+    <string name="wear_sec_try">Try it</string>
+    <string name="wear_sec_setup">Setup</string>
+    <string name="wear_sec_advanced">Advanced</string>
+
+    <!-- Try dictation demo -->
+    <string name="wear_try">Try dictation</string>
+    <string name="wear_try_stop">Stop &amp; transcribe</string>
+    <string name="wear_try_hint">Speak, then read it here</string>
+    <string name="wear_you_said">You said:</string>
+
+    <!-- Setup: microphone -->
+    <string name="wear_mic_ok">Microphone ✓</string>
+    <string name="wear_mic_grant">Grant microphone</string>
+    <string name="wear_mic_required">Needed to dictate</string>
+
+    <!-- Setup: keyboard -->
+    <string name="wear_kb_enable">Enable keyboard</string>
+    <string name="wear_kb_enabled">Keyboard enabled ✓</string>
+    <string name="wear_kb_enable_on">Types in any app</string>
+    <string name="wear_kb_enable_off">Turn on in settings</string>
+    <string name="wear_kb_choose">Choose keyboard</string>
+    <string name="wear_kb_chosen">Keyboard selected ✓</string>
+    <string name="wear_kb_choose_sub">Pick Dictate in a field</string>
+
+    <!-- Advanced -->
+    <string name="wear_key">Key on watch</string>
+    <string name="wear_key_on">Can dictate solo</string>
+    <string name="wear_key_off">Tether-only</string>
+    <string name="wear_reword">Auto-reword</string>
+    <string name="wear_reword_on">Format dictations</string>
+    <string name="wear_reword_off">Raw text</string>
+    <string name="wear_resync">Re-sync from phone</string>
+
+    <!-- Status card -->
+    <string name="wear_conn_checking">Checking phone…</string>
+    <string name="wear_conn_ok">Phone connected</string>
+    <string name="wear_conn_out">Phone out of range</string>
+    <string name="wear_path_phone">Transcribes via phone</string>
+    <string name="wear_path_watch">Transcribes on watch</string>
+    <string name="wear_path_sync">Open phone app to sync</string>
+
+    <!-- Footer version line. Explicitly "Wear OS" so a self-built / GitHub release APK is clearly the
+         watch build (its versionCode also lives in the +100000 band). Brand + numbers → not translated. -->
+    <string name="wear_version">Wear OS · v%1$s (%2$d)</string>
 </resources>
