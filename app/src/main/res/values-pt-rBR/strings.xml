@@ -1283,4 +1283,15 @@
     <string name="dictate__promo_milestone_time">%s economizado com o Dictate! 🎉</string>
     <string name="dictate__promo_milestone_count">%s ditados com o Dictate! 🎉</string>
     <string name="dictate__promo_milestone_action">Estatísticas</string>
+    <string name="dictate__reasoning_effort_title">Esforço de raciocínio</string>
+    <string name="dictate__reasoning_effort_off">Desligado</string>
+    <string name="dictate__reasoning_effort_off_summary">Padrão do provedor — deixe desligado para modelos sem raciocínio</string>
+    <string name="dictate__reasoning_effort_minimal">Mínimo</string>
+    <string name="dictate__reasoning_effort_minimal_summary">Mais rápido, menos raciocínio</string>
+    <string name="dictate__reasoning_effort_low">Baixo</string>
+    <string name="dictate__reasoning_effort_low_summary">Menos raciocínio, mais rápido</string>
+    <string name="dictate__reasoning_effort_medium">Médio</string>
+    <string name="dictate__reasoning_effort_medium_summary">Equilíbrio entre raciocínio e velocidade</string>
+    <string name="dictate__reasoning_effort_high">Alto</string>
+    <string name="dictate__reasoning_effort_high_summary">Máximo raciocínio, mais lento</string>
 </resources>

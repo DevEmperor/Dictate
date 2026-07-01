@@ -1480,4 +1480,15 @@
     <string name="dictate__promo_milestone_time">Сэкономлено %s с Dictate! 🎉</string>
     <string name="dictate__promo_milestone_count">%s диктовок с Dictate! 🎉</string>
     <string name="dictate__promo_milestone_action">Статистика</string>
+    <string name="dictate__reasoning_effort_title">Усилие рассуждения</string>
+    <string name="dictate__reasoning_effort_off">Выкл.</string>
+    <string name="dictate__reasoning_effort_off_summary">По умолчанию у провайдера — для нерассуждающих моделей оставьте выкл.</string>
+    <string name="dictate__reasoning_effort_minimal">Минимальное</string>
+    <string name="dictate__reasoning_effort_minimal_summary">Самое быстрое, минимум размышлений</string>
+    <string name="dictate__reasoning_effort_low">Низкое</string>
+    <string name="dictate__reasoning_effort_low_summary">Меньше размышлений, быстрее</string>
+    <string name="dictate__reasoning_effort_medium">Среднее</string>
+    <string name="dictate__reasoning_effort_medium_summary">Баланс размышлений и скорости</string>
+    <string name="dictate__reasoning_effort_high">Высокое</string>
+    <string name="dictate__reasoning_effort_high_summary">Больше всего размышлений, медленнее</string>
 </resources>

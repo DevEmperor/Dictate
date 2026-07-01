@@ -49,11 +49,17 @@ data class ChatRequest(
     val messages: List<ChatMessage>,
     val temperature: Double? = null,
     val maxTokens: Int? = null,
+    /**
+     * OpenAI-compatible `reasoning_effort` (e.g. `minimal`/`low`/`medium`/`high`) for reasoning models
+     * (issue #141). Null omits the field entirely — the provider default is used and non-reasoning models
+     * are unaffected.
+     */
+    val reasoningEffort: String? = null,
 ) {
     companion object {
         /** Convenience for the common single-user-message rewording case. */
-        fun ofUser(model: String, prompt: String) =
-            ChatRequest(model, listOf(ChatMessage(ChatRole.USER, prompt)))
+        fun ofUser(model: String, prompt: String, reasoningEffort: String? = null) =
+            ChatRequest(model, listOf(ChatMessage(ChatRole.USER, prompt)), reasoningEffort = reasoningEffort)
     }
 }
 

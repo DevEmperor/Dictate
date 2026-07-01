@@ -1348,4 +1348,15 @@
     <string name="dictate__promo_milestone_time">%s mit Dictate gespart! 🎉</string>
     <string name="dictate__promo_milestone_count">%s Diktate mit Dictate! 🎉</string>
     <string name="dictate__promo_milestone_action">Statistik</string>
+    <string name="dictate__reasoning_effort_title">Denkaufwand</string>
+    <string name="dictate__reasoning_effort_off">Aus</string>
+    <string name="dictate__reasoning_effort_off_summary">Anbieter-Standard — bei Nicht-Reasoning-Modellen aus lassen</string>
+    <string name="dictate__reasoning_effort_minimal">Minimal</string>
+    <string name="dictate__reasoning_effort_minimal_summary">Am schnellsten, kaum Nachdenken</string>
+    <string name="dictate__reasoning_effort_low">Niedrig</string>
+    <string name="dictate__reasoning_effort_low_summary">Weniger Nachdenken, schneller</string>
+    <string name="dictate__reasoning_effort_medium">Mittel</string>
+    <string name="dictate__reasoning_effort_medium_summary">Ausgewogen zwischen Nachdenken und Tempo</string>
+    <string name="dictate__reasoning_effort_high">Hoch</string>
+    <string name="dictate__reasoning_effort_high_summary">Am meisten Nachdenken, langsamer</string>
 </resources>

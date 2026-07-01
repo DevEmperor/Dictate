@@ -1376,4 +1376,15 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="dictate__promo_milestone_time">%s bespaard met Dictate! 🎉</string>
     <string name="dictate__promo_milestone_count">%s dictaten met Dictate! 🎉</string>
     <string name="dictate__promo_milestone_action">Statistieken</string>
+    <string name="dictate__reasoning_effort_title">Redeneerinspanning</string>
+    <string name="dictate__reasoning_effort_off">Uit</string>
+    <string name="dictate__reasoning_effort_off_summary">Standaard van provider — laat uit voor niet-redenerende modellen</string>
+    <string name="dictate__reasoning_effort_minimal">Minimaal</string>
+    <string name="dictate__reasoning_effort_minimal_summary">Snelst, minst nadenken</string>
+    <string name="dictate__reasoning_effort_low">Laag</string>
+    <string name="dictate__reasoning_effort_low_summary">Minder nadenken, sneller</string>
+    <string name="dictate__reasoning_effort_medium">Gemiddeld</string>
+    <string name="dictate__reasoning_effort_medium_summary">Balans tussen nadenken en snelheid</string>
+    <string name="dictate__reasoning_effort_high">Hoog</string>
+    <string name="dictate__reasoning_effort_high_summary">Meest nadenken, langzamer</string>
 </resources>

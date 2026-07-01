@@ -59,6 +59,7 @@ class OpenAiCompatibleClient(
             messages = request.messages.map { MessageDto(it.role.wire, it.content) },
             temperature = request.temperature,
             maxTokens = request.maxTokens,
+            reasoningEffort = request.reasoningEffort,
         )
         val payload = json.encodeToString(ChatCompletionRequestDto.serializer(), dto)
         val httpRequest = Request.Builder()
@@ -627,6 +628,8 @@ class OpenAiCompatibleClient(
         val messages: List<MessageDto>,
         val temperature: Double? = null,
         @SerialName("max_tokens") val maxTokens: Int? = null,
+        // Omitted when null (encodeDefaults = false), so non-reasoning models are unaffected (issue #141).
+        @SerialName("reasoning_effort") val reasoningEffort: String? = null,
     )
 
     @Serializable

@@ -1429,4 +1429,15 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="dictate__promo_milestone_time">Hemat %s dengan Dictate! 🎉</string>
     <string name="dictate__promo_milestone_count">%s dikte dengan Dictate! 🎉</string>
     <string name="dictate__promo_milestone_action">Statistik</string>
+    <string name="dictate__reasoning_effort_title">Upaya penalaran</string>
+    <string name="dictate__reasoning_effort_off">Mati</string>
+    <string name="dictate__reasoning_effort_off_summary">Bawaan penyedia — biarkan mati untuk model non-penalaran</string>
+    <string name="dictate__reasoning_effort_minimal">Minimal</string>
+    <string name="dictate__reasoning_effort_minimal_summary">Tercepat, paling sedikit berpikir</string>
+    <string name="dictate__reasoning_effort_low">Rendah</string>
+    <string name="dictate__reasoning_effort_low_summary">Lebih sedikit berpikir, lebih cepat</string>
+    <string name="dictate__reasoning_effort_medium">Sedang</string>
+    <string name="dictate__reasoning_effort_medium_summary">Seimbang antara berpikir dan kecepatan</string>
+    <string name="dictate__reasoning_effort_high">Tinggi</string>
+    <string name="dictate__reasoning_effort_high_summary">Paling banyak berpikir, lebih lambat</string>
 </resources>

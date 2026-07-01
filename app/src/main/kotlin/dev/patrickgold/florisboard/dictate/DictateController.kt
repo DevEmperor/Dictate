@@ -1315,7 +1315,13 @@ object DictateController {
             proxy = prefs.dictate.dictateProxyConfig(),
             trustUserCerts = prefs.dictate.trustUserCertificates.get(),
         )
-        val result = client.complete(ChatRequest.ofUser(model, userContent)).text.trim()
+        val result = client.complete(
+            ChatRequest.ofUser(
+                model, userContent,
+                // Reasoning effort for reasoning models (issue #141); OFF → null → field omitted.
+                reasoningEffort = prefs.dictate.rewordingReasoningEffort.get().wire,
+            ),
+        ).text.trim()
         // Lifetime statistics (issue #142): every rewording/prompt pass funnels through here.
         DictateStats.recordRewording(prefs)
         return result

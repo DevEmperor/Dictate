@@ -1331,4 +1331,15 @@
     <string name="dictate__promo_milestone_time">وفّرت %s مع Dictate! 🎉</string>
     <string name="dictate__promo_milestone_count">%s إملاء مع Dictate! 🎉</string>
     <string name="dictate__promo_milestone_action">الإحصاءات</string>
+    <string name="dictate__reasoning_effort_title">مقدار التفكير</string>
+    <string name="dictate__reasoning_effort_off">إيقاف</string>
+    <string name="dictate__reasoning_effort_off_summary">الإعداد الافتراضي للمزوّد — اتركه مطفأً للنماذج غير الاستدلالية</string>
+    <string name="dictate__reasoning_effort_minimal">الأدنى</string>
+    <string name="dictate__reasoning_effort_minimal_summary">الأسرع، أقل تفكير</string>
+    <string name="dictate__reasoning_effort_low">منخفض</string>
+    <string name="dictate__reasoning_effort_low_summary">تفكير أقل، أسرع</string>
+    <string name="dictate__reasoning_effort_medium">متوسط</string>
+    <string name="dictate__reasoning_effort_medium_summary">توازن بين التفكير والسرعة</string>
+    <string name="dictate__reasoning_effort_high">مرتفع</string>
+    <string name="dictate__reasoning_effort_high_summary">أكثر تفكيرًا، أبطأ</string>
 </resources>

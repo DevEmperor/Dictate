@@ -1492,4 +1492,15 @@
     <string name="dictate__promo_milestone_time">Zaoszczędzono %s z Dictate! 🎉</string>
     <string name="dictate__promo_milestone_count">%s dyktowań z Dictate! 🎉</string>
     <string name="dictate__promo_milestone_action">Statystyki</string>
+    <string name="dictate__reasoning_effort_title">Wysiłek rozumowania</string>
+    <string name="dictate__reasoning_effort_off">Wył.</string>
+    <string name="dictate__reasoning_effort_off_summary">Domyślne dostawcy — wyłącz dla modeli bez rozumowania</string>
+    <string name="dictate__reasoning_effort_minimal">Minimalny</string>
+    <string name="dictate__reasoning_effort_minimal_summary">Najszybszy, minimum myślenia</string>
+    <string name="dictate__reasoning_effort_low">Niski</string>
+    <string name="dictate__reasoning_effort_low_summary">Mniej myślenia, szybciej</string>
+    <string name="dictate__reasoning_effort_medium">Średni</string>
+    <string name="dictate__reasoning_effort_medium_summary">Równowaga myślenia i szybkości</string>
+    <string name="dictate__reasoning_effort_high">Wysoki</string>
+    <string name="dictate__reasoning_effort_high_summary">Najwięcej myślenia, wolniej</string>
 </resources>

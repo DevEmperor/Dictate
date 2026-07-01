@@ -1454,4 +1454,15 @@
     <string name="dictate__promo_milestone_time">Dictate ile %s kazanıldı! 🎉</string>
     <string name="dictate__promo_milestone_count">Dictate ile %s dikte! 🎉</string>
     <string name="dictate__promo_milestone_action">İstatistik</string>
+    <string name="dictate__reasoning_effort_title">Akıl yürütme çabası</string>
+    <string name="dictate__reasoning_effort_off">Kapalı</string>
+    <string name="dictate__reasoning_effort_off_summary">Sağlayıcı varsayılanı — akıl yürütmeyen modellerde kapalı bırakın</string>
+    <string name="dictate__reasoning_effort_minimal">Minimum</string>
+    <string name="dictate__reasoning_effort_minimal_summary">En hızlı, en az düşünme</string>
+    <string name="dictate__reasoning_effort_low">Düşük</string>
+    <string name="dictate__reasoning_effort_low_summary">Daha az düşünme, daha hızlı</string>
+    <string name="dictate__reasoning_effort_medium">Orta</string>
+    <string name="dictate__reasoning_effort_medium_summary">Düşünme ve hız dengesi</string>
+    <string name="dictate__reasoning_effort_high">Yüksek</string>
+    <string name="dictate__reasoning_effort_high_summary">En çok düşünme, daha yavaş</string>
 </resources>

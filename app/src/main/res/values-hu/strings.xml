@@ -1474,4 +1474,15 @@
     <string name="dictate__promo_milestone_time">%s megspórolva a Dictate-tel! 🎉</string>
     <string name="dictate__promo_milestone_count">%s diktálás a Dictate-tel! 🎉</string>
     <string name="dictate__promo_milestone_action">Statisztika</string>
+    <string name="dictate__reasoning_effort_title">Gondolkodási ráfordítás</string>
+    <string name="dictate__reasoning_effort_off">Ki</string>
+    <string name="dictate__reasoning_effort_off_summary">Szolgáltatói alapérték — nem gondolkodó modelleknél hagyd kikapcsolva</string>
+    <string name="dictate__reasoning_effort_minimal">Minimális</string>
+    <string name="dictate__reasoning_effort_minimal_summary">Leggyorsabb, legkevesebb gondolkodás</string>
+    <string name="dictate__reasoning_effort_low">Alacsony</string>
+    <string name="dictate__reasoning_effort_low_summary">Kevesebb gondolkodás, gyorsabb</string>
+    <string name="dictate__reasoning_effort_medium">Közepes</string>
+    <string name="dictate__reasoning_effort_medium_summary">Kiegyensúlyozott gondolkodás és sebesség</string>
+    <string name="dictate__reasoning_effort_high">Magas</string>
+    <string name="dictate__reasoning_effort_high_summary">Legtöbb gondolkodás, lassabb</string>
 </resources>

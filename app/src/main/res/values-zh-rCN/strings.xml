@@ -1470,4 +1470,15 @@
     <string name="dictate__promo_milestone_time">用 Dictate 节省了 %s！🎉</string>
     <string name="dictate__promo_milestone_count">用 Dictate 达成 %s 次！🎉</string>
     <string name="dictate__promo_milestone_action">统计</string>
+    <string name="dictate__reasoning_effort_title">推理力度</string>
+    <string name="dictate__reasoning_effort_off">关闭</string>
+    <string name="dictate__reasoning_effort_off_summary">提供商默认 — 非推理模型请保持关闭</string>
+    <string name="dictate__reasoning_effort_minimal">最小</string>
+    <string name="dictate__reasoning_effort_minimal_summary">最快，思考最少</string>
+    <string name="dictate__reasoning_effort_low">低</string>
+    <string name="dictate__reasoning_effort_low_summary">思考更少，更快</string>
+    <string name="dictate__reasoning_effort_medium">中</string>
+    <string name="dictate__reasoning_effort_medium_summary">思考与速度平衡</string>
+    <string name="dictate__reasoning_effort_high">高</string>
+    <string name="dictate__reasoning_effort_high_summary">思考最多，更慢</string>
 </resources>

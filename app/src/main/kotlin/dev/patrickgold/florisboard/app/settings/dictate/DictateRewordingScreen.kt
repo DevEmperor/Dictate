@@ -12,6 +12,7 @@ package dev.patrickgold.florisboard.app.settings.dictate
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoFixHigh
+import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Key
@@ -28,6 +29,7 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.dictate.DictatePromptsLayout
+import dev.patrickgold.florisboard.dictate.DictateReasoningEffort
 import dev.patrickgold.florisboard.dictate.data.prompts.DictatePromptDefaults
 import dev.patrickgold.florisboard.dictate.data.prompts.PromptsDatabaseHelper
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
@@ -104,6 +106,40 @@ fun DictateRewordingScreen() = FlorisScreen {
             icon = Icons.Default.AutoFixHigh,
             title = stringRes(R.string.dictate__auto_formatting_title),
             summary = stringRes(R.string.dictate__auto_formatting_summary),
+        )
+
+        ListPreference(
+            prefs.dictate.rewordingReasoningEffort,
+            icon = Icons.Default.Bolt,
+            title = stringRes(R.string.dictate__reasoning_effort_title),
+            entries = listPrefEntries {
+                entry(
+                    DictateReasoningEffort.OFF,
+                    stringRes(R.string.dictate__reasoning_effort_off),
+                    stringRes(R.string.dictate__reasoning_effort_off_summary),
+                )
+                entry(
+                    DictateReasoningEffort.MINIMAL,
+                    stringRes(R.string.dictate__reasoning_effort_minimal),
+                    stringRes(R.string.dictate__reasoning_effort_minimal_summary),
+                )
+                entry(
+                    DictateReasoningEffort.LOW,
+                    stringRes(R.string.dictate__reasoning_effort_low),
+                    stringRes(R.string.dictate__reasoning_effort_low_summary),
+                )
+                entry(
+                    DictateReasoningEffort.MEDIUM,
+                    stringRes(R.string.dictate__reasoning_effort_medium),
+                    stringRes(R.string.dictate__reasoning_effort_medium_summary),
+                )
+                entry(
+                    DictateReasoningEffort.HIGH,
+                    stringRes(R.string.dictate__reasoning_effort_high),
+                    stringRes(R.string.dictate__reasoning_effort_high_summary),
+                )
+            },
+            enabledIf = { prefs.dictate.rewordingEnabled isEqualTo true },
         )
 
         val systemSelection by prefs.dictate.systemPromptSelection.collectAsState()

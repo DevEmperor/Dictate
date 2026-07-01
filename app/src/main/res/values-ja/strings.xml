@@ -1406,4 +1406,15 @@
     <string name="dictate__promo_milestone_time">Dictate で %s 節約! 🎉</string>
     <string name="dictate__promo_milestone_count">Dictate で %s 回! 🎉</string>
     <string name="dictate__promo_milestone_action">統計</string>
+    <string name="dictate__reasoning_effort_title">推論の労力</string>
+    <string name="dictate__reasoning_effort_off">オフ</string>
+    <string name="dictate__reasoning_effort_off_summary">プロバイダー既定 — 非推論モデルではオフのまま</string>
+    <string name="dictate__reasoning_effort_minimal">最小</string>
+    <string name="dictate__reasoning_effort_minimal_summary">最速、思考は最小</string>
+    <string name="dictate__reasoning_effort_low">低</string>
+    <string name="dictate__reasoning_effort_low_summary">思考を減らし高速</string>
+    <string name="dictate__reasoning_effort_medium">中</string>
+    <string name="dictate__reasoning_effort_medium_summary">思考と速度のバランス</string>
+    <string name="dictate__reasoning_effort_high">高</string>
+    <string name="dictate__reasoning_effort_high_summary">最も思考、低速</string>
 </resources>

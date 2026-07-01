@@ -27,6 +27,7 @@ import dev.patrickgold.florisboard.dictate.DictateFloatingButtonDesign
 import dev.patrickgold.florisboard.dictate.audio.DictateAudioSource
 import dev.patrickgold.florisboard.dictate.DictateFloatingButtonSize
 import dev.patrickgold.florisboard.dictate.DictatePromptsLayout
+import dev.patrickgold.florisboard.dictate.DictateReasoningEffort
 import dev.patrickgold.florisboard.dictate.data.mappings.DictateMappings
 import dev.patrickgold.florisboard.dictate.provider.DictateProxyType
 import dev.patrickgold.florisboard.dictate.provider.ProviderAccounts
@@ -590,6 +591,12 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val rewordingEnabled = boolean(
             key = "dictate__rewording_enabled",
             default = true,
+        )
+        // Reasoning effort sent as OpenAI-compatible `reasoning_effort` on rewording chat calls for
+        // reasoning models (issue #141). OFF omits the field, so non-reasoning models are unaffected.
+        val rewordingReasoningEffort = enum(
+            key = "dictate__rewording_reasoning_effort",
+            default = DictateReasoningEffort.OFF,
         )
         // How the rewording prompt chips are surfaced: a dedicated panel (PANEL) opened from the
         // Smartbar, or an always-on extra row pinned above the Smartbar (ROW). See DictatePromptsLayout.

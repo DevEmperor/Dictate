@@ -1320,4 +1320,15 @@
     <string name="dictate__promo_milestone_time">Заощаджено %s із Dictate! 🎉</string>
     <string name="dictate__promo_milestone_count">%s диктувань із Dictate! 🎉</string>
     <string name="dictate__promo_milestone_action">Статистика</string>
+    <string name="dictate__reasoning_effort_title">Зусилля міркування</string>
+    <string name="dictate__reasoning_effort_off">Вимк.</string>
+    <string name="dictate__reasoning_effort_off_summary">Стандарт постачальника — для не-міркувальних моделей залиште вимкненим</string>
+    <string name="dictate__reasoning_effort_minimal">Мінімальне</string>
+    <string name="dictate__reasoning_effort_minimal_summary">Найшвидше, мінімум міркувань</string>
+    <string name="dictate__reasoning_effort_low">Низьке</string>
+    <string name="dictate__reasoning_effort_low_summary">Менше міркувань, швидше</string>
+    <string name="dictate__reasoning_effort_medium">Середнє</string>
+    <string name="dictate__reasoning_effort_medium_summary">Баланс міркувань і швидкості</string>
+    <string name="dictate__reasoning_effort_high">Високе</string>
+    <string name="dictate__reasoning_effort_high_summary">Найбільше міркувань, повільніше</string>
 </resources>

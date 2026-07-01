@@ -1420,4 +1420,15 @@
     <string name="dictate__promo_milestone_time">Ietaupīts %s ar Dictate! 🎉</string>
     <string name="dictate__promo_milestone_count">%s diktāti ar Dictate! 🎉</string>
     <string name="dictate__promo_milestone_action">Statistika</string>
+    <string name="dictate__reasoning_effort_title">Spriešanas piepūle</string>
+    <string name="dictate__reasoning_effort_off">Izslēgts</string>
+    <string name="dictate__reasoning_effort_off_summary">Nodrošinātāja noklusējums — nespriešanas modeļiem atstāj izslēgtu</string>
+    <string name="dictate__reasoning_effort_minimal">Minimāla</string>
+    <string name="dictate__reasoning_effort_minimal_summary">Ātrākais, vismazāk domāšanas</string>
+    <string name="dictate__reasoning_effort_low">Zema</string>
+    <string name="dictate__reasoning_effort_low_summary">Mazāk domāšanas, ātrāk</string>
+    <string name="dictate__reasoning_effort_medium">Vidēja</string>
+    <string name="dictate__reasoning_effort_medium_summary">Līdzsvars starp domāšanu un ātrumu</string>
+    <string name="dictate__reasoning_effort_high">Augsta</string>
+    <string name="dictate__reasoning_effort_high_summary">Visvairāk domāšanas, lēnāk</string>
 </resources>

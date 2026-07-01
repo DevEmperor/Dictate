@@ -1350,4 +1350,15 @@
     <string name="dictate__promo_milestone_time">%s estalviat amb Dictate! 🎉</string>
     <string name="dictate__promo_milestone_count">%s dictats amb Dictate! 🎉</string>
     <string name="dictate__promo_milestone_action">Estadístiques</string>
+    <string name="dictate__reasoning_effort_title">Esforç de raonament</string>
+    <string name="dictate__reasoning_effort_off">Desactivat</string>
+    <string name="dictate__reasoning_effort_off_summary">Predeterminat del proveïdor — deixa-ho desactivat per a models sense raonament</string>
+    <string name="dictate__reasoning_effort_minimal">Mínim</string>
+    <string name="dictate__reasoning_effort_minimal_summary">El més ràpid, poc raonament</string>
+    <string name="dictate__reasoning_effort_low">Baix</string>
+    <string name="dictate__reasoning_effort_low_summary">Menys raonament, més ràpid</string>
+    <string name="dictate__reasoning_effort_medium">Mitjà</string>
+    <string name="dictate__reasoning_effort_medium_summary">Equilibri entre raonament i velocitat</string>
+    <string name="dictate__reasoning_effort_high">Alt</string>
+    <string name="dictate__reasoning_effort_high_summary">Màxim raonament, més lent</string>
 </resources>
