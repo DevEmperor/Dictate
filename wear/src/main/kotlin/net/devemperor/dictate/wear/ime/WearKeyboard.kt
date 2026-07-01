@@ -179,18 +179,35 @@ fun WearKeyboard(
     }
 }
 
-/** Insets page content away from the clipped corners on round watches; near-zero padding on square ones. */
+/**
+ * Insets page content away from the clipped corners on round watches; near-zero padding on square ones.
+ *
+ * The keypad / emoji grid fill the full rectangular width, so on a circular display their corner cells
+ * are cut off by the edge (Play "Watch shapes" rejection). Padding by the [INSCRIBED_SQUARE_INSET]
+ * fraction of the screen size fits the content inside the circle's inscribed square, which guarantees
+ * every corner cell sits at or within the circular edge. Scaling with the actual screen size keeps it
+ * correct across watch sizes (a fixed dp was far too small on larger round displays).
+ */
 @Composable
 private fun PageInset(content: @Composable () -> Unit) {
-    val round = LocalConfiguration.current.isScreenRound
+    val config = LocalConfiguration.current
+    val round = config.isScreenRound
+    val hPad = if (round) (config.screenWidthDp * INSCRIBED_SQUARE_INSET).dp else 6.dp
+    val vPad = if (round) (config.screenHeightDp * INSCRIBED_SQUARE_INSET).dp else 2.dp
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = if (round) 16.dp else 6.dp, vertical = if (round) 12.dp else 2.dp),
+            .padding(horizontal = hPad, vertical = vPad),
     ) {
         content()
     }
 }
+
+/**
+ * Fraction of the screen to inset on round watches so full-width content fits the inscribed square:
+ * `(1 − 1/√2) / 2 ≈ 0.1464` — the same factor Wear's BoxInsetLayout uses.
+ */
+private const val INSCRIBED_SQUARE_INSET = 0.1464f
 
 /**
  * A small pill pinned to a screen edge on the Voice page: an outward chevron + the target page's icon,
