@@ -134,7 +134,9 @@ fun ProvideKeyboardRowBaseHeight(content: @Composable () -> Unit) {
         val marginV = InlineSuggestionsChipMargin.calculateTopPadding() +
             InlineSuggestionsChipMargin.calculateBottomPadding()
         NlpInlineAutofill.suggestionsChipHeightPx = with(density) {
-            (smartbarRowHeight - marginV).roundToPx()
+            // Never let the chip height go negative (margins can exceed a small Smartbar row): a negative
+            // size crashes InlineSuggestion.inflate() (issue #145).
+            (smartbarRowHeight - marginV).coerceAtLeast(0.dp).roundToPx()
         }
     }
 

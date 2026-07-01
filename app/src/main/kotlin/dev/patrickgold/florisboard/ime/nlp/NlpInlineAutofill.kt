@@ -64,7 +64,16 @@ object NlpInlineAutofill {
         }
 
         scope.launch {
-            val size = Size(ViewGroup.LayoutParams.WRAP_CONTENT, suggestionsChipHeightPx)
+            // InlineSuggestion.inflate() rejects an invalid size with IllegalArgumentException (issue #145):
+            // a non-positive height — which happens when the Smartbar row is smaller than the chip margins
+            // (some themes/keyboard heights make suggestionsChipHeightPx come out <= 0) — is neither within
+            // the request's [min,max] nor wrap_content. Fall back to WRAP_CONTENT height so it stays valid.
+            val height = suggestionsChipHeightPx
+            val size = if (height > 0) {
+                Size(ViewGroup.LayoutParams.WRAP_CONTENT, height)
+            } else {
+                Size(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            }
             val latch = CountDownLatch(rawSuggestions.size)
             val suggestionsArray = Array<NlpInlineAutofillSuggestion?>(rawSuggestions.size) { null }
 
