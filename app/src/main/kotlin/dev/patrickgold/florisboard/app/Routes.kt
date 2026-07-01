@@ -67,6 +67,7 @@ import dev.patrickgold.florisboard.app.settings.dictate.DictatePromptsScreen
 import dev.patrickgold.florisboard.app.settings.dictate.DictateFloatingButtonScreen
 import dev.patrickgold.florisboard.app.settings.dictate.DictateRewordingScreen
 import dev.patrickgold.florisboard.app.settings.dictate.DictateScreen
+import dev.patrickgold.florisboard.app.settings.dictate.DictateStatsScreen
 import dev.patrickgold.florisboard.app.settings.dictionary.DictionaryScreen
 import dev.patrickgold.florisboard.app.settings.dictionary.UserDictionaryScreen
 import dev.patrickgold.florisboard.app.settings.dictionary.UserDictionaryType
@@ -144,6 +145,10 @@ object Routes {
         @Serializable
         @Deeplink("settings/dictate/rewording")
         object DictateRewording
+
+        @Serializable
+        @Deeplink("settings/dictate/stats")
+        object DictateStats
 
         @Serializable
         @Deeplink("settings/dictate/floating-button")
@@ -329,6 +334,7 @@ object Routes {
             composableWithDeepLink(Settings.DictateProxy::class) { DictateProxyScreen() }
             composableWithDeepLink(Settings.DictateWear::class) { DictateWearScreen() }
             composableWithDeepLink(Settings.DictateRewording::class) { DictateRewordingScreen() }
+            composableWithDeepLink(Settings.DictateStats::class) { DictateStatsScreen() }
             composableWithDeepLink(Settings.DictateFloatingButton::class) { DictateFloatingButtonScreen() }
             composableWithDeepLink(Settings.DictatePrompts::class) { navBackStack ->
                 val payload = navBackStack.toRoute<Settings.DictatePrompts>()

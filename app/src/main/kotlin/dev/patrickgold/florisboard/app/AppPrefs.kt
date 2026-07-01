@@ -474,6 +474,30 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__interrupted_audio_live",
             default = false,
         )
+        // --- Lifetime dictation statistics (issue #142) ------------------------------------------
+        // Never auto-reset (unlike totalAudioSeconds below, which the rate nudge clears); only the user
+        // can reset them from the stats screen. Updated centrally after each successful dictation.
+        val statsDictations = long(key = "dictate__stats_dictations", default = 0L)
+        val statsWords = long(key = "dictate__stats_words", default = 0L)
+        val statsChars = long(key = "dictate__stats_chars", default = 0L)
+        val statsSpokenSeconds = long(key = "dictate__stats_spoken_seconds", default = 0L)
+        val statsRewordings = long(key = "dictate__stats_rewordings", default = 0L)
+        // Epoch millis of the first ever dictation (0 = none yet), for the "tracking since" line.
+        val statsFirstUseEpochMs = long(key = "dictate__stats_first_use_epoch_ms", default = 0L)
+        // Day-streak bookkeeping: last active day (epoch day) plus current/best consecutive-day runs.
+        val statsLastDayEpoch = long(key = "dictate__stats_last_day_epoch", default = 0L)
+        val statsStreakCurrent = int(key = "dictate__stats_streak_current", default = 0)
+        val statsStreakBest = int(key = "dictate__stats_streak_best", default = 0)
+        // Compact rolling per-day word counts for the 7-day chart: "epochDay:words;epochDay:words;…".
+        val statsDaily = string(key = "dictate__stats_daily", default = "")
+        // One-time milestone celebrations (issue #142). Only saved-time and dictation-count milestones,
+        // shown once each in the app (never on the keyboard). Toggle lives on the stats screen.
+        val statsMilestonesEnabled = boolean(key = "dictate__stats_milestones_enabled", default = true)
+        val statsMilestoneTimeShown = long(key = "dictate__stats_milestone_time_shown", default = 0L)
+        val statsMilestoneCountShown = long(key = "dictate__stats_milestone_count_shown", default = 0L)
+        // A crossed-but-not-yet-shown milestone, consumed on next app open: "time:<min>" | "count:<n>".
+        val statsPendingMilestone = string(key = "dictate__stats_pending_milestone", default = "")
+
         // --- Rate / Donate nudges (roadmap 9.7/9.8) ----------------------------------------------
         // Cumulative seconds of successfully transcribed *recorded* audio, used to gate the one-time
         // rate/donate prompts. Replaces the legacy usage DB (which was dropped); only this counter

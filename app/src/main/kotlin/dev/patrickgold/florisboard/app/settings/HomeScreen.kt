@@ -16,13 +16,21 @@
 
 package dev.patrickgold.florisboard.app.settings
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.outlined.Assignment
 import androidx.compose.material.icons.filled.Extension
 import androidx.compose.material.icons.filled.Gesture
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.SentimentSatisfiedAlt
 import androidx.compose.material.icons.filled.SmartButton
 import androidx.compose.material.icons.filled.Spellcheck
@@ -30,18 +38,27 @@ import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Keyboard
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
+import dev.patrickgold.florisboard.dictate.data.stats.DictateStats
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.florisboard.lib.util.InputMethodUtils
 import dev.patrickgold.jetpref.datastore.model.collectAsState
 import dev.patrickgold.jetpref.datastore.ui.Preference
+import java.text.NumberFormat
 import org.florisboard.lib.compose.FlorisErrorCard
 import org.florisboard.lib.compose.FlorisWarningCard
 import org.florisboard.lib.compose.stringRes
@@ -75,6 +92,58 @@ fun HomeScreen() = FlorisScreen {
                 onClick = { InputMethodUtils.showImePicker(context) },
             )
         }
+
+        // Passive dictation-stats summary (issue #142): appears once the user has dictated, taps through
+        // to the full statistics screen. No interruption — just a glanceable "time saved".
+        val statDictations by prefs.dictate.statsDictations.collectAsState()
+        val statWords by prefs.dictate.statsWords.collectAsState()
+        val statSpoken by prefs.dictate.statsSpokenSeconds.collectAsState()
+        if (statDictations > 0L) {
+            val saved = DictateStats.savedSeconds(statWords, statSpoken)
+            Card(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+                    .clickable { navController.navigate(Routes.Settings.DictateStats) },
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                ),
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Icon(Icons.Default.Schedule, contentDescription = null, modifier = Modifier.size(24.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        // Small "saved" label so it's clear the figure is time saved, not usage time.
+                        Text(
+                            stringRes(R.string.dictate__stats_time_saved),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f),
+                        )
+                        // Emphasized time + count on one line.
+                        Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(
+                                homeDuration(saved.toLong()),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                "· ${NumberFormat.getIntegerInstance().format(statDictations)} ${stringRes(R.string.dictate__stats_dictations)}",
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(bottom = 2.dp),
+                            )
+                        }
+                    }
+                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                }
+            }
+        }
+
+        // Milestone celebrations are shown on the keyboard (Smartbar nudge), consistent with rate/donate
+        // (issue #142) — see DictateController.showMilestoneNudge. Not surfaced here.
 
         /*Card(modifier = Modifier.padding(8.dp)) {
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -166,5 +235,17 @@ fun HomeScreen() = FlorisScreen {
             title = stringRes(R.string.about__title),
             onClick = { navController.navigate(Routes.Settings.About) },
         )
+    }
+}
+
+/** Compact duration for the home stats card / milestone text: `3h`, `3h 12m`, `12m`, `45s`. */
+private fun homeDuration(totalSeconds: Long): String {
+    val s = totalSeconds.coerceAtLeast(0L)
+    val h = s / 3600
+    val m = (s % 3600) / 60
+    return when {
+        h > 0 -> if (m > 0) "${h}h ${m}m" else "${h}h"
+        m > 0 -> "${m}m"
+        else -> "${s}s"
     }
 }

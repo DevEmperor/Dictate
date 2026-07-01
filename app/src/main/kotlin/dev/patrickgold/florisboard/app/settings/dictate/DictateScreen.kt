@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.MenuBook
@@ -106,6 +107,13 @@ fun DictateScreen() = FlorisScreen {
         val rewordingName = remember(rewordingProviderId, accounts) {
             providerDisplayName(rewordingProviderId, accounts)
         }
+        Preference(
+            icon = Icons.Default.Insights,
+            title = stringRes(R.string.dictate__stats_title),
+            summary = stringRes(R.string.dictate__stats_menu_summary),
+            onClick = { navController.navigate(Routes.Settings.DictateStats) },
+        )
+
         PreferenceGroup(title = stringRes(R.string.dictate__transcription_group)) {
             Preference(
                 icon = Icons.Default.Cloud,

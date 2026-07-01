@@ -28,6 +28,7 @@ import dev.patrickgold.florisboard.dictate.audio.RecordingController
 import dev.patrickgold.florisboard.dictate.data.prompts.DictatePromptDefaults
 import dev.patrickgold.florisboard.dictate.data.prompts.PromptModel
 import dev.patrickgold.florisboard.dictate.data.prompts.PromptsDatabaseHelper
+import dev.patrickgold.florisboard.dictate.data.stats.DictateStats
 import dev.patrickgold.florisboard.dictate.provider.ChatRequest
 import dev.patrickgold.florisboard.dictate.provider.DictateApiException
 import dev.patrickgold.florisboard.dictate.provider.LocalModelManager
@@ -52,6 +53,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.text.NumberFormat
 
 /**
  * Orchestrates the dictation flow that fuses the recording, the provider layer and the editor: tap
@@ -103,8 +105,11 @@ object DictateController {
          * offers to transcribe it or discard it. [seconds] is the captured length, shown for context.
          */
         data class Interrupted(val seconds: Long) : UiState
-        /** A one-time rate/donate nudge shown in the Smartbar after enough usage (roadmap 9.7/9.8). */
-        data class Promo(val kind: PromoKind) : UiState
+        /**
+         * A one-time Smartbar nudge (roadmap 9.7/9.8). [message] overrides the kind's static text for
+         * nudges whose text is dynamic (the [PromoKind.MILESTONE] celebration, issue #142).
+         */
+        data class Promo(val kind: PromoKind, val message: String? = null) : UiState
     }
 
     /** Why an audio file is being kept for a one-tap re-send (drives the unified resend chip copy/tint). */
@@ -133,7 +138,7 @@ object DictateController {
      * CHANGELOG is shown right after an app update (see [maybePromptChangelog]) and opens the in-app
      * "What's new" dialog instead of a web page.
      */
-    enum class PromoKind { RATE, DONATE, CHANGELOG, FLOATING_BUTTON }
+    enum class PromoKind { RATE, DONATE, CHANGELOG, FLOATING_BUTTON, MILESTONE }
 
     /**
      * Where the active dictation's output goes: the keyboard editor ([OutputTarget.IME]) or the
@@ -640,13 +645,20 @@ object DictateController {
                 // Keep the committed text as the re-insert safety net (issue #111), so it can be
                 // recovered if the field is later cleared (rotation / context switch / host refresh).
                 rememberLastDictation(outputText)
+                // Lifetime statistics (issue #142): count this dictation, its words and spoken time.
+                DictateStats.recordDictation(prefs, outputText, recordedSeconds)
                 discardRetainedAudio()
                 // Credit recorded audio towards the rate/donate gating (roadmap 9.7/9.8).
                 if (recordedSeconds > 0L) creditAudioSeconds(recordedSeconds)
                 _state.value = UiState.Idle
-                // Re-assert the rate/donate nudge: it has no auto-timeout and stays until the user
-                // accepts/declines, so if recording temporarily replaced a pending nudge, bring it back.
-                maybePromptForReview()
+                // A positive milestone celebration (issue #142) takes precedence over the rate/donate
+                // nudge, but only on the keyboard: an overlay dictation leaves it pending so it is shown
+                // (not silently consumed) the next time the keyboard is used.
+                if (outputTarget != OutputTarget.IME || !showMilestoneNudge(appContext)) {
+                    // Re-assert the rate/donate nudge: it has no auto-timeout and stays until the user
+                    // accepts/declines, so if recording temporarily replaced a pending nudge, bring it back.
+                    maybePromptForReview()
+                }
             } catch (c: CancellationException) {
                 // User aborted via the stop button: discard quietly (state set by cancelTranscription),
                 // never show an error. The audio is dropped in the finally block.
@@ -994,6 +1006,26 @@ object DictateController {
     }
 
     /**
+     * If a saved-time / dictation-count milestone is pending (issue #142), shows it as a one-time Smartbar
+     * celebration and returns true (consuming the pending marker). Returns false — leaving anything pending
+     * intact — when idle-state is not held or nothing is pending / celebrations are off.
+     */
+    private suspend fun showMilestoneNudge(context: Context): Boolean {
+        if (_state.value !is UiState.Idle) return false
+        val milestone = DictateStats.consumePendingMilestone(prefs) ?: return false
+        _state.value = UiState.Promo(PromoKind.MILESTONE, message = milestoneMessage(context, milestone))
+        return true
+    }
+
+    /** Short, single-line celebration text for the milestone nudge (kept compact for the Smartbar). */
+    private fun milestoneMessage(context: Context, milestone: DictateStats.Milestone): String = when (milestone.kind) {
+        DictateStats.Milestone.Kind.TIME_MINUTES ->
+            context.getString(R.string.dictate__promo_milestone_time, "${milestone.value / 60}h")
+        DictateStats.Milestone.Kind.DICTATIONS ->
+            context.getString(R.string.dictate__promo_milestone_count, NumberFormat.getIntegerInstance().format(milestone.value))
+    }
+
+    /**
      * Shows a one-time "Dictate was updated" nudge in the Smartbar right after an app update, so users
      * who rarely open the settings still learn about new versions and can jump straight to the changelog.
      * Tapping it opens the app, where the "What's new" dialog appears (it shares the same
@@ -1044,6 +1076,12 @@ object DictateController {
                     context,
                     FlorisAppActivity::class.java,
                 ).addCategory(Intent.CATEGORY_BROWSABLE)
+                PromoKind.MILESTONE -> Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("ui://florisboard/settings/dictate/stats"),
+                    context,
+                    FlorisAppActivity::class.java,
+                ).addCategory(Intent.CATEGORY_BROWSABLE)
             }
             context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }
@@ -1072,6 +1110,8 @@ object DictateController {
                 PromoKind.CHANGELOG -> prefs.dictate.changelogNudgeVersion.set(BuildConfig.VERSION_NAME)
                 // Show the floating-button spotlight only once per version.
                 PromoKind.FLOATING_BUTTON -> prefs.dictate.floatingButtonSpotlightVersion.set(BuildConfig.VERSION_NAME)
+                // The milestone was already consumed when shown; nothing further to persist.
+                PromoKind.MILESTONE -> Unit
             }
         }
     }
@@ -1275,7 +1315,10 @@ object DictateController {
             proxy = prefs.dictate.dictateProxyConfig(),
             trustUserCerts = prefs.dictate.trustUserCertificates.get(),
         )
-        return client.complete(ChatRequest.ofUser(model, userContent)).text.trim()
+        val result = client.complete(ChatRequest.ofUser(model, userContent)).text.trim()
+        // Lifetime statistics (issue #142): every rewording/prompt pass funnels through here.
+        DictateStats.recordRewording(prefs)
+        return result
     }
 
     private fun systemPrompt(): String = when (prefs.dictate.systemPromptSelection.get()) {

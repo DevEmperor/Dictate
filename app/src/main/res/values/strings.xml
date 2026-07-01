@@ -1319,6 +1319,9 @@
     <string name="dictate__promo_changelog_action" comment="Short label of the accent pill button that opens the app's What's new changelog dialog. Must stay short to fit the single-line Smartbar.">Details</string>
     <string name="dictate__promo_floating_button_message" comment="Smartbar spotlight message introducing the floating dictation button. Keep short for one line.">New: dictate in any app</string>
     <string name="dictate__promo_floating_button_action" comment="Short label of the accent pill button that opens the floating-button settings. Must stay short to fit the single-line Smartbar.">Try it</string>
+    <string name="dictate__promo_milestone_time" comment="Smartbar milestone nudge for saved time; %s is a duration. Keep short (single line).">Saved %s with Dictate! 🎉</string>
+    <string name="dictate__promo_milestone_count" comment="Smartbar milestone nudge for dictation count; %s is a number. Keep short (single line).">%s dictations with Dictate! 🎉</string>
+    <string name="dictate__promo_milestone_action" comment="Short label of the accent pill that opens the statistics screen. Must stay short to fit the single-line Smartbar.">Stats</string>
 
     <!-- Dictate settings screen -->
     <string name="dictate__title" comment="Title of the Dictate settings screen and home tile">Dictate</string>
@@ -1498,6 +1501,34 @@
     <!-- Dictate rewording (AI) settings -->
     <string name="dictate__rewording_group" comment="Group title for the rewording (AI editing) stage on the main Dictate screen">Rewording (AI editing)</string>
     <string name="dictate__rewording_title" comment="Title of the rewording settings screen">Rewording (AI)</string>
+    <string name="dictate__stats_title" comment="Title of the dictation statistics screen">Statistics</string>
+    <string name="dictate__stats_menu_summary" comment="Summary for the statistics entry in Dictate settings">Words, time saved, streak and more</string>
+    <string name="dictate__stats_empty" comment="Shown on the statistics screen before any dictation exists">No dictations yet — your stats will appear here once you start dictating.</string>
+    <string name="dictate__stats_time_saved" comment="Label of the hero time-saved statistic">Time saved</string>
+    <string name="dictate__stats_time_saved_sub" comment="Subtitle under the time-saved figure">vs. typing on a keyboard</string>
+    <string name="dictate__stats_dictations" comment="Stat card label: number of dictations">Dictations</string>
+    <string name="dictate__stats_words" comment="Stat card label: total words transcribed">Words</string>
+    <string name="dictate__stats_chars" comment="Stat card label: total characters transcribed">Characters</string>
+    <string name="dictate__stats_spoken" comment="Stat card label: total time spent speaking">Time spoken</string>
+    <string name="dictate__stats_avg_words" comment="Stat card label: average words per dictation">Avg words / dictation</string>
+    <string name="dictate__stats_pace" comment="Stat card label: speaking pace">Speaking pace</string>
+    <string name="dictate__stats_pace_unit" comment="Unit abbreviation for speaking pace (words per minute)">wpm</string>
+    <string name="dictate__stats_rewordings" comment="Stat card label: number of AI rewordings applied">Rewordings</string>
+    <string name="dictate__stats_streak" comment="Stat card label: consecutive-day dictation streak">Day streak</string>
+    <string name="dictate__stats_streak_best" comment="Sub-label showing the best day streak; %d is the number">Best: %d</string>
+    <string name="dictate__stats_activity" comment="Title of the 7-day activity chart">Last 7 days</string>
+    <string name="dictate__stats_since" comment="Caption showing when tracking started; %s is a date">Tracking since %s</string>
+    <string name="dictate__stats_reset" comment="Button to reset all statistics">Reset statistics</string>
+    <string name="dictate__stats_reset_confirm_title" comment="Reset-statistics confirmation dialog title">Reset statistics?</string>
+    <string name="dictate__stats_reset_confirm_msg" comment="Reset-statistics confirmation dialog message">This permanently clears all your dictation statistics and can\'t be undone.</string>
+    <string name="dictate__stats_share" comment="Button to share your statistics">Share</string>
+    <string name="dictate__stats_share_text" comment="Shared text; %1$s time saved, %2$s dictations, %3$s words">I’ve saved %1$s with Dictate — %2$s dictations, %3$s words. 🎤</string>
+    <string name="dictate__stats_view" comment="Button that opens the statistics screen">View statistics</string>
+    <string name="dictate__stats_milestones_title" comment="Toggle title for one-time milestone celebrations">Milestone celebrations</string>
+    <string name="dictate__stats_milestones_summary" comment="Toggle summary for milestone celebrations">Celebrate once when you reach a saved-time or dictation milestone</string>
+    <string name="dictate__stats_milestone_title" comment="Milestone celebration dialog title">Milestone reached 🎉</string>
+    <string name="dictate__stats_milestone_time" comment="Milestone dialog body for a saved-time milestone; %s is a duration">You’ve saved %s with Dictate — nice work!</string>
+    <string name="dictate__stats_milestone_count" comment="Milestone dialog body for a dictation-count milestone; %s is a number">You’ve reached %s dictations with Dictate!</string>
     <string name="dictate__rewording_summary_on" comment="Summary when rewording is enabled">On – reword, translate and format with AI</string>
     <string name="dictate__rewording_summary_off" comment="Summary when rewording is disabled">Off</string>
     <string name="dictate__rewording_enabled_title" comment="Setting: master toggle for rewording">Enable rewording</string>
