@@ -32,6 +32,12 @@ val projectVersionName: String by project
 // and Wear Compose targets it. The phone app's minSdk (26) is intentionally NOT reused.
 val wearMinSdk = 30
 
+// The Wear app resubmits to Play on its own cadence (e.g. a review-fix re-upload) and must not reuse
+// a burned versionCode. Bump this for a Wear-only re-release WITHOUT touching the phone's
+// projectVersionCode: it adds to the +100000 Wear band and tags the versionName as "-wN". 0 = in
+// lockstep with the phone base (no suffix). See versionCode/versionName in defaultConfig.
+val wearRevision = 1
+
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_11)
@@ -55,9 +61,10 @@ configure<ApplicationExtension> {
         minSdk = wearMinSdk
         targetSdk = projectTargetSdk.toInt()
         // Offset the Wear versionCode into its own band so it never collides with the phone APK
-        // in the same Play listing.
-        versionCode = projectVersionCode.toInt() + 100_000
-        versionName = projectVersionName.substringBefore("-")
+        // in the same Play listing; [wearRevision] lets the watch re-release independently.
+        versionCode = projectVersionCode.toInt() + 100_000 + wearRevision
+        versionName = projectVersionName.substringBefore("-") +
+            (if (wearRevision > 0) "-w$wearRevision" else "")
     }
 
     buildFeatures {
