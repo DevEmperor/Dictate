@@ -47,7 +47,7 @@ object PhoneTranscriber {
             val client = OpenAiCompatibleClient.from(
                 preset,
                 account.apiKey,
-                baseUrlOverride = if (account.isCustom) account.customBaseUrl.takeIf { it.isNotBlank() } else null,
+                baseUrlOverride = if (account.isCustom || preset.allowsCustomBaseUrl) account.customBaseUrl.takeIf { it.isNotBlank() } else null,
                 proxy = prefs.dictate.dictateProxyConfig(),
                 trustUserCerts = prefs.dictate.trustUserCertificates.get(),
             )
@@ -75,7 +75,7 @@ object PhoneTranscriber {
         val client = OpenAiCompatibleClient.from(
             rewordingPreset,
             apiKey,
-            baseUrlOverride = if (rewordingAccount.isCustom) rewordingAccount.customBaseUrl.takeIf { it.isNotBlank() } else null,
+            baseUrlOverride = if (rewordingAccount.isCustom || rewordingPreset.allowsCustomBaseUrl) rewordingAccount.customBaseUrl.takeIf { it.isNotBlank() } else null,
             proxy = prefs.dictate.dictateProxyConfig(),
             trustUserCerts = prefs.dictate.trustUserCertificates.get(),
         )

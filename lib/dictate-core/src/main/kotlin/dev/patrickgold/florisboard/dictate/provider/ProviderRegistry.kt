@@ -40,6 +40,12 @@ data class ProviderPreset(
     val curatedTranscriptionModels: List<String> = emptyList(),
     /** Wire format of this provider's speech-to-text endpoint (OpenRouter differs – see [TranscriptionApi]). */
     val transcriptionApi: TranscriptionApi = TranscriptionApi.OPENAI_MULTIPART,
+    /**
+     * True for a built-in provider whose base URL is user-editable (issue #136): the editor shows a base
+     * URL field pre-filled with [baseUrl], so e.g. Ollama can point at a LAN server instead of localhost.
+     * Distinct from [isCustom] (a fully user-defined endpoint with its own name).
+     */
+    val allowsCustomBaseUrl: Boolean = false,
 )
 
 /**
@@ -200,14 +206,19 @@ object ProviderRegistry {
         apiKeyUrl = "https://platform.deepseek.com/api_keys",
     )
 
-    /** Local Ollama server (OpenAI-compatible). No API key required by default. */
+    /**
+     * Ollama server (OpenAI-compatible). No API key required by default. The base URL is user-editable
+     * (issue #136) and defaults to localhost — point it at `http://<lan-ip>:11434/v1/` for a server on
+     * another machine (localhost resolves to the phone itself).
+     */
     val OLLAMA = ProviderPreset(
         id = "ollama",
-        displayName = "Ollama (local)",
+        displayName = "Ollama",
         baseUrl = "http://localhost:11434/v1/",
         capabilities = CHAT_ONLY,
         supportsDynamicModels = true,
         apiKeyUrl = null,
+        allowsCustomBaseUrl = true,
     )
 
     /**

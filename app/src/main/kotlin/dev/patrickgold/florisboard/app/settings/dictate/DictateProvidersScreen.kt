@@ -456,12 +456,19 @@ private fun ProviderEditorDialog(
 ) {
     val prefs by FlorisPreferenceStore
     val isCustom = preset == null
+    // A base-URL-editable built-in (e.g. Ollama, #136) also shows the base URL field, pre-filled with the
+    // preset's default (localhost) so the user can point it at a LAN server.
+    val allowsBaseUrl = isCustom || preset?.allowsCustomBaseUrl == true
     val showTranscription = preset?.capabilities?.transcription ?: true
     val showChat = preset?.capabilities?.chat ?: true
 
     var displayName by remember { mutableStateOf(account.displayName) }
     var apiKey by remember { mutableStateOf(account.apiKey) }
-    var baseUrl by remember { mutableStateOf(account.customBaseUrl) }
+    var baseUrl by remember {
+        mutableStateOf(
+            account.customBaseUrl.ifBlank { if (preset?.allowsCustomBaseUrl == true) preset.baseUrl else "" },
+        )
+    }
     var transcriptionModel by remember { mutableStateOf(account.transcriptionModel) }
     var chatModel by remember { mutableStateOf(account.chatModel) }
     // Live catalog cache, updated when the picker fetches; persisted together with the rest on confirm.
@@ -470,8 +477,13 @@ private fun ProviderEditorDialog(
     var transcriptionViaChat by remember { mutableStateOf(account.transcriptionViaChat) }
     var pickerKind by remember { mutableStateOf<ModelKind?>(null) }
 
-    // Effective preset to drive the model picker (custom endpoints get a base-URL-only preset).
-    val effectivePreset = preset ?: ProviderRegistry.custom(baseUrl)
+    // Effective preset to drive the model picker / connection test. Custom endpoints get a base-URL-only
+    // preset; a base-URL-editable built-in (Ollama, #136) uses the edited URL over its localhost default.
+    val effectivePreset = when {
+        preset == null -> ProviderRegistry.custom(baseUrl)
+        preset.allowsCustomBaseUrl -> preset.copy(baseUrl = baseUrl.ifBlank { preset.baseUrl })
+        else -> preset
+    }
 
     // Pre-load the model catalog so we know whether this provider has any audio-capable model — that
     // gates the single-call multimodal option (#130/#132). Populates on open for keyed accounts; for a
@@ -536,6 +548,8 @@ private fun ProviderEditorDialog(
                     value = displayName,
                     onValueChange = { displayName = it },
                 )
+            }
+            if (allowsBaseUrl) {
                 EditorField(
                     label = stringRes(R.string.dictate__base_url_title),
                     value = baseUrl,

@@ -46,7 +46,8 @@
         android:roundIcon="@mipmap/app_icon_round"
         android:supportsRtl="true"
         android:theme="@style/FlorisAppTheme"
-        tools:targetApi="tiramisu">
+        tools:targetApi="tiramisu"
+        android:usesCleartextTraffic="true"><!-- allow http:// endpoints the user configures (e.g. a LAN Ollama / self-hosted server, #136); default providers all use https -->
 
         <!-- Allow app to be profiled for benchmarking and baseline profile generation -->
         <profileable android:shell="true"/>

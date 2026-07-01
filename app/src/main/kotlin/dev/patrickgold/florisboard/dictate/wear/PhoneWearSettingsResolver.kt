@@ -36,7 +36,7 @@ object PhoneWearSettingsResolver {
         val preset = presetFor(account)
 
         val model = account.transcriptionModel.ifBlank { preset.defaultTranscriptionModel ?: "" }
-        val baseUrl = if (account.isCustom) account.customBaseUrl else preset.baseUrl
+        val baseUrl = if ((account.isCustom || preset.allowsCustomBaseUrl) && account.customBaseUrl.isNotBlank()) account.customBaseUrl else preset.baseUrl
         val language = prefs.dictate.activeInputLanguage.get().takeIf { it != DictateLanguages.DETECT }
 
         // Ship the key so the watch can work standalone when the phone is away, unless the user opted out
@@ -49,7 +49,7 @@ object PhoneWearSettingsResolver {
         val rewordingAccount = prefs.dictate.providerAccounts.get().getOrEmpty(rewordingId)
         val rewordingPreset = presetFor(rewordingAccount)
         val chatModel = rewordingAccount.chatModel.ifBlank { rewordingPreset.defaultChatModel ?: "" }
-        val rewordingBaseUrl = if (rewordingAccount.isCustom) rewordingAccount.customBaseUrl else rewordingPreset.baseUrl
+        val rewordingBaseUrl = if ((rewordingAccount.isCustom || rewordingPreset.allowsCustomBaseUrl) && rewordingAccount.customBaseUrl.isNotBlank()) rewordingAccount.customBaseUrl else rewordingPreset.baseUrl
         val rewordingKey = rewordingAccount.apiKey.ifBlank { account.apiKey }
         val autoApply = withContext(Dispatchers.IO) {
             PromptsDatabaseHelper.getInstance(context).getAll()

@@ -1447,9 +1447,16 @@ object DictateController {
         else -> ProviderRegistry.byId(account.providerId) ?: ProviderRegistry.OPENAI
     }
 
-    /** Custom endpoints carry their base URL in the account; built-ins use the preset's. */
+    /**
+     * The account's own base URL, when it has one: custom endpoints always, and base-URL-editable
+     * built-ins like Ollama (issue #136). Null → the preset's default base URL is used.
+     */
     private fun baseUrlOverrideFor(account: ProviderAccount): String? =
-        if (account.isCustom) account.customBaseUrl.takeIf { it.isNotBlank() } else null
+        if (account.isCustom || presetFor(account).allowsCustomBaseUrl) {
+            account.customBaseUrl.takeIf { it.isNotBlank() }
+        } else {
+            null
+        }
 
     /** Whether [account] needs an API key: built-in cloud providers do; custom/local servers may not. */
     private fun requiresKey(account: ProviderAccount): Boolean =
