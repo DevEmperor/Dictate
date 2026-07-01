@@ -80,7 +80,7 @@ object PhoneTranscriber {
             trustUserCerts = prefs.dictate.trustUserCertificates.get(),
         )
         val autoApply = withContext(Dispatchers.IO) {
-            PromptsDatabaseHelper(context.applicationContext).getAll()
+            PromptsDatabaseHelper.getInstance(context).getAll()
                 .filter { it.autoApply }
                 .mapNotNull { p -> p.prompt?.takeIf { it.isNotBlank() }?.let { DictateRewording.Prompt(it, p.requiresSelection) } }
         }

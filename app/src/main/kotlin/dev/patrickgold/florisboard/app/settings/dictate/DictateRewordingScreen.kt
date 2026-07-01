@@ -85,7 +85,7 @@ fun DictateRewordingScreen() = FlorisScreen {
 
         val promptCount by produceState(initialValue = -1) {
             value = withContext(Dispatchers.IO) {
-                PromptsDatabaseHelper(context.applicationContext).count()
+                PromptsDatabaseHelper.getInstance(context).count()
             }
         }
         Preference(

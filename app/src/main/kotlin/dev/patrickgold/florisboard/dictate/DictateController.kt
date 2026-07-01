@@ -1347,7 +1347,7 @@ object DictateController {
     private fun rewordingApiKey(): String =
         rewordingAccount().apiKey.ifBlank { transcriptionAccount().apiKey }
 
-    private fun promptsDb(context: Context) = PromptsDatabaseHelper(context.applicationContext)
+    private fun promptsDb(context: Context) = PromptsDatabaseHelper.getInstance(context)
 
     private fun requestAudioFocusIfEnabled(context: Context) {
         if (!prefs.dictate.audioFocus.get()) return

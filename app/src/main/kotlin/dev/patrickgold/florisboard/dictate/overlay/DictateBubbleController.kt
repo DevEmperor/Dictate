@@ -436,7 +436,7 @@ class DictateBubbleController(private val service: DictateAccessibilityService) 
         if (menuAdded) return
         scope.launch {
             val prompts = withContext(Dispatchers.IO) {
-                runCatching { PromptsDatabaseHelper(context).getAll() }.getOrDefault(emptyList())
+                runCatching { PromptsDatabaseHelper.getInstance(context).getAll() }.getOrDefault(emptyList())
             }.filter { !it.name.isNullOrBlank() }
             if (menuAdded) return@launch
             if (prompts.isEmpty()) {

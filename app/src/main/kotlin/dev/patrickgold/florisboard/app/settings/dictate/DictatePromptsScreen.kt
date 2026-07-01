@@ -100,7 +100,7 @@ fun DictatePromptsScreen(
     scrollable = false
 
     val context = LocalContext.current
-    val db = remember { PromptsDatabaseHelper(context.applicationContext) }
+    val db = remember { PromptsDatabaseHelper.getInstance(context) }
     val scope = rememberCoroutineScope()
     val prompts = remember { mutableStateListOf<PromptModel>() }
     // The prompt currently being added/edited, or null when the editor is closed. Declared here so

@@ -24,8 +24,15 @@ import dev.patrickgold.florisboard.R
  * existing Dictate users keep their prompts after the in-place app update. Do not migrate this to
  * Room without a deliberately tested migration – Room's strict type-affinity validation would
  * reject the legacy `BOOLEAN`/`INTEGER` columns of an existing user database.
+ *
+ * Lifecycle (issue #138): obtain via [getInstance] and NEVER call `close()` on the returned
+ * [SQLiteDatabase]. `SQLiteOpenHelper` hands out one shared, reference-counted database whose
+ * connection pool is meant to stay open for the process lifetime. Closing it per query disposed the
+ * pool out from under a concurrent, in-flight cursor (overlapping `reload` on the Prompts screen) →
+ * `IllegalStateException: connection pool has been closed`. The single process-wide instance is safe
+ * to use from multiple threads/coroutines; SQLite's own connection pool serialises access.
  */
-class PromptsDatabaseHelper(
+class PromptsDatabaseHelper private constructor(
     private val context: Context,
 ) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -70,7 +77,6 @@ class PromptsDatabaseHelper(
             db.setTransactionSuccessful()
         } finally {
             db.endTransaction()
-            db.close()
         }
     }
 
@@ -83,29 +89,24 @@ class PromptsDatabaseHelper(
             db.setTransactionSuccessful()
         } finally {
             db.endTransaction()
-            db.close()
         }
     }
 
     fun update(model: PromptModel) {
         val db = writableDatabase
         db.update("PROMPTS", model.toContentValues(), "ID = ?", arrayOf(model.id.toString()))
-        db.close()
     }
 
     fun delete(id: Int) {
         val db = writableDatabase
         db.delete("PROMPTS", "ID = ?", arrayOf(id.toString()))
-        db.close()
     }
 
     fun get(id: Int): PromptModel? {
         val db = readableDatabase
-        val model = db.rawQuery("SELECT * FROM PROMPTS WHERE ID = ?", arrayOf(id.toString())).use { cursor ->
+        return db.rawQuery("SELECT * FROM PROMPTS WHERE ID = ?", arrayOf(id.toString())).use { cursor ->
             if (cursor.moveToFirst()) cursor.toPromptModel() else null
         }
-        db.close()
-        return model
     }
 
     fun getAll(): List<PromptModel> {
@@ -116,7 +117,6 @@ class PromptsDatabaseHelper(
                 do { models.add(cursor.toPromptModel()) } while (cursor.moveToNext())
             }
         }
-        db.close()
         return models
     }
 
@@ -142,18 +142,15 @@ class PromptsDatabaseHelper(
                 do { ids.add(cursor.getInt(0)) } while (cursor.moveToNext())
             }
         }
-        db.close()
         return ids
     }
 
     fun count(): Int {
         val db = readableDatabase
-        val total = db.rawQuery("SELECT COUNT(*) FROM PROMPTS", null).use { cursor ->
+        return db.rawQuery("SELECT COUNT(*) FROM PROMPTS", null).use { cursor ->
             cursor.moveToFirst()
             cursor.getInt(0)
         }
-        db.close()
-        return total
     }
 
     private fun PromptModel.toContentValues() = ContentValues().apply {
@@ -178,6 +175,20 @@ class PromptsDatabaseHelper(
     companion object {
         const val DATABASE_NAME = "prompts.db"
         const val DATABASE_VERSION = 2
+
+        @Volatile
+        private var instance: PromptsDatabaseHelper? = null
+
+        /**
+         * The single process-wide helper (issue #138). All callers share one open database instead of
+         * each opening — and formerly closing — their own connection, which is what caused overlapping
+         * queries to race on a disposed pool. Always built with the application context so it outlives
+         * any Activity/Composable that requested it.
+         */
+        fun getInstance(context: Context): PromptsDatabaseHelper =
+            instance ?: synchronized(this) {
+                instance ?: PromptsDatabaseHelper(context.applicationContext).also { instance = it }
+            }
 
         // A useful starter set covering all three prompt types: six rewrite-the-selection editors
         // (requiresSelection = true), two free generators and two literal `[snippet]` prompts (both

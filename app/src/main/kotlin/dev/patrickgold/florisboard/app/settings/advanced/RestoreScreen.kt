@@ -162,7 +162,7 @@ fun RestoreScreen() = FlorisScreen {
             val promptsFile = workspace.outputDir.subDir("dictate").subFile(Backup.DICTATE_PROMPTS_JSON_NAME)
             if (promptsFile.exists()) {
                 val prompts = promptsFile.readJson<List<PromptModel>>()
-                val db = PromptsDatabaseHelper(context.applicationContext)
+                val db = PromptsDatabaseHelper.getInstance(context)
                 if (shouldReset) {
                     // Erase mode: replace the whole prompt list with the backed-up one.
                     db.replaceAll(prompts)

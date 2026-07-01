@@ -52,7 +52,7 @@ object PhoneWearSettingsResolver {
         val rewordingBaseUrl = if (rewordingAccount.isCustom) rewordingAccount.customBaseUrl else rewordingPreset.baseUrl
         val rewordingKey = rewordingAccount.apiKey.ifBlank { account.apiKey }
         val autoApply = withContext(Dispatchers.IO) {
-            PromptsDatabaseHelper(context.applicationContext).getAll()
+            PromptsDatabaseHelper.getInstance(context).getAll()
                 .filter { it.autoApply }
                 .mapNotNull { p -> p.prompt?.takeIf { it.isNotBlank() }?.let { SyncedPrompt(it, p.requiresSelection) } }
         }

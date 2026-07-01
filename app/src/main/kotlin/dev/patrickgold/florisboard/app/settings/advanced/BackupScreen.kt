@@ -187,7 +187,7 @@ fun BackupScreen() = FlorisScreen {
             FlorisPreferenceStore.export(fileBasedStorage).getOrThrow()
         }
         if (backupFilesSelector.dictatePrompts) {
-            val prompts = PromptsDatabaseHelper(context.applicationContext).getAll()
+            val prompts = PromptsDatabaseHelper.getInstance(context).getAll()
             // subDir() only builds a File handle, it does not create the directory. Without this mkdirs()
             // the writeJson() below throws FileNotFoundException (no such dir), which aborted the whole
             // backup whenever the prompts component was selected (issue #112). The clipboard branch below
