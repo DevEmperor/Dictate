@@ -198,10 +198,12 @@ object ProviderRegistry {
         baseUrl = "https://api.elevenlabs.io/v1/",
         capabilities = STT_ONLY,
         transcriptionApi = TranscriptionApi.ELEVENLABS_MULTIPART,
+        // /v1/models mixes TTS + STT models, so no clean STT filter — curated instead. scribe_v1 was
+        // retired on 2026-07-09, leaving scribe_v2.
         supportsDynamicModels = false,
         apiKeyUrl = "https://elevenlabs.io/app/settings/api-keys",
-        defaultTranscriptionModel = "scribe_v1",
-        curatedTranscriptionModels = listOf("scribe_v1", "scribe_v2"),
+        defaultTranscriptionModel = "scribe_v2",
+        curatedTranscriptionModels = listOf("scribe_v2"),
     )
 
     /**
@@ -214,7 +216,8 @@ object ProviderRegistry {
         baseUrl = "https://api.deepgram.com/v1/",
         capabilities = STT_ONLY,
         transcriptionApi = TranscriptionApi.DEEPGRAM,
-        supportsDynamicModels = false,
+        // GET /v1/models returns the live STT catalog (canonical_name); curated ids are the offline fallback.
+        supportsDynamicModels = true,
         apiKeyUrl = "https://console.deepgram.com/",
         defaultTranscriptionModel = "nova-3",
         curatedTranscriptionModels = listOf("nova-3", "nova-2"),

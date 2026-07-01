@@ -433,7 +433,7 @@ class OpenAiCompatibleClient(
         val lang = request.language?.takeIf { it.isNotEmpty() && it != "detect" }
         val createDto = AssemblyCreateDto(
             audioUrl = uploadUrl,
-            speechModel = request.model.takeIf { it.isNotBlank() },
+            speechModels = request.model.takeIf { it.isNotBlank() }?.let { listOf(it) },
             languageCode = lang,
             languageDetection = if (lang == null) true else null,
         )
@@ -552,11 +552,25 @@ class OpenAiCompatibleClient(
     }
 
     override suspend fun listModels(): List<ModelInfo> {
-        // Providers without an OpenAI-style /models catalog (ElevenLabs, Deepgram, AssemblyAI, #143) ship a
-        // curated list instead; return it offline so the picker/connection test work (the key is validated
-        // on the first real transcription).
+        // Providers without a model-list endpoint (ElevenLabs, AssemblyAI, #143) ship a curated list
+        // instead; return it offline so the picker/connection test work (key validated on first use).
         if (config.transcriptionApi in NO_MODELS_CATALOG_APIS) {
             return config.curatedModels.map { ModelInfo(it) }
+        }
+        // Deepgram has its own catalog: GET /v1/models with a `Token` header returns `{ stt: [...] }`;
+        // the `canonical_name` is the value for the listen `?model=` param (issue #143).
+        if (config.transcriptionApi == TranscriptionApi.DEEPGRAM) {
+            val request = Request.Builder()
+                .url(config.normalizedBaseUrl + "models")
+                .header("Authorization", "Token ${config.apiKey}")
+                .get()
+                .build()
+            val body = executeForBody(request, maxRetries = 1)
+            return json.decodeFromString(DeepgramModelsDto.serializer(), body)
+                .stt
+                .map { ModelInfo(it.canonicalName) }
+                .filter { it.id.isNotBlank() }
+                .sortedBy { it.id.lowercase() }
         }
         val httpRequest = Request.Builder()
             .url(config.normalizedBaseUrl + "models")
@@ -841,12 +855,19 @@ class OpenAiCompatibleClient(
     private data class DeepgramAlternativeDto(val transcript: String = "")
 
     @Serializable
+    private data class DeepgramModelsDto(val stt: List<DeepgramModelDto> = emptyList())
+
+    @Serializable
+    private data class DeepgramModelDto(@SerialName("canonical_name") val canonicalName: String = "")
+
+    @Serializable
     private data class AssemblyUploadDto(@SerialName("upload_url") val uploadUrl: String)
 
     @Serializable
     private data class AssemblyCreateDto(
         @SerialName("audio_url") val audioUrl: String,
-        @SerialName("speech_model") val speechModel: String? = null,
+        // `speech_model` (singular) is deprecated; the current API takes a `speech_models` array (#143).
+        @SerialName("speech_models") val speechModels: List<String>? = null,
         @SerialName("language_code") val languageCode: String? = null,
         @SerialName("language_detection") val languageDetection: Boolean? = null,
     )
@@ -983,10 +1004,9 @@ class OpenAiCompatibleClient(
         private const val SONIOX_POLL_INTERVAL_MS = 1500L
         private const val SONIOX_POLL_TIMEOUT_MS = 300_000L
 
-        /** Transcription APIs with no OpenAI-style /models catalog; listModels() returns curated ids (#143). */
+        /** Transcription APIs with no model-list endpoint; listModels() returns curated ids (#143). */
         private val NO_MODELS_CATALOG_APIS = setOf(
             TranscriptionApi.ELEVENLABS_MULTIPART,
-            TranscriptionApi.DEEPGRAM,
             TranscriptionApi.ASSEMBLYAI_ASYNC,
         )
 
