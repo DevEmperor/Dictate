@@ -212,6 +212,8 @@ fun DictateFloatingButtonScreen() = FlorisScreen {
                 defaultValueLabel = stringRes(R.string.action__default),
                 showAlphaSlider = false,
                 defaultColors = ColorMappings.colors,
+                // Enable the full RGB/HSV picker (not just the preset palette), matching the accent color.
+                enableAdvancedLayout = true,
             )
 
             SwitchPreference(
