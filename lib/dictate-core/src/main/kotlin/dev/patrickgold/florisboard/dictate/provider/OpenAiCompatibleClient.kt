@@ -103,6 +103,9 @@ class OpenAiCompatibleClient(
         TranscriptionApi.OPENROUTER_JSON -> transcribeOpenRouterJson(request, onRetry)
         TranscriptionApi.SONIOX_ASYNC -> transcribeSonioxAsync(request, onRetry)
         TranscriptionApi.GEMINI_GENERATE_CONTENT -> transcribeGeminiGenerateContent(request, onRetry)
+        TranscriptionApi.ELEVENLABS_MULTIPART -> transcribeElevenLabs(request, onRetry)
+        TranscriptionApi.DEEPGRAM -> transcribeDeepgram(request, onRetry)
+        TranscriptionApi.ASSEMBLYAI_ASYNC -> transcribeAssemblyAi(request, onRetry)
         // On-device transcription never uses this HTTP client; the dictation flow routes local providers
         // to LocalTranscriptionProvider before one is ever constructed.
         TranscriptionApi.LOCAL_ONDEVICE -> error("LOCAL_ONDEVICE is handled by LocalTranscriptionProvider")
@@ -351,6 +354,133 @@ class OpenAiCompatibleClient(
     }
 
     /**
+     * ElevenLabs Scribe (issue #143): a multipart upload much like [transcribeMultipart], but with the
+     * `xi-api-key` auth header (not Bearer), a `model_id` field and the `speech-to-text` path. No prompt.
+     */
+    private suspend fun transcribeElevenLabs(
+        request: TranscriptionRequest,
+        onRetry: (attempt: Int) -> Unit,
+    ): TranscriptionResult {
+        val fileBody = request.audioFile.asRequestBody(guessAudioMediaType(request.audioFile))
+        val multipart = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("file", request.audioFile.name, fileBody)
+            .addFormDataPart("model_id", request.model)
+            .apply {
+                val lang = request.language
+                if (!lang.isNullOrEmpty() && lang != "detect") addFormDataPart("language_code", lang)
+            }
+            .build()
+        val httpRequest = Request.Builder()
+            .url(config.normalizedBaseUrl + "speech-to-text")
+            .header("xi-api-key", config.apiKey)
+            .post(multipart)
+            .build()
+        val body = executeForBody(httpRequest, onRetry = onRetry)
+        val response = json.decodeFromString(TranscriptionResponseDto.serializer(), body)
+        return TranscriptionResult(response.text.trim())
+    }
+
+    /**
+     * Deepgram (issue #143): the raw audio bytes are POSTed to `listen?model=…` (model + language as query
+     * params) with an `Authorization: Token <key>` header; the transcript is nested in the response.
+     */
+    private suspend fun transcribeDeepgram(
+        request: TranscriptionRequest,
+        onRetry: (attempt: Int) -> Unit,
+    ): TranscriptionResult {
+        val lang = request.language?.takeIf { it.isNotEmpty() && it != "detect" }
+        val url = buildString {
+            append(config.normalizedBaseUrl).append("listen?model=").append(request.model)
+            append("&smart_format=true")
+            if (lang != null) append("&language=").append(lang) else append("&detect_language=true")
+        }
+        val audioBody = request.audioFile.asRequestBody(guessAudioMediaType(request.audioFile))
+        val httpRequest = Request.Builder()
+            .url(url)
+            .header("Authorization", "Token ${config.apiKey}")
+            .post(audioBody)
+            .build()
+        val body = executeForBody(httpRequest, onRetry = onRetry)
+        val response = json.decodeFromString(DeepgramResponseDto.serializer(), body)
+        val text = response.results?.channels?.firstOrNull()?.alternatives?.firstOrNull()?.transcript.orEmpty()
+        return TranscriptionResult(text.trim())
+    }
+
+    /**
+     * AssemblyAI (issue #143): async upload → create → poll, mirroring [transcribeSonioxAsync]. Uses a raw
+     * `authorization: <key>` header (no Bearer prefix) against the `api.assemblyai.com/v2` endpoints.
+     */
+    private suspend fun transcribeAssemblyAi(
+        request: TranscriptionRequest,
+        onRetry: (attempt: Int) -> Unit,
+    ): TranscriptionResult {
+        val base = config.normalizedBaseUrl
+        val authHeader = config.apiKey
+
+        // 1. Upload the raw audio bytes.
+        val uploadRequest = Request.Builder()
+            .url(base + "v2/upload")
+            .header("authorization", authHeader)
+            .post(request.audioFile.asRequestBody(guessAudioMediaType(request.audioFile)))
+            .build()
+        val uploadUrl = json.decodeFromString(
+            AssemblyUploadDto.serializer(),
+            executeForBody(uploadRequest, onRetry = onRetry),
+        ).uploadUrl
+
+        // 2. Create the transcription job.
+        val lang = request.language?.takeIf { it.isNotEmpty() && it != "detect" }
+        val createDto = AssemblyCreateDto(
+            audioUrl = uploadUrl,
+            speechModel = request.model.takeIf { it.isNotBlank() },
+            languageCode = lang,
+            languageDetection = if (lang == null) true else null,
+        )
+        val createRequest = Request.Builder()
+            .url(base + "v2/transcript")
+            .header("authorization", authHeader)
+            .post(json.encodeToString(AssemblyCreateDto.serializer(), createDto).toRequestBody(JSON_MEDIA_TYPE))
+            .build()
+        val id = json.decodeFromString(
+            AssemblyTranscriptDto.serializer(),
+            executeForBody(createRequest, onRetry = onRetry),
+        ).id
+
+        // 3. Poll until completed / error, bounded by the overall budget.
+        val statusUrl = base + "v2/transcript/" + id
+        var waitedMs = 0L
+        while (true) {
+            val pollRequest = Request.Builder()
+                .url(statusUrl)
+                .header("authorization", authHeader)
+                .get()
+                .build()
+            val dto = json.decodeFromString(
+                AssemblyTranscriptDto.serializer(),
+                executeForBody(pollRequest, maxRetries = 2, onRetry = onRetry),
+            )
+            when (dto.status) {
+                "completed" -> return TranscriptionResult(dto.text.orEmpty().trim())
+                "error" -> throw DictateApiException.fromHttp(
+                    status = 502,
+                    message = dto.error ?: "AssemblyAI transcription failed",
+                )
+                else -> {
+                    if (waitedMs >= SONIOX_POLL_TIMEOUT_MS) {
+                        throw DictateApiException(
+                            DictateApiException.Kind.TIMEOUT,
+                            "AssemblyAI transcription timed out",
+                        )
+                    }
+                    delay(SONIOX_POLL_INTERVAL_MS)
+                    waitedMs += SONIOX_POLL_INTERVAL_MS
+                }
+            }
+        }
+    }
+
+    /**
      * Google Gemini transcription. Gemini exposes no speech-to-text endpoint; its multimodal models
      * transcribe audio sent as base64 `inline_data` to the native `generateContent` endpoint (the
      * OpenAI-compatible layer used for chat does not accept audio). We give the model a strict instruction
@@ -422,6 +552,12 @@ class OpenAiCompatibleClient(
     }
 
     override suspend fun listModels(): List<ModelInfo> {
+        // Providers without an OpenAI-style /models catalog (ElevenLabs, Deepgram, AssemblyAI, #143) ship a
+        // curated list instead; return it offline so the picker/connection test work (the key is validated
+        // on the first real transcription).
+        if (config.transcriptionApi in NO_MODELS_CATALOG_APIS) {
+            return config.curatedModels.map { ModelInfo(it) }
+        }
         val httpRequest = Request.Builder()
             .url(config.normalizedBaseUrl + "models")
             .headers(authHeaders())
@@ -690,6 +826,39 @@ class OpenAiCompatibleClient(
     @Serializable
     private data class TranscriptionResponseDto(val text: String = "")
 
+    // --- Deepgram / AssemblyAI DTOs (issue #143) ---
+
+    @Serializable
+    private data class DeepgramResponseDto(val results: DeepgramResultsDto? = null)
+
+    @Serializable
+    private data class DeepgramResultsDto(val channels: List<DeepgramChannelDto> = emptyList())
+
+    @Serializable
+    private data class DeepgramChannelDto(val alternatives: List<DeepgramAlternativeDto> = emptyList())
+
+    @Serializable
+    private data class DeepgramAlternativeDto(val transcript: String = "")
+
+    @Serializable
+    private data class AssemblyUploadDto(@SerialName("upload_url") val uploadUrl: String)
+
+    @Serializable
+    private data class AssemblyCreateDto(
+        @SerialName("audio_url") val audioUrl: String,
+        @SerialName("speech_model") val speechModel: String? = null,
+        @SerialName("language_code") val languageCode: String? = null,
+        @SerialName("language_detection") val languageDetection: Boolean? = null,
+    )
+
+    @Serializable
+    private data class AssemblyTranscriptDto(
+        val id: String = "",
+        val status: String = "",
+        val text: String? = null,
+        val error: String? = null,
+    )
+
     // --- Gemini native generateContent DTOs (see transcribeGeminiGenerateContent) ---
 
     @Serializable
@@ -810,9 +979,16 @@ class OpenAiCompatibleClient(
         private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
         private const val RETRY_DELAY_MS = 3000L
 
-        /** Soniox async polling: interval between status checks and the overall budget before giving up. */
+        /** Soniox / AssemblyAI async polling: interval between status checks and the overall budget. */
         private const val SONIOX_POLL_INTERVAL_MS = 1500L
         private const val SONIOX_POLL_TIMEOUT_MS = 300_000L
+
+        /** Transcription APIs with no OpenAI-style /models catalog; listModels() returns curated ids (#143). */
+        private val NO_MODELS_CATALOG_APIS = setOf(
+            TranscriptionApi.ELEVENLABS_MULTIPART,
+            TranscriptionApi.DEEPGRAM,
+            TranscriptionApi.ASSEMBLYAI_ASYNC,
+        )
 
         /** Builds a client from a registry [preset] plus the user's key/proxy. */
         fun from(
@@ -831,6 +1007,7 @@ class OpenAiCompatibleClient(
                 transcriptionApi = preset.transcriptionApi,
                 useChatAudio = useChatAudio,
                 trustUserCerts = trustUserCerts,
+                curatedModels = (preset.curatedTranscriptionModels + preset.curatedChatModels).distinct(),
             )
         )
     }

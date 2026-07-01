@@ -44,6 +44,12 @@ data class ProviderConfig(
      * system-wide.
      */
     val trustUserCerts: Boolean = false,
+    /**
+     * Curated model ids for providers without an OpenAI-style `/models` catalog (ElevenLabs, Deepgram,
+     * AssemblyAI, issue #143): [OpenAiCompatibleClient.listModels] returns these offline so the model
+     * picker and connection test work without a live `/models` call.
+     */
+    val curatedModels: List<String> = emptyList(),
 ) {
     /** Base URL guaranteed to end with a single trailing slash. */
     val normalizedBaseUrl: String
@@ -77,6 +83,25 @@ enum class TranscriptionApi {
      * the multimodal model to emit only the verbatim transcript. See [OpenAiCompatibleClient].
      */
     GEMINI_GENERATE_CONTENT,
+
+    /**
+     * ElevenLabs Scribe (issue #143): `multipart/form-data` upload to `speech-to-text` with a `model_id`
+     * field and an `xi-api-key` header (not Bearer). Response holds the transcript in `text`.
+     */
+    ELEVENLABS_MULTIPART,
+
+    /**
+     * Deepgram (issue #143): the raw audio bytes are POSTed to `listen?model=…` with an
+     * `Authorization: Token <key>` header; the transcript is nested at
+     * `results.channels[0].alternatives[0].transcript`.
+     */
+    DEEPGRAM,
+
+    /**
+     * AssemblyAI (issue #143): async upload → create → poll flow (like [SONIOX_ASYNC]) against the
+     * `api.assemblyai.com/v2` upload/transcript endpoints with a raw `authorization: <key>` header.
+     */
+    ASSEMBLYAI_ASYNC,
 
     /**
      * On-device transcription (issue #104): no network call at all. Handled by

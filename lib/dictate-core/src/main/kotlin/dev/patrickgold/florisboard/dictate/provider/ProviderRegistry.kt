@@ -188,6 +188,54 @@ object ProviderRegistry {
         curatedTranscriptionModels = listOf("stt-async-v5"),
     )
 
+    /**
+     * ElevenLabs Scribe (issue #143): transcription-only, multipart upload with an `xi-api-key` header
+     * (see [TranscriptionApi.ELEVENLABS_MULTIPART]). Strong multilingual accuracy.
+     */
+    val ELEVENLABS = ProviderPreset(
+        id = "elevenlabs",
+        displayName = "ElevenLabs Scribe",
+        baseUrl = "https://api.elevenlabs.io/v1/",
+        capabilities = STT_ONLY,
+        transcriptionApi = TranscriptionApi.ELEVENLABS_MULTIPART,
+        supportsDynamicModels = false,
+        apiKeyUrl = "https://elevenlabs.io/app/settings/api-keys",
+        defaultTranscriptionModel = "scribe_v1",
+        curatedTranscriptionModels = listOf("scribe_v1", "scribe_v2"),
+    )
+
+    /**
+     * Deepgram (issue #143): transcription-only, raw-body POST to `listen` with a `Token` auth header
+     * (see [TranscriptionApi.DEEPGRAM]). Fast and accurate; nova-3 is the current general model.
+     */
+    val DEEPGRAM = ProviderPreset(
+        id = "deepgram",
+        displayName = "Deepgram",
+        baseUrl = "https://api.deepgram.com/v1/",
+        capabilities = STT_ONLY,
+        transcriptionApi = TranscriptionApi.DEEPGRAM,
+        supportsDynamicModels = false,
+        apiKeyUrl = "https://console.deepgram.com/",
+        defaultTranscriptionModel = "nova-3",
+        curatedTranscriptionModels = listOf("nova-3", "nova-2"),
+    )
+
+    /**
+     * AssemblyAI (issue #143): transcription-only, async upload/create/poll flow with a raw `authorization`
+     * header (see [TranscriptionApi.ASSEMBLYAI_ASYNC]).
+     */
+    val ASSEMBLYAI = ProviderPreset(
+        id = "assemblyai",
+        displayName = "AssemblyAI",
+        baseUrl = "https://api.assemblyai.com/",
+        capabilities = STT_ONLY,
+        transcriptionApi = TranscriptionApi.ASSEMBLYAI_ASYNC,
+        supportsDynamicModels = false,
+        apiKeyUrl = "https://www.assemblyai.com/app/api-keys",
+        defaultTranscriptionModel = "universal-3-pro",
+        curatedTranscriptionModels = listOf("universal-3-pro", "universal-2"),
+    )
+
     val XAI = ProviderPreset(
         id = "xai",
         displayName = "xAI (Grok)",
@@ -243,7 +291,8 @@ object ProviderRegistry {
 
     /** All built-in presets in display order. The custom option is added by the UI on top of these. */
     val presets: List<ProviderPreset> = listOf(
-        OPENAI, GROQ, OPENROUTER, GEMINI, TOGETHER, DEEPINFRA, MISTRAL, SONIOX, XAI, DEEPSEEK, OLLAMA, LOCAL,
+        OPENAI, GROQ, OPENROUTER, GEMINI, TOGETHER, DEEPINFRA, MISTRAL, SONIOX,
+        ELEVENLABS, DEEPGRAM, ASSEMBLYAI, XAI, DEEPSEEK, OLLAMA, LOCAL,
     )
 
     fun byId(id: String): ProviderPreset? = presets.firstOrNull { it.id == id }
