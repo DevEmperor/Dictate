@@ -1393,4 +1393,6 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="dictate__audio_save_failed">Kan de audio niet opslaan</string>
     <string name="dictate__instant_recording_skip_numeric_title">Numerieke velden overslaan</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Niet automatisch starten bij cijfer-, telefoon- of pinvelden</string>
+    <string name="settings__localization__subtype_glide_ready">Veegtypen gereed</string>
+    <string name="settings__localization__subtype_glide_available">Veegtypen beschikbaar</string>
 </resources>

@@ -1367,4 +1367,6 @@
     <string name="dictate__audio_save_failed">Impossible d\'enregistrer l\'audio</string>
     <string name="dictate__instant_recording_skip_numeric_title">Ignorer les champs numériques</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Ne pas démarrer automatiquement sur les champs numériques, téléphone ou PIN</string>
+    <string name="settings__localization__subtype_glide_ready">Saisie glissée prête</string>
+    <string name="settings__localization__subtype_glide_available">Saisie glissée disponible</string>
 </resources>

@@ -25,7 +25,10 @@ import dev.patrickgold.florisboard.ime.nlp.SpellingResult
 import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.SuggestionProvider
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
@@ -42,9 +45,22 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
         // Language used when the active subtype has no bundled dictionary of its own.
         private const val FALLBACK_LANG = "en"
+
+        // Legacy ISO-639 codes that java.util.Locale still reports; map them to the modern code the
+        // dictionary files use.
+        private val LANG_ALIASES = mapOf("iw" to "he", "in" to "id", "ji" to "yi")
+
+        fun normalizeLang(language: String): String {
+            val l = language.lowercase()
+            return LANG_ALIASES[l] ?: l
+        }
     }
 
     private val appContext by context.appContext()
+
+    // Fire-and-forget scope for auto-downloading a subtype's glide dictionary on first use.
+    private val ioScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val attemptedDownloads = java.util.Collections.synchronizedSet(mutableSetOf<String>())
 
     // Word→frequency dictionaries cached per language (issue #127, glide typing phase 2). Each bundled
     // ime/dict/<lang>.json maps a word to a frequency in [128,255]; languages without a bundled file fall
@@ -72,9 +88,31 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
     /** The dictionary language to use for [subtype] — its own if available, else English. */
     private fun dictLangFor(subtype: Subtype): String {
-        val subLang = subtype.primaryLocale.language.lowercase()
+        val subLang = normalizeLang(subtype.primaryLocale.language)
         return resolvedDictLang.getOrPut(subLang) {
             if (subLang.isNotBlank() && hasDict(subLang)) subLang else FALLBACK_LANG
+        }
+    }
+
+    /**
+     * Downloads the glide dictionary for [subtype]'s language in the background the first time that
+     * language is used, if it has a catalog entry and isn't already installed/bundled (issue #127). Best
+     * effort: on failure glide simply keeps falling back to English until a later retry succeeds.
+     */
+    private fun maybeDownloadDict(subtype: Subtype) {
+        val lang = normalizeLang(subtype.primaryLocale.language)
+        if (lang.isBlank() || lang in bundledDictLangs) return
+        if (GlideDictionaryManager.isInstalled(appContext, lang)) return
+        val spec = GlideDictionaryCatalog.forLang(lang) ?: return
+        if (!attemptedDownloads.add(lang)) return
+        ioScope.launch {
+            runCatching { GlideDictionaryManager.download(appContext, spec) }
+                .onSuccess {
+                    // Make the freshly downloaded dictionary take effect for the active subtype.
+                    resolvedDictLang.clear()
+                    wordDataByLang.withLock { it.remove(lang) }
+                }
+                .onFailure { attemptedDownloads.remove(lang) } // allow a retry next activation
         }
     }
 
@@ -126,6 +164,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // Re-resolve languages so a dictionary downloaded since the last activation is picked up, then
         // warm the cache for this subtype's dictionary language (used by glide typing / word lookups).
         resolvedDictLang.clear()
+        maybeDownloadDict(subtype)
         wordDataFor(subtype)
         Unit
     }

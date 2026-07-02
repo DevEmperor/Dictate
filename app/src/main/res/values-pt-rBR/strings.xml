@@ -1300,4 +1300,6 @@
     <string name="dictate__audio_save_failed">Não foi possível salvar o áudio</string>
     <string name="dictate__instant_recording_skip_numeric_title">Ignorar campos numéricos</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Não iniciar automaticamente em campos de números, telefone ou PIN</string>
+    <string name="settings__localization__subtype_glide_ready">Escrita deslizante pronta</string>
+    <string name="settings__localization__subtype_glide_available">Escrita deslizante disponível</string>
 </resources>

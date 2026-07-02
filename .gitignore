@@ -75,3 +75,6 @@ private/
 # artifacts fetched from the pinned GitHub release — run scripts/fetch-sherpa-onnx.sh to populate.
 /app/libs/sherpa-onnx-*.jar
 /app/src/main/jniLibs/
+
+# glide dictionary build artifacts
+tools/glide-dict/dist/

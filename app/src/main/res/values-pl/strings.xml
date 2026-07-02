@@ -1509,4 +1509,6 @@
     <string name="dictate__audio_save_failed">Nie udało się zapisać audio</string>
     <string name="dictate__instant_recording_skip_numeric_title">Pomijaj pola liczbowe</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Nie uruchamiaj automatycznie w polach liczb, telefonu lub PIN</string>
+    <string name="settings__localization__subtype_glide_ready">Pisanie gestem gotowe</string>
+    <string name="settings__localization__subtype_glide_available">Pisanie gestem dostępne</string>
 </resources>

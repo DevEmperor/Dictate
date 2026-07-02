@@ -43,6 +43,9 @@ import dev.patrickgold.florisboard.app.enumDisplayEntriesOf
 import dev.patrickgold.florisboard.ime.core.DisplayLanguageNamesIn
 import dev.patrickgold.florisboard.ime.core.Subtype
 import dev.patrickgold.florisboard.ime.keyboard.LayoutType
+import dev.patrickgold.florisboard.ime.nlp.latin.GlideDictionaryCatalog
+import dev.patrickgold.florisboard.ime.nlp.latin.GlideDictionaryManager
+import dev.patrickgold.florisboard.ime.nlp.latin.LatinLanguageProvider
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.florisboard.subtypeManager
@@ -128,12 +131,23 @@ fun LocalizationScreen() = FlorisScreen {
                     val cMeta = layouts[LayoutType.CHARACTERS]?.get(subtype.layoutMap.characters)
                     val sMeta = layouts[LayoutType.SYMBOLS]?.get(subtype.layoutMap.symbols)
                     val currMeta = currencySets[subtype.currencySet]
-                    val summary = stringRes(
+                    val baseSummary = stringRes(
                         id = R.string.settings__localization__subtype_summary,
                         "characters_name" to (cMeta?.label ?: "null"),
                         "symbols_name" to (sMeta?.label ?: "null"),
                         "currency_set_name" to (currMeta?.label ?: "null"),
                     )
+                    // Glide typing status (issue #127): show whether a dictionary is ready or will download.
+                    val glideLang = LatinLanguageProvider.normalizeLang(subtype.primaryLocale.language)
+                    val glideSuffix = when {
+                        glideLang in GlideDictionaryCatalog.BUNDLED ||
+                            GlideDictionaryManager.isInstalled(context, glideLang) ->
+                            "\n✓ " + stringRes(R.string.settings__localization__subtype_glide_ready)
+                        GlideDictionaryCatalog.forLang(glideLang) != null ->
+                            "\n⤓ " + stringRes(R.string.settings__localization__subtype_glide_available)
+                        else -> ""
+                    }
+                    val summary = baseSummary + glideSuffix
                     Preference(
                         title = when (displayLanguageNamesIn) {
                             DisplayLanguageNamesIn.SYSTEM_LOCALE -> subtype.primaryLocale.displayName()

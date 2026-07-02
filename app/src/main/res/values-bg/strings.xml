@@ -1493,4 +1493,6 @@
     <string name="dictate__audio_save_failed">Аудиото не можа да се запази</string>
     <string name="dictate__instant_recording_skip_numeric_title">Пропускай полета с числа</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Не стартирай автоматично при полета за числа, телефон или PIN</string>
+    <string name="settings__localization__subtype_glide_ready">Плъзгащо писане — готово</string>
+    <string name="settings__localization__subtype_glide_available">Плъзгащо писане — налично</string>
 </resources>

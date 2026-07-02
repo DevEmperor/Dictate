@@ -373,8 +373,10 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
                 word: String,
                 keysByCharacter: SparseArrayCompat<TextKey>,
             ): Pair<Int, Int>? {
-                val firstLetter = word[0]
-                val lastLetter = word[word.length - 1]
+                // Lowercase first (keyboard keys are lowercase): a capitalised word like "Baum" would
+                // otherwise miss the key lookup (B vs b) and be pruned out entirely (issue #127).
+                val firstLetter = Character.toLowerCase(word[0])
+                val lastLetter = Character.toLowerCase(word[word.length - 1])
                 val firstBaseChar = Normalizer.normalize(firstLetter.toString(), Normalizer.Form.NFD)[0]
                 val lastBaseChar = Normalizer.normalize(lastLetter.toString(), Normalizer.Form.NFD)[0]
                 return when {

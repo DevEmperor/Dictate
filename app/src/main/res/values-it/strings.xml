@@ -1275,4 +1275,6 @@
     <string name="dictate__audio_save_failed">Impossibile salvare l\'audio</string>
     <string name="dictate__instant_recording_skip_numeric_title">Salta i campi numerici</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Non avviare automaticamente nei campi numerici, telefono o PIN</string>
+    <string name="settings__localization__subtype_glide_ready">Digitazione con scorrimento pronta</string>
+    <string name="settings__localization__subtype_glide_available">Digitazione con scorrimento disponibile</string>
 </resources>

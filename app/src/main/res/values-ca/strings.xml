@@ -1367,4 +1367,6 @@
     <string name="dictate__audio_save_failed">No s\'ha pogut desar l\'àudio</string>
     <string name="dictate__instant_recording_skip_numeric_title">Omet camps numèrics</string>
     <string name="dictate__instant_recording_skip_numeric_summary">No iniciïs automàticament en camps de números, telèfon o PIN</string>
+    <string name="settings__localization__subtype_glide_ready">Escriptura lliscant a punt</string>
+    <string name="settings__localization__subtype_glide_available">Escriptura lliscant disponible</string>
 </resources>

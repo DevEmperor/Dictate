@@ -1491,4 +1491,6 @@
     <string name="dictate__audio_save_failed">Nem sikerült menteni a hangot</string>
     <string name="dictate__instant_recording_skip_numeric_title">Számmezők kihagyása</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Ne induljon automatikusan szám-, telefon- vagy PIN-mezőknél</string>
+    <string name="settings__localization__subtype_glide_ready">Csúsztatásos gépelés kész</string>
+    <string name="settings__localization__subtype_glide_available">Csúsztatásos gépelés elérhető</string>
 </resources>
