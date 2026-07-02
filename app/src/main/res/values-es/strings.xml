@@ -1478,4 +1478,5 @@
     <string name="settings__localization__subtype_glide_ready">Escritura deslizante lista</string>
     <string name="settings__localization__subtype_glide_available">Escritura deslizante disponible</string>
     <string name="settings__localization__subtype_glide_downloading">Descargando escritura deslizante… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Escritura deslizante no disponible</string>
 </resources>

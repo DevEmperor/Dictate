@@ -1474,4 +1474,5 @@
     <string name="settings__localization__subtype_glide_ready">Kaydırarak yazma hazır</string>
     <string name="settings__localization__subtype_glide_available">Kaydırarak yazma kullanılabilir</string>
     <string name="settings__localization__subtype_glide_downloading">Kaydırarak yazma indiriliyor… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Kaydırarak yazma kullanılamıyor</string>
 </resources>

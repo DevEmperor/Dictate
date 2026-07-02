@@ -1340,4 +1340,5 @@
     <string name="settings__localization__subtype_glide_ready">Свайп-введення готове</string>
     <string name="settings__localization__subtype_glide_available">Свайп-введення доступне</string>
     <string name="settings__localization__subtype_glide_downloading">Завантаження свайп-введення… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Свайп-введення недоступне</string>
 </resources>

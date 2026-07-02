@@ -1368,4 +1368,5 @@
     <string name="settings__localization__subtype_glide_ready">Glide-Eingabe bereit</string>
     <string name="settings__localization__subtype_glide_available">Glide-Eingabe verfügbar</string>
     <string name="settings__localization__subtype_glide_downloading">Gleittipp-Wörterbuch wird geladen… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Gleittipp nicht verfügbar</string>
 </resources>

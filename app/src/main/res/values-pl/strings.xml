@@ -1512,4 +1512,5 @@
     <string name="settings__localization__subtype_glide_ready">Pisanie gestem gotowe</string>
     <string name="settings__localization__subtype_glide_available">Pisanie gestem dostępne</string>
     <string name="settings__localization__subtype_glide_downloading">Pobieranie pisania gestem… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Pisanie gestem niedostępne</string>
 </resources>

@@ -1396,4 +1396,5 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="settings__localization__subtype_glide_ready">Veegtypen gereed</string>
     <string name="settings__localization__subtype_glide_available">Veegtypen beschikbaar</string>
     <string name="settings__localization__subtype_glide_downloading">Veegtypen downloaden… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Veegtypen niet beschikbaar</string>
 </resources>

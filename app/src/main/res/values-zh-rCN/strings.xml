@@ -1490,4 +1490,5 @@
     <string name="settings__localization__subtype_glide_ready">滑行输入已就绪</string>
     <string name="settings__localization__subtype_glide_available">滑行输入可用</string>
     <string name="settings__localization__subtype_glide_downloading">正在下载滑行输入… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">滑行输入不可用</string>
 </resources>

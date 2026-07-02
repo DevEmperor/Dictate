@@ -154,7 +154,8 @@ fun LocalizationScreen() = FlorisScreen {
                             "\n✓ " + stringRes(R.string.settings__localization__subtype_glide_ready)
                         GlideDictionaryCatalog.forLang(glideLang) != null ->
                             "\n⤓ " + stringRes(R.string.settings__localization__subtype_glide_available)
-                        else -> ""
+                        else ->
+                            "\n✕ " + stringRes(R.string.settings__localization__subtype_glide_unavailable)
                     }
                     val summary = baseSummary + glideSuffix
                     Preference(

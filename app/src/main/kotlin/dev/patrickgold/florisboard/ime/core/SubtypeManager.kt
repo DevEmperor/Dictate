@@ -187,6 +187,11 @@ class SubtypeManager(context: Context) {
             }
             persistNewSubtypeList(newSubtypeList)
             evaluateActiveSubtype(newSubtypeList)
+            // Free the downloaded glide dictionary once no remaining subtype uses that language (issue #127).
+            val lang = subtypeToRemove.primaryLocale.language
+            if (newSubtypeList.none { it.primaryLocale.language == lang }) {
+                GlideDictionaryManager.deleteDownloaded(appContext, lang)
+            }
         }
     }
 

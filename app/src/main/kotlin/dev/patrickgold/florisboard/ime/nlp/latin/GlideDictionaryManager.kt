@@ -109,6 +109,18 @@ object GlideDictionaryManager {
     }
 
     /**
+     * Removes a downloaded dictionary (never the bundled ones) and notifies observers — used when the last
+     * subtype of a language is removed (issue #127).
+     */
+    fun deleteDownloaded(context: Context, lang: String) {
+        val code = LatinLanguageProvider.normalizeLang(lang)
+        if (code in GlideDictionaryCatalog.BUNDLED) return
+        if (isInstalled(context, code) && delete(context, code)) {
+            _installedVersion.value += 1
+        }
+    }
+
+    /**
      * Downloads and installs [spec]. [onProgress] is invoked with `(downloadedBytes, totalBytes)` as the
      * download proceeds (throttle on the UI side). Suspends until done; throws on any failure (network,
      * HTTP, size/checksum mismatch) after cleaning up the staging file.

@@ -1303,4 +1303,5 @@
     <string name="settings__localization__subtype_glide_ready">Escrita deslizante pronta</string>
     <string name="settings__localization__subtype_glide_available">Escrita deslizante disponível</string>
     <string name="settings__localization__subtype_glide_downloading">Baixando escrita deslizante… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Escrita deslizante não disponível</string>
 </resources>

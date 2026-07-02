@@ -1278,4 +1278,5 @@
     <string name="settings__localization__subtype_glide_ready">Digitazione con scorrimento pronta</string>
     <string name="settings__localization__subtype_glide_available">Digitazione con scorrimento disponibile</string>
     <string name="settings__localization__subtype_glide_downloading">Download digitazione con scorrimento… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Digitazione con scorrimento non disponibile</string>
 </resources>

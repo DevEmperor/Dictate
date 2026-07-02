@@ -1511,4 +1511,5 @@
     <string name="settings__localization__subtype_glide_ready">Psaní tahem připraveno</string>
     <string name="settings__localization__subtype_glide_available">Psaní tahem dostupné</string>
     <string name="settings__localization__subtype_glide_downloading">Stahování psaní tahem… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Psaní tahem není k dispozici</string>
 </resources>

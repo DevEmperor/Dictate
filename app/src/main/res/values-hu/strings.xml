@@ -1494,4 +1494,5 @@
     <string name="settings__localization__subtype_glide_ready">Csúsztatásos gépelés kész</string>
     <string name="settings__localization__subtype_glide_available">Csúsztatásos gépelés elérhető</string>
     <string name="settings__localization__subtype_glide_downloading">Csúsztatásos gépelés letöltése… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Csúsztatásos gépelés nem érhető el</string>
 </resources>

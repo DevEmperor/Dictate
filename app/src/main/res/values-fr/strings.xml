@@ -1370,4 +1370,5 @@
     <string name="settings__localization__subtype_glide_ready">Saisie glissée prête</string>
     <string name="settings__localization__subtype_glide_available">Saisie glissée disponible</string>
     <string name="settings__localization__subtype_glide_downloading">Téléchargement de la saisie glissée… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Saisie glissée non disponible</string>
 </resources>

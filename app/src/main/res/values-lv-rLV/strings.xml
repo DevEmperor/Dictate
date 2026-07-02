@@ -1440,4 +1440,5 @@
     <string name="settings__localization__subtype_glide_ready">Slīdošā rakstīšana gatava</string>
     <string name="settings__localization__subtype_glide_available">Slīdošā rakstīšana pieejama</string>
     <string name="settings__localization__subtype_glide_downloading">Lejupielādē slīdošo rakstīšanu… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Slīdošā rakstīšana nav pieejama</string>
 </resources>
