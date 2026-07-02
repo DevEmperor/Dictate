@@ -1350,4 +1350,5 @@
     <string name="dictate__instant_recording_skip_numeric_summary">لا تبدأ تلقائيًا في حقول الأرقام أو الهاتف أو رمز PIN</string>
     <string name="settings__localization__subtype_glide_ready">الكتابة بالسحب جاهزة</string>
     <string name="settings__localization__subtype_glide_available">الكتابة بالسحب متاحة</string>
+    <string name="settings__localization__subtype_glide_downloading">جارٍ تنزيل الكتابة بالسحب… {v}%</string>
 </resources>

@@ -1477,4 +1477,5 @@
     <string name="dictate__instant_recording_skip_numeric_summary">No iniciar automáticamente en campos de números, teléfono o PIN</string>
     <string name="settings__localization__subtype_glide_ready">Escritura deslizante lista</string>
     <string name="settings__localization__subtype_glide_available">Escritura deslizante disponible</string>
+    <string name="settings__localization__subtype_glide_downloading">Descargando escritura deslizante… {v}%</string>
 </resources>

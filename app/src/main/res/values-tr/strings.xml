@@ -1473,4 +1473,5 @@
     <string name="dictate__instant_recording_skip_numeric_summary">Sayı, telefon veya PIN alanlarında otomatik başlatma</string>
     <string name="settings__localization__subtype_glide_ready">Kaydırarak yazma hazır</string>
     <string name="settings__localization__subtype_glide_available">Kaydırarak yazma kullanılabilir</string>
+    <string name="settings__localization__subtype_glide_downloading">Kaydırarak yazma indiriliyor… {v}%</string>
 </resources>

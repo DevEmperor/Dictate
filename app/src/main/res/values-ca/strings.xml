@@ -1369,4 +1369,5 @@
     <string name="dictate__instant_recording_skip_numeric_summary">No iniciïs automàticament en camps de números, telèfon o PIN</string>
     <string name="settings__localization__subtype_glide_ready">Escriptura lliscant a punt</string>
     <string name="settings__localization__subtype_glide_available">Escriptura lliscant disponible</string>
+    <string name="settings__localization__subtype_glide_downloading">S\'està baixant l\'escriptura lliscant… {v}%</string>
 </resources>

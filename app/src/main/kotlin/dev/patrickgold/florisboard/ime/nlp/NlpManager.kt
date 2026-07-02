@@ -193,7 +193,17 @@ class NlpManager(context: Context) {
             || prefs.emoji.suggestionEnabled.get()
             || providerForcesSuggestionOn(subtypeManager.activeSubtype)
 
+    // Set by a glide-typing commit: the word commit itself triggers one resetSuggestions → suggest() that
+    // would immediately wipe the just-shown glide alternatives. This one-shot flag makes that next suggest()
+    // a no-op so the alternatives stay in the strip until the user's next input (issue #127).
+    @Volatile
+    private var holdNextSuggest = false
+
     fun suggest(subtype: Subtype, content: EditorContent) {
+        if (holdNextSuggest) {
+            holdNextSuggest = false
+            return
+        }
         val reqTime = SystemClock.uptimeMillis()
         scope.launch {
             val emojiSuggestions = when {
@@ -233,8 +243,9 @@ class NlpManager(context: Context) {
         }
     }
 
-    fun suggestDirectly(suggestions: List<SuggestionCandidate>) {
+    fun suggestDirectly(suggestions: List<SuggestionCandidate>, holdNext: Boolean = false) {
         val reqTime = SystemClock.uptimeMillis()
+        holdNextSuggest = holdNext
         runBlocking {
             internalSuggestions = reqTime to suggestions
         }

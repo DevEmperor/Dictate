@@ -127,6 +127,9 @@ fun LocalizationScreen() = FlorisScreen {
                 val currencySets by keyboardManager.resources.currencySets.collectAsState()
                 val layouts by keyboardManager.resources.layouts.collectAsState()
                 val displayLanguageNamesIn by prefs.localization.displayLanguageNamesIn.collectAsState()
+                // Live glide-dictionary status (issue #127): recomposes as downloads progress/complete.
+                val glideProgress by GlideDictionaryManager.progress.collectAsState()
+                val glideInstalledVersion by GlideDictionaryManager.installedVersion.collectAsState()
                 for (subtype in subtypes) {
                     val cMeta = layouts[LayoutType.CHARACTERS]?.get(subtype.layoutMap.characters)
                     val sMeta = layouts[LayoutType.SYMBOLS]?.get(subtype.layoutMap.symbols)
@@ -137,9 +140,15 @@ fun LocalizationScreen() = FlorisScreen {
                         "symbols_name" to (sMeta?.label ?: "null"),
                         "currency_set_name" to (currMeta?.label ?: "null"),
                     )
-                    // Glide typing status (issue #127): show whether a dictionary is ready or will download.
+                    // Glide typing status (issue #127): downloading % / ready / available.
                     val glideLang = LatinLanguageProvider.normalizeLang(subtype.primaryLocale.language)
+                    @Suppress("UNUSED_EXPRESSION") glideInstalledVersion // re-read installed state on change
                     val glideSuffix = when {
+                        glideProgress[glideLang] != null ->
+                            "\n⬇ " + stringRes(
+                                R.string.settings__localization__subtype_glide_downloading,
+                                "v" to glideProgress[glideLang].toString(),
+                            )
                         glideLang in GlideDictionaryCatalog.BUNDLED ||
                             GlideDictionaryManager.isInstalled(context, glideLang) ->
                             "\n✓ " + stringRes(R.string.settings__localization__subtype_glide_ready)

@@ -58,9 +58,15 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
     private val appContext by context.appContext()
 
-    // Fire-and-forget scope for auto-downloading a subtype's glide dictionary on first use.
     private val ioScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private val attemptedDownloads = java.util.Collections.synchronizedSet(mutableSetOf<String>())
+
+    init {
+        // When a dictionary finishes downloading, drop the resolved-language cache so the active subtype
+        // starts using it immediately (issue #127).
+        ioScope.launch {
+            GlideDictionaryManager.installedVersion.collect { resolvedDictLang.clear() }
+        }
+    }
 
     // Word→frequency dictionaries cached per language (issue #127, glide typing phase 2). Each bundled
     // ime/dict/<lang>.json maps a word to a frequency in [128,255]; languages without a bundled file fall
@@ -94,26 +100,11 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         }
     }
 
-    /**
-     * Downloads the glide dictionary for [subtype]'s language in the background the first time that
-     * language is used, if it has a catalog entry and isn't already installed/bundled (issue #127). Best
-     * effort: on failure glide simply keeps falling back to English until a later retry succeeds.
-     */
+    /** Ensures the glide dictionary for [subtype]'s language downloads on first use (issue #127). */
     private fun maybeDownloadDict(subtype: Subtype) {
         val lang = normalizeLang(subtype.primaryLocale.language)
         if (lang.isBlank() || lang in bundledDictLangs) return
-        if (GlideDictionaryManager.isInstalled(appContext, lang)) return
-        val spec = GlideDictionaryCatalog.forLang(lang) ?: return
-        if (!attemptedDownloads.add(lang)) return
-        ioScope.launch {
-            runCatching { GlideDictionaryManager.download(appContext, spec) }
-                .onSuccess {
-                    // Make the freshly downloaded dictionary take effect for the active subtype.
-                    resolvedDictLang.clear()
-                    wordDataByLang.withLock { it.remove(lang) }
-                }
-                .onFailure { attemptedDownloads.remove(lang) } // allow a retry next activation
-        }
+        GlideDictionaryManager.ensureDownloaded(appContext, lang)
     }
 
     /** Raw JSON for [lang]: a downloaded dictionary takes precedence over the bundled asset. */

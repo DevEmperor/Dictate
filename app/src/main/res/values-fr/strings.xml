@@ -1369,4 +1369,5 @@
     <string name="dictate__instant_recording_skip_numeric_summary">Ne pas démarrer automatiquement sur les champs numériques, téléphone ou PIN</string>
     <string name="settings__localization__subtype_glide_ready">Saisie glissée prête</string>
     <string name="settings__localization__subtype_glide_available">Saisie glissée disponible</string>
+    <string name="settings__localization__subtype_glide_downloading">Téléchargement de la saisie glissée… {v}%</string>
 </resources>

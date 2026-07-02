@@ -11,13 +11,20 @@
 package dev.patrickgold.florisboard.ime.nlp.latin
 
 import android.content.Context
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
 import java.security.MessageDigest
+import java.util.Collections
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.coroutineContext
 
@@ -38,6 +45,45 @@ object GlideDictionaryManager {
             .readTimeout(30, TimeUnit.SECONDS)
             .callTimeout(0, TimeUnit.SECONDS)
             .build()
+    }
+
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val active = Collections.synchronizedSet(mutableSetOf<String>())
+
+    /** lang → download progress in 0..100 while a download is in flight (absent otherwise). */
+    private val _progress = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val progress: StateFlow<Map<String, Int>> = _progress.asStateFlow()
+
+    /** Bumped after every successful install so observers (UI, classifier caches) can react. */
+    private val _installedVersion = MutableStateFlow(0)
+    val installedVersion: StateFlow<Int> = _installedVersion.asStateFlow()
+
+    /**
+     * Starts a background download of the glide dictionary for [lang] if it has a catalog entry and isn't
+     * already installed or downloading (issue #127). Progress is published on [progress]; [installedVersion]
+     * bumps on success. Best effort — failures leave the language uninstalled for a later retry.
+     */
+    fun ensureDownloaded(context: Context, lang: String) {
+        val code = LatinLanguageProvider.normalizeLang(lang)
+        if (isInstalled(context, code)) return
+        val spec = GlideDictionaryCatalog.forLang(code) ?: return
+        if (!active.add(code)) return
+        val appContext = context.applicationContext
+        _progress.value = _progress.value + (code to 0)
+        scope.launch {
+            try {
+                download(appContext, spec) { done, total ->
+                    val pct = if (total > 0) ((done * 100) / total).toInt().coerceIn(0, 100) else 0
+                    if (_progress.value[code] != pct) _progress.value = _progress.value + (code to pct)
+                }
+                _installedVersion.value += 1
+            } catch (_: Throwable) {
+                // leave uninstalled; a later activation/add retries
+            } finally {
+                active.remove(code)
+                _progress.value = _progress.value - code
+            }
+        }
     }
 
     fun dictsRoot(context: Context): File = File(context.filesDir, "glide-dicts")

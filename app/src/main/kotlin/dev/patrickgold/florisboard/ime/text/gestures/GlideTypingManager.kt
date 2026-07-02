@@ -106,7 +106,9 @@ class GlideTypingManager(context: Context) : GlideTypingGesture.Listener {
                     }
                 }
 
-                nlpManager.suggestDirectly(suggestionList)
+                // On completion, keep the alternatives in the suggestion strip: holdNext makes the
+                // resetSuggestions that the commit below triggers a no-op, so they aren't wiped (issue #127).
+                nlpManager.suggestDirectly(suggestionList, holdNext = commit)
                 if (commit && suggestions.isNotEmpty()) {
                     keyboardManager.commitGesture(suggestions.first())
                 }

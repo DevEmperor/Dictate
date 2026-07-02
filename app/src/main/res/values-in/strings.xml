@@ -1448,4 +1448,5 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Jangan mulai otomatis di bidang angka, telepon, atau PIN</string>
     <string name="settings__localization__subtype_glide_ready">Ketik geser siap</string>
     <string name="settings__localization__subtype_glide_available">Ketik geser tersedia</string>
+    <string name="settings__localization__subtype_glide_downloading">Mengunduh ketik geser… {v}%</string>
 </resources>
