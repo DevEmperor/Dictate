@@ -487,6 +487,7 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="pref__glide_trail_fade_duration">Lamanya memudarnya jejak geser</string>
     <string name="pref__glide_preview_refresh_delay">Pratinjau penundaan penyegaran</string>
     <string name="pref__glide__show_preview">Tampilkan pratinjau saat ketikan geser</string>
+    <string name="pref__glide__show_preview__summary">Tampilkan kata teratas di bilah saran saat menggeser</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Selalu hapus kata</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Menekan hapus setelah sebuah geser menghapus seluruh kata</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Gestur umum</string>

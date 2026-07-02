@@ -502,6 +502,7 @@
     <string name="pref__glide_trail_fade_duration">Doba mizení stopy</string>
     <string name="pref__glide_preview_refresh_delay">Náhled doby obnovení</string>
     <string name="pref__glide__show_preview">Zobrazit náhled při psaní tahem</string>
+    <string name="pref__glide__show_preview__summary">Během tažení zobrazit nejlepší slovo v liště návrhů</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Vždy smazat slovo</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Stisknutí klávesy pro odstranění ihned po přejetí smaže celé slovo</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Obecná gesta</string>

@@ -406,6 +406,7 @@
     <string name="pref__glide_trail_fade_duration">Tempo di dissolvenza del percorso di scorrimento</string>
     <string name="pref__glide_preview_refresh_delay">Ritardo di aggiornamento dell\'anteprima</string>
     <string name="pref__glide__show_preview">Mostra l\'anteprima durante la digitazione a scorrimento</string>
+    <string name="pref__glide__show_preview__summary">Mostra la parola migliore nella barra dei suggerimenti mentre scorri</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Elimina sempre la parola</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Premendo Elimina subito dopo uno scorrimento si elimina l\'intera parola</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Gesti generali</string>

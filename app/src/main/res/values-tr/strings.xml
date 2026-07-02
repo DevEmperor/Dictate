@@ -493,6 +493,7 @@
     <string name="pref__glide_trail_fade_duration">Kaydırma izi solma süresi</string>
     <string name="pref__glide_preview_refresh_delay">Önizleme yenileme gecikmesi</string>
     <string name="pref__glide__show_preview">Kaydırarak yazarken önizlemeyi göster</string>
+    <string name="pref__glide__show_preview__summary">Kaydırırken öneri çubuğunda en iyi kelimeyi göster</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Her zaman kelimeyi sil</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Bir kaydırmadan hemen sonra silme tuşuna basmak tüm kelimeyi siler</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Genel hareketler</string>

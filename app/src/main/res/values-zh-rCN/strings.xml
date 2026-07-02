@@ -501,6 +501,7 @@
     <string name="pref__glide_trail_fade_duration">滑动轨迹淡出时间</string>
     <string name="pref__glide_preview_refresh_delay">预览更新延迟</string>
     <string name="pref__glide__show_preview">滑动输入时显示预览</string>
+    <string name="pref__glide__show_preview__summary">滑行时在候选栏显示最匹配的词</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">始终删除单词</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">手势滑动后紧接着按删除键删除整个单词</string>
     <string name="pref__gestures__general_title" comment="Preference group title">通用手势</string>

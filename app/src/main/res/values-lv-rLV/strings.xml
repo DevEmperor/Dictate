@@ -454,6 +454,7 @@
     <string name="pref__glide_trail_fade_duration">Slīdēšanas pēdu izzušanas laiks</string>
     <string name="pref__glide_preview_refresh_delay">Priekšskatīt atsvaidzināšanas aizkavi</string>
     <string name="pref__glide__show_preview">Rādīt priekšskatījumu slīdošās rakstīšanas laikā</string>
+    <string name="pref__glide__show_preview__summary">Slīdēšanas laikā rādīt labāko vārdu ieteikumu joslā</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Vienmēr izdzēst vārdu</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Dzēšanas taustiņa nospiešana uzreiz pēc slidināšanas izdzēš visu vārdu</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Vispārējas kustības</string>

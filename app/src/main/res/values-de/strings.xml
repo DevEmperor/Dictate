@@ -412,6 +412,7 @@
     <string name="pref__glide_trail_fade_duration">Ausblendzeit der Spur</string>
     <string name="pref__glide_preview_refresh_delay">Verzögerung der Vorschau</string>
     <string name="pref__glide__show_preview">Vorschau während des Gleitens anzeigen</string>
+    <string name="pref__glide__show_preview__summary">Das beste Wort während des Gleitens in der Vorschlagsleiste anzeigen</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Wort immer löschen</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Löschtaste löscht ganzes Wort nach Glide-Typing-Eingabe</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Allgemeine Gesten</string>

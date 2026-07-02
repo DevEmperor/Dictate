@@ -430,6 +430,7 @@
     <string name="pref__glide_trail_fade_duration">Temps de fondu du parcours de glissement</string>
     <string name="pref__glide_preview_refresh_delay">Délai d\'actualisation de l\'aperçu</string>
     <string name="pref__glide__show_preview">Afficher l\'aperçu lors de la saisie en glissant</string>
+    <string name="pref__glide__show_preview__summary">Afficher le meilleur mot dans la barre de suggestions pendant le glissement</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Toujours supprimer le mot</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Appuyer sur supprimer juste après un glissement supprime le mot entier</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Gestes généraux</string>

@@ -492,6 +492,7 @@
     <string name="pref__glide_trail_fade_duration">Tiempo de desvanecimiento del gesto</string>
     <string name="pref__glide_preview_refresh_delay">Retraso de actualización de la vista previa</string>
     <string name="pref__glide__show_preview">Mostrar recorrido del gesto</string>
+    <string name="pref__glide__show_preview__summary">Mostrar la mejor palabra en la barra de sugerencias al deslizar</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Siempre borrar palabra</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Al pulsar suprimir justo después de un deslizamiento, se borra toda la palabra</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Gestos generales</string>

@@ -501,6 +501,7 @@
     <string name="pref__glide_trail_fade_duration">Nyomvonal elhalványulási ideje</string>
     <string name="pref__glide_preview_refresh_delay">Frissítési késleltetés megtekintése</string>
     <string name="pref__glide__show_preview">Előnézet megjelenítése csúsztatott gépelés közben</string>
+    <string name="pref__glide__show_preview__summary">A legjobb szó megjelenítése a javaslatsávban csúsztatás közben</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Mindig szót töröljön</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">A csúsztatás után egyből megnyomott törlés gomb az egész szót törli</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Általános gesztusok</string>

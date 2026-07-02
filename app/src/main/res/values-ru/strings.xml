@@ -496,6 +496,7 @@
     <string name="pref__glide_trail_fade_duration">Время исчезания непрерывного следа</string>
     <string name="pref__glide_preview_refresh_delay">Задержка обновления предварительного просмотра</string>
     <string name="pref__glide__show_preview">Предварительный просмотр при непрерывном вводе</string>
+    <string name="pref__glide__show_preview__summary">Показывать лучшее слово на панели подсказок во время свайпа</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Всегда удалять слово</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Нажатие кнопки \"Удалить\" после непрерывного ввода удаляет слово целиком</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Общие жесты</string>

@@ -491,6 +491,7 @@
     <string name="pref__glide_trail_fade_duration">Tempo para mostrar o rasto</string>
     <string name="pref__glide_preview_refresh_delay">Atraso de pré-visualização</string>
     <string name="pref__glide__show_preview">Mostrar pré-visualização ao escrever com gestos</string>
+    <string name="pref__glide__show_preview__summary">Mostrar a melhor palavra na barra de sugestões ao deslizar</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Eliminar palavra sempre</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Pressionar \"eliminar\" de seguida ao deslizar, apaga a palavra inteira</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Gestos genéricos</string>

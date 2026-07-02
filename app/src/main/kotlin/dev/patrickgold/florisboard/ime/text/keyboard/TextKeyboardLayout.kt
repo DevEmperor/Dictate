@@ -20,6 +20,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.MotionEvent
+import android.view.accessibility.AccessibilityManager
 import android.view.animation.AccelerateInterpolator
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -115,7 +116,7 @@ fun TextKeyboardLayout(
     val keyboard = evaluator.keyboard as TextKeyboard
     val glideEnabledInternal by prefs.glide.enabled.collectAsState()
     val glideEnabled = glideEnabledInternal && evaluator.editorInfo.isRichInputEditor &&
-        evaluator.state.keyVariation != KeyVariation.PASSWORD
+        evaluator.state.keyVariation != KeyVariation.PASSWORD && !isTouchExplorationEnabled(context)
     val glideShowTrail by prefs.glide.showTrail.collectAsState()
     val glideTrailStyle = rememberSnyggThemeQuery(FlorisImeUi.GlideTrail.elementName)
     val glideTrailColor = glideTrailStyle.foreground(default = Color.Green)
@@ -389,10 +390,21 @@ private fun TextKeyButton(
 }
 
 @Suppress("unused_parameter")
+/**
+ * Whether a screen reader's touch exploration (e.g. TalkBack) is active. Glide typing conflicts with it
+ * — the swipe is intercepted for exploration — so we disable glide in that case (issue #127, mirroring
+ * HeliBoard's GestureEnabler gate).
+ */
+private fun isTouchExplorationEnabled(context: Context): Boolean {
+    val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
+    return am?.isTouchExplorationEnabled == true
+}
+
 private class TextKeyboardLayoutController(
     context: Context,
 ) : SwipeGesture.Listener, GlideTypingGesture.Listener {
     private val prefs by FlorisPreferenceStore
+    private val appContext = context.applicationContext
     private val editorInstance by context.editorInstance()
     private val keyboardManager by context.keyboardManager()
 
@@ -416,7 +428,7 @@ private class TextKeyboardLayoutController(
     var size = Size.Zero
 
     val isGlideEnabled: Boolean get() = prefs.glide.enabled.get() && editorInstance.activeInfo.isRichInputEditor &&
-        keyboardManager.activeState.keyVariation != KeyVariation.PASSWORD
+        keyboardManager.activeState.keyVariation != KeyVariation.PASSWORD && !isTouchExplorationEnabled(appContext)
 
     fun onTouchEventInternal(event: MotionEvent) {
         flogDebug { "event=$event" }
