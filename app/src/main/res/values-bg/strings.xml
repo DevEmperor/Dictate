@@ -1490,4 +1490,6 @@
     <string name="dictate__action_save_audio">Запази аудиото</string>
     <string name="dictate__audio_saved">Аудиото е запазено в Downloads/Dictate: %s</string>
     <string name="dictate__audio_save_failed">Аудиото не можа да се запази</string>
+    <string name="dictate__instant_recording_skip_numeric_title">Пропускай полета с числа</string>
+    <string name="dictate__instant_recording_skip_numeric_summary">Не стартирай автоматично при полета за числа, телефон или PIN</string>
 </resources>

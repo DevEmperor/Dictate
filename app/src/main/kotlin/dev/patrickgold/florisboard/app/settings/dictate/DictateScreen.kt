@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.Dialpad
 import androidx.compose.material.icons.filled.BrightnessHigh
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Dns
@@ -268,6 +269,13 @@ fun DictateScreen() = FlorisScreen {
                 icon = Icons.Default.Bolt,
                 title = stringRes(R.string.dictate__instant_recording_title),
                 summary = stringRes(R.string.dictate__instant_recording_summary),
+            )
+            SwitchPreference(
+                prefs.dictate.instantRecordingSkipNumeric,
+                icon = Icons.Default.Dialpad,
+                title = stringRes(R.string.dictate__instant_recording_skip_numeric_title),
+                summary = stringRes(R.string.dictate__instant_recording_skip_numeric_summary),
+                enabledIf = { prefs.dictate.instantRecording.isTrue() },
             )
             // Inform the user once, when they switch instant recording on, that it disables the
             // interrupted-recording recovery (the two are mutually exclusive — see issue #120). Purely

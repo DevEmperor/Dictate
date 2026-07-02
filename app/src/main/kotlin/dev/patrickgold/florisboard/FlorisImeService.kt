@@ -358,6 +358,15 @@ class FlorisImeService : LifecycleInputMethodService() {
 
         val instantRecordingOn = prefs.dictate.instantRecording.get()
 
+        // Don't auto-start on number-only fields (number/phone/PIN/date-time), where dictation rarely
+        // makes sense, when the user opted to skip them (issue #146).
+        val isNumericField = editorInfo.inputAttributes.type in setOf(
+            dev.patrickgold.florisboard.ime.editor.InputAttributes.Type.NUMBER,
+            dev.patrickgold.florisboard.ime.editor.InputAttributes.Type.PHONE,
+            dev.patrickgold.florisboard.ime.editor.InputAttributes.Type.DATETIME,
+        )
+        val skipInstantForNumeric = isNumericField && prefs.dictate.instantRecordingSkipNumeric.get()
+
         // Interrupted recording: if a recording was finalized because the keyboard closed mid-recording,
         // offer to send it now. This recovery feature is mutually exclusive with instant recording: when
         // instant recording is on we never offer (and never stash — see stashRecordingOnHide), so opening
@@ -371,6 +380,7 @@ class FlorisImeService : LifecycleInputMethodService() {
             !offeredInterrupted &&
             !restarting &&
             instantRecordingOn &&
+            !skipInstantForNumeric &&
             dev.patrickgold.florisboard.dictate.DictateController.state.value is
                 dev.patrickgold.florisboard.dictate.DictateController.UiState.Idle &&
             androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) ==

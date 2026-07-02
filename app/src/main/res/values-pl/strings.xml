@@ -1506,4 +1506,6 @@
     <string name="dictate__action_save_audio">Zapisz audio</string>
     <string name="dictate__audio_saved">Audio zapisane w Downloads/Dictate: %s</string>
     <string name="dictate__audio_save_failed">Nie udało się zapisać audio</string>
+    <string name="dictate__instant_recording_skip_numeric_title">Pomijaj pola liczbowe</string>
+    <string name="dictate__instant_recording_skip_numeric_summary">Nie uruchamiaj automatycznie w polach liczb, telefonu lub PIN</string>
 </resources>

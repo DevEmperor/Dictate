@@ -1443,4 +1443,6 @@ Klik di sini untuk menyelesaikan masalah ini.</string>
     <string name="dictate__action_save_audio">Simpan audio</string>
     <string name="dictate__audio_saved">Audio disimpan ke Downloads/Dictate: %s</string>
     <string name="dictate__audio_save_failed">Tidak dapat menyimpan audio</string>
+    <string name="dictate__instant_recording_skip_numeric_title">Lewati bidang angka</string>
+    <string name="dictate__instant_recording_skip_numeric_summary">Jangan mulai otomatis di bidang angka, telepon, atau PIN</string>
 </resources>

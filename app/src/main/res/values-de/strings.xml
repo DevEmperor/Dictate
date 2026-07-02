@@ -1362,4 +1362,6 @@
     <string name="dictate__action_save_audio">Audio speichern</string>
     <string name="dictate__audio_saved">Audio in Downloads/Dictate gespeichert: %s</string>
     <string name="dictate__audio_save_failed">Audio konnte nicht gespeichert werden</string>
+    <string name="dictate__instant_recording_skip_numeric_title">Zahlenfelder überspringen</string>
+    <string name="dictate__instant_recording_skip_numeric_summary">Bei Zahlen-, Telefon- oder PIN-Feldern nicht automatisch starten</string>
 </resources>

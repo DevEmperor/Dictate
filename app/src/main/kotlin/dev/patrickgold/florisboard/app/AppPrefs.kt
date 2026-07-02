@@ -351,6 +351,12 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "dictate__instant_recording",
             default = false,
         )
+        // When instant recording is on, still don't auto-start on number-only fields (number, phone, PIN,
+        // date/time), where dictation rarely makes sense (issue #146). Default on.
+        val instantRecordingSkipNumeric = boolean(
+            key = "dictate__instant_recording_skip_numeric",
+            default = true,
+        )
         // Floating dictation button (issue #88): the in-app master toggle. The bubble only shows when
         // this is on AND the DictateAccessibilityService is enabled in the system accessibility settings
         // (the latter is the actual permission; this lets the user hide the bubble without digging into

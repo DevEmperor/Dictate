@@ -1390,4 +1390,6 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="dictate__action_save_audio">Audio opslaan</string>
     <string name="dictate__audio_saved">Audio opgeslagen in Downloads/Dictate: %s</string>
     <string name="dictate__audio_save_failed">Kan de audio niet opslaan</string>
+    <string name="dictate__instant_recording_skip_numeric_title">Numerieke velden overslaan</string>
+    <string name="dictate__instant_recording_skip_numeric_summary">Niet automatisch starten bij cijfer-, telefoon- of pinvelden</string>
 </resources>
