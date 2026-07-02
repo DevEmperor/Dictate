@@ -48,7 +48,6 @@ import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import org.florisboard.lib.android.AndroidVersion
-import org.florisboard.lib.compose.FlorisErrorCard
 import org.florisboard.lib.compose.stringRes
 
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
@@ -60,15 +59,6 @@ fun TypingScreen() = FlorisScreen {
     val navController = LocalNavController.current
 
     content {
-        // This card is temporary and is therefore not using a string resource (not so temporary as we thought...)
-        FlorisErrorCard(
-            modifier = Modifier.padding(8.dp),
-            text = """
-                Suggestions (except system autofill) and spell checking are not available in this release. All
-                preferences in the "Corrections" group are properly implemented though.
-            """.trimIndent().replace('\n', ' '),
-        )
-
         PreferenceGroup(title = stringRes(R.string.pref__suggestion__title)) {
             SwitchPreference(
                 prefs.suggestion.enabled,

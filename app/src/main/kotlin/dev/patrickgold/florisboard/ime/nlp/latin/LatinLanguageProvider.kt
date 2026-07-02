@@ -19,11 +19,13 @@ package dev.patrickgold.florisboard.ime.nlp.latin
 import android.content.Context
 import dev.patrickgold.florisboard.appContext
 import dev.patrickgold.florisboard.ime.core.Subtype
+import dev.patrickgold.florisboard.ime.dictionary.DictionaryManager
 import dev.patrickgold.florisboard.ime.editor.EditorContent
 import dev.patrickgold.florisboard.ime.nlp.SpellingProvider
 import dev.patrickgold.florisboard.ime.nlp.SpellingResult
 import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.SuggestionProvider
+import dev.patrickgold.florisboard.ime.nlp.WordSuggestionCandidate
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +48,11 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // Language used when the active subtype has no bundled dictionary of its own.
         private const val FALLBACK_LANG = "en"
 
+        // A typo is only auto-corrected when its best fix is at least this frequent (on the dictionary's
+        // 128..255 scale). Rarer fixes are still offered as tap suggestions but never swapped in
+        // automatically, so uncommon-but-intentional words (names, jargon) aren't mangled.
+        private const val AUTOCORRECT_MIN_FREQ = 170
+
         // Legacy ISO-639 codes that java.util.Locale still reports; map them to the modern code the
         // dictionary files use.
         private val LANG_ALIASES = mapOf("iw" to "he", "in" to "id", "ji" to "yi")
@@ -64,7 +71,11 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // When a dictionary finishes downloading, drop the resolved-language cache so the active subtype
         // starts using it immediately (issue #127).
         ioScope.launch {
-            GlideDictionaryManager.installedVersion.collect { resolvedDictLang.clear() }
+            GlideDictionaryManager.installedVersion.collect {
+                resolvedDictLang.clear()
+                rankedWordsByLang.withLock { it.clear() }
+                lowerIndexByLang.withLock { it.clear() }
+            }
         }
     }
 
@@ -73,6 +84,10 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
     // back to English.
     private val wordDataByLang = guardedByLock { mutableMapOf<String, Map<String, Int>>() }
     private val wordDataSerializer = MapSerializer(String.serializer(), Int.serializer())
+
+    // Per-language word list sorted by frequency (descending), so prefix completion can scan the most
+    // frequent words first and stop early. Built lazily from the word data and cached.
+    private val rankedWordsByLang = guardedByLock { mutableMapOf<String, List<String>>() }
 
     // Languages that ship a bundled ime/dict/<lang>.json (currently just English), listed once.
     private val bundledDictLangs: Set<String> by lazy {
@@ -129,6 +144,98 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         }
     }
 
+    /** Frequency-sorted (descending) word list for [subtype]'s dictionary language, cached per language. */
+    private suspend fun rankedWordsFor(subtype: Subtype): List<String> {
+        val lang = dictLangFor(subtype)
+        val data = wordDataFor(subtype)
+        return rankedWordsByLang.withLock { cache ->
+            cache[lang] ?: run {
+                val ranked = data.entries.sortedByDescending { it.value }.map { it.key }
+                cache[lang] = ranked
+                ranked
+            }
+        }
+    }
+
+    // --- Spell check / autocorrect core (issue #127 follow-up) --------------------------------------
+
+    /**
+     * Case-folded view of a language's dictionary for spell checking / correction: [freq] maps a lowercase
+     * word to its frequency, [canonical] to its correctly-cased form, and [alphabet] holds every letter the
+     * language uses (for generating edit candidates).
+     */
+    private class LowerIndex(
+        val freq: Map<String, Int>,
+        val canonical: Map<String, String>,
+        val alphabet: Set<Char>,
+    )
+
+    private val lowerIndexByLang = guardedByLock { mutableMapOf<String, LowerIndex>() }
+
+    private suspend fun lowerIndexFor(subtype: Subtype): LowerIndex {
+        val lang = dictLangFor(subtype)
+        val data = wordDataFor(subtype)
+        return lowerIndexByLang.withLock { cache ->
+            cache[lang] ?: run {
+                val freq = HashMap<String, Int>(data.size)
+                val canonical = HashMap<String, String>(data.size)
+                val alphabet = HashSet<Char>()
+                for ((word, f) in data) {
+                    val lower = word.lowercase()
+                    if ((freq[lower] ?: -1) < f) {
+                        freq[lower] = f
+                        canonical[lower] = word
+                    }
+                    for (ch in lower) if (ch.isLetter()) alphabet.add(ch)
+                }
+                LowerIndex(freq, canonical, alphabet).also { cache[lang] = it }
+            }
+        }
+    }
+
+    /** All strings one edit away from [word] (delete / transpose / replace / insert) — Norvig's edits1. */
+    private fun edits1(word: String, alphabet: Set<Char>): Set<String> {
+        val result = HashSet<String>()
+        for (i in 0..word.length) {
+            val a = word.substring(0, i)
+            val b = word.substring(i)
+            if (b.isNotEmpty()) {
+                result.add(a + b.substring(1))                                    // delete
+                if (b.length > 1) result.add(a + b[1] + b[0] + b.substring(2))    // transpose
+                for (c in alphabet) result.add(a + c + b.substring(1))            // replace
+            }
+            for (c in alphabet) result.add(a + c + b)                             // insert
+        }
+        return result
+    }
+
+    /** Dictionary words closest to (a misspelling of) [word], ranked by frequency. */
+    private fun correctionsFor(
+        word: String,
+        index: LowerIndex,
+        maxCount: Int,
+        allowDistance2: Boolean,
+    ): List<String> {
+        val lower = word.lowercase()
+        val e1 = edits1(lower, index.alphabet)
+        val known = e1.filterTo(LinkedHashSet()) { index.freq.containsKey(it) }
+        if (known.isEmpty() && allowDistance2) {
+            for (e in e1) for (ee in edits1(e, index.alphabet)) {
+                if (index.freq.containsKey(ee)) known.add(ee)
+            }
+        }
+        return known.sortedByDescending { index.freq[it] ?: 0 }
+            .take(maxCount)
+            .map { index.canonical[it] ?: it }
+    }
+
+    private fun isInUserDictionary(word: String, subtype: Subtype): Boolean = runCatching {
+        val dm = DictionaryManager.default()
+        dm.loadUserDictionariesIfNecessary()
+        dm.queryUserDictionary(word, subtype.primaryLocale)
+            .any { it.text.toString().equals(word, ignoreCase = true) }
+    }.getOrDefault(false)
+
     override val providerId = ProviderId
 
     override suspend fun create() {
@@ -169,15 +276,16 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         allowPossiblyOffensive: Boolean,
         isPrivateSession: Boolean,
     ): SpellingResult {
-        return when (word.lowercase()) {
-            // Use typo for typing errors
-            "typo" -> SpellingResult.typo(arrayOf("typo1", "typo2", "typo3"))
-            // Use grammar error if the algorithm can detect this. On Android 11 and lower grammar errors are visually
-            // marked as typos due to a lack of support
-            "gerror" -> SpellingResult.grammarError(arrayOf("grammar1", "grammar2", "grammar3"))
-            // Use valid word for valid input
-            else -> SpellingResult.validWord()
+        val trimmed = word.trim()
+        // Don't flag single characters, numbers or words containing digits.
+        if (trimmed.length <= 1 || trimmed.any { it.isDigit() }) return SpellingResult.validWord()
+        val index = lowerIndexFor(subtype)
+        if (index.freq.containsKey(trimmed.lowercase()) || isInUserDictionary(trimmed, subtype)) {
+            return SpellingResult.validWord()
         }
+        // Unknown word → typo, offering the closest dictionary words as corrections (may be empty).
+        val suggestions = correctionsFor(trimmed, index, maxSuggestionCount, allowDistance2 = true)
+        return SpellingResult.typo(suggestions.toTypedArray())
     }
 
     override suspend fun suggest(
@@ -187,21 +295,74 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         allowPossiblyOffensive: Boolean,
         isPrivateSession: Boolean,
     ): List<SuggestionCandidate> {
-        return emptyList()
-        /*val word = content.composingText.ifBlank { "next" }
-        val suggestions = buildList {
-            for (n in 0 until maxCandidateCount) {
-                add(WordSuggestionCandidate(
-                    text = "$word$n",
-                    secondaryText = if (n % 2 == 1) "secondary" else null,
-                    confidence = 0.5,
-                    isEligibleForAutoCommit = false,//n == 0 && word.startsWith("auto"),
-                    // We set ourselves as the source provider so we can get notify events for our candidate
-                    sourceProvider = this@LatinLanguageProvider,
-                ))
+        // Word completion: prefix-match the word being composed against the dictionary, most frequent
+        // first (issue #127 follow-up). No composing word → nothing to complete (next-word prediction
+        // would need n-grams, which the unigram dictionaries don't carry).
+        val word = content.composingText
+        if (word.isEmpty()) return emptyList()
+
+        val wantCapitalized = word.first().isUpperCase()
+        fun cased(dictWord: String): String =
+            if (wantCapitalized && dictWord.firstOrNull()?.isLowerCase() == true) {
+                dictWord.replaceFirstChar { it.uppercaseChar() }
+            } else {
+                dictWord
+            }
+
+        // Dedup by lowercase key, preserving order: the user's personal dictionary first, then the main
+        // dictionary ranked by frequency.
+        val out = LinkedHashMap<String, SuggestionCandidate>()
+
+        runCatching {
+            val dm = DictionaryManager.default()
+            dm.loadUserDictionariesIfNecessary()
+            dm.queryUserDictionary(word, subtype.primaryLocale)
+        }.getOrNull()?.forEach { candidate ->
+            val text = candidate.text.toString()
+            if (text.startsWith(word, ignoreCase = true)) {
+                out.putIfAbsent(text.lowercase(), candidate)
             }
         }
-        return suggestions*/
+
+        val data = wordDataFor(subtype)
+        for (dictWord in rankedWordsFor(subtype)) {
+            if (out.size >= maxCandidateCount) break
+            if (!dictWord.startsWith(word, ignoreCase = true)) continue
+            val text = cased(dictWord)
+            out.putIfAbsent(
+                text.lowercase(),
+                WordSuggestionCandidate(
+                    text = text,
+                    confidence = (data[dictWord] ?: 0) / 255.0,
+                    sourceProvider = this,
+                ),
+            )
+        }
+
+        // Autocorrect: when the composed word isn't a known word and nothing completes it (so it looks
+        // like a finished typo rather than a word in progress), offer the closest dictionary words and mark
+        // the top one for auto-commit — the editor swaps it in on the next space/punctuation. Kept
+        // conservative (edit distance 1, length >= 3) to avoid mangling intentional input.
+        val index = lowerIndexFor(subtype)
+        val isKnown = index.freq.containsKey(word.lowercase()) || isInUserDictionary(word, subtype)
+        if (out.isEmpty() && !isKnown && word.length >= 3) {
+            val corrections = correctionsFor(word, index, maxCandidateCount, allowDistance2 = false)
+            corrections.forEachIndexed { i, correction ->
+                val text = cased(correction)
+                val freq = index.freq[correction.lowercase()] ?: 0
+                out.putIfAbsent(
+                    text.lowercase(),
+                    WordSuggestionCandidate(
+                        text = text,
+                        confidence = freq / 255.0,
+                        isEligibleForAutoCommit = i == 0 && freq >= AUTOCORRECT_MIN_FREQ,
+                        sourceProvider = this,
+                    ),
+                )
+            }
+        }
+
+        return out.values.take(maxCandidateCount)
     }
 
     override suspend fun notifySuggestionAccepted(subtype: Subtype, candidate: SuggestionCandidate) {
