@@ -1513,4 +1513,6 @@
     <string name="settings__localization__subtype_glide_available">Pisanie gestem dostępne</string>
     <string name="settings__localization__subtype_glide_downloading">Pobieranie pisania gestem… {v}%</string>
     <string name="settings__localization__subtype_glide_unavailable">Pisanie gestem niedostępne</string>
+    <string name="pref__suggestion__auto_correct__label">Autokorekta</string>
+    <string name="pref__suggestion__auto_correct__summary">Automatyczne poprawianie literówek po spacji</string>
 </resources>
