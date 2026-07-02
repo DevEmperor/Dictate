@@ -129,12 +129,19 @@ def main():
     ap.add_argument("--name", default="<DisplayName>")
     ap.add_argument("--top", type=int, default=50000)
     ap.add_argument("--out", default=".")
+    ap.add_argument("--no-hunspell", action="store_true",
+                    help="skip the Hunspell casing/filter (OPUS frequencies only, all lowercase) — use for "
+                         "languages whose Hunspell dictionary has an incompatible licence (e.g. AGPL/CC-BY-SA)")
     args = ap.parse_args()
 
     words = load_frequencies(args.opus or args.lang, args.top)
     if not words:
         raise SystemExit("no frequency data (wrong --opus code?)")
-    oracle = build_case_oracle(words, args.dict or args.lang)
+    if args.no_hunspell:
+        sys.stderr.write("  (Hunspell skipped: OPUS-only, lowercase)\n")
+        oracle = {w: w for w, _ in words}
+    else:
+        oracle = build_case_oracle(words, args.dict or args.lang)
     data = to_json(words, oracle)
 
     os.makedirs(args.out, exist_ok=True)

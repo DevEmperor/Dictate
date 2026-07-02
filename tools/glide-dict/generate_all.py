@@ -18,6 +18,10 @@ import sys, os, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "dist")
 
+# Languages built OPUS-only (no Hunspell) because their wooorm Hunspell licence is incompatible with
+# redistribution in a commercial app: he = AGPL-3.0, is = CC-BY-SA-3.0.
+NO_HUNSPELL = {"he", "is"}
+
 # out_code, opus_code, hunspell_dict, display_name
 LANGS = [
     ("bg", "bg", "bg", "Bulgarian · Български"),
@@ -62,11 +66,11 @@ def main():
         if only and out_code not in only:
             continue
         sys.stderr.write(f"==> {out_code} (opus={opus}, dict={dic})\n")
-        proc = subprocess.run(
-            [sys.executable, os.path.join(HERE, "generate.py"), out_code,
-             "--opus", opus, "--dict", dic, "--name", name, "--top", "100000", "--out", OUT],
-            capture_output=True, text=True,
-        )
+        cmd = [sys.executable, os.path.join(HERE, "generate.py"), out_code,
+               "--opus", opus, "--dict", dic, "--name", name, "--top", "100000", "--out", OUT]
+        if out_code in NO_HUNSPELL:
+            cmd.append("--no-hunspell")
+        proc = subprocess.run(cmd, capture_output=True, text=True)
         sys.stderr.write(proc.stderr)
         line = proc.stdout.strip()
         if proc.returncode != 0 or not line.startswith("GlideDict("):

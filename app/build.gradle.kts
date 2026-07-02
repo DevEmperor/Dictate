@@ -293,7 +293,7 @@ val verifySherpaOnnxLibs by tasks.registering {
             throw GradleException(
                 "Missing vendored sherpa-onnx native libs:\n" +
                     missing.joinToString("\n") { "  - ${it.name}" } +
-                    "\n\nRun:  scripts/fetch-sherpa-onnx.sh",
+                    "\n\nRun:  tools/fetch-sherpa-onnx.sh",
             )
         }
     }
