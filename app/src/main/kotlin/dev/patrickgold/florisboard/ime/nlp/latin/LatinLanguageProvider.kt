@@ -32,18 +32,73 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import org.florisboard.lib.android.readText
 import org.florisboard.lib.kotlin.guardedByLock
+import java.util.concurrent.ConcurrentHashMap
 
 class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProvider {
     companion object {
         // Default user ID used for all subtypes, unless otherwise specified.
         // See `ime/core/Subtype.kt` Line 210 and 211 for the default usage
         const val ProviderId = "org.florisboard.nlp.providers.latin"
+
+        // Language used when the active subtype has no bundled dictionary of its own.
+        private const val FALLBACK_LANG = "en"
     }
 
     private val appContext by context.appContext()
 
-    private val wordData = guardedByLock { mutableMapOf<String, Int>() }
+    // Word→frequency dictionaries cached per language (issue #127, glide typing phase 2). Each bundled
+    // ime/dict/<lang>.json maps a word to a frequency in [128,255]; languages without a bundled file fall
+    // back to English.
+    private val wordDataByLang = guardedByLock { mutableMapOf<String, Map<String, Int>>() }
     private val wordDataSerializer = MapSerializer(String.serializer(), Int.serializer())
+
+    // Languages that ship a bundled ime/dict/<lang>.json (currently just English), listed once.
+    private val bundledDictLangs: Set<String> by lazy {
+        runCatching {
+            appContext.assets.list("ime/dict")
+                ?.mapNotNull { name -> name.takeIf { it.endsWith(".json") }?.removeSuffix(".json") }
+                ?.toSet()
+        }.getOrNull().orEmpty().ifEmpty { setOf(FALLBACK_LANG) }
+    }
+
+    // Resolved (subtype language → dictionary language) cache, so the glide classifier's per-word
+    // frequency lookups don't hit the filesystem. Cleared on preload so a newly downloaded dictionary is
+    // picked up on the next subtype activation.
+    private val resolvedDictLang = ConcurrentHashMap<String, String>()
+
+    /** Whether a dictionary (downloaded or bundled) exists for [lang]. */
+    private fun hasDict(lang: String): Boolean =
+        GlideDictionaryManager.isInstalled(appContext, lang) || lang in bundledDictLangs
+
+    /** The dictionary language to use for [subtype] — its own if available, else English. */
+    private fun dictLangFor(subtype: Subtype): String {
+        val subLang = subtype.primaryLocale.language.lowercase()
+        return resolvedDictLang.getOrPut(subLang) {
+            if (subLang.isNotBlank() && hasDict(subLang)) subLang else FALLBACK_LANG
+        }
+    }
+
+    /** Raw JSON for [lang]: a downloaded dictionary takes precedence over the bundled asset. */
+    private fun readDict(lang: String): String {
+        val downloaded = GlideDictionaryManager.dictFile(appContext, lang)
+        return if (downloaded.isFile && downloaded.length() > 0) {
+            downloaded.readText()
+        } else {
+            appContext.assets.readText("ime/dict/$lang.json")
+        }
+    }
+
+    /** Loads (and caches) the word→frequency map for [subtype]'s resolved dictionary language. */
+    private suspend fun wordDataFor(subtype: Subtype): Map<String, Int> {
+        val lang = dictLangFor(subtype)
+        return wordDataByLang.withLock { cache ->
+            cache[lang] ?: run {
+                val loaded = Json.decodeFromString(wordDataSerializer, readDict(lang))
+                cache[lang] = loaded
+                loaded
+            }
+        }
+    }
 
     override val providerId = ProviderId
 
@@ -68,14 +123,11 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // The subtype we get here contains a lot of data, however we are only interested in subtype.primaryLocale and
         // subtype.secondaryLocales.
 
-        wordData.withLock { wordData ->
-            if (wordData.isEmpty()) {
-                // Here we use readText() because the test dictionary is a json dictionary
-                val rawData = appContext.assets.readText("ime/dict/data.json")
-                val jsonData = Json.decodeFromString(wordDataSerializer, rawData)
-                wordData.putAll(jsonData)
-            }
-        }
+        // Re-resolve languages so a dictionary downloaded since the last activation is picked up, then
+        // warm the cache for this subtype's dictionary language (used by glide typing / word lookups).
+        resolvedDictLang.clear()
+        wordDataFor(subtype)
+        Unit
     }
 
     override suspend fun spell(
@@ -137,11 +189,11 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
     }
 
     override suspend fun getListOfWords(subtype: Subtype): List<String> {
-        return wordData.withLock { it.keys.toList() }
+        return wordDataFor(subtype).keys.toList()
     }
 
     override suspend fun getFrequencyForWord(subtype: Subtype, word: String): Double {
-        return wordData.withLock { it.getOrDefault(word, 0) / 255.0 }
+        return (wordDataFor(subtype)[word] ?: 0) / 255.0
     }
 
     override suspend fun destroy() {
