@@ -66,9 +66,9 @@ fun TypingScreen() = FlorisScreen {
                 summary = stringRes(R.string.pref__suggestion__enabled__summary),
             )
             SwitchPreference(
-                prefs.suggestion.blockPossiblyOffensive,
-                title = stringRes(R.string.pref__suggestion__block_possibly_offensive__label),
-                summary = stringRes(R.string.pref__suggestion__block_possibly_offensive__summary),
+                prefs.suggestion.autoCorrect,
+                title = stringRes(R.string.pref__suggestion__auto_correct__label),
+                summary = stringRes(R.string.pref__suggestion__auto_correct__summary),
                 enabledIf = { prefs.suggestion.enabled isEqualTo true },
             )
             SwitchPreference(

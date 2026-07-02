@@ -1279,4 +1279,6 @@
     <string name="settings__localization__subtype_glide_available">Digitazione con scorrimento disponibile</string>
     <string name="settings__localization__subtype_glide_downloading">Download digitazione con scorrimento… {v}%</string>
     <string name="settings__localization__subtype_glide_unavailable">Digitazione con scorrimento non disponibile</string>
+    <string name="pref__suggestion__auto_correct__label">Correzione automatica</string>
+    <string name="pref__suggestion__auto_correct__summary">Correggi i refusi automaticamente premendo spazio</string>
 </resources>

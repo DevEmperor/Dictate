@@ -63,6 +63,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         }
     }
 
+    private val prefs by dev.patrickgold.florisboard.app.FlorisPreferenceStore
     private val appContext by context.appContext()
 
     private val ioScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -345,7 +346,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // conservative (edit distance 1, length >= 3) to avoid mangling intentional input.
         val index = lowerIndexFor(subtype)
         val isKnown = index.freq.containsKey(word.lowercase()) || isInUserDictionary(word, subtype)
-        if (out.isEmpty() && !isKnown && word.length >= 3) {
+        if (prefs.suggestion.autoCorrect.get() && out.isEmpty() && !isKnown && word.length >= 3) {
             val corrections = correctionsFor(word, index, maxCandidateCount, allowDistance2 = false)
             corrections.forEachIndexed { i, correction ->
                 val text = cased(correction)

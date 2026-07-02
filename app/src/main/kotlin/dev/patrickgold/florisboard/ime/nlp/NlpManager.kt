@@ -166,7 +166,7 @@ class NlpManager(context: Context) {
             precedingWords = precedingWords,
             followingWords = followingWords,
             maxSuggestionCount = maxSuggestionCount,
-            allowPossiblyOffensive = !prefs.suggestion.blockPossiblyOffensive.get(),
+            allowPossiblyOffensive = true,
             isPrivateSession = keyboardManager.activeState.isIncognitoMode,
         )
     }
@@ -212,7 +212,7 @@ class NlpManager(context: Context) {
                         subtype = subtype,
                         content = content,
                         maxCandidateCount = prefs.emoji.suggestionCandidateMaxCount.get(),
-                        allowPossiblyOffensive = !prefs.suggestion.blockPossiblyOffensive.get(),
+                        allowPossiblyOffensive = true,
                         isPrivateSession = keyboardManager.activeState.isIncognitoMode,
                     )
                 }
@@ -227,7 +227,7 @@ class NlpManager(context: Context) {
                         subtype = subtype,
                         content = content,
                         maxCandidateCount = 8,
-                        allowPossiblyOffensive = !prefs.suggestion.blockPossiblyOffensive.get(),
+                        allowPossiblyOffensive = true,
                         isPrivateSession = keyboardManager.activeState.isIncognitoMode,
                     )
                 }
@@ -293,7 +293,7 @@ class NlpManager(context: Context) {
                         subtype = Subtype.DEFAULT,
                         content = editorInstance.activeContent,
                         maxCandidateCount = 8,
-                        allowPossiblyOffensive = !prefs.suggestion.blockPossiblyOffensive.get(),
+                        allowPossiblyOffensive = true,
                         isPrivateSession = keyboardManager.activeState.isIncognitoMode,
                     ).ifEmpty {
                         buildList {

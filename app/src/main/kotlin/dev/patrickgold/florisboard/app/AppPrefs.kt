@@ -1155,15 +1155,18 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val enabled = boolean(
             key = "suggestion__enabled",
-            default = false,
+            default = true,
+        )
+        // Autocorrect the typed word on space/punctuation when it looks like a typo (issue #127). Gated by
+        // [enabled]; on by default like other keyboards, with its own switch so suggestions can stay on
+        // without autocorrect.
+        val autoCorrect = boolean(
+            key = "suggestion__auto_correct",
+            default = true,
         )
         val displayMode = enum(
             key = "suggestion__display_mode",
             default = CandidatesDisplayMode.DYNAMIC_SCROLLABLE,
-        )
-        val blockPossiblyOffensive = boolean(
-            key = "suggestion__block_possibly_offensive",
-            default = true,
         )
         val incognitoMode = enum(
             key = "suggestion__incognito_mode",
