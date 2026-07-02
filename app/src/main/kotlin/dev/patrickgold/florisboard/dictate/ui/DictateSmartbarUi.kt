@@ -54,6 +54,7 @@ import androidx.compose.material.icons.filled.NewReleases
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.SaveAlt
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
@@ -384,6 +385,19 @@ private fun RowScope.ErrorContent(state: DictateController.UiState.Error) {
                 SnyggIcon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = stringRes(R.string.dictate__action_settings),
+                )
+            }
+            DismissButton()
+        }
+        DictateController.ErrorAction.SAVE_AUDIO -> {
+            SnyggIconButton(
+                elementName = FlorisImeUi.SmartbarActionKey.elementName,
+                onClick = { DictateController.saveRetainedAudio(context) },
+                modifier = Modifier.fillMaxHeight().aspectRatio(1f),
+            ) {
+                SnyggIcon(
+                    imageVector = Icons.Default.SaveAlt,
+                    contentDescription = stringRes(R.string.dictate__action_save_audio),
                 )
             }
             DismissButton()

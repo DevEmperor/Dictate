@@ -10,7 +10,12 @@
 
 package dev.patrickgold.florisboard.dictate
 
+import android.content.ContentValues
 import android.content.Context
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
+import android.widget.Toast
 import android.content.Intent
 import android.net.Uri
 import android.media.AudioAttributes
@@ -131,6 +136,12 @@ object DictateController {
 
         /** Open the Dictate provider settings (fixable errors like an invalid/missing API key). */
         OPEN_SETTINGS,
+
+        /**
+         * Export the kept recording to Downloads (issue #144): offered when transcription fails for a
+         * reason that resending can't fix (too large / unsupported format) so a long recording isn't lost.
+         */
+        SAVE_AUDIO,
     }
 
     /**
@@ -350,8 +361,15 @@ object DictateController {
      * the raw provider text kept as the tappable detail, and the contextual action — resend the kept audio
      * for retryable failures, open settings for a bad/missing key, otherwise none.
      */
+    /** Failures where resending is pointless but the recording is worth saving instead (issue #144). */
+    private val EXPORTABLE_ERROR_KINDS = setOf(
+        DictateApiException.Kind.CONTENT_SIZE_LIMIT,
+        DictateApiException.Kind.FORMAT_NOT_SUPPORTED,
+    )
+
     private fun apiError(e: DictateApiException, context: Context, canResend: Boolean): UiState.Error {
         val action = when {
+            canResend && e.kind in EXPORTABLE_ERROR_KINDS -> ErrorAction.SAVE_AUDIO
             canResend && e.kind.isRetryable -> ErrorAction.RESEND
             e.kind == DictateApiException.Kind.INVALID_API_KEY -> ErrorAction.OPEN_SETTINGS
             else -> ErrorAction.NONE
@@ -665,7 +683,9 @@ object DictateController {
                 throw c
             } catch (e: DictateApiException) {
                 _pendingPrompts.value = emptyList()
-                keepAudio = retainFailedAudio(audioFile, live, recordedSeconds)
+                // Exportable failures (too large / bad format) keep the audio regardless of the resend
+                // pref, so it can be saved instead of lost (issue #144).
+                keepAudio = retainFailedAudio(audioFile, live, recordedSeconds, force = e.kind in EXPORTABLE_ERROR_KINDS)
                 _state.value = apiError(e, appContext, canResend = keepAudio)
             } catch (t: Throwable) {
                 _pendingPrompts.value = emptyList()
@@ -729,8 +749,16 @@ object DictateController {
      * the cache (a transient failure does not need to survive process death). Any previously kept audio
      * is discarded first.
      */
-    private fun retainFailedAudio(audioFile: File, wasLive: Boolean, recordedSeconds: Long): Boolean {
-        if (!prefs.dictate.resendButton.get() || !audioFile.exists() || audioFile.length() == 0L) return false
+    private fun retainFailedAudio(
+        audioFile: File,
+        wasLive: Boolean,
+        recordedSeconds: Long,
+        // Keep even when the resend button is off — used for exportable failures so the recording can be
+        // saved (issue #144); otherwise retention is gated on the resend-button preference.
+        force: Boolean = false,
+    ): Boolean {
+        if (!force && !prefs.dictate.resendButton.get()) return false
+        if (!audioFile.exists() || audioFile.length() == 0L) return false
         if (retained?.file != audioFile) discardRetainedAudio()
         retained = RetainedAudio(audioFile, RetainReason.FAILED, wasLive, recordedSeconds)
         return true
@@ -764,6 +792,59 @@ object DictateController {
         livePromptArmed = r.wasLive
         transcribe(context, r.file, r.seconds)
     }
+
+    /**
+     * Exports the kept recording to the public Downloads folder (issue #144), so a dictation that failed
+     * for a non-retryable reason (too large / unsupported format) can be recovered instead of lost. On
+     * success the audio is dropped and a toast confirms the file name; on failure it is kept so the user
+     * can try again. No-op unless a usable kept file exists.
+     */
+    fun saveRetainedAudio(context: Context) {
+        val r = retained
+        if (r == null || !r.file.exists() || r.file.length() == 0L) {
+            discardRetainedAudio()
+            _state.value = UiState.Idle
+            return
+        }
+        val appContext = context.applicationContext
+        val src = r.file
+        scope.launch {
+            val savedName = withContext(Dispatchers.IO) { exportAudioToDownloads(appContext, src) }
+            val message = if (savedName != null) {
+                appContext.getString(R.string.dictate__audio_saved, savedName)
+            } else {
+                appContext.getString(R.string.dictate__audio_save_failed)
+            }
+            Toast.makeText(appContext, message, Toast.LENGTH_LONG).show()
+            // Keep the audio on failure so the user can retry the export; drop it once safely saved.
+            if (savedName != null) discardRetainedAudio()
+            _state.value = UiState.Idle
+        }
+    }
+
+    /** Copies [src] into Downloads/Dictate as a WAV via MediaStore (API 29+) or the public dir. Returns the file name, or null on failure. */
+    private fun exportAudioToDownloads(context: Context, src: File): String? = runCatching {
+        val stamp = java.text.SimpleDateFormat("yyyyMMdd-HHmmss", java.util.Locale.US).format(java.util.Date())
+        val name = "dictate-recording-$stamp.wav"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val values = ContentValues().apply {
+                put(MediaStore.Downloads.DISPLAY_NAME, name)
+                put(MediaStore.Downloads.MIME_TYPE, "audio/wav")
+                put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/Dictate")
+                put(MediaStore.Downloads.IS_PENDING, 1)
+            }
+            val resolver = context.contentResolver
+            val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values) ?: return null
+            resolver.openOutputStream(uri)?.use { out -> src.inputStream().use { it.copyTo(out) } } ?: return null
+            resolver.update(uri, ContentValues().apply { put(MediaStore.Downloads.IS_PENDING, 0) }, null, null)
+        } else {
+            @Suppress("DEPRECATION")
+            val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dictate")
+            dir.mkdirs()
+            src.inputStream().use { input -> File(dir, name).outputStream().use { input.copyTo(it) } }
+        }
+        name
+    }.getOrNull()
 
     /**
      * Continues an interrupted recording instead of sending it: the kept audio becomes a carry-over
