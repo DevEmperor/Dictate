@@ -19,6 +19,7 @@ package dev.patrickgold.florisboard.ime.core
 import android.content.Context
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.ime.keyboard.CurrencySet
+import dev.patrickgold.florisboard.ime.nlp.latin.GlideDictionaryManager
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.lib.FlorisLocale
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
@@ -42,6 +43,7 @@ val SubtypeJsonConfig = Json {
  */
 class SubtypeManager(context: Context) {
     private val prefs by FlorisPreferenceStore
+    private val appContext = context.applicationContext
     private val keyboardManager by context.keyboardManager()
     private val scope = CoroutineScope(Dispatchers.Default)
 
@@ -106,6 +108,9 @@ class SubtypeManager(context: Context) {
         }
         val newSubtypeList = subtypeList + subtypeToAdd
         persistNewSubtypeList(newSubtypeList)
+        // Start fetching the glide-typing dictionary for the new language right away (issue #127) instead
+        // of waiting until the keyboard is first switched to it.
+        GlideDictionaryManager.ensureDownloaded(appContext, subtypeToAdd.primaryLocale.language)
         return true
     }
 
@@ -182,6 +187,11 @@ class SubtypeManager(context: Context) {
             }
             persistNewSubtypeList(newSubtypeList)
             evaluateActiveSubtype(newSubtypeList)
+            // Free the downloaded glide dictionary once no remaining subtype uses that language (issue #127).
+            val lang = subtypeToRemove.primaryLocale.language
+            if (newSubtypeList.none { it.primaryLocale.language == lang }) {
+                GlideDictionaryManager.deleteDownloaded(appContext, lang)
+            }
         }
     }
 

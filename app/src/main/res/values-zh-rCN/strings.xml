@@ -501,6 +501,7 @@
     <string name="pref__glide_trail_fade_duration">滑动轨迹淡出时间</string>
     <string name="pref__glide_preview_refresh_delay">预览更新延迟</string>
     <string name="pref__glide__show_preview">滑动输入时显示预览</string>
+    <string name="pref__glide__show_preview__summary">滑行时在候选栏显示最匹配的词</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">始终删除单词</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">手势滑动后紧接着按删除键删除整个单词</string>
     <string name="pref__gestures__general_title" comment="Preference group title">通用手势</string>
@@ -1486,4 +1487,8 @@
     <string name="dictate__audio_save_failed">无法保存音频</string>
     <string name="dictate__instant_recording_skip_numeric_title">跳过数字输入框</string>
     <string name="dictate__instant_recording_skip_numeric_summary">在数字、电话或 PIN 输入框中不自动开始</string>
+    <string name="settings__localization__subtype_glide_ready">滑行输入已就绪</string>
+    <string name="settings__localization__subtype_glide_available">滑行输入可用</string>
+    <string name="settings__localization__subtype_glide_downloading">正在下载滑行输入… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">滑行输入不可用</string>
 </resources>

@@ -424,6 +424,7 @@
     <string name="pref__glide_trail_fade_duration">Vervaagtijd veegspoor</string>
     <string name="pref__glide_preview_refresh_delay">Vertraging vernieuwing voorbeeld</string>
     <string name="pref__glide__show_preview">Toon voorbeeld tijdens vegend typen</string>
+    <string name="pref__glide__show_preview__summary">Toon het beste woord in de suggestiebalk tijdens het glijden</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Altijd woord verwijderen</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Door direct na het glijden op verwijderen te drukken, wordt het hele woord verwijderd</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Algemene gebaren</string>
@@ -1392,4 +1393,8 @@ Deze toestemming kan op elk moment worden gewijzigd in de systeeminstellingen.  
     <string name="dictate__audio_save_failed">Kan de audio niet opslaan</string>
     <string name="dictate__instant_recording_skip_numeric_title">Numerieke velden overslaan</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Niet automatisch starten bij cijfer-, telefoon- of pinvelden</string>
+    <string name="settings__localization__subtype_glide_ready">Veegtypen gereed</string>
+    <string name="settings__localization__subtype_glide_available">Veegtypen beschikbaar</string>
+    <string name="settings__localization__subtype_glide_downloading">Veegtypen downloaden… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Veegtypen niet beschikbaar</string>
 </resources>

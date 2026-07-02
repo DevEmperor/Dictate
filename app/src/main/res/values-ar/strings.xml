@@ -387,6 +387,7 @@
     <string name="pref__glide_trail_fade_duration">وقت تلاشي مسار الانزلاق</string>
     <string name="pref__glide_preview_refresh_delay">عرض تاخير التحديث</string>
     <string name="pref__glide__show_preview">عرض المعاينة أثناء الكتابة بالتمرير</string>
+    <string name="pref__glide__show_preview__summary">إظهار أفضل كلمة في شريط الاقتراحات أثناء التمرير</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">حذف الكلمة دائما</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">الضغط على حذف ثم يمينا بعد الانزلاق يحذف الكلمة بأكملها</string>
     <string name="pref__gestures__general_title" comment="Preference group title">الإيماءات العامة</string>
@@ -1347,4 +1348,8 @@
     <string name="dictate__audio_save_failed">تعذّر حفظ الصوت</string>
     <string name="dictate__instant_recording_skip_numeric_title">تخطي حقول الأرقام</string>
     <string name="dictate__instant_recording_skip_numeric_summary">لا تبدأ تلقائيًا في حقول الأرقام أو الهاتف أو رمز PIN</string>
+    <string name="settings__localization__subtype_glide_ready">الكتابة بالسحب جاهزة</string>
+    <string name="settings__localization__subtype_glide_available">الكتابة بالسحب متاحة</string>
+    <string name="settings__localization__subtype_glide_downloading">جارٍ تنزيل الكتابة بالسحب… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">الكتابة بالسحب غير متاحة</string>
 </resources>

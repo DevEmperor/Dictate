@@ -493,6 +493,7 @@
     <string name="pref__glide_trail_fade_duration">Kaydırma izi solma süresi</string>
     <string name="pref__glide_preview_refresh_delay">Önizleme yenileme gecikmesi</string>
     <string name="pref__glide__show_preview">Kaydırarak yazarken önizlemeyi göster</string>
+    <string name="pref__glide__show_preview__summary">Kaydırırken öneri çubuğunda en iyi kelimeyi göster</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Her zaman kelimeyi sil</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Bir kaydırmadan hemen sonra silme tuşuna basmak tüm kelimeyi siler</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Genel hareketler</string>
@@ -1470,4 +1471,8 @@
     <string name="dictate__audio_save_failed">Ses kaydedilemedi</string>
     <string name="dictate__instant_recording_skip_numeric_title">Sayı alanlarını atla</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Sayı, telefon veya PIN alanlarında otomatik başlatma</string>
+    <string name="settings__localization__subtype_glide_ready">Kaydırarak yazma hazır</string>
+    <string name="settings__localization__subtype_glide_available">Kaydırarak yazma kullanılabilir</string>
+    <string name="settings__localization__subtype_glide_downloading">Kaydırarak yazma indiriliyor… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Kaydırarak yazma kullanılamıyor</string>
 </resources>

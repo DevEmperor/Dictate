@@ -492,6 +492,7 @@
     <string name="pref__glide_trail_fade_duration">Tiempo de desvanecimiento del gesto</string>
     <string name="pref__glide_preview_refresh_delay">Retraso de actualización de la vista previa</string>
     <string name="pref__glide__show_preview">Mostrar recorrido del gesto</string>
+    <string name="pref__glide__show_preview__summary">Mostrar la mejor palabra en la barra de sugerencias al deslizar</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Siempre borrar palabra</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Al pulsar suprimir justo después de un deslizamiento, se borra toda la palabra</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Gestos generales</string>
@@ -1474,4 +1475,8 @@
     <string name="dictate__audio_save_failed">No se pudo guardar el audio</string>
     <string name="dictate__instant_recording_skip_numeric_title">Omitir campos numéricos</string>
     <string name="dictate__instant_recording_skip_numeric_summary">No iniciar automáticamente en campos de números, teléfono o PIN</string>
+    <string name="settings__localization__subtype_glide_ready">Escritura deslizante lista</string>
+    <string name="settings__localization__subtype_glide_available">Escritura deslizante disponible</string>
+    <string name="settings__localization__subtype_glide_downloading">Descargando escritura deslizante… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Escritura deslizante no disponible</string>
 </resources>

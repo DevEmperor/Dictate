@@ -473,6 +473,7 @@
     <string name="pref__glide_trail_fade_duration">グライド軌跡のフェード時間</string>
     <string name="pref__glide_preview_refresh_delay">プレビュー更新遅延</string>
     <string name="pref__glide__show_preview">グライド入力中にプレビューを表示</string>
+    <string name="pref__glide__show_preview__summary">スワイプ中に候補バーへ最有力の単語を表示</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">常に単語を削除</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">グライド直後に削除を押すと単語全体を削除します</string>
     <string name="pref__gestures__general_title" comment="Preference group title">一般ジェスチャー</string>
@@ -1422,4 +1423,8 @@
     <string name="dictate__audio_save_failed">音声を保存できませんでした</string>
     <string name="dictate__instant_recording_skip_numeric_title">数字入力欄をスキップ</string>
     <string name="dictate__instant_recording_skip_numeric_summary">数字・電話・PIN入力欄では自動開始しない</string>
+    <string name="settings__localization__subtype_glide_ready">グライド入力の準備完了</string>
+    <string name="settings__localization__subtype_glide_available">グライド入力を利用可能</string>
+    <string name="settings__localization__subtype_glide_downloading">グライド入力をダウンロード中… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">グライド入力は利用できません</string>
 </resources>

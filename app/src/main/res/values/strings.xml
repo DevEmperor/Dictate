@@ -165,6 +165,10 @@
     <string name="settings__localization__subtype_search_locale_not_found" comment="Subtype search language not found">Could not find a language matching \"{search_term}\".</string>
     <string name="settings__localization__subtype_select_placeholder" comment="Subtype dialog select value placeholder (&amp;#8210; is a hyphen character)">&#8210; select &#8210;</string>
     <string name="settings__localization__subtype_summary" comment="Subtype summary">{characters_name} / {symbols_name} / {currency_set_name}</string>
+    <string name="settings__localization__subtype_glide_ready" comment="Shown on a subtype whose glide typing dictionary is ready">Glide typing ready</string>
+    <string name="settings__localization__subtype_glide_available" comment="Shown on a subtype whose glide typing dictionary downloads on first use">Glide typing available</string>
+    <string name="settings__localization__subtype_glide_downloading" comment="Shown while a subtype glide typing dictionary downloads; {v} is the percent">Downloading glide typing… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable" comment="Shown on a subtype that has no glide typing dictionary">Glide typing not available</string>
     <string name="settings__localization__suggested_subtype_presets" comment="Suggested presets title">Suggested subtype presets</string>
     <string name="settings__localization__suggested_subtype_presets_none_found" comment="Suggested presets none found">No suggested presets available. Use below button to view all subtype presets.</string>
     <string name="settings__localization__subtype_presets" comment="Subtype presets dialog title">Subtype presets</string>
@@ -556,6 +560,7 @@
     <string name="pref__glide_trail_fade_duration">Glide trail fade time</string>
     <string name="pref__glide_preview_refresh_delay">Preview refresh delay</string>
     <string name="pref__glide__show_preview">Show preview while glide typing</string>
+    <string name="pref__glide__show_preview__summary" comment="Preference summary; requires the suggestion bar to be visible">Show the top word in the suggestion bar while gliding</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Always delete word</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Pressing delete right after a glide deletes the whole word</string>
     <string name="pref__gestures__general_title" comment="Preference group title">General gestures</string>

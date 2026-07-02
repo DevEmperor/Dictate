@@ -430,6 +430,7 @@
     <string name="pref__glide_trail_fade_duration">Temps de fondu du parcours de glissement</string>
     <string name="pref__glide_preview_refresh_delay">Délai d\'actualisation de l\'aperçu</string>
     <string name="pref__glide__show_preview">Afficher l\'aperçu lors de la saisie en glissant</string>
+    <string name="pref__glide__show_preview__summary">Afficher le meilleur mot dans la barre de suggestions pendant le glissement</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Toujours supprimer le mot</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Appuyer sur supprimer juste après un glissement supprime le mot entier</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Gestes généraux</string>
@@ -1366,4 +1367,8 @@
     <string name="dictate__audio_save_failed">Impossible d\'enregistrer l\'audio</string>
     <string name="dictate__instant_recording_skip_numeric_title">Ignorer les champs numériques</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Ne pas démarrer automatiquement sur les champs numériques, téléphone ou PIN</string>
+    <string name="settings__localization__subtype_glide_ready">Saisie glissée prête</string>
+    <string name="settings__localization__subtype_glide_available">Saisie glissée disponible</string>
+    <string name="settings__localization__subtype_glide_downloading">Téléchargement de la saisie glissée… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Saisie glissée non disponible</string>
 </resources>

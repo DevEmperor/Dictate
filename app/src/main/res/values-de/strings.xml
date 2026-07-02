@@ -412,6 +412,7 @@
     <string name="pref__glide_trail_fade_duration">Ausblendzeit der Spur</string>
     <string name="pref__glide_preview_refresh_delay">Verzögerung der Vorschau</string>
     <string name="pref__glide__show_preview">Vorschau während des Gleitens anzeigen</string>
+    <string name="pref__glide__show_preview__summary">Das beste Wort während des Gleitens in der Vorschlagsleiste anzeigen</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Wort immer löschen</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Löschtaste löscht ganzes Wort nach Glide-Typing-Eingabe</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Allgemeine Gesten</string>
@@ -1364,4 +1365,8 @@
     <string name="dictate__audio_save_failed">Audio konnte nicht gespeichert werden</string>
     <string name="dictate__instant_recording_skip_numeric_title">Zahlenfelder überspringen</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Bei Zahlen-, Telefon- oder PIN-Feldern nicht automatisch starten</string>
+    <string name="settings__localization__subtype_glide_ready">Glide-Eingabe bereit</string>
+    <string name="settings__localization__subtype_glide_available">Glide-Eingabe verfügbar</string>
+    <string name="settings__localization__subtype_glide_downloading">Gleittipp-Wörterbuch wird geladen… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Gleittipp nicht verfügbar</string>
 </resources>

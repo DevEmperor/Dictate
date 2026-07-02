@@ -503,6 +503,7 @@
     <string name="pref__glide_trail_fade_duration">Czas zaniku śladów gestów pisania</string>
     <string name="pref__glide_preview_refresh_delay">Opóźnienie odświeżania podglądu</string>
     <string name="pref__glide__show_preview">Pokaż podgląd podczas wykonywania gestów pisania</string>
+    <string name="pref__glide__show_preview__summary">Pokazuj najlepsze słowo na pasku sugestii podczas przesuwania</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Zawsze usuwaj słowo</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Naciśnięcie klawisza delete zaraz po przesunięciu usuwa całe słowo</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Gesty ogólne</string>
@@ -1508,4 +1509,8 @@
     <string name="dictate__audio_save_failed">Nie udało się zapisać audio</string>
     <string name="dictate__instant_recording_skip_numeric_title">Pomijaj pola liczbowe</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Nie uruchamiaj automatycznie w polach liczb, telefonu lub PIN</string>
+    <string name="settings__localization__subtype_glide_ready">Pisanie gestem gotowe</string>
+    <string name="settings__localization__subtype_glide_available">Pisanie gestem dostępne</string>
+    <string name="settings__localization__subtype_glide_downloading">Pobieranie pisania gestem… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Pisanie gestem niedostępne</string>
 </resources>

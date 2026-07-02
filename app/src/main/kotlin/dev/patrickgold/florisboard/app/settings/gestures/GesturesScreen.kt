@@ -28,6 +28,7 @@ import dev.patrickgold.jetpref.datastore.ui.DialogSliderPreference
 import dev.patrickgold.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
+import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import org.florisboard.lib.compose.FlorisInfoCard
 import org.florisboard.lib.compose.stringRes
 
@@ -38,7 +39,7 @@ fun GesturesScreen() = FlorisScreen {
     previewFieldVisible = true
 
     content {
-        /*PreferenceGroup(title = stringRes(R.string.pref__glide__title)) {
+        PreferenceGroup(title = stringRes(R.string.pref__glide__title)) {
             SwitchPreference(
                 prefs.glide.enabled,
                 title = stringRes(R.string.pref__glide__enabled__label),
@@ -62,7 +63,7 @@ fun GesturesScreen() = FlorisScreen {
             SwitchPreference(
                 prefs.glide.showPreview,
                 title = stringRes(R.string.pref__glide__show_preview),
-                summary = "Word suggestions must be enabled for this to take effect!",
+                summary = stringRes(R.string.pref__glide__show_preview__summary),
                 enabledIf = { prefs.glide.enabled isEqualTo true },
             )
             DialogSliderPreference(
@@ -80,7 +81,7 @@ fun GesturesScreen() = FlorisScreen {
                 summary = stringRes(R.string.pref__glide__immediate_backspace_deletes_word__summary),
                 enabledIf = { prefs.glide.enabled isEqualTo true },
             )
-        }*/
+        }
 
         PreferenceGroup(title = stringRes(R.string.pref__gestures__general_title)) {
             ListPreference(

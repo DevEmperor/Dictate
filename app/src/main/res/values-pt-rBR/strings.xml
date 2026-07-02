@@ -395,6 +395,7 @@
     <string name="pref__glide_trail_fade_duration">Tempo de desaparecimento da trilha de deslizamento</string>
     <string name="pref__glide_preview_refresh_delay">Atraso de atualização da pré-visualização</string>
     <string name="pref__glide__show_preview">Mostrar pré-visualização durante a digitação deslizante</string>
+    <string name="pref__glide__show_preview__summary">Mostrar a melhor palavra na barra de sugestões ao deslizar</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Sempre excluir palavra</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Pressionar excluir logo após um deslize exclui a palavra inteira</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Gestos gerais</string>
@@ -1299,4 +1300,8 @@
     <string name="dictate__audio_save_failed">Não foi possível salvar o áudio</string>
     <string name="dictate__instant_recording_skip_numeric_title">Ignorar campos numéricos</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Não iniciar automaticamente em campos de números, telefone ou PIN</string>
+    <string name="settings__localization__subtype_glide_ready">Escrita deslizante pronta</string>
+    <string name="settings__localization__subtype_glide_available">Escrita deslizante disponível</string>
+    <string name="settings__localization__subtype_glide_downloading">Baixando escrita deslizante… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Escrita deslizante não disponível</string>
 </resources>

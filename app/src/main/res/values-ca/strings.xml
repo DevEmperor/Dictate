@@ -405,6 +405,7 @@
     <string name="pref__glide_trail_fade_duration">Temps d\'esvaniment del recorregut del gest</string>
     <string name="pref__glide_preview_refresh_delay">Retard de l\'actualització de la vista prèvia</string>
     <string name="pref__glide__show_preview">Mostra la vista prèvia mentre escrius lliscant</string>
+    <string name="pref__glide__show_preview__summary">Mostra la millor paraula a la barra de suggeriments mentre llisces</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Suprimeix sempre la paraula</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">En prémer \"suprimeix\" just després d\'un lliscament s\'esborra tota la paraula</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Gestos generals</string>
@@ -1366,4 +1367,8 @@
     <string name="dictate__audio_save_failed">No s\'ha pogut desar l\'àudio</string>
     <string name="dictate__instant_recording_skip_numeric_title">Omet camps numèrics</string>
     <string name="dictate__instant_recording_skip_numeric_summary">No iniciïs automàticament en camps de números, telèfon o PIN</string>
+    <string name="settings__localization__subtype_glide_ready">Escriptura lliscant a punt</string>
+    <string name="settings__localization__subtype_glide_available">Escriptura lliscant disponible</string>
+    <string name="settings__localization__subtype_glide_downloading">S\'està baixant l\'escriptura lliscant… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Escriptura lliscant no disponible</string>
 </resources>

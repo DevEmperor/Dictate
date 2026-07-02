@@ -454,6 +454,7 @@
     <string name="pref__glide_trail_fade_duration">Slīdēšanas pēdu izzušanas laiks</string>
     <string name="pref__glide_preview_refresh_delay">Priekšskatīt atsvaidzināšanas aizkavi</string>
     <string name="pref__glide__show_preview">Rādīt priekšskatījumu slīdošās rakstīšanas laikā</string>
+    <string name="pref__glide__show_preview__summary">Slīdēšanas laikā rādīt labāko vārdu ieteikumu joslā</string>
     <string name="pref__glide__immediate_backspace_deletes_word__label">Vienmēr izdzēst vārdu</string>
     <string name="pref__glide__immediate_backspace_deletes_word__summary">Dzēšanas taustiņa nospiešana uzreiz pēc slidināšanas izdzēš visu vārdu</string>
     <string name="pref__gestures__general_title" comment="Preference group title">Vispārējas kustības</string>
@@ -1436,4 +1437,8 @@
     <string name="dictate__audio_save_failed">Neizdevās saglabāt audio</string>
     <string name="dictate__instant_recording_skip_numeric_title">Izlaist skaitļu laukus</string>
     <string name="dictate__instant_recording_skip_numeric_summary">Nesākt automātiski skaitļu, tālruņa vai PIN laukos</string>
+    <string name="settings__localization__subtype_glide_ready">Slīdošā rakstīšana gatava</string>
+    <string name="settings__localization__subtype_glide_available">Slīdošā rakstīšana pieejama</string>
+    <string name="settings__localization__subtype_glide_downloading">Lejupielādē slīdošo rakstīšanu… {v}%</string>
+    <string name="settings__localization__subtype_glide_unavailable">Slīdošā rakstīšana nav pieejama</string>
 </resources>
